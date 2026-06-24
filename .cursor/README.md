@@ -9,6 +9,7 @@
 .cursor/
 ├── factoryos/          # 研发测试工作流（执行真源 · SH-步步流 T4.5+）
 ├── docs-baseline/      # docs/ 认知基线（漂移检测 · 非执行真源）
+├── ai_chat_history/    # 创建期对话归档（决策史 · 非运行时真源）
 ├── rules/              # Cursor Rules（.mdc · 自动/口令加载）
 └── hooks/              # Cursor Hooks（路径保护 · harness 提示）
 ```
@@ -19,6 +20,7 @@
 | **docs-baseline** | 大改 `docs/` 后 | [docs-baseline/BASELINE.md](docs-baseline/BASELINE.md) |
 | **rules** | Agent 自动加载 | [rules/SH-步步流.mdc](rules/SH-步步流.mdc) |
 | **hooks** | 激活 Cursor 后 | [factoryos/ACTIVATION.md](factoryos/ACTIVATION.md) |
+| **ai_chat_history** | 还原创建期决议与行为链 | [ai_chat_history/2026-06-24-FactoryOSCreateChatHistory.md](ai_chat_history/2026-06-24-FactoryOSCreateChatHistory.md) |
 
 ## 开发前一条链
 
