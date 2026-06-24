@@ -15,7 +15,7 @@ repos:
         stages: [pre-commit]
       - id: factoryos-gate-contract
         name: FactoryOS contract/workflow pytest
-        entry: python3 -m pytest src/tests/contract src/tests/workflow -q -m "not pending"
+        entry: scripts/pytest_contract_workflow.sh
         language: system
         pass_filenames: false
         stages: [pre-push]
