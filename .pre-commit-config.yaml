@@ -2,14 +2,21 @@
 repos:
   - repo: local
     hooks:
+      - id: factoryos-uv-lock-check
+        name: uv lock sync (pyproject ↔ uv.lock)
+        entry: scripts/check_uv_lock.sh
+        language: system
+        files: ^(pyproject\.toml|uv\.lock)$
+        pass_filenames: false
+        stages: [pre-commit]
       - id: factoryos-harness-auto
         name: FactoryOS harness (auto)
-        entry: python3 scripts/check_harness.py --tier auto
+        entry: scripts/venv_exec.sh scripts/check_harness.py --tier auto
         language: system
         pass_filenames: false
       - id: factoryos-static-quality
         name: FactoryOS ruff + pyright
-        entry: python3 scripts/check_static_quality.py --allow-missing
+        entry: scripts/venv_exec.sh scripts/check_static_quality.py --allow-missing
         language: system
         pass_filenames: false
         stages: [pre-commit]

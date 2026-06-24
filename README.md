@@ -35,81 +35,51 @@ Overlay on ERP/MES · 双极：终端多模态 + 内核 Graph/Rule/Revert 门禁
 
 ### 完整工作流
 
-**两轨分离**：跟 Agent **说话**只在 Cursor；**跑命令**只在终端。不要混在一格里。
+**按表从上到下做。** **类型**列标明：在 Cursor **对话**里说什么，还是在**终端**里跑什么。同一阶段可能先对话、再终端，顺序不要颠倒。
 
-#### A. Cursor 对话轨（你只发口令，Agent 落盘/写码）
+| # | 场景 | 阶段 | 类型 | 你说 / 你做 | 说明 |
+|---|------|------|------|-------------|------|
+| **0** | 准备 | 激活环境 | 终端 | `./scripts/activate_dev_env.sh`；然后 Cursor 打开仓库根 → Hooks → **重启** | 每台机器一次；`pull` 后依赖有变时重跑。见下方 [§激活开发环境](#激活开发环境) |
+| **1** | 启动 | Step0 对齐 | 对话 | **Dev 对话** · `【Dev模式启动】` + 本轮目标 | Agent 读契约、对齐范围；**不写**业务码 |
+| **2** | 启动 | Step0 过关 | 对话 | `可以继续` | Agent 更新 `workflow_state` → `PLANNING` |
+| **3** | 规划 | 写 plan | 对话 | （等 Agent 落盘） | 产出 `_factoryos_pipeline/<日期>/plan/` |
+| **4** | 规划 | 确认规划 | 对话 | `确认规划` | Agent 更新 state → `CAN_TEST` |
+| **5** | 规划 | 规划门禁 | 终端 | `./scripts/gate plan` | plan 与 `contracts/` 一致才绿 |
+| **6** | 测试 | 写 failing tests | 对话 | **Test 对话** · `【Test模式启动】` + plan 路径 | Test **只**写 `src/tests/**`，不改业务码 |
+| **7** | 测试 | test-plan 门禁 | 终端 | `./scripts/gate test` | test-plan 与 plan 对齐 |
+| **8** | 编码 | 开始本 Step | 对话 | `可以开始` | **仅当前 Step**；Hooks 才放行写 `src/os_core` 等 |
+| **9** | 编码 | 编码与提交 | 终端 | `./scripts/harness --tier auto` · `git add` · `git commit -m 'feat(scope): G-01 …'` | 编码中随时跑；pre-commit 自动检 |
+| **10** | 编码 | 停机落盘 | 对话 | （Agent 写 step-stop） | 落盘 `_factoryos_pipeline/…/step-stop/` |
+| **11** | 验收 | Step 停机检 | 终端 | `./scripts/gate step --step N -k 'G-01'` | harness + pytest + 静态须全绿 |
+| **12** | 验收 | 独立审阅 | 对话 | **Verify 新对话** · `【Verify回合】Step N` | 只读审阅，不写实现 |
+| **13** | 验收 | 过关或回修 | 对话 | `可以继续`（过关）或 `测试不通过`（回修） | 过关 → 下一 Step 回到 **#8**；不过 → Dev 回修后再 **#11** |
+| **14** | 交付 | 汇总 | 对话 | （Agent 落 summary） | `_factoryos_pipeline/…/summary/` |
+| **15** | 交付 | 推 PR | 终端 | `./scripts/gate pr` · `./scripts/gate docs-sync` · `git push` · 开 PR | PR body 写 plan 路径 + AC ID |
 
-| 顺序 | 在哪说 | 你发 |
-|------|--------|------|
-| 1 | Dev 对话 | `【Dev模式启动】` + 本轮目标 |
-| 2 | Dev 对话 | `可以继续`（Step0 完成后） |
-| 3 | Dev 对话 | `确认规划`（plan 落盘后） |
-| 4 | **Test 对话** | `【Test模式启动】` + plan 路径 |
-| 5 | Dev 对话 | `确认编码门禁，开始 W1`（首轮） |
-| 6 | Dev 对话 | `可以开始`（**仅当前 Step**） |
-| 7 | Dev 对话 | （Agent 写码并落 step-stop） |
-| 8 | **Verify 新对话** | `【Verify回合】Step N` |
-| 9 | Dev 对话 | `可以继续`（Step 过关后）或 `测试不通过` |
-| 10 | 重复 6–9 | 下一 Step |
-| 11 | Dev 对话 | （Agent 落 summary） |
+**↻** #8–#13 每个 Step 重复，直到 plan 里所有 Step 完成。
 
-#### B. 终端轨（你自己执行，不对 Agent 念）
+**三个 Agent 在哪用：** #1–#5、#8–#10、#13–#14 用 **Dev**；#6–#7 用 **Test**；#12 用 **Verify**（必须**新开对话**）。
 
-| 时机 | 命令 |
-|------|------|
-| 每台机器一次（激活） | 下方 bash 块 + Cursor Hooks 重启 |
-| #3 之后 | `./scripts/gate plan` |
-| #4 之后 | `./scripts/gate test` |
-| #6–7 编码中（随时） | `./scripts/harness --tier auto` · `git add` · `git commit -m '…'` |
-| #8 之后 | `./scripts/gate step --step N -k 'G-01'` |
-| #11 之后 | `./scripts/gate pr` · `./scripts/gate docs-sync` · `git push` · 开 PR（body：plan 路径 + AC ID） |
+**里程碑附加口令**（非通用机制）：若 plan 或 [编码绝对门禁](.cursor/rules/编码绝对门禁.mdc) 要求首轮业务码前多一道总闸，在 **`可以开始` 之前**按 plan 说即可（例：当前 W1 → `确认编码门禁，开始 W1`）。见 [ACTIVATION §四](.cursor/factoryos/ACTIVATION.md)。
 
-```text
-对话：Dev启动 → 可以继续 → 确认规划 ‖ Test启动 → W1总闸 → 可以开始 ⇄ Verify新对话 → 可以继续
-终端：gate plan → gate test → (harness+commit)* → gate step → … → gate pr → push → PR
-```
+### 激活开发环境（每台机器一次）
 
-### 激活开发环境（终端 · 每台机器一次）
+**一条命令**（依赖封版 · gate · pre-commit 已内含；与 [ACTIVATION](.cursor/factoryos/ACTIVATION.md) 一致）：
 
 ```bash
-python3 --version                    # 3.12+
-curl -LsSf https://astral.sh/uv/install.sh | sh # 安装
-source $HOME/.local/bin/env # 激活
-uv sync --extra dev # 安装依赖
-./scripts/docs_baseline refresh          # docs 认知基线（首仓 / 大改 docs 后）
-uv run python scripts/gate_cli.py pr     # 验证工作流
-uv tool install pre-commit     # 安装
-source $HOME/.local/bin/env    # 激活
-pre-commit install && pre-commit install --hook-type pre-push   # 推荐
+# 首次若无 uv：
+curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 
+# 激活（首仓 · 新机器 · pull 后依赖有变时重跑）
+./scripts/activate_dev_env.sh
 ```
 
-Cursor 打开**仓库根** → Settings → Hooks 见 `protect-paths` → **重启 Cursor**。  
-未说 `可以开始` 时写 `src/os_core/*.py` 应被拦截。排障：[ACTIVATION](.cursor/factoryos/ACTIVATION.md)
+脚本依次执行：`uv sync --frozen --extra dev` → `docs_baseline refresh` → `gate pr`（含 deptry）→ `pre-commit install`（钩子走 `.venv`）。
 
-### 关键词速查
+然后：**Cursor 打开仓库根** → Settings → Hooks 见 `protect-paths` → **重启 Cursor**。  
+未说 `可以开始` 时写 `src/os_core/*.py` 应被拦截。
 
-| 口令 | 何时说 |
-|------|--------|
-| `可以继续` | Step0 过 / Step 验收后 |
-| `确认规划` | plan 落盘后 |
-| `可以开始` | 仅当前 Step 写业务码 |
-| `测试不通过` | Step 失败，Dev 回修 |
-| `确认编码门禁，开始 W1` | W1 首轮业务实现前 |
-
-### 命令速查
-
-| 场景 | 命令 |
-|------|------|
-| 确认规划 | `./scripts/gate plan` |
-| test-plan | `./scripts/gate test` |
-| Step 停机 | `./scripts/gate step --step N -k 'G-01'` |
-| PR 前 | `./scripts/gate pr` |
-| docs 漂移 | `./scripts/gate docs-sync` |
-| 编码中 | `./scripts/harness --tier auto` |
-| 提交本地 | `git add .` · `git commit -m 'feat(scope): G-01 …'` |
-| 推送 PR | `git push` · PR body 写 plan + AC |
-| guide 调试（**非实施主路径**） | `./scripts/factoryos guide` |
+编码期新依赖只用 `uv add <pkg>` / `uv add --dev <pkg>`（**禁止** `pip install`）；`pyproject.toml` 与 `uv.lock` 同 commit。其余由 pre-commit / `gate pr` 机械检查。
 
 ### 深入阅读
 

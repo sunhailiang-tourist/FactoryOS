@@ -1,25 +1,32 @@
 # FactoryOS 工作流完全激活清单
 
-> SH-步步流 v2 + Spec × Harness 顶配落地后，**一次性配置**与**每轮迭代**操作说明。  
-> **开发前全链路**：[PRE-DEV-CHAIN.md](./PRE-DEV-CHAIN.md) · 机器入口：`./scripts/gate` · `./scripts/harness`
+> **唯一激活命令**：仓库根 [README.md §激活开发环境](../../README.md#激活开发环境) · `./scripts/activate_dev_env.sh`  
+> 开发前全链路：[PRE-DEV-CHAIN.md](./PRE-DEV-CHAIN.md) · 机器入口：`./scripts/gate` · `./scripts/harness`
 
 ---
 
 ## 一、一次性配置（每位开发者 / 每台机器）
 
-按顺序执行；打勾后工作流 **L1 机械闸门 + L3 pytest** 才完全生效。
+```bash
+# 首次若无 uv
+curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 
-| # | 配置项 | 命令 / 操作 | 验证 |
-|---|--------|-------------|------|
-| **1** | **Python 3.12+** | 系统安装或 `pyenv install 3.12` | `python3 --version` |
-| **2** | **uv** | `curl -LsSf https://astral.sh/uv/install.sh \| sh` | `uv --version` |
-| **3** | **依赖同步** | 仓库根：`uv sync --extra dev` | `uv run pytest --version` |
-| **4** | **Cursor Hooks** | 本仓库已含 `.cursor/hooks.json` | Cursor → Settings → **Hooks** 显示 `protect-paths` |
-| **5** | **重启 Cursor** | 保存 hooks 后完全退出再开 | 试写 `src/os_core/x.py` 应被拦截（phase≠CAN_CODE） |
-| **6** | **pre-commit（推荐）** | `uv tool install pre-commit` 或 `pip install pre-commit` | `pre-commit --version` |
-| **7** | **安装 git hooks** | `pre-commit install` && `pre-commit install --hook-type pre-push` | `.git/hooks/pre-commit` 存在 |
-| **8** | **可选：rg** | `brew install ripgrep`（CI 租户密钥 grep 本地复现） | `rg --version` |
-| **9** | **docs 认知基线（W1 前）** | `./scripts/docs_baseline refresh` | `.cursor/docs-baseline/manifest/MANIFEST.json` 存在 |
+./scripts/activate_dev_env.sh
+```
+
+| # | 步骤 | `activate_dev_env.sh` 内 | 你额外做 |
+|---|------|--------------------------|----------|
+| 1 | uv 引导工具 | 检查 `uv` 在 PATH | 无则先装 uv（上一行） |
+| 2 | 依赖封版 | `uv sync --frozen --extra dev` | — |
+| 3 | docs 基线 | `docs_baseline refresh` | — |
+| 4 | 工作流验收盘 | `gate pr`（含 deptry） | 须绿 |
+| 5 | git 钩子 | `pre-commit` + `pre-push`（`.venv`） | — |
+| 6 | Cursor Hooks | — | 仓库根打开 · Settings → `protect-paths` · **重启** |
+| 7 | 可选 rg | — | `brew install ripgrep`（本地复现 CI 密钥 grep） |
+
+**pull 后**依赖有变：再跑 `./scripts/activate_dev_env.sh`（或至少 `uv sync --frozen --extra dev`）。
+
+**新第三方包**（编码期）：`uv add <pkg>` / `uv add --dev <pkg>` — 禁止 `pip install`；`uv.lock` 与 `pyproject.toml` 同 commit。pre-commit 与 `gate pr` 会自动检查 lock / import 声明。
 
 ### Hooks 未生效时
 
@@ -76,20 +83,17 @@ Agent **收到用户关键词后必须先改** `_factoryos_pipeline/workflow_sta
 
 ---
 
-## 四、W1 编码启动口令
+## 四、里程碑附加口令（非通用 · 示例 W1）
 
-文档统一口令（任选其一回复 Agent）：
+> 通用 SH-步步流 **不含** 本节；仅当 plan / 项目规则要求时，在 **`可以开始` 之前**追加。
+
+当前 FactoryOS Core 首轮（W1）约定口令：
 
 ```text
 确认编码门禁，开始 W1
 ```
 
-Agent 应：
-
-1. 完成 Step0 + plan 落盘
-2. 你 `确认规划` → `./scripts/gate plan`
-3. Test 写 failing tests → `确认规划` 后 `phase: CAN_TEST`
-4. 你 `可以开始` → `phase: CAN_CODE` → 实现 shared_contracts…
+见 [编码绝对门禁](../rules/编码绝对门禁.mdc)。Agent 仍须先走完 Step0 → plan → Test → `gate test` 绿，再说 `可以开始` 写业务码。
 
 ---
 
@@ -113,7 +117,7 @@ Agent 应：
 
 | 现象 | 处理 |
 |------|------|
-| `uv sync` 失败 | 检查 Python 3.12；`uv python install 3.12` |
+| `activate_dev_env.sh` / `uv sync` 失败 | 检查 Python 3.12；`uv python install 3.12` |
 | pytest 找不到 `tests` | 必须在仓库根：`uv run pytest src/tests/contract -v` |
 | hook 拦截了合法改 contracts | contracts 应在 ALWAYS_OK；检查路径是否写对 |
 | `gate plan` 失败无 plan | 先落盘 `_factoryos_pipeline/<date>/plan/plan-*.md` |

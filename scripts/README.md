@@ -10,6 +10,7 @@
 
 | 我想… | 命令 / 入口 |
 |--------|-------------|
+| **激活开发环境（首仓/新机器）** | [README §激活](../README.md#激活开发环境) · `./scripts/activate_dev_env.sh` |
 | **接入/扩展（实施/客户）** | **Integration Studio**（`apps/web-admin`）— 见 [INTEGRATION-CHAIN](../.cursor/factoryos/INTEGRATION-CHAIN.md) |
 | 平台研发：本地跑 CI 同款检查 | `./scripts/harness` 或 `./scripts/factoryos harness` |
 | 平台研发：调试 flows 状态机 | `./scripts/factoryos guide`（**非实施主路径**） |
@@ -20,10 +21,16 @@
 
 ---
 
-## 文件一览（15+ 个）
+## Gate · 文件一览
 
+| 文件 | 作用 |
+|------|------|
+| **`activate_dev_env.sh`** | **开发环境激活**（README 唯一入口 · frozen sync · gate pr · pre-commit） |
 | **`gate`** | Bash 入口 → `gate_cli.py` |
-| **`gate_cli.py`** | **Spec×Harness Gate**：`plan` · `test` · `step` · `pr` · `gate0` · `analyze` |
+| **`gate_cli.py`** | **Spec×Harness Gate**：`plan` · `test` · `step` · `pr` · `gate0` · `analyze` · `docs-sync` |
+| **`check_deptry.py`** | import ↔ `pyproject.toml` 声明（`gate pr` · DEP001） |
+| **`check_uv_lock.sh`** | `uv lock --check`（pre-commit · pyproject 变更时） |
+| **`venv_exec.sh`** | pre-commit 统一走 `.venv/bin/python` |
 | **`check_plan_spec.py`** | plan ↔ contracts AC/路径一致性（确认规划门） |
 | **`check_pipeline.py`** | 落盘工件 + `workflow_state` 阶段检查 |
 

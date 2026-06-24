@@ -23,7 +23,7 @@ jobs:
           version: "0.6"
 
       - name: Sync dependencies
-        run: uv sync --extra dev
+        run: uv sync --frozen --extra dev
 
       - name: Gate PR (harness · pytest · static)
         run: uv run python scripts/gate_cli.py pr

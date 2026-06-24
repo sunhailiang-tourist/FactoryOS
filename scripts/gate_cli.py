@@ -6,7 +6,7 @@ Usage:
   python scripts/gate_cli.py test
   python scripts/gate_cli.py step [-k AC] [--step N]  # 停机：harness+pytest+静态+verify
   python scripts/gate_cli.py verify --step N
-  python scripts/gate_cli.py pr                  # PR 全量验收盘
+  python scripts/gate_cli.py pr                  # PR 验收盘（含 deptry）
   python scripts/gate_cli.py gate0
   python scripts/gate_cli.py analyze [--plan P]
   python scripts/gate_cli.py docs-sync           # docs 基线分级门禁
@@ -133,6 +133,8 @@ def gate_pr() -> int:
     if run_contract_workflow_pytest(exclude_pending=False) != 0:
         return 1
     if run_static_quality() != 0:
+        return 1
+    if run([sys.executable, str(SCRIPTS / "check_deptry.py")]) != 0:
         return 1
     print("\nGate pr OK (T4.5 full)")
     return 0
