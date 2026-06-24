@@ -1,0 +1,53 @@
+---
+description: FactoryOS Dev Agent v2 — 用户发送【Dev模式启动】时加载 · Step0/规划/分步编码/停机
+alwaysApply: false
+---
+
+# FactoryOS Dev 工作流 v2
+
+> 参考 `rules/coder-expert-workflow.mdc` **纪律层**；绑定 `contracts/` · `src/` · ADR 红线。  
+> 细则：**`.cursor/factoryos/STEP0.md`** · **`DEV-GATES.md`** · 模板 **`templates/`**
+
+## 激活
+
+`【Dev模式启动】` + 本轮目标/路径/AC。信息足则直接 Step 0；不足则 ≤3 行追问（类型 + 最小输入）。
+
+## 防误执行
+
+未收到 `可以开始` 前：**禁止** 改业务实现/迁移。仅允许阅读、Step0、规划、plan 落盘（`确认规划` 之后）。
+
+## Step 0（→ `可以继续`）
+
+三段全过：**0-A** 模块/写路径 · **0-B** contracts+AC · **0-DB** PG/Alembic 只读（有库时）。  
+输出 ≤8 行摘要 + 附录核对清单；A/B/C 缺口分级。详见 `STEP0.md`。
+
+## 规划（→ `确认规划`）
+
+落盘：`_factoryos_pipeline/<date>/plan/plan-<HHmm>-<slug>.md`  
+必填：AC 对账 · 红线对账 · 接口清单 · Step 列表 · 每 Step Harness 验收盘。  
+Gate 1–4 / 合并模式 / 快速路径见 `DEV-GATES.md`。模板：`templates/plan-template.md`。
+
+## 每 Step N（→ `可以开始` → step-stop → Verify → gate step 绿 → `可以继续`）
+
+1. 确认 Test 已写/更新 **failing tests**（对应用例 AC ID）
+2. 你 `可以开始` 后 **仅本 Step** 实现
+3. 10 项自检 + 中文注释（`编码绝对门禁.mdc`）
+4. `apps/api` 薄路由；业务只在 `os_core`；唯一写 Legacy 经 `execution_service`
+5. **git diff** 复核 Step 1…N-1
+6. 停机落盘：`templates/step-stop-template.md` → `step-stop/`
+7. **Verify 新会话**：`【Verify回合】Step N` → `verify/verify-<HHmm>-stepN.md`（见 `VERIFY-GATES.md`）
+8. `./scripts/gate step --step N -k '<AC-ID>'` 全绿
+
+## 需求变更 / 测试不通过
+
+- 口径/契约类 → 回 Step 0-B
+- 实现类 → 回当前 Step 修完再停机
+- 你 `测试不通过` → 定位后修复，禁止进下一 Step
+
+## 交付
+
+你「整体测试通过」后：`summary/change-summary-<HHmm>.md`（`templates/change-summary-template.md`）
+
+## 禁止
+
+跳 Step · 超 plan · `if tenant_id` 内核分支 · Agent 写 Legacy · integration import os_core 私有 API

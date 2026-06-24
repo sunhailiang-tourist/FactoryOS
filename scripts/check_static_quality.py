@@ -1,0 +1,85 @@
+#!/usr/bin/env python3
+"""Run ruff + pyright on src/ (stdlib launcher).
+
+Usage:
+  python scripts/check_static_quality.py
+  python scripts/check_static_quality.py --ruff-only
+
+Exit 0 = pass; 1 = violations or tool missing (use --allow-missing for soft gate).
+"""
+from __future__ import annotations
+
+import argparse
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+
+
+def has_python_sources() -> bool:
+    for p in SRC.rglob("*.py"):
+        if p.name != "__init__.py" or p.read_text(encoding="utf-8").strip():
+            if p.stat().st_size > 0 and p.read_text(encoding="utf-8").strip():
+                return True
+    return any(SRC.rglob("*.py"))
+
+
+def run_module(module: str, args: list[str], allow_missing: bool) -> int | None:
+    """Return exit code, or None if module missing and allow_missing."""
+    r = subprocess.run(
+        [sys.executable, "-m", module, *args],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if r.returncode != 0 and "No module named" in (r.stderr or ""):
+        if allow_missing:
+            return None
+        print(f"{module} not installed — uv sync --extra dev", file=sys.stderr)
+        return 1
+    if r.stdout:
+        print(r.stdout, end="")
+    if r.stderr:
+        print(r.stderr, end="", file=sys.stderr)
+    return r.returncode
+
+
+def main() -> int:
+    p = argparse.ArgumentParser(description="Static quality: ruff + pyright")
+    p.add_argument("--ruff-only", action="store_true")
+    p.add_argument("--allow-missing", action="store_true", help="skip if tools not installed")
+    args = p.parse_args()
+
+    if not SRC.is_dir():
+        print("No src/ — skip static quality")
+        return 0
+
+    py_files = list(SRC.rglob("*.py"))
+    if not py_files:
+        print("No Python files under src/ — skip")
+        return 0
+
+    failed = False
+    for module, margs, label in [
+        ("ruff", ["check", "src"], "ruff"),
+        *([] if args.ruff_only else [("pyright", ["src"], "pyright")]),
+    ]:
+        print(f"\n── {label}")
+        code = run_module(module, margs, args.allow_missing)
+        if code is None:
+            print(f"  skip {label} (not installed)")
+            continue
+        if code != 0:
+            failed = True
+
+    if failed:
+        print("\nStatic quality FAILED", file=sys.stderr)
+        return 1
+    print("\nStatic quality OK")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

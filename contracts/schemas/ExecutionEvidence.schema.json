@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/ExecutionEvidence/v1.0.0",
+  "title": "ExecutionEvidence",
+  "description": "单次执行的可重建审计包：Execution + 关联 Audit + Rule 快照 + Graph 校验信息。只读聚合，F1。",
+  "type": "object",
+  "required": ["exec_id", "tenant_id", "execution", "audit_events", "assembled_at"],
+  "additionalProperties": false,
+  "properties": {
+    "exec_id": { "type": "string", "format": "uuid" },
+    "tenant_id": { "type": "string" },
+    "assembled_at": { "type": "string", "format": "date-time" },
+    "execution": { "$ref": "./执行记录.schema.json" },
+    "audit_events": {
+      "type": "array",
+      "items": { "$ref": "./AuditEvent.schema.json" }
+    },
+    "rule_snapshot": {
+      "type": ["object", "null"],
+      "description": "执行前 Rule evaluate 结果",
+      "required": ["effect"],
+      "properties": {
+        "effect": { "type": "string", "enum": ["allow", "deny"] },
+        "matched_rule_id": { "type": ["string", "null"] },
+        "ruleset_id": { "type": "string" },
+        "graph_id": { "type": "string" },
+        "graph_version": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "graph_checksum": {
+      "type": ["string", "null"],
+      "description": "执行时绑定的 frozen Graph SHA-256"
+    },
+    "dsl_plan_id": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "description": "Harness/MCP 确认前的 DslPlan ID（若有）"
+    },
+    "reconciliation_refs": {
+      "type": "array",
+      "description": "引用该 exec 的对账 run_id 列表",
+      "items": { "type": "string", "format": "uuid" }
+    },
+    "trace_id": {
+      "type": ["string", "null"],
+      "description": "W3C traceparent 根或 MCP _meta 关联 ID"
+    }
+  }
+}

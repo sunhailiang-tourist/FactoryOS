@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/SystemRelation/v1.0.0",
+  "title": "SystemRelation",
+  "description": "租户与 Legacy 系统绑定声明；对齐 配置枢纽与关系模型 §4。Git 草案真源，activate 后映射 connector_instances。",
+  "type": "object",
+  "required": ["apiVersion", "kind", "metadata", "spec", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": { "const": "factoryos.io/v1" },
+    "kind": { "const": "SystemRelation" },
+    "metadata": {
+      "type": "object",
+      "required": ["relation_id", "tenant_id", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "relation_id": {
+          "type": "string",
+          "pattern": "^sr-[a-z0-9-]+$",
+          "description": "关系唯一 ID；业务：connector_instances 外部键"
+        },
+        "tenant_id": { "type": "string", "description": "租户 ID；业务：多厂隔离" },
+        "name": { "type": "string", "description": "人类可读名称" },
+        "path": {
+          "type": "string",
+          "enum": ["A", "B", "C"],
+          "description": "ADR-005 写入路径；业务：决定写 Pack 组合"
+        }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "required": ["connector", "environment", "instance"],
+      "additionalProperties": false,
+      "properties": {
+        "connector": {
+          "type": "object",
+          "required": ["pack_id", "blueprint_ref"],
+          "additionalProperties": false,
+          "properties": {
+            "pack_id": { "type": "string", "description": "Connector Pack ID，如 conn-erp-kingdee-write" },
+            "registry_key": { "type": "string" },
+            "blueprint_ref": {
+              "type": "string",
+              "description": "相对 integration/ 的 Blueprint 路径"
+            },
+            "certification_min": {
+              "type": "string",
+              "enum": ["bronze", "silver", "gold"]
+            }
+          }
+        },
+        "environment": {
+          "type": "string",
+          "enum": ["prod", "staging"],
+          "description": "运行环境"
+        },
+        "instance": {
+          "type": "object",
+          "required": ["secrets_ref"],
+          "additionalProperties": false,
+          "properties": {
+            "display_name": { "type": "string" },
+            "base_url": { "type": "string", "format": "uri" },
+            "secrets_ref": {
+              "type": "string",
+              "description": "凭证引用；禁止明文；业务：Vault/Edge 解密"
+            },
+            "edge_agent_id": {
+              "type": ["string", "null"],
+              "description": "私网 ERP 必填；业务：出站 WSS"
+            }
+          }
+        },
+        "mapping_overrides": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "相对 catalog mapping 的 diff only"
+        },
+        "resilience_overrides": { "type": "object" },
+        "shadow": {
+          "type": "object",
+          "properties": {
+            "inherit_tenant_default": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "status": {
+      "type": "object",
+      "required": ["lifecycle"],
+      "additionalProperties": false,
+      "properties": {
+        "lifecycle": {
+          "type": "string",
+          "enum": ["draft", "active", "archived"],
+          "description": "draft=Git 草案；active=已写入 connector_instances"
+        },
+        "approved_by": { "type": ["string", "null"] },
+        "approved_at": { "type": ["string", "null"], "format": "date-time" }
+      }
+    }
+  }
+}

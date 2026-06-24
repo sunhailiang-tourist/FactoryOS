@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": "python3 .cursor/hooks/protect-paths.py",
+        "matcher": "Write|StrReplace|Delete",
+        "failClosed": true
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": "python3 .cursor/hooks/post-edit-harness-hint.py",
+        "matcher": "Write|StrReplace"
+      }
+    ]
+  }
+}

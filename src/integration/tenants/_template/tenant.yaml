@@ -1,0 +1,19 @@
+apiVersion: factoryos.io/v1
+kind: TenantProfile
+metadata:
+  tenant_id: CHANGE_ME
+  display_name: 新客户（模板）
+spec:
+  path: A
+  placement_tier: pool
+  cell_id: cell-default
+  region: cn-hangzhou
+  shadow_mode: true
+  default_im: dingtalk
+  licensed_packs: []
+  delivery:
+    phase: D1
+status:
+  write_approved: false
+  write_approved_at: null
+  write_approved_by: null

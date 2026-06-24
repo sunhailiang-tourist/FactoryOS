@@ -1,0 +1,21 @@
+apiVersion: factoryos.io/v1
+kind: SystemRelation
+metadata:
+  relation_id: sr-CHANGE_ME-erp-example
+  tenant_id: CHANGE_ME
+  name: ERP 示例（请改名）
+  path: A
+spec:
+  connector:
+    pack_id: conn-erp-{vendor}-write
+    registry_key: erp/{vendor}/write
+    blueprint_ref: catalog/erp/{vendor}/blueprint.yaml
+    certification_min: silver
+  environment: prod
+  instance:
+    display_name: ERP 生产实例
+    base_url: https://erp.example.internal
+    secrets_ref: vault://CHANGE_ME/prod/erp
+  mapping_overrides: {}
+status:
+  lifecycle: draft

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="2100" viewBox="0 0 1800 2100">
+  <defs><style>
+  text { font-family: "PingFang SC", "Heiti SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; }
+  .t1 { font-size: 26px; font-weight: bold; fill: #1a252f; }
+  .t2 { font-size: 13px; fill: #566573; }
+  .zt { font-size: 14px; font-weight: bold; fill: #ffffff; }
+  .bt { font-size: 12px; font-weight: bold; fill: #1a252f; }
+  .sm { font-size: 11px; fill: #333333; }
+  .hi { font-size: 10px; fill: #666666; }
+</style></defs>
+  <rect width="1800" height="2100" fill="#fafbfc"/>
+  <text x="900" y="42" text-anchor="middle" class="t1">FactoryOS 系统架构图</text>
+  <text x="900" y="68" text-anchor="middle" class="t2">平台分层 · 扩展机制 · Path A/B/C · 规模阶梯 S0-S3 · v2.0 · ADR-000-007</text>
+
+  <!-- users -->
+  <rect x="500" y="88" width="800" height="48" rx="8" fill="#fadbd8" stroke="#c0392b" stroke-width="2"/>
+  <text x="900" y="118" text-anchor="middle" class="bt">用户触达：钉钉/企微 H5 · PC 管理台 · 工位屏（角色入口，不含业务规则）</text>
+
+  <!-- L3 -->
+  <rect x="80" y="156" width="1080" height="72" rx="8" fill="#fadbd8" stroke="#c0392b" stroke-width="2"/>
+  <rect x="80" y="156" width="1080" height="26" rx="8" fill="#922b21"/>
+  <text x="96" y="174" class="zt">Platform-L3  Harness 入口层</text>
+  <text x="96" y="204" class="sm">h5-worker 移动端壳 · web-admin PC · 感知入口（说/拍/扫/点）· 确认门 / dry_run / 待办</text>
+  <text x="96" y="220" class="hi">Harness Loop：感知 → 授权 → 沙箱 → 确认 → 执行 → 验证 → 记录</text>
+
+  <!-- L2 -->
+  <rect x="80" y="248" width="1080" height="72" rx="8" fill="#fdebd0" stroke="#d68910" stroke-width="2"/>
+  <rect x="80" y="248" width="1080" height="26" rx="8" fill="#d35400"/>
+  <text x="96" y="266" class="zt">Platform-L2  Skills 体验层（唯一含 LLM）</text>
+  <text x="96" y="296" class="sm">agent_orchestrator：LangGraph FSM → DSL 计划 JSON · license_service：Pack 授权边界</text>
+  <text x="96" y="312" class="hi">红线：Agent 无写 Legacy 权限 · 只产出计划，不执行写库</text>
+
+  <!-- L0 -->
+  <rect x="80" y="340" width="1080" height="120" rx="10" fill="#d5f5e3" stroke="#1e8449" stroke-width="3"/>
+  <rect x="80" y="340" width="1080" height="28" rx="10" fill="#1e8449"/>
+  <text x="96" y="360" class="zt">Platform-L0  信任内核（宪法层 · 零 LLM · 全行业复用机制）</text>
+  <rect x="96" y="378" width="240" height="68" rx="6" fill="#eafaf1" stroke="#27ae60"/>
+  <text x="108" y="400" class="bt">graph_service</text>
+  <text x="108" y="418" class="sm">流程版本 draft→frozen</text>
+  <text x="108" y="434" class="hi">未冻结禁止 L2 写</text>
+  <rect x="352" y="378" width="240" height="68" rx="6" fill="#eafaf1" stroke="#27ae60"/>
+  <text x="364" y="400" class="bt">rule_engine</text>
+  <text x="364" y="418" class="sm">角色/条件/动作</text>
+  <text x="364" y="434" class="hi">默认 deny</text>
+  <rect x="608" y="378" width="260" height="68" rx="6" fill="#eafaf1" stroke="#27ae60"/>
+  <text x="620" y="400" class="bt">execution_service</text>
+  <text x="620" y="418" class="sm">唯一写路径 · Saga · Revert</text>
+  <text x="620" y="434" class="hi">幂等 · 对账 · Shadow</text>
+  <rect x="884" y="378" width="260" height="68" rx="6" fill="#eafaf1" stroke="#27ae60"/>
+  <text x="896" y="400" class="bt">audit_service</text>
+  <text x="896" y="418" class="sm">append-only 审计</text>
+  <text x="896" y="434" class="hi">全程可追溯</text>
+
+  <!-- L1 -->
+  <rect x="80" y="480" width="1080" height="88" rx="8" fill="#d6eaf8" stroke="#2874a6" stroke-width="2"/>
+  <rect x="80" y="480" width="1080" height="26" rx="8" fill="#1a5276"/>
+  <text x="96" y="498" class="zt">Platform-L1  连接层 GIP</text>
+  <text x="96" y="528" class="sm">connector_sdk + Blueprint Runtime + Registry · mcp_gateway（CMV → MCP tools → DslPlan）</text>
+  <text x="96" y="546" class="sm">integration/catalog · packs · tenants — 集成外置，不改 L0 内核</text>
+  <text x="96" y="562" class="hi">稳定动词 → 各厂商 ERP/MES/WMS API · 禁止 bypass execution 直写</text>
+
+  <!-- Data-L0 -->
+  <rect x="80" y="588" width="1080" height="64" rx="8" fill="#fdedec" stroke="#e74c3c" stroke-width="2" stroke-dasharray="6"/>
+  <text x="96" y="614" class="bt">Data-L0  客户账本（权威 · FactoryOS 不替代）</text>
+  <text x="96" y="636" class="sm">ERP · MES · WMS · OA · CRM … 或 Path C：PostgreSQL builtin 表模拟 L0</text>
+
+  <!-- write path -->
+  <rect x="80" y="668" width="1080" height="56" rx="8" fill="#ebf5fb" stroke="#117a65" stroke-width="2"/>
+  <text x="96" y="692" class="bt" fill="#117a65">唯一写路径（红线）</text>
+  <text x="96" y="712" class="sm">Harness → Agent → Graph(frozen) → Rule(allow) → Execution → Connector → Data-L0 → Audit → Data-L1(RDS)</text>
+
+  <!-- extension sidebar -->
+  <rect x="1180" y="156" width="580" height="568" rx="8" fill="#f4ecf7" stroke="#8e44ad" stroke-width="2"/>
+  <rect x="1180" y="156" width="580" height="28" rx="8" fill="#7d3c98"/>
+  <text x="1196" y="176" class="zt">扩展机制（不动 L0 代码路径）</text>
+  <text x="1196" y="208" class="bt">Pack（可授权 SKU）</text>
+  <text x="1196" y="226" class="sm">Graph Pack · Capability Pack · Connector Pack · Skill Pack</text>
+  <text x="1196" y="252" class="bt">Override（差异配置）</text>
+  <text x="1196" y="270" class="sm">Platform / Tenant / Scope 三级 · Scope 优先合并</text>
+  <text x="1196" y="296" class="bt">Implementation Package</text>
+  <text x="1196" y="314" class="sm">export 快照 → 第二家 import 差量 · 现场→标准资产</text>
+  <text x="1196" y="340" class="bt">Registry + License</text>
+  <text x="1196" y="358" class="sm">租户绑定 Connector 实例 · 未授权 Pack → 403</text>
+  <text x="1196" y="384" class="bt">GIP 三速接入</text>
+  <text x="1196" y="402" class="sm">S1 ≤1周 import 包 · S2 ≤2周 AI Blueprint</text>
+  <text x="1196" y="418" class="sm">S3 1-2周 Python Connector</text>
+  <text x="1196" y="444" class="bt">资产闭环 ⑦⑧⑩</text>
+  <text x="1196" y="462" class="sm">freeze → Shadow≥14d → export → Pack库 → import</text>
+  <text x="1196" y="488" class="bt">Legacy 固定 10 类</text>
+  <text x="1196" y="506" class="sm">mes erp wms oa crm csm aps plm qms mock</text>
+  <text x="1196" y="522" class="hi">新厂商只加 vendor，不加 system 类型</text>
+  <text x="1196" y="548" class="bt">MCP 开放节奏</text>
+  <text x="1196" y="566" class="sm">Y1 末内部 GA · Y2 对外（ADR-004）</text>
+  <text x="1196" y="590" class="bt">商业 Pack 层 L0-L3</text>
+  <text x="1196" y="608" class="sm">与 Platform 分层同名不同义 · 见 ADR-003</text>
+  <text x="1196" y="634" class="bt">部署形态 ADR-007</text>
+  <text x="1196" y="652" class="sm">Pool 共享 · Bridge 独立 schema · Silo 独立栈</text>
+  <text x="1196" y="668" class="hi">同一 L0 二进制 · placement_tier 差异</text>
+  <text x="1196" y="694" class="bt">规模阶梯</text>
+  <text x="1196" y="712" class="sm">S0 1-10 tenant · S1 百级 Pool+RLS</text>
+  <text x="1196" y="728" class="sm">S2 千级 Cell · S3 Silo+shuffle</text>
+
+  <!-- paths -->
+  <rect x="80" y="744" width="1680" height="130" rx="8" fill="#ffffff" stroke="#2874a6" stroke-width="2"/>
+  <rect x="80" y="744" width="1680" height="26" rx="8" fill="#2874a6"/>
+  <text x="96" y="762" class="zt">三条写入路径 Path A/B/C（同一 L0 内核 — ADR-005）</text>
+  <rect x="96" y="782" width="520" height="78" rx="6" fill="#fdebd0" stroke="#d68910" stroke-width="2"/>
+  <text x="108" y="804" class="bt" fill="#d35400">Path A · 灯塔（哈森）</text>
+  <text x="108" y="824" class="sm">conn-erp-write + erp-read + conn-dingtalk</text>
+  <text x="108" y="844" class="hi">Data-L0 = 客户 ERP 权威账本 · 无 MES</text>
+  <rect x="636" y="782" width="520" height="78" rx="6" fill="#ebf5fb" stroke="#2874a6"/>
+  <text x="648" y="804" class="bt">Path B · 平台通用</text>
+  <text x="648" y="824" class="sm">conn-mes 写 + conn-erp-read</text>
+  <text x="648" y="844" class="hi">Data-L0 = MES 写 + ERP 读 · 双系统 Overlay</text>
+  <rect x="1176" y="782" width="520" height="78" rx="6" fill="#e8f8f5" stroke="#1e8449"/>
+  <text x="1188" y="804" class="bt">Path C · Starter-B-Lite</text>
+  <text x="1188" y="824" class="sm">conn-mes-builtin → PostgreSQL builtin 表</text>
+  <text x="1188" y="844" class="hi">L0 机制与 A/B 完全相同 · Y1 默认不销售</text>
+
+  <!-- gates -->
+  <rect x="80" y="892" width="1680" height="100" rx="8" fill="#fef9e7" stroke="#b7950b" stroke-width="2"/>
+  <text x="96" y="920" class="bt">交付闸门与业务价值</text>
+  <text x="96" y="942" class="sm">Gate 0（Core）：L0 机制 + mock Connector + AC-BASE-001 52 P0 → tag core-v1.0.0</text>
+  <text x="96" y="962" class="sm">Gate 0'（工厂）：frozen Graph + 真实 Connector + D1 Skill · 0 智解脱老系统 · 错了能收回 · 现场与账本一致</text>
+  <text x="96" y="982" class="hi">ISA-95 L3.5 Overlay · 不替代 ERP/MES · 不是聊天机器人 · 不是数仓</text>
+
+  <!-- legend -->
+  <rect x="80" y="1010" width="1680" height="72" rx="8" fill="#eafaf1" stroke="#1e8449"/>
+  <text x="96" y="1036" class="bt">图例</text>
+  <text x="96" y="1056" class="sm">红=入口 L3 · 橙=体验 L2 · 绿=信任内核 L0 · 蓝=连接 L1 · 虚线红框=客户账本 L0</text>
+  <text x="96" y="1072" class="sm">紫框=扩展与商业机制 · 实线箭头写路径必经 execution · Modular Monolith 单 apps/api deployable</text>
+
+  <text x="900" y="1120" text-anchor="middle" class="t2">详见 文档/架构/系统架构图说明.md · 16-OS核心基座 · 2026-06-16</text>
+</svg>

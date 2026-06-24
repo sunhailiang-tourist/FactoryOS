@@ -1,0 +1,10 @@
+{
+  "wo_id": "550e8400-e29b-41d4-a716-446655440001",
+  "wo_no": "MO-2026-001",
+  "completed_qty": 170,
+  "last_report_ref": "mes.acme.work_report:770e8400-e29b-41d4-a716-446655440088",
+  "last_report_at": "2026-06-16T14:30:00+08:00",
+  "legacy_system": "mes",
+  "legacy_vendor": "acme",
+  "reconcile_source": "mes-acme-read"
+}

@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "description": "docs/ 变更时建议检查的 .cursor/factoryos 与 rules 目标（fnmatch 路径）",
+  "rules": [
+    {
+      "id": "adr-000-gates",
+      "match": "docs/文档/架构/架构决策记录-000*.md",
+      "affects": [".cursor/factoryos/GATES.md", ".cursor/factoryos/STEP0.md"]
+    },
+    {
+      "id": "adr-001-arch",
+      "match": "docs/文档/架构/架构决策记录-001*.md",
+      "affects": [".cursor/rules/工厂操作系统.md", ".cursor/factoryos/MODULE-MAP.md"]
+    },
+    {
+      "id": "adr-002-redlines",
+      "match": "docs/文档/架构/架构决策记录-002*.md",
+      "affects": [
+        ".cursor/factoryos/REDLINES.md",
+        ".cursor/factoryos/STEP0.md",
+        ".cursor/rules/编码绝对门禁.mdc",
+        ".cursor/rules/工厂操作系统.md"
+      ]
+    },
+    {
+      "id": "adr-003-pack",
+      "match": "docs/文档/架构/架构决策记录-003*.md",
+      "affects": [".cursor/rules/工厂操作系统.md", ".cursor/factoryos/MODULE-MAP.md"]
+    },
+    {
+      "id": "adr-004-gip",
+      "match": "docs/文档/架构/架构决策记录-004*.md",
+      "affects": [".cursor/factoryos/MODULE-MAP.md", ".cursor/rules/工厂操作系统.md"]
+    },
+    {
+      "id": "adr-007-scale",
+      "match": "docs/文档/架构/架构决策记录-007*.md",
+      "affects": [".cursor/rules/工厂操作系统.md", ".cursor/factoryos/DEV-GATES.md"]
+    },
+    {
+      "id": "coding-gate-doc",
+      "match": "docs/文档/架构/编码绝对门禁.md",
+      "affects": [".cursor/rules/编码绝对门禁.mdc", ".cursor/factoryos/DEV-GATES.md"]
+    },
+    {
+      "id": "governance",
+      "match": "docs/文档/架构/治理规范.md",
+      "affects": [".cursor/factoryos/DEV-GATES.md", ".cursor/factoryos/TEST-GATES.md"]
+    },
+    {
+      "id": "public-api",
+      "match": "docs/文档/架构/os_core-public-api.md",
+      "affects": [".cursor/factoryos/MODULE-MAP.md", ".cursor/factoryos/STEP0.md"]
+    },
+    {
+      "id": "module-trace",
+      "match": "docs/文档/架构/能力-模块包-模块追溯矩阵.md",
+      "affects": [".cursor/factoryos/MODULE-MAP.md", ".cursor/factoryos/AC-P0-INDEX.md"]
+    },
+    {
+      "id": "naming",
+      "match": "docs/文档/架构/命名约定.md",
+      "affects": [".cursor/rules/工厂操作系统.md"]
+    },
+    {
+      "id": "ac-base",
+      "match": "docs/文档/验收/验收用例-BASE-001*.md",
+      "affects": [
+        "contracts/acceptance/验收用例-BASE-001-平台底座.md",
+        ".cursor/factoryos/AC-P0-INDEX.md",
+        "src/tests/ac/"
+      ]
+    },
+    {
+      "id": "ac-mvp",
+      "match": "docs/文档/验收/验收用例-MVP-001*.md",
+      "affects": ["contracts/acceptance/验收用例-MVP-001-报工垂直闭环.md"]
+    },
+    {
+      "id": "ac-ux",
+      "match": "docs/文档/验收/验收用例-UX-001*.md",
+      "affects": ["contracts/acceptance/验收用例-UX-001-终端体验与多模态.md"]
+    },
+    {
+      "id": "ac-blite",
+      "match": "docs/文档/验收/验收用例-B-LITE-001*.md",
+      "affects": ["contracts/acceptance/验收用例-B-LITE-001-无ERP内置账本.md"]
+    },
+    {
+      "id": "dsl-spec",
+      "match": "docs/文档/规格说明/DSL执行动词.md",
+      "affects": ["contracts/cmv/", ".cursor/factoryos/REDLINES.md"]
+    },
+    {
+      "id": "shadow-spec",
+      "match": "docs/文档/规格说明/Shadow-Mode与对账规格.md",
+      "affects": [".cursor/factoryos/DEV-GATES.md", "src/tests/"]
+    },
+    {
+      "id": "schemas-superseded",
+      "match": "docs/文档/数据结构/**",
+      "note": "superseded_by contracts/schemas + contracts/cmv — 用 contracts-crosscheck",
+      "affects": ["contracts/schemas/", "contracts/cmv/"]
+    },
+    {
+      "id": "openapi-superseded",
+      "match": "docs/文档/接口/**",
+      "note": "superseded_by contracts/openapi/",
+      "affects": ["contracts/openapi/"]
+    }
+  ]
+}

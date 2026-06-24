@@ -1,0 +1,300 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Generate FactoryOS base capability diagram (SVG + PNG)."""
+from pathlib import Path
+
+import cairosvg
+
+OUT_DIR = Path(__file__).resolve().parents[1] / "docs" / "文档" / "架构"
+SVG_PATH = OUT_DIR / "基座能力说明图.svg"
+PNG_PATH = OUT_DIR / "基座能力说明图.png"
+
+W, H = 1800, 3380
+
+SVG = f'''<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">
+  <defs>
+    <style>
+      text {{ font-family: "PingFang SC", "Heiti SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; }}
+      .t1 {{ font-size: 30px; font-weight: bold; fill: #1a252f; }}
+      .t2 {{ font-size: 14px; fill: #566573; }}
+      .zt {{ font-size: 15px; font-weight: bold; fill: #ffffff; }}
+      .bt {{ font-size: 13px; font-weight: bold; fill: #1a252f; }}
+      .sm {{ font-size: 12px; fill: #333333; }}
+      .hi {{ font-size: 11px; fill: #666666; }}
+      .nt {{ font-size: 12px; fill: #1a5276; }}
+      .tc {{ font-size: 12px; fill: #1e8449; }}
+    </style>
+    <marker id="o" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#d35400"/></marker>
+    <marker id="p" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#7d3c98"/></marker>
+    <marker id="g" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#117a65"/></marker>
+    <marker id="b" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#2874a6"/></marker>
+  </defs>
+  <rect width="{W}" height="{H}" fill="#fafbfc"/>
+
+  <!-- Title -->
+  <text x="{W//2}" y="44" text-anchor="middle" class="t1">FactoryOS 核心基座能力结构说明图</text>
+  <text x="{W//2}" y="72" text-anchor="middle" class="t2">结构 · 模块 · 写路径 · 接入 · 场景 · 储备 · 资产闭环 · v3.3.3 · ADR-000～007</text>
+
+  <!-- 0 dual audience -->
+  <rect x="40" y="92" width="840" height="72" rx="8" fill="#ebf5fb" stroke="#2874a6" stroke-width="2"/>
+  <text x="58" y="118" class="bt" fill="#1a5276">非技术人 · 一句话</text>
+  <text x="58" y="142" class="nt">在现有 ERP/MES 之上，加一层「办事要审批、错了能撤、全程留痕」的执行引擎；现场流程可冻结成标准包，下一家复制。</text>
+  <rect x="900" y="92" width="860" height="72" rx="8" fill="#eafaf1" stroke="#1e8449" stroke-width="2"/>
+  <text x="918" y="118" class="bt" fill="#1e8449">技术人员 · 一句话</text>
+  <text x="918" y="142" class="tc">Modular Monolith · L0 四模块单写路径 · GIP/integration 外置 · Gate 0 = 52 P0 → core-v1.0.0</text>
+
+  <!-- A physical -->
+  <rect x="40" y="180" width="1720" height="128" rx="8" fill="#ecf0f1" stroke="#95a5a6" stroke-width="2"/>
+  <rect x="40" y="180" width="1720" height="30" rx="8" fill="#2c3e50"/>
+  <text x="58" y="200" class="zt">A · 基座物理组成（可独立部署）</text>
+  <rect x="58" y="220" width="150" height="76" rx="6" fill="#d5e8d4" stroke="#82b366"/>
+  <text x="70" y="242" class="bt">apps/api</text>
+  <text x="70" y="262" class="sm">唯一生产后端</text>
+  <text x="70" y="280" class="hi">FastAPI · OpenAPI v1.1.1</text>
+  <rect x="220" y="220" width="420" height="76" rx="6" fill="#dae8fc" stroke="#6c8ebf"/>
+  <text x="232" y="242" class="bt">os_core · 9 内核模块</text>
+  <text x="232" y="262" class="sm">shared_contracts · graph · rule · execution · audit</text>
+  <text x="232" y="280" class="sm">connector_sdk · agent · license · mcp_gateway</text>
+  <rect x="652" y="220" width="200" height="76" rx="6" fill="#e8daef" stroke="#9673a6"/>
+  <text x="664" y="242" class="bt">integration/</text>
+  <text x="664" y="262" class="sm">catalog · packs · tenants</text>
+  <text x="664" y="280" class="hi">GIP 外置 · 不改 Core</text>
+  <rect x="864" y="220" width="130" height="76" rx="6" fill="#fff2cc" stroke="#d6b656"/>
+  <text x="876" y="248" class="bt">PostgreSQL</text>
+  <text x="876" y="268" class="sm">Data-L1 运行数据</text>
+  <rect x="1006" y="220" width="80" height="76" rx="6" fill="#fff2cc" stroke="#d6b656"/>
+  <text x="1018" y="256" class="bt">OSS</text>
+  <rect x="1098" y="220" width="80" height="76" rx="6" fill="#f5f5f5" stroke="#bbb"/>
+  <text x="1110" y="248" class="bt">Redis</text>
+  <text x="1110" y="268" class="hi">队列/会话</text>
+  <rect x="1190" y="220" width="190" height="76" rx="6" fill="#e1d5e7" stroke="#9673a6"/>
+  <text x="1202" y="242" class="bt">web-admin / h5-worker</text>
+  <text x="1202" y="262" class="sm">PC 管理 · 钉钉 H5</text>
+  <rect x="1392" y="220" width="352" height="76" rx="6" fill="#f8f9f9" stroke="#ccc" stroke-dasharray="5"/>
+  <text x="1404" y="242" class="bt">非基座（客户侧）</text>
+  <text x="1404" y="262" class="sm">ERP · MES · WMS · OA …</text>
+  <text x="1404" y="280" class="hi">经 L1 Connector 对接</text>
+
+  <!-- B layers -->
+  <rect x="40" y="324" width="1240" height="200" rx="8" fill="#ffffff" stroke="#2c3e50" stroke-width="2"/>
+  <rect x="40" y="324" width="1240" height="30" rx="8" fill="#1a5276"/>
+  <text x="58" y="344" class="zt">B · 平台四层（从内到外）</text>
+  <rect x="58" y="368" width="250" height="96" rx="6" fill="#d6eaf8" stroke="#2874a6" stroke-width="2"/>
+  <text x="70" y="390" class="bt">L1 连接层 ④</text>
+  <text x="70" y="410" class="sm">插头：对接各厂商系统</text>
+  <text x="70" y="428" class="sm">connector_sdk + Registry</text>
+  <text x="70" y="446" class="hi">Blueprint · catalog 样例</text>
+  <rect x="328" y="358" width="520" height="116" rx="8" fill="#d5f5e3" stroke="#1e8449" stroke-width="2"/>
+  <text x="340" y="382" class="bt" fill="#1e8449">L0 信任内核（零 LLM）①②③ — 基座心脏</text>
+  <text x="340" y="404" class="sm">graph 流程冻结 · rule 默认拒绝 · execution 唯一写 · audit 只增不改</text>
+  <text x="340" y="424" class="sm">+ Revert 撤回 · 幂等 · 对账 · Shadow 试跑 · ExecutionEvidence</text>
+  <text x="340" y="444" class="hi">红线：任何组件不得绕过 execution 直写账本</text>
+  <rect x="868" y="368" width="190" height="48" rx="6" fill="#fdebd0" stroke="#d68910"/>
+  <text x="880" y="398" class="bt">L2 体验层 ⑤</text>
+  <text x="1068" y="398" class="sm">听懂人话 → 办事计划</text>
+  <rect x="868" y="426" width="190" height="48" rx="6" fill="#fadbd8" stroke="#c0392b"/>
+  <text x="880" y="456" class="bt">L3 入口层 ⑥</text>
+  <text x="1068" y="456" class="sm">界面确认 · Harness 门禁</text>
+  <rect x="1076" y="368" width="190" height="106" rx="6" fill="#f9f9f9" stroke="#bbb"/>
+  <text x="1088" y="390" class="bt">mcp_gateway</text>
+  <text x="1088" y="410" class="sm">治理型 Agent 接入</text>
+  <text x="1088" y="430" class="sm">CMV → MCP tools</text>
+  <text x="1088" y="450" class="hi">tools/call → DslPlan</text>
+
+  <!-- legend -->
+  <rect x="1300" y="324" width="460" height="200" rx="8" fill="#ebf5fb" stroke="#2874a6" stroke-width="2"/>
+  <text x="1320" y="352" class="bt" fill="#1a5276">十个能力切入点 ①～⑩</text>
+  <text x="1320" y="376" class="sm">① Graph冻结  ② Rule  ③ Execution  ④ Connector</text>
+  <text x="1320" y="396" class="sm">⑤ Skill/Agent  ⑥ Harness  ⑦ freeze  ⑧ export</text>
+  <text x="1320" y="416" class="sm">⑨ 新系统 Pack  ⑩ import 复制</text>
+  <text x="1320" y="444" class="hi">绿=内核  蓝=连接  橙=体验  红=界面  紫=集成外置</text>
+  <text x="1320" y="464" class="hi">橙线=资产闭环  紫线=扩展新系统</text>
+  <text x="1320" y="484" class="hi">Gate 0：AC-BASE-001 · 52 条 P0 验收</text>
+
+  <!-- C modules -->
+  <rect x="40" y="540" width="1720" height="150" rx="8" fill="#ffffff" stroke="#1e8449" stroke-width="2"/>
+  <rect x="40" y="540" width="1720" height="30" rx="8" fill="#1e8449"/>
+  <text x="58" y="560" class="zt">C · 九大模块职责（简明）</text>
+  <rect x="58" y="580" width="268" height="98" rx="5" fill="#f0fff4" stroke="#82b366"/>
+  <text x="68" y="600" class="bt">graph_service</text>
+  <text x="68" y="618" class="sm">管流程版本：草稿→审核→冻结</text>
+  <text x="68" y="636" class="hi">未冻结禁止写库</text>
+  <rect x="336" y="580" width="268" height="98" rx="5" fill="#f0fff4" stroke="#82b366"/>
+  <text x="346" y="600" class="bt">rule_engine</text>
+  <text x="346" y="618" class="sm">谁能在什么条件下办事</text>
+  <text x="346" y="636" class="hi">默认拒绝，显式放行</text>
+  <rect x="614" y="580" width="268" height="98" rx="5" fill="#f0fff4" stroke="#82b366"/>
+  <text x="624" y="600" class="bt">execution_service</text>
+  <text x="624" y="618" class="sm">唯一写库入口 · 撤回 · 对账</text>
+  <text x="624" y="636" class="hi">幂等 · 试跑 · 执行证据</text>
+  <rect x="892" y="580" width="268" height="98" rx="5" fill="#f0fff4" stroke="#82b366"/>
+  <text x="902" y="600" class="bt">audit_service</text>
+  <text x="902" y="618" class="sm">操作日志只增不改</text>
+  <text x="902" y="636" class="hi">全程可追溯</text>
+  <rect x="1170" y="580" width="268" height="98" rx="5" fill="#ebf5fb" stroke="#6c8ebf"/>
+  <text x="1180" y="600" class="bt">connector_sdk</text>
+  <text x="1180" y="618" class="sm">标准动词 → 各系统 API</text>
+  <text x="1180" y="636" class="hi">Registry 按租户解析</text>
+  <rect x="1448" y="580" width="300" height="98" rx="5" fill="#fff8f0" stroke="#d6b656"/>
+  <text x="1458" y="600" class="bt">agent · license · mcp_gateway</text>
+  <text x="1458" y="618" class="sm">Agent 只出计划 · Pack 授权边界</text>
+  <text x="1458" y="636" class="hi">MCP 治理型工具暴露</text>
+
+  <!-- D write path -->
+  <rect x="40" y="706" width="1720" height="108" rx="8" fill="#ffffff" stroke="#117a65" stroke-width="2"/>
+  <rect x="40" y="706" width="1720" height="30" rx="8" fill="#117a65"/>
+  <text x="58" y="726" class="zt">D · 运行时唯一写路径（每次写账本必经 · 无旁路）</text>
+  <text x="58" y="762" class="sm">用户</text>
+  <line x1="88" y1="758" x2="108" y2="758" stroke="#117a65" stroke-width="2" marker-end="url(#g)"/>
+  <text x="112" y="762" class="sm">Harness⑥</text>
+  <line x1="188" y1="758" x2="208" y2="758" stroke="#117a65" stroke-width="2" marker-end="url(#g)"/>
+  <text x="212" y="762" class="sm">Agent⑤</text>
+  <line x1="268" y1="758" x2="288" y2="758" stroke="#117a65" stroke-width="2" marker-end="url(#g)"/>
+  <text x="292" y="762" class="sm">Graph①</text>
+  <line x1="352" y1="758" x2="372" y2="758" stroke="#117a65" stroke-width="2" marker-end="url(#g)"/>
+  <text x="376" y="762" class="sm">Rule②</text>
+  <line x1="428" y1="758" x2="448" y2="758" stroke="#117a65" stroke-width="2" marker-end="url(#g)"/>
+  <text x="452" y="762" class="sm">Execution③</text>
+  <line x1="540" y1="758" x2="560" y2="758" stroke="#117a65" stroke-width="2" marker-end="url(#g)"/>
+  <text x="564" y="762" class="sm">Connector④</text>
+  <line x1="660" y1="758" x2="680" y2="758" stroke="#117a65" stroke-width="2" marker-end="url(#g)"/>
+  <text x="684" y="762" class="sm">Data-L0 账本</text>
+  <line x1="790" y1="758" x2="810" y2="758" stroke="#117a65" stroke-width="2" marker-end="url(#g)"/>
+  <text x="814" y="762" class="sm">Audit + 执行记录 → Data-L1</text>
+  <text x="58" y="792" class="hi">并行能力（均走 L0，不另开写路径）：Revert 撤回 · read-back 对账 · dry_run 试跑 · 幂等键 · ExecutionEvidence</text>
+
+  <!-- E paths -->
+  <rect x="40" y="830" width="1720" height="168" rx="8" fill="#ffffff" stroke="#2874a6" stroke-width="2"/>
+  <rect x="40" y="830" width="1720" height="30" rx="8" fill="#2874a6"/>
+  <text x="58" y="850" class="zt">E · 三条接入路径 Path A/B/C（同一 L0 内核 — ADR-005）</text>
+  <rect x="58" y="872" width="540" height="78" rx="6" fill="#fdebd0" stroke="#d68910" stroke-width="2"/>
+  <text x="70" y="894" class="bt" fill="#d35400">Path A · 灯塔（仅 ERP）</text>
+  <text x="70" y="914" class="sm">写+读：客户 ERP · 通知：钉钉</text>
+  <text x="70" y="934" class="hi">典型：哈森 · kingdee-write Blueprint</text>
+  <rect x="618" y="872" width="540" height="78" rx="6" fill="#ebf5fb" stroke="#2874a6"/>
+  <text x="630" y="894" class="bt">Path B · 平台通用（双系统）</text>
+  <text x="630" y="914" class="sm">写：MES · 读：ERP · Overlay 模式</text>
+  <text x="630" y="934" class="hi">多数有 MES 的离散制造厂</text>
+  <rect x="1178" y="872" width="540" height="78" rx="6" fill="#e8f8f5" stroke="#1e8449"/>
+  <text x="1190" y="894" class="bt">Path C · Starter-B-Lite（无外部系统）</text>
+  <text x="1190" y="914" class="sm">写+读：PostgreSQL 内置账本表</text>
+  <text x="1190" y="934" class="hi">L0 机制与 A/B 完全相同</text>
+  <text x="58" y="972" class="hi">接入三速（GIP）：S1 ≤1周 import 包 · S2 ≤2周 AI Blueprint · S3 1～2周 Python Connector — 均须 Shadow→对账→批准→freeze</text>
+
+  <!-- F scenarios -->
+  <rect x="40" y="1014" width="1720" height="200" rx="8" fill="#ffffff" stroke="#8e44ad" stroke-width="2"/>
+  <rect x="40" y="1014" width="1720" height="30" rx="8" fill="#8e44ad"/>
+  <text x="58" y="1034" class="zt">F · 适配场景（谁适合用 · 怎么落地）</text>
+  <rect x="58" y="1056" width="400" height="68" rx="6" fill="#fdf2e9" stroke="#e67e22"/>
+  <text x="70" y="1078" class="bt">有 ERP、不换系统</text>
+  <text x="70" y="1098" class="sm">Path A · 在上面加办事入口与审批</text>
+  <text x="70" y="1114" class="hi">财务/计划仍以 ERP 为权威账本</text>
+  <rect x="472" y="1056" width="400" height="68" rx="6" fill="#ebf5fb" stroke="#2874a6"/>
+  <text x="484" y="1078" class="bt">MES + ERP 并存</text>
+  <text x="484" y="1098" class="sm">Path B · 现场写 MES、计划读 ERP</text>
+  <text x="484" y="1114" class="hi">报工/质检等 Overlay 写回</text>
+  <rect x="886" y="1056" width="400" height="68" rx="6" fill="#eafaf1" stroke="#1e8449"/>
+  <text x="898" y="1078" class="bt">尚无 ERP / 试点厂</text>
+  <text x="898" y="1098" class="sm">Path C · 内置表当账本，规则相同</text>
+  <text x="898" y="1114" class="hi">快速验证，后续可切 Path A/B</text>
+  <rect x="1300" y="1056" width="440" height="68" rx="6" fill="#f4ecf7" stroke="#8e44ad"/>
+  <text x="1312" y="1078" class="bt">第二家厂 / 多工厂集团</text>
+  <text x="1312" y="1098" class="sm">export Package → import 差量修改</text>
+  <text x="1312" y="1114" class="hi">tenant_id 逻辑隔离 · Pool/Bridge/Silo</text>
+  <rect x="58" y="1136" width="540" height="68" rx="6" fill="#f9f9f9" stroke="#bbb"/>
+  <text x="70" y="1158" class="bt">AI / 外部 Agent 接入</text>
+  <text x="70" y="1178" class="sm">mcp_gateway · CMV 授权子集 · 只产出 DslPlan</text>
+  <text x="70" y="1194" class="hi">禁止 Agent 直写 Legacy</text>
+  <rect x="614" y="1136" width="540" height="68" rx="6" fill="#f9f9f9" stroke="#bbb"/>
+  <text x="626" y="1158" class="bt">加新系统类型（如 WMS）</text>
+  <text x="626" y="1178" class="sm">新 Connector Pack + 新 Graph 版本 + freeze⑦</text>
+  <text x="626" y="1194" class="hi">不改 L0 内核代码 · Legacy 固定 10 类</text>
+  <rect x="1170" y="1136" width="570" height="68" rx="6" fill="#f9f9f9" stroke="#bbb"/>
+  <text x="1182" y="1158" class="bt">百级～千级租户（ADR-007 储备）</text>
+  <text x="1182" y="1178" class="sm">S0 单栈 → S1 Pool+RLS → S2 Cell 路由 → S3 Silo 独立栈</text>
+  <text x="1182" y="1194" class="hi">L0 二进制不变 · W1 预埋 cell_id / outbox / quotas</text>
+
+  <!-- G asset loop -->
+  <rect x="40" y="1230" width="1720" height="150" rx="8" fill="#ffffff" stroke="#d35400" stroke-width="2"/>
+  <rect x="40" y="1230" width="1720" height="30" rx="8" fill="#d35400"/>
+  <text x="58" y="1250" class="zt">G · 现场配置 → 标准资产（Package 闭环 ⑦⑧⑩）</text>
+  <text x="58" y="1286" class="sm">摸底</text>
+  <line x1="90" y1="1282" x2="115" y2="1282" stroke="#d35400" stroke-width="2" marker-end="url(#o)"/>
+  <text x="120" y="1286" class="sm">Draft</text>
+  <line x1="170" y1="1282" x2="195" y2="1282" stroke="#d35400" stroke-width="2" marker-end="url(#o)"/>
+  <text x="200" y="1286" class="sm">in_review</text>
+  <line x1="270" y1="1282" x2="295" y2="1282" stroke="#d35400" stroke-width="2" marker-end="url(#o)"/>
+  <text x="300" y="1286" class="sm" fill="#d35400" font-weight="bold">frozen⑦</text>
+  <line x1="360" y1="1282" x2="385" y2="1282" stroke="#d35400" stroke-width="2" marker-end="url(#o)"/>
+  <text x="390" y="1286" class="sm">绑 Rule+Skill</text>
+  <line x1="490" y1="1282" x2="515" y2="1282" stroke="#d35400" stroke-width="2" marker-end="url(#o)"/>
+  <text x="520" y="1286" class="sm">Shadow≥14d</text>
+  <line x1="610" y1="1282" x2="635" y2="1282" stroke="#d35400" stroke-width="2" marker-end="url(#o)"/>
+  <text x="640" y="1286" class="sm" fill="#d35400" font-weight="bold">export⑧</text>
+  <line x1="700" y1="1282" x2="725" y2="1282" stroke="#d35400" stroke-width="2" marker-end="url(#o)"/>
+  <text x="730" y="1286" class="sm">Pack 库</text>
+  <line x1="790" y1="1282" x2="815" y2="1282" stroke="#d35400" stroke-width="2" marker-end="url(#o)"/>
+  <text x="820" y="1286" class="sm">import⑩</text>
+  <text x="58" y="1318" class="sm">Package 快照含：frozen Graph · RuleSet · Connector 配置 · Skill 绑定 · 对账样例</text>
+  <text x="58" y="1342" class="hi">非技术：把一家厂的办事方式变成可复制的「流程包」；技术：export JSON → 另一 tenant import，L0 零分叉</text>
+  <text x="58" y="1364" class="hi">扩展新系统⑨：Pack登记 → Connector类 → Registry → DSL动词 → Graph新版 → freeze⑦（禁止 execution 内 if(wms)）</text>
+
+  <!-- H reserve -->
+  <rect x="40" y="1396" width="1720" height="168" rx="8" fill="#ffffff" stroke="#16a085" stroke-width="2"/>
+  <rect x="40" y="1396" width="1720" height="30" rx="8" fill="#16a085"/>
+  <text x="58" y="1416" class="zt">H · 储备能力（Coding 前已设计 · 短期不动 Core · 长期可演进）</text>
+  <rect x="58" y="1438" width="330" height="78" rx="6" fill="#e8f8f5" stroke="#1e8449"/>
+  <text x="70" y="1460" class="bt">治理储备</text>
+  <text x="70" y="1480" class="sm">Evolution 宪章 · 膨胀期守则</text>
+  <text x="70" y="1500" class="hi">ADR 门禁 · 52 P0 可测验收</text>
+  <rect x="402" y="1438" width="330" height="78" rx="6" fill="#e8f8f5" stroke="#1e8449"/>
+  <text x="414" y="1460" class="bt">多租户储备</text>
+  <text x="414" y="1480" class="sm">tenant_id · RLS · placement_tier</text>
+  <text x="414" y="1500" class="hi">Pool / Bridge / Silo 三态</text>
+  <rect x="746" y="1438" width="330" height="78" rx="6" fill="#ebf5fb" stroke="#2874a6"/>
+  <text x="758" y="1460" class="bt">规模储备 ADR-007</text>
+  <text x="758" y="1480" class="sm">cell_id · connector_instances</text>
+  <text x="758" y="1500" class="hi">outbox · quotas · 200/Cell</text>
+  <rect x="1090" y="1438" width="330" height="78" rx="6" fill="#ebf5fb" stroke="#2874a6"/>
+  <text x="1102" y="1460" class="bt">消息储备</text>
+  <text x="1102" y="1480" class="sm">S0 进程内队列 → S1 Redis Streams</text>
+  <text x="1102" y="1500" class="hi">Outbox Worker · 对账 Job</text>
+  <rect x="1434" y="1438" width="306" height="78" rx="6" fill="#f4ecf7" stroke="#8e44ad"/>
+  <text x="1446" y="1460" class="bt">集成储备 GIP</text>
+  <text x="1446" y="1480" class="sm">Blueprint · Studio 六步 · MCP CMV</text>
+  <text x="1446" y="1500" class="hi">15 Schema · CMV v1.1.0 契约</text>
+  <text x="58" y="1544" class="hi">契约真源：OpenAPI v1.1.1 + 15 JSON Schema · Core tag core-v1.0.0 前须 52 P0 全 PASS · integration/ 变更不触发 Core major</text>
+
+  <!-- I data -->
+  <rect x="40" y="1580" width="840" height="110" rx="8" fill="#fff" stroke="#d6b656" stroke-width="2"/>
+  <text x="58" y="1608" class="bt">I · 数据四层</text>
+  <text x="58" y="1632" class="sm">L0 客户账本（ERP/MES/builtin）| L1 运行数据 RDS 必建</text>
+  <text x="58" y="1652" class="sm">L2 缓存 TTL | L3 分析池选配</text>
+  <text x="58" y="1672" class="hi">原则：事实落 L0 · 操作证明落 L1 · 不全量抄 ERP</text>
+  <rect x="900" y="1580" width="860" height="110" rx="8" fill="#eafaf1" stroke="#1e8449" stroke-width="2"/>
+  <text x="918" y="1608" class="bt">J · 颜色图例 · 快速对照</text>
+  <text x="918" y="1632" class="sm">绿框 = 信任内核（规则发动机）  蓝框 = 连接插头  紫框 = 集成外置</text>
+  <text x="918" y="1652" class="sm">橙框 = 体验/资产  灰虚线 = 客户侧系统  实线箭头 = 写路径必经</text>
+  <text x="918" y="1672" class="hi">不是 ERP 替代品 · 不是聊天机器人 · 是受治理的制造写 Overlay</text>
+
+  <text x="{W//2}" y="1730" text-anchor="middle" class="t2">FactoryOS Core Base · 设计 v3.3.3 · 16-OS核心基座 · ADR-000～007 · 2026-06-16</text>
+  <text x="{W//2}" y="1754" text-anchor="middle" class="hi">生成：scripts/generate_base_capability_diagram.py · 详述见 准备/2026-06-16/16-OS核心基座架构设计方案.md</text>
+</svg>
+'''
+
+
+def main():
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    SVG_PATH.write_text(SVG, encoding="utf-8")
+    cairosvg.svg2png(
+        bytestring=SVG.encode("utf-8"),
+        write_to=str(PNG_PATH),
+        output_width=2400,
+    )
+    print(f"Wrote {SVG_PATH}")
+    print(f"Wrote {PNG_PATH} ({PNG_PATH.stat().st_size} bytes)")
+
+
+if __name__ == "__main__":
+    main()

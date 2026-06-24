@@ -1,0 +1,23 @@
+apiVersion: factoryos.io/v1
+kind: TenantProfile
+metadata:
+  tenant_id: hasen-lighthouse
+  display_name: 哈森灯塔（Path A）
+spec:
+  path: A
+  placement_tier: dedicated
+  cell_id: cell-hasen-prod
+  region: cn-hangzhou
+  shadow_mode: true
+  default_im: dingtalk
+  licensed_packs:
+    - graph-d1-core
+    - cap-perception-v1
+    - conn-erp-kingdee-write
+    - conn-erp-kingdee-read
+  delivery:
+    phase: D1
+status:
+  write_approved: false
+  write_approved_at: null
+  write_approved_by: null

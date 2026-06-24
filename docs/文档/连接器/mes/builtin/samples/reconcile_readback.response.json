@@ -1,0 +1,10 @@
+{
+  "wo_id": "550e8400-e29b-41d4-a716-446655440001",
+  "wo_no": "WO-BUILTIN-2026-001",
+  "completed_qty": 170,
+  "last_report_ref": "builtin_ledger.work_report:660e8400-e29b-41d4-a716-446655440099",
+  "last_report_at": "2026-06-16T14:30:00+08:00",
+  "legacy_system": "mes",
+  "legacy_vendor": "builtin",
+  "reconcile_source": "mes-builtin-read"
+}

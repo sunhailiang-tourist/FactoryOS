@@ -1,0 +1,77 @@
+{
+  "id": "graph-d1-generic-template",
+  "version": "v0.1.0",
+  "status": "draft",
+  "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "tenant_id": null,
+  "allowed_dsl": [
+    "QUERY_ENTITY",
+    "GOVERNED_WRITE",
+    "GOVERNED_WRITE_REVERT",
+    "QUERY_EXECUTION_HISTORY"
+  ],
+  "nodes": [
+    {
+      "id": "node-start",
+      "type": "start",
+      "label": "开始"
+    },
+    {
+      "id": "node-query",
+      "type": "query",
+      "label": "跨系统只读查询",
+      "dsl_verbs": ["QUERY_ENTITY"],
+      "entity_ref": "GenericEntity",
+      "config": { "comment": "工厂接入时替换 entity_ref 与字段映射" }
+    },
+    {
+      "id": "node-confirm",
+      "type": "confirm",
+      "label": "主管/系统确认",
+      "dsl_verbs": [],
+      "config": { "required_role": "role:supervisor" }
+    },
+    {
+      "id": "node-write",
+      "type": "action",
+      "label": "Governed 写入",
+      "dsl_verbs": ["GOVERNED_WRITE"],
+      "entity_ref": "GenericEntity"
+    },
+    {
+      "id": "node-audit",
+      "type": "action",
+      "label": "审计记录",
+      "dsl_verbs": [],
+      "config": { "system": "audit", "automatic": true }
+    },
+    {
+      "id": "node-revert-gateway",
+      "type": "gateway",
+      "label": "可回滚分支",
+      "dsl_verbs": ["GOVERNED_WRITE_REVERT"],
+      "config": { "revert_window_hours": 24 }
+    },
+    {
+      "id": "node-end",
+      "type": "end",
+      "label": "结束"
+    }
+  ],
+  "edges": [
+    { "id": "edge-1", "from": "node-start", "to": "node-query", "condition": null, "label": "" },
+    { "id": "edge-2", "from": "node-query", "to": "node-confirm", "condition": null, "label": "" },
+    { "id": "edge-3", "from": "node-confirm", "to": "node-write", "condition": null, "label": "已确认" },
+    { "id": "edge-4", "from": "node-write", "to": "node-audit", "condition": null, "label": "" },
+    { "id": "edge-5", "from": "node-audit", "to": "node-revert-gateway", "condition": null, "label": "" },
+    { "id": "edge-6", "from": "node-revert-gateway", "to": "node-end", "condition": null, "label": "" }
+  ],
+  "metadata": {
+    "created_at": "2026-06-16T00:00:00Z",
+    "updated_at": "2026-06-16T00:00:00Z",
+    "frozen_at": null,
+    "frozen_by": null,
+    "description": "D1 通病结构模板（draft）。非 frozen，不可用于生产 L2 写。工厂 workshop 后复制并 freeze。",
+    "pack_id": "graph-d1-generic"
+  }
+}

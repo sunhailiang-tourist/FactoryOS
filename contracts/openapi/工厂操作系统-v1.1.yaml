@@ -1,0 +1,1160 @@
+openapi: 3.1.0
+info:
+  title: FactoryOS Platform API
+  version: 1.1.1
+  description: |
+    底座 API v1.1.1 — Core 1.0 + GIP 完整契约（ADR-004/005）。
+    Schema 外引：文档/数据结构/*.schema.json
+    动词真源：CMV注册表.yaml
+    验收：AC-BASE-001 v0.2（**52 P0** + M-03 P1 钩子）
+    D1：Graph 版本化路径 · Override/Pack Registry · Blueprint validate · PerceptionOutput
+    F1：GET /v1/executions/{execId}/evidence · ExecutionEvidence.schema.json
+    F1.5：AgentModule Schema-only（无 HTTP）· DomainEvent 信封 · integration/catalog/
+
+servers:
+  - url: http://localhost:8000
+    description: FastAPI 开发（Uvicorn）
+
+tags:
+  - name: Graph
+  - name: Rule
+  - name: DSL
+  - name: Execution
+  - name: Reconciliation
+  - name: Audit
+  - name: Tenant
+  - name: Package
+  - name: PackRegistry
+  - name: Override
+  - name: Integration
+  - name: Connector
+  - name: MCP
+  - name: Perception
+  - name: Agent
+  - name: Harness
+  - name: System
+
+paths:
+  /health:
+    get:
+      summary: 健康检查
+      operationId: health
+      tags: [System]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, enum: [ok] }
+
+  /v1/graphs:
+    post:
+      summary: 创建 draft Graph
+      operationId: createGraph
+      tags: [Graph]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessGraph'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BusinessGraph'
+
+  /v1/graphs/{graphId}:
+    get:
+      summary: 获取 Graph
+      operationId: getGraph
+      tags: [Graph]
+      parameters:
+        - $ref: '#/components/parameters/graphId'
+        - name: version
+          in: query
+          schema: { type: string }
+          description: 省略时返回最新版本
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BusinessGraph'
+
+  /v1/graphs/{graphId}/versions/{version}:
+    put:
+      summary: 更新 draft/in_review Graph
+      operationId: updateGraphVersion
+      tags: [Graph]
+      parameters:
+        - $ref: '#/components/parameters/graphId'
+        - $ref: '#/components/parameters/version'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessGraph'
+      responses:
+        '200': { description: OK }
+        '409': { description: Graph frozen }
+
+  /v1/graphs/{graphId}/versions/{version}/submit:
+    post:
+      summary: draft → in_review
+      operationId: submitGraphVersion
+      tags: [Graph]
+      parameters:
+        - $ref: '#/components/parameters/graphId'
+        - $ref: '#/components/parameters/version'
+      responses:
+        '200': { description: OK }
+        '409': { description: Invalid state }
+
+  /v1/graphs/{graphId}/versions/{version}/freeze:
+    post:
+      summary: 冻结 Graph
+      operationId: freezeGraph
+      tags: [Graph]
+      parameters:
+        - $ref: '#/components/parameters/graphId'
+        - $ref: '#/components/parameters/version'
+      responses:
+        '200':
+          description: Frozen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BusinessGraph'
+        '409': { description: Invalid state }
+
+  /v1/graphs/{graphId}/versions/{version}/clone:
+    post:
+      summary: clone 新版本 draft
+      operationId: cloneGraphVersion
+      tags: [Graph]
+      parameters:
+        - $ref: '#/components/parameters/graphId'
+        - $ref: '#/components/parameters/version'
+      responses:
+        '201':
+          description: New draft version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BusinessGraph'
+
+  /v1/overrides:
+    get:
+      summary: 列出 Override 文档
+      operationId: listOverrides
+      tags: [Override]
+      parameters:
+        - name: tenant_id
+          in: query
+          required: true
+          schema: { type: string }
+        - name: scope_type
+          in: query
+          schema:
+            type: string
+            enum: [platform, tenant, line, equipment, workstation, connector_instance]
+        - name: status
+          in: query
+          schema: { type: string, enum: [draft, active, archived] }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OverrideDocument'
+    post:
+      summary: 创建 draft Override
+      operationId: createOverride
+      tags: [Override]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OverrideDocument'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverrideDocument'
+        '403': { description: OVERRIDE_FORBIDDEN patch rejected }
+
+  /v1/overrides/{overrideId}:
+    get:
+      summary: 获取 Override
+      operationId: getOverride
+      tags: [Override]
+      parameters:
+        - $ref: '#/components/parameters/overrideId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverrideDocument'
+    put:
+      summary: 更新 draft Override
+      operationId: updateOverride
+      tags: [Override]
+      parameters:
+        - $ref: '#/components/parameters/overrideId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OverrideDocument'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverrideDocument'
+        '403': { description: OVERRIDE_FORBIDDEN }
+
+  /v1/overrides/{overrideId}/activate:
+    post:
+      summary: draft → active
+      operationId: activateOverride
+      tags: [Override]
+      parameters:
+        - $ref: '#/components/parameters/overrideId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [approved_by]
+              properties:
+                approved_by: { type: string }
+                d2_ref: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverrideDocument'
+
+  /v1/overrides/{overrideId}/archive:
+    post:
+      summary: active → archived
+      operationId: archiveOverride
+      tags: [Override]
+      parameters:
+        - $ref: '#/components/parameters/overrideId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverrideDocument'
+
+  /v1/packs:
+    get:
+      summary: Pack Registry 列表
+      operationId: listPacks
+      tags: [PackRegistry]
+      parameters:
+        - name: pack_type
+          in: query
+          schema:
+            type: string
+            enum: [graph, capability, connector, skill, override, implementation]
+        - name: maturity
+          in: query
+          schema: { type: string, enum: [M0, M1, M2, M3, M4, M5] }
+        - name: tenant_id
+          in: query
+          schema: { type: string }
+          description: 含 tenant 已授权 Pack
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PackDefinition'
+
+  /v1/packs/{packId}:
+    get:
+      summary: 获取 Pack 元数据
+      operationId: getPack
+      tags: [PackRegistry]
+      parameters:
+        - $ref: '#/components/parameters/packId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackDefinition'
+        '404': { description: Pack not found }
+
+  /v1/packs/register:
+    post:
+      summary: 登记 Pack（integrator/admin）
+      operationId: registerPack
+      tags: [PackRegistry]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PackDefinition'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackDefinition'
+        '409': { description: pack_id conflict }
+
+  /v1/integration/blueprint/validate:
+    post:
+      summary: 校验 ConnectorBlueprint（Studio / CI）
+      operationId: validateBlueprint
+      tags: [Integration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectorBlueprint'
+      responses:
+        '200':
+          description: Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintValidationResult'
+        '422':
+          description: Schema or CMV validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintValidationResult'
+
+  /v1/rulesets:
+    get:
+      summary: 列出 RuleSet
+      operationId: listRulesets
+      tags: [Rule]
+      parameters:
+        - name: tenant_id
+          in: query
+          required: true
+          schema: { type: string }
+        - name: graph_id
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuleSet'
+    post:
+      summary: 创建 draft RuleSet
+      operationId: createRuleset
+      tags: [Rule]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleSet'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleSet'
+
+  /v1/rulesets/{rulesetId}:
+    get:
+      summary: 获取 RuleSet
+      operationId: getRuleset
+      tags: [Rule]
+      parameters:
+        - $ref: '#/components/parameters/rulesetId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleSet'
+    put:
+      summary: 更新 draft RuleSet
+      operationId: updateRuleset
+      tags: [Rule]
+      parameters:
+        - $ref: '#/components/parameters/rulesetId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleSet'
+      responses:
+        '200': { description: OK }
+        '409': { description: RuleSet frozen }
+
+  /v1/rulesets/{rulesetId}/freeze:
+    post:
+      summary: 冻结 RuleSet
+      operationId: freezeRuleset
+      tags: [Rule]
+      parameters:
+        - $ref: '#/components/parameters/rulesetId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleSet'
+        '409': { description: Invalid state or graph_version mismatch }
+
+  /v1/rulesets/{rulesetId}/evaluate:
+    post:
+      summary: 评估规则
+      operationId: evaluateRules
+      tags: [Rule]
+      parameters:
+        - $ref: '#/components/parameters/rulesetId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleEvaluateRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleEvaluateResponse'
+
+  /v1/dsl/registry:
+    get:
+      summary: CMV 动词列表（来自 CMV注册表.yaml）
+      operationId: listDslVerbs
+      tags: [DSL]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DSLAction'
+
+  /v1/execute:
+    post:
+      summary: 执行 DSL
+      operationId: execute
+      tags: [Execution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecuteRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecutionRecord'
+        '403': { description: Rule denied or Pack not licensed }
+        '409': { description: Graph not frozen }
+
+  /v1/execute/{execId}/revert:
+    post:
+      summary: Revert 执行
+      operationId: revertExecution
+      tags: [Execution]
+      parameters:
+        - $ref: '#/components/parameters/execId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecutionRecord'
+        '409': { description: Already reverted or simulated }
+
+  /v1/executions/{execId}:
+    get:
+      summary: 查询 ExecutionRecord
+      operationId: getExecution
+      tags: [Execution]
+      parameters:
+        - $ref: '#/components/parameters/execId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecutionRecord'
+
+  /v1/executions:
+    get:
+      summary: 列出 ExecutionRecord
+      operationId: listExecutions
+      tags: [Execution]
+      parameters:
+        - name: tenant_id
+          in: query
+          required: true
+          schema: { type: string }
+        - name: verb
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, running, success, failed, reverted, revert_failed, simulated]
+        - name: limit
+          in: query
+          schema: { type: integer, default: 50, maximum: 200 }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExecutionRecord'
+
+  /v1/executions/{execId}/evidence:
+    get:
+      summary: 可重建审计包（Execution + Audit + Rule 快照）
+      operationId: getExecutionEvidence
+      tags: [Execution]
+      parameters:
+        - $ref: '#/components/parameters/execId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecutionEvidence'
+        '404': { description: Execution not found }
+
+  /v1/reconciliation/run:
+    post:
+      summary: 对账 Job
+      operationId: runReconciliation
+      tags: [Reconciliation]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReconciliationRunRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReconciliationReport'
+
+  /v1/audit/events:
+    get:
+      summary: 查询 Audit 事件（append-only）
+      operationId: listAuditEvents
+      tags: [Audit]
+      parameters:
+        - name: tenant_id
+          in: query
+          required: true
+          schema: { type: string }
+        - name: event_type
+          in: query
+          schema: { type: string }
+        - name: exec_id
+          in: query
+          schema: { type: string, format: uuid }
+        - name: since
+          in: query
+          schema: { type: string, format: date-time }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 100, maximum: 500 }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditEvent'
+
+  /v1/tenants/{tenantId}/settings:
+    get:
+      summary: 获取租户设置
+      operationId: getTenantSettings
+      tags: [Tenant]
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantSettings'
+    put:
+      summary: 更新租户设置（含 shadow_mode）
+      operationId: updateTenantSettings
+      tags: [Tenant]
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantSettings'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantSettings'
+
+  /v1/packages/export:
+    post:
+      summary: export Implementation Package
+      operationId: exportPackage
+      tags: [Package]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tenant_id]
+              properties:
+                tenant_id: { type: string }
+                delivery: { type: string, enum: [D1, D2], default: D1 }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImplementationPackage'
+
+  /v1/packages/import:
+    post:
+      summary: import Implementation Package
+      operationId: importPackage
+      tags: [Package]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImplementationPackage'
+      responses:
+        '200':
+          description: Imported
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tenant_id: { type: string }
+                  imported_graphs: { type: integer }
+                  imported_rulesets: { type: integer }
+
+  /v1/integration/connect/test:
+    post:
+      summary: Connector 连通测试（Studio Step 1）
+      operationId: integrationConnectTest
+      tags: [Integration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tenant_id, pack_id]
+              properties:
+                tenant_id: { type: string }
+                pack_id: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationConnectReport'
+
+  /v1/integration/discover:
+    post:
+      summary: 发现 CMV 候选（Studio Step 2）
+      operationId: integrationDiscover
+      tags: [Integration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tenant_id, pack_id]
+              properties:
+                tenant_id: { type: string }
+                pack_id: { type: string }
+                openapi_url: { type: string, format: uri }
+                sample_paths:
+                  type: array
+                  items: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationDiscoverResult'
+
+  /v1/integration/mappings/{packId}:
+    put:
+      summary: 保存字段映射（Studio Step 3）
+      operationId: integrationSaveMappings
+      tags: [Integration]
+      parameters:
+        - $ref: '#/components/parameters/packId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tenant_id, mappings]
+              properties:
+                tenant_id: { type: string }
+                mappings:
+                  type: object
+                  additionalProperties:
+                    type: object
+                    additionalProperties: { type: string }
+      responses:
+        '200': { description: Saved }
+
+  /v1/integration/prove/run:
+    post:
+      summary: Prove 步：Contract Test + 对账样例（Studio Step 4）
+      operationId: integrationProveRun
+      tags: [Integration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tenant_id, pack_id]
+              properties:
+                tenant_id: { type: string }
+                pack_id: { type: string }
+                approve_write: { type: boolean, default: false }
+                approved_by: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationProveResult'
+
+  /v1/connectors/{packId}/health:
+    get:
+      summary: Connector health
+      operationId: connectorHealth
+      tags: [Connector]
+      parameters:
+        - $ref: '#/components/parameters/packId'
+        - name: tenant_id
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status: { type: string, enum: [ok, degraded, down] }
+                  pack_id: { type: string }
+                  latency_ms: { type: integer }
+
+  /mcp/v1/{tenantId}:
+    post:
+      summary: MCP JSON-RPC 2.0（tools/list, tools/call）
+      operationId: mcpGateway
+      tags: [MCP]
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/McpJsonRpcRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/McpJsonRpcResponse'
+
+  /v1/perception/voice:
+    post:
+      summary: 语音 → DSL plan draft
+      operationId: perceptionVoice
+      tags: [Perception]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [audio, tenant_id]
+              properties:
+                audio: { type: string, format: binary }
+                tenant_id: { type: string }
+                modality_context: { type: object }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerceptionOutput'
+        '422': { description: Low confidence — fallback required }
+
+  /v1/perception/image:
+    post:
+      summary: 图片 → OCR/VLM hints + DSL plan draft
+      operationId: perceptionImage
+      tags: [Perception]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [image, tenant_id]
+              properties:
+                image: { type: string, format: binary }
+                tenant_id: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerceptionOutput'
+
+  /v1/agent/plan:
+    post:
+      summary: 文本/结构化意图 → DSL plan
+      operationId: agentPlan
+      tags: [Agent]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tenant_id, graph_id, graph_version, intent]
+              properties:
+                tenant_id: { type: string }
+                graph_id: { type: string }
+                graph_version: { type: string }
+                intent: { type: string }
+                context: { type: object }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DslPlan'
+
+  /v1/harness/confirm:
+    post:
+      summary: Harness 确认门 → Rule → Execute
+      operationId: harnessConfirm
+      tags: [Harness]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [plan_id, confirmed, user_id]
+              properties:
+                plan_id: { type: string, format: uuid }
+                confirmed: { type: boolean }
+                user_id: { type: string }
+                dry_run: { type: boolean, default: false }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ExecutionRecord'
+                  - $ref: '#/components/schemas/DslPlan'
+        '403': { description: Denied }
+        '409': { description: Graph not frozen }
+
+components:
+  parameters:
+    graphId:
+      name: graphId
+      in: path
+      required: true
+      schema: { type: string }
+    version:
+      name: version
+      in: path
+      required: true
+      schema: { type: string }
+    execId:
+      name: execId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    rulesetId:
+      name: rulesetId
+      in: path
+      required: true
+      schema: { type: string }
+    tenantId:
+      name: tenantId
+      in: path
+      required: true
+      schema: { type: string }
+    packId:
+      name: packId
+      in: path
+      required: true
+      schema: { type: string }
+    overrideId:
+      name: overrideId
+      in: path
+      required: true
+      schema: { type: string, pattern: '^ov-[a-z0-9-]+$' }
+
+  schemas:
+    BusinessGraph:
+      $ref: '../schemas/业务图谱.schema.json'
+    RuleSet:
+      $ref: '../schemas/规则集.schema.json'
+    DSLAction:
+      $ref: '../schemas/DSL动作.schema.json'
+    ExecutionRecord:
+      $ref: '../schemas/执行记录.schema.json'
+    ExecutionEvidence:
+      $ref: '../schemas/ExecutionEvidence.schema.json'
+    DslPlan:
+      $ref: '../schemas/DslPlan.schema.json'
+    PerceptionOutput:
+      $ref: '../schemas/PerceptionOutput.schema.json'
+    AuditEvent:
+      $ref: '../schemas/AuditEvent.schema.json'
+    ImplementationPackage:
+      $ref: '../schemas/ImplementationPackage.schema.json'
+    ReconciliationReport:
+      $ref: '../schemas/ReconciliationReport.schema.json'
+    ConnectorBlueprint:
+      $ref: '../schemas/ConnectorBlueprint.schema.json'
+    PackDefinition:
+      $ref: '../schemas/PackDefinition.schema.json'
+    OverrideDocument:
+      $ref: '../schemas/OverrideDocument.schema.json'
+    AgentModule:
+      $ref: '../schemas/代理模块.schema.json'
+
+    BlueprintValidationResult:
+      type: object
+      required: [valid]
+      properties:
+        valid: { type: boolean }
+        errors:
+          type: array
+          items:
+            type: object
+            required: [code, message]
+            properties:
+              code: { type: string }
+              message: { type: string }
+              path: { type: string }
+        warnings:
+          type: array
+          items:
+            type: object
+            properties:
+              code: { type: string }
+              message: { type: string }
+
+    ExecuteRequest:
+      type: object
+      required: [tenant_id, graph_id, graph_version, verb, params, actor]
+      additionalProperties: false
+      properties:
+        tenant_id: { type: string }
+        graph_id: { type: string }
+        graph_version: { type: string }
+        ruleset_id: { type: string }
+        verb: { type: string }
+        params: { type: object }
+        scope_id: { type: string }
+        idempotency_key: { type: string }
+        dry_run: { type: boolean, default: false }
+        actor:
+          type: object
+          required: [user_id, role]
+          properties:
+            user_id: { type: string }
+            role: { type: string }
+            channel: { type: string, enum: [web, h5, api, system, mcp] }
+
+    RuleEvaluateRequest:
+      type: object
+      required: [graph_id, graph_version, verb, actor]
+      properties:
+        graph_id: { type: string }
+        graph_version: { type: string }
+        verb: { type: string }
+        actor:
+          type: object
+          required: [user_id, role]
+          properties:
+            user_id: { type: string }
+            role: { type: string }
+
+    RuleEvaluateResponse:
+      type: object
+      required: [effect]
+      properties:
+        effect: { type: string, enum: [allow, deny] }
+        matched_rule_id: { type: string }
+
+    ReconciliationRunRequest:
+      type: object
+      properties:
+        tenant_id: { type: string }
+        scope: { type: string, enum: [daily, ad_hoc] }
+        graph_id: { type: string }
+        since: { type: string, format: date-time }
+
+    TenantSettings:
+      type: object
+      properties:
+        shadow_mode: { type: boolean, default: true }
+        default_ruleset_id: { type: string }
+        im_connector: { type: string }
+
+    IntegrationConnectReport:
+      type: object
+      required: [status, pack_id]
+      properties:
+        status: { type: string, enum: [ok, failed] }
+        pack_id: { type: string }
+        latency_ms: { type: integer }
+        edge_agent_status: { type: string, enum: [online, offline, n/a] }
+        message: { type: string }
+
+    IntegrationDiscoverResult:
+      type: object
+      required: [pack_id, verb_candidates]
+      properties:
+        pack_id: { type: string }
+        verb_candidates:
+          type: array
+          items:
+            type: object
+            required: [verb, confidence]
+            properties:
+              verb: { type: string }
+              confidence: { type: number }
+              suggested_mapping: { type: object }
+
+    IntegrationProveResult:
+      type: object
+      required: [status, contract_tests, reconciliation]
+      properties:
+        status: { type: string, enum: [passed, failed] }
+        contract_tests:
+          type: array
+          items:
+            type: object
+            properties:
+              verb: { type: string }
+              passed: { type: boolean }
+        reconciliation:
+          $ref: '#/components/schemas/ReconciliationReport'
+        write_approved: { type: boolean }
+
+    McpJsonRpcRequest:
+      type: object
+      required: [jsonrpc, id, method]
+      properties:
+        jsonrpc: { type: string, const: '2.0' }
+        id: { oneOf: [{ type: string }, { type: integer }] }
+        method: { type: string, enum: [tools/list, tools/call] }
+        params:
+          type: object
+          properties:
+            name: { type: string, description: CMV verb for tools/call }
+            arguments: { type: object }
+            _meta:
+              type: object
+              description: MCP SEP-414 W3C Trace Context（traceparent/tracestate/baggage）
+              properties:
+                traceparent: { type: string }
+                tracestate: { type: string }
+                baggage: { type: string }
+              additionalProperties: true
+
+    McpJsonRpcResponse:
+      type: object
+      required: [jsonrpc, id]
+      properties:
+        jsonrpc: { type: string, const: '2.0' }
+        id: { oneOf: [{ type: string }, { type: integer }] }
+        result:
+          oneOf:
+            - type: object
+              properties:
+                tools:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name: { type: string }
+                      description: { type: string }
+                      inputSchema: { type: object }
+            - $ref: '#/components/schemas/DslPlan'
+        error:
+          type: object
+          properties:
+            code: { type: integer }
+            message: { type: string }

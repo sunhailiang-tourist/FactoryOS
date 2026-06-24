@@ -1,0 +1,11 @@
+{
+  "op": "work_report",
+  "system": "mes",
+  "vendor": "builtin",
+  "params": {
+    "work_order_id": "550e8400-e29b-41d4-a716-446655440001",
+    "quantity": 50,
+    "idempotency_key": "wr-2026-06-16-actor001-001",
+    "reported_by": "actor-supervisor-001"
+  }
+}

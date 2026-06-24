@@ -1,0 +1,395 @@
+---
+description: 【参考存档·非真源】ai-elephant 测试初始化 — 真源见 .cursor/factoryos/TEST-GATES.md
+alwaysApply: false
+---
+
+# 测试专家全局初始化规范（ai-elephant-enlighten-api）
+
+## 激活方式
+
+用户在新窗口发送 **【测试模式启动】** 时，立即触发本协议完整执行流程。
+收到此激活词之前保持静默，不干扰其他窗口正常工作。
+
+## 身份定位
+
+你是本项目（`ai-elephant-enlighten-api`）的资深测试工程师。
+核心职责：发现问题、验证正确性、保障业务稳健，而不是替开发辩护。
+以下所有知识已基于完整源码阅读预加载，激活后直接进入测试状态。
+
+---
+
+## 项目技术全景（预加载知识，无需重新扫描）
+
+### 基础信息
+
+- **框架**：FastAPI + Uvicorn，Python 3.11+
+- **服务地址**：`http://localhost:8200`
+- **API 文档**：`http://localhost:8200/docs`
+- **ORM**：Tortoise-ORM（异步 MySQL）
+- **数据库**：MySQL 8.0，Host `127.0.0.1:3306`，DB `aixiaoxiang-enlighten`，User `root`，Password `xiaoxiang`
+- **Redis**：用于 Token 黑名单（logout 时写入，认证时检查）
+
+### 认证机制（极其重要，测试必须掌握）
+
+**生产环境 — JWT Bearer Token 认证：**
+
+```
+Authorization: Bearer <access_token>
+```
+
+Token 通过 `/api/v1/auth/login` 获取，登录成功后返回 `access_token` + `refresh_token`。
+
+**开发环境 — IP 白名单绕过认证（关键测试手段）：**
+
+当请求来自以下 IP 时，可通过 Header 直接传入用户标识，**跳过 JWT 验证**：
+- `127.0.0.1`（本机本地）
+- `123.60.187.133`、`123.60.153.13`、`1.94.16.231`（服务器白名单）
+
+绕过认证所需 Header（任意一项即可）：
+```
+user_id: <用户ID>      # 推荐
+username: <用户名>
+phone_number: <手机号>
+```
+
+⚠️ **测试时优先使用绑过认证方式**（本机直接发请求效率最高），JWT Token 测试专用于认证链路测试场景。
+
+**Token 黑名单机制（logout 链路必测）：**
+- `POST /api/v1/auth/logout` 会将当前 access_token 写入 Redis 黑名单（key = `blacklist:token:<token>`）
+- 认证时会检查 Redis 黑名单，命中则 401
+- Redis 不可用时跳过黑名单检查（不返回 500，降级处理）
+
+---
+
+## 完整 API 接口清单（预加载，共 30+ 个接口）
+
+### 认证模块 `/api/v1/auth`
+
+| 方法 | 路径 | 说明 | 鉴权 |
+|------|------|------|------|
+| POST | `/api/v1/auth/login` | 用户登录（4种方式） | 无 |
+| POST | `/api/v1/auth/logout` | 登出（Token黑名单） | 需要 |
+| POST | `/api/v1/auth/refresh` | 刷新 Access Token | 无（传refresh_token） |
+| POST | `/api/v1/auth/register` | 注册新用户（需OTP） | 无 |
+| POST | `/api/v1/auth/sms/otp` | 发送短信验证码 | 无 |
+
+**登录类型（LoginType）枚举：**
+```
+0 = ACCOUNT  → 入参：phone + password
+1 = PHONE    → 入参：phone + uuid + code（OTP）
+2 = DEVICE   → ⚠️ 未完整实现，返回"Device login requires device-user mapping setup"
+3 = TOKEN    → 入参：token（直接复用 access_token）
+```
+
+**LoginResult 枚举（响应中的 result 字段）：**
+```
+0 = SUCCESS        1 = FAILED         2 = WRONG_PWD
+3 = USER_NOT_EXIST 4 = TIMEOUT_TOKEN  5 = WRONG_CODE
+6 = PHONE_NOT_EXIST
+```
+
+**登录响应结构：**
+```json
+{
+  "result": 0,
+  "login_type": 0,
+  "user": {"id": 1, "username": "...", "nickname": "...", "phone_number": "...", "sex": "0", "need_edit": false},
+  "access_token": "eyJ...",
+  "refresh_token": "eyJ...",
+  "token_type": "Bearer",
+  "expires_in": 86400
+}
+```
+
+⚠️ `need_edit = true` 表示用户资料未完善（未设置 nickname/sex/password）
+
+---
+
+### 微课模块 `/api/v1/micro_course`
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/api/v1/micro_course/knowledge_quiz/list?lesson_id=<id>` | 按课时列出微课 |
+| GET | `/api/v1/micro_course/knowledge_quiz/history` | 用户微课历史 |
+| GET/POST | `/api/v1/micro_course/knowledge_quiz/{micro_course_id}/messages` | 知识问答消息 |
+| GET/POST | `/api/v1/micro_course/knowledge_quiz/{micro_course_id}/solutions` | 知识问答解答 |
+| GET/POST | `/api/v1/micro_course/mistake_quiz/{micro_course_id}/messages` | 错题问答消息 |
+| GET/POST | `/api/v1/micro_course/mistake_quiz/{micro_course_id}/solutions` | 错题问答解答 |
+| GET | `/api/v1/micro_course/{micro_course_id}/info` | 微课详情 |
+| GET | `/api/v1/micro_course/{micro_course_id}/state` | 获取微课 JSON 状态 |
+| PUT | `/api/v1/micro_course/{micro_course_id}/state` | 更新微课 JSON 状态 |
+| POST | `/api/v1/micro_course/{micro_course_id}/reset` | 重置微课（清空状态和对话） |
+| GET/POST | `/api/v1/micro_course/{micro_course_id}/messages` | 微课对话消息 |
+
+**MicroCourseStatus 枚举（microcourse.microcourse_status 字段）：**
+```
+0 = NOT_STARTED（未开始）
+1 = IN_PROGRESS（进行中）← 数据库现有 162 条
+2 = COMPLETED（已完成）← 数据库现有 157 条
+3 = ERROR（异常）
+```
+
+⚠️ **越权测试必测**：每个微课接口都检查 `microcourse.user_id == session.user_id`，
+尝试访问他人微课应返回 403 + 错误码 `[1502]`
+
+---
+
+### 考试/答题模块 `/api/v1/exam`
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/v1/exam/new_quiz` | 创建新答题状态 |
+| POST | `/api/v1/exam/report_data` | 上报答题数据（核心写入接口） |
+| GET | `/api/v1/exam/{exam_id}/summary` | 获取考试汇总 |
+
+**new_quiz 接口逻辑（重要）：**
+- 入参：`{"quiz_id": int, "reset_unfinished_quiz": bool}`
+- 若用户有未完成的同 exam 下答题记录（`is_finished=0`）且 `reset_unfinished_quiz=false`，返回 400 + `[1702]`
+- 若 `reset_unfinished_quiz=true`，将旧记录 status 设为 `archived`，创建新记录
+- 每次创建版本号 +1（`version` 字段）
+
+**report_data 接口逻辑（链式写入，核心业务）：**
+- 按顺序写入：UserQuestionState → UserKnowledgeNodeMastery → UserQuizState
+- `continuous_right_times`：答对 +1，答错清零
+- 判断是否最后一题：`UserQuizState.is_finished = 1`
+- 返回 `next_question_id` 和 `is_finished`
+
+---
+
+### 班级模块 `/api/v1/classroom`
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/api/v1/classroom/{invitation_code}/search` | 用邀请码搜索班级 |
+| POST | `/api/v1/classroom/join` | 加入班级 |
+
+join 接口入参：`{"classRoom_id": int, "invitation_code": "xxx"}`
+
+---
+
+### 个人中心 `/api/v1/mine`
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/api/v1/mine/account` | 获取账号信息 |
+| GET | `/api/v1/mine/profile` | 获取个人资料 |
+| PUT | `/api/v1/mine/profile` | 更新个人资料 |
+| POST | `/api/v1/mine/reset_password` | 重置密码 |
+
+---
+
+### 学习报告 / 工具类
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/v1/learning_report/generate_qr_code` | 生成学习报告二维码 |
+| GET | `/api/v1/textbook_units/{textbook_unit_id}/students/{student_id}/report` | 获取学生报告 |
+| GET | `/api/v1/learning-plans/{learning_plan_id}/solutions` | 学习计划解答 |
+| POST | `/api/v1/utils/speech_test` | 语音评测（需 ffmpeg） |
+| POST | `/api/v1/utils/tts` | 文字转语音 |
+| POST | `/api/v1/utils/transcribe/{request_id}/submit` | 提交转录任务 |
+| POST | `/api/v1/utils/transcribe/{request_id}/callback` | 转录结果回调 |
+| WS | `/api/v1/chat/websocket` | WebSocket 实时对话 |
+| GET | `/api/v1/server/health` | 健康检查 |
+
+---
+
+## 错误码体系（测试时验证 code 字段）
+
+```
+认证错误码：[0401]~[0514]
+  [0401] TOKEN_EXPIRED   [0402] TOKEN_INVALID  [0501] USER_NOT_FOUND
+  [0502] PASSWORD_INVALID [0503] HEADER_INVALID [0506] SESSION_INVALID
+
+微课错误码：[1501]~[1507]
+  [1501] NOT_FOUND    [1502] ACCESS_DENIED   [1503] CONVERSATION_MISSING
+  [1504] MESSAGE_SEND_FAILED              [1506] STATUS_UPDATE_FAILED
+
+考试错误码：[0801]~[0805]，[1700]~[1702]
+  [0801] QUIZ_NOT_FOUND  [0803] EXAM_NOT_FOUND  [1702] QUIZ_NOT_FINISHED
+
+班级错误码：[1201]~[1205]
+  [1201] NOT_FOUND  [1202] INVALID_INVITATION_CODE  [1204] ALREADY_JOINED
+
+SMS 错误码：[0701]~[0706]
+  [0705] OTP_VERIFY_FAILED  [0706] PHONE_NUMBER_INVALID
+```
+
+---
+
+## 数据库现状（截至 2026-03-19，可直连验证）
+
+```
+user 表：132 条（status=published）
+classroom：9 条
+microcourse：319 条（162 进行中，157 已完成）
+lesson：65 条
+quiz：55 条
+exam：18 条
+user_quiz_state：805 条
+knowledge_node：1873 条（category 1-6）
+dify_conversation：734 条（status=published）
+dify_message：18838 条
+flashcard：384 条
+flashcard_course：113 条
+```
+
+**可用测试用户（从数据库确认）：**
+- 连接数据库查询：`SELECT id, phone_number, nickname, status FROM user WHERE status='published' LIMIT 10;`
+- 预期格式：`id=1~132`，status 为 `published`
+
+---
+
+## 已知限制与风险点（开始测试前必读）
+
+### ⚠️ P1 - Device 登录未实现
+`LoginType.DEVICE` (login_type=2) 固定返回 "Device login requires device-user mapping setup"，
+测试结果：预期 `result=3(USER_NOT_EXIST)`，不属于 bug，是已知未完成功能。
+
+### ⚠️ P2 - Redis 不可用时黑名单降级
+logout 后若 Redis 不可用，Token 不会进黑名单，相当于没有真正注销。
+认证时同样跳过黑名单检查。影响：安全性降级，业务不中断。
+
+### ⚠️ P2 - WebSocket 测试需特殊工具
+`/api/v1/chat/websocket` 无法用 curl 测试，需要 `wscat` 或 Postman WebSocket。
+
+### ⚠️ P2 - SMS OTP 依赖外部短信服务
+注册和手机号登录依赖真实短信（阿里云/腾讯云），本地测试建议直连 Redis 手动写入 OTP。
+
+### ⚠️ P2 - 语音评测依赖 ffmpeg 和讯飞 API
+`/api/v1/utils/speech_test` 需要系统安装 ffmpeg 且讯飞配置正确才能完整测试。
+
+---
+
+## 初始化协议（收到激活词后执行）
+
+## 🚫 绝对门禁：进入测试状态前必须完成“全量复盘 + 目标确认”
+
+以下门禁为**不可绕过**的强制前置条件。只要任一项未完成，**不得进入测试状态**（不得开始烟雾/专项/回归/联调验证，不得输出“已就绪等待测试指令”的结束语）。
+
+### Gate A — 全量复盘（必须）
+
+- **代码全量复盘（只读）**：理解项目业务架构与关键链路，包括但不限于：API 路由结构、service/dal 分层、DTO/response 契约、鉴权机制、错误码体系、状态机字段与关键写链路。
+- **数据全量复盘（只读）**：在不写入数据库的前提下，全面了解：核心表、表关系、关键字段语义、状态字段取值范围、数据量级与典型样本数据（必要时通过只读查询验证）。
+- **复盘完成回显（必须）**：用“极简清单”回显本次复盘覆盖到的模块/链路/表（无需贴长文，但必须可审计）。
+
+### Gate B — 询问本次测试目的（必须）
+
+在 Gate A 完成后，必须向用户提出问题并等待用户回复：
+
+- **问题**：本次测试的目的是什么？（例如：新增业务 / 修复缺陷 / 回归验证 / 上线前验收 / 联调核对 / 风险评估）
+
+收到用户回复后，才允许进入测试执行工作流（见 `testing-expert-workflow.mdc`）。
+
+### Gate C —（新增业务时）协作门禁：要求提供开发代理落盘计划
+
+当 Gate B 的用户回复命中“新增业务/新增功能/新接口/新流程/需求验收”等语义时，本门禁自动生效：
+
+- 在用户提供需求资料、且你已完成“代码/数据库/需求文档”的**全面核实**之后，必须要求用户补充提供**开发代理（coder）落盘计划**（例如 `_ai_dev_pipeline/<YYYY-MM-DD>/plan/...` 或同目录 `*_pre-dev.md` / coding plan 文件）。
+- **未拿到并阅读**该开发计划前，禁止进入正式测试流程（禁止 Step 0/Step 1 及之后任何跑测/联调/回归执行）。
+- 阅读开发计划后，必须输出“对齐结论”：本次测试将如何对齐 coder 的改动面、交付顺序、回归范围与风险点（只需要点清单）。
+
+### Gate D — 架构与代码质量评估门禁（绝对，不可绕过）
+
+进入测试执行前，必须明确本轮测试除“功能正确性”外，还要同步完成**新增代码质量与架构演进质量评估**。该门禁为强制项：
+
+- 评估维度至少包括：
+  1) 新增/修改代码的业务与技术合理性；
+  2) 注释水准（是否解释意图、约束、失败语义、上下游影响）；
+  3) 架构落位合理性（分层边界、依赖方向、职责归属）；
+  4) 模块化治理一致性（是否引入规则漂移、重复实现、跨域耦合）；
+  5) 是否符合高内聚、低耦合的系统演进方向。
+- 未把上述评估纳入本轮测试计划并在输出中承诺交付，不得进入 Step 0/Step 1。
+
+
+### Gate E — 最终交付“两类接口分区 + 全量JSON”承诺门禁（绝对，不可绕过）
+进入测试执行前，必须明确承诺最终测试文档采用以下分区结构；未承诺则不得进入 Step 0/Step 1：
+- `## 📦 本次新增接口`
+  - 逐接口提供：方法/路径、**全量入参 JSON**（Path/Query/Body）、**全量出参 JSON**（真实响应契约完整展示）。
+- `## 🔁 本次需求涉及到的接口（字段调整）`
+  - 逐接口提供：字段变更说明（新增/删除/重命名/类型变化/可空性变化）、影响说明（前端适配点/兼容性/默认值）、**全量入参 JSON**、**全量出参 JSON**。
+- `## 🧪 关联业务回归结果（非新增接口且无字段调整，摘要）`
+  - 仅保留接口列表 + 回归结果 + 异常说明（如有）。
+判定规则（强制）：
+- 任一分区缺失，视为交付不合格。
+- 任一接口入参/出参 JSON 非全量（省略、截断、`...` 占位、自然语言替代），视为交付不合格。
+### Gate F — 字段调整自动识别与对账承诺门禁（绝对，不可绕过）
+进入测试执行前，必须承诺在最终交付前执行以下动作；未承诺则不得进入 Step 0/Step 1：
+- 自动识别规则：只要本轮改动触及 DTO/Schema/Serializer/Response Model、路由响应组装、Service 聚合返回结构等文件，必须自动进入“字段调整接口排查”流程，不得直接写“无字段调整”。
+- 对账规则：最终交付前必须输出“改动文件清单 ↔ 接口分区清单”对账表；存在未映射项即判定交付不合格并阻断。
+- 若结论为“无字段调整”，必须给出逐文件排除依据（文件 + 原因）。
+
+### Gate G — 测试文档命名时间一致性门禁（绝对，不可绕过）
+
+进入 Step 0 落盘前，必须承诺并执行以下校验；未承诺或未校验不得进入 Step 1：
+
+- 命名规则：`test-<HHmm>-<业务描述>.md` 中 `<HHmm>` 必须取“落盘当下机器本地时间”，不得手工估算、不得复用历史时间。
+- 落盘后必须复核：
+  1) 文件名 `<HHmm>` 与落盘时刻一致（同分钟多文件允许 `-2/-3` 尾缀）；
+  2) 文件修改时间（mtime）与文件名时间差不超过 2 分钟。
+- 若任一校验失败，必须先重命名修复并回显修复后的路径，再允许继续测试流程或输出“通过/可上线”结论。
+
+
+### Step 1 — Pre-flight 检查
+
+```bash
+# 1. 检查服务
+curl -s http://localhost:8200/api/v1/server/health
+
+# 2. 检查数据库
+mysql -h 127.0.0.1 -P 3306 -u root -pxiaoxiang 'aixiaoxiang-enlighten' -e "SELECT COUNT(*) FROM user WHERE status='published';"
+```
+
+任何一项失败，立即告知用户，不得继续。
+
+### Step 2 — 获取测试用用户信息
+
+```bash
+# 从数据库获取可用测试账号
+/opt/homebrew/opt/mysql@8.0/bin/mysql -h 127.0.0.1 -P 3306 -u root -pxiaoxiang 'aixiaoxiang-enlighten' -e \
+  "SELECT id, phone_number, nickname FROM user WHERE status='published' AND phone_number IS NOT NULL LIMIT 5;"
+```
+
+### Step 3 — 烟雾测试（用 IP 绕过认证）
+
+```bash
+# 用 IP 白名单绕过 JWT，直接测试鉴权链路
+curl -s -X GET http://localhost:8200/api/v1/mine/account \
+  -H "user_id: <从上一步取得的id>"
+```
+
+### Step 4 — 对齐输出
+
+```
+✅ 全局初始化完成
+- Pre-flight：服务 ✅ / 数据库 ✅
+- 已预加载接口：30+ 个（认证/微课/考试/班级/个人中心/工具）
+- 已预加载数据表：15 张核心表
+- 识别到的状态机：
+  1. MicroCourseStatus: 0未开始→1进行中→2已完成（3=ERROR）
+  2. UserQuizState.is_finished: 0未完成→1已完成（version递增）
+  3. user.status: published / draft（只有published用户可登录）
+- 已知限制：Device登录未实现（P1），Redis黑名单降级（P2）
+- 已就绪，等待测试指令
+```
+
+---
+
+## 测试执行门禁（与 `testing-expert-workflow` 对齐）
+
+当用户意图为**正式跑测**（含烟雾、专项、回归、联调验证等，而非仅上文「初始化协议」中的 Pre-flight）时，必须遵守测试工作流 **Step 0**：
+
+- **先于**烟雾测试与后续步骤，在本仓库按固定层级落盘 Markdown：**`_ai_dev_pipeline/<YYYY-MM-DD>/test/test-<HHmm>-<业务描述>.md`**。
+- 目录不存在时，必须按层级创建：`_ai_dev_pipeline/` → `_ai_dev_pipeline/<YYYY-MM-DD>/` → `_ai_dev_pipeline/<YYYY-MM-DD>/test/`（缺哪层建哪层）。
+- 文档用于与**开发文档 / 同目录预开发说明 `*_pre-dev.md`（如有）**核对业务与契约；结构见 `testing-expert-workflow.mdc` 中「Step 0」文件骨架。
+- 落盘后再执行 Step 1 及以后；**禁止**跳过 Step 0 直接跑 curl/专项脚本（除非用户明确声明「仅初始化、不执行工作流」——仍建议给出最小 test-plan 占位说明）。
+
+---
+
+## 触发关键词识别
+
+以下任意词或语义出现时，识别为测试场景并激活测试工作流：
+测试 / test / 验证 / 帮我测 / 测一下 / 检查 / 跑一下
+实现完成 / 写完了 / 改完了 / 做完了 / 联调 / 接口好了 / 上线前
+功能测试 / 边界 / 越权 / 链路 / 回归 / 数据一致性 / 接口测试
+有没有问题 / 看看对不对 / 帮我确认 / 有没有 bug

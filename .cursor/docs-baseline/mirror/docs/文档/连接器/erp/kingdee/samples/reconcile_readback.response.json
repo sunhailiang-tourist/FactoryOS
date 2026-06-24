@@ -1,0 +1,10 @@
+{
+  "wo_id": "550e8400-e29b-41d4-a716-446655440001",
+  "wo_no": "SCDD-2026-001",
+  "completed_qty": 170,
+  "last_report_ref": "PRD_MORPT:200001",
+  "last_report_at": "2026-06-16T14:30:00+08:00",
+  "legacy_system": "erp",
+  "legacy_vendor": "kingdee",
+  "reconcile_source": "erp-kingdee-read"
+}

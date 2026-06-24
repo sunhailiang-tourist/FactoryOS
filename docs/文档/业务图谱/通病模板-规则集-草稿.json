@@ -1,0 +1,39 @@
+{
+  "id": "ruleset-d1-generic-template",
+  "graph_id": "graph-d1-generic-template",
+  "graph_version": "v0.1.0",
+  "status": "draft",
+  "default_effect": "deny",
+  "rules": [
+    {
+      "id": "rule-operator-read",
+      "effect": "allow",
+      "subjects": ["role:operator", "role:supervisor", "role:admin"],
+      "actions": ["QUERY_ENTITY", "QUERY_EXECUTION_HISTORY"],
+      "conditions": [],
+      "priority": 10
+    },
+    {
+      "id": "rule-operator-write",
+      "effect": "allow",
+      "subjects": ["role:operator"],
+      "actions": ["GOVERNED_WRITE"],
+      "conditions": [{ "field": "record.confirmed", "op": "eq", "value": true }],
+      "priority": 20
+    },
+    {
+      "id": "rule-supervisor-revert",
+      "effect": "allow",
+      "subjects": ["role:supervisor", "role:admin"],
+      "actions": ["GOVERNED_WRITE_REVERT"],
+      "conditions": [{ "field": "record.age_hours", "op": "lte", "value": 24 }],
+      "priority": 30
+    }
+  ],
+  "metadata": {
+    "created_at": "2026-06-16T00:00:00Z",
+    "updated_at": "2026-06-16T00:00:00Z",
+    "frozen_at": null,
+    "frozen_by": null
+  }
+}

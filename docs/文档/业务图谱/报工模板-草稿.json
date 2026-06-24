@@ -1,0 +1,85 @@
+{
+  "id": "graph-work-report",
+  "version": "v0.1.0",
+  "status": "draft",
+  "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000001",
+  "tenant_id": null,
+  "allowed_dsl": [
+    "QUERY_WO",
+    "WORK_REPORT",
+    "WORK_REPORT_REVERT",
+    "QUERY_REPORT_HISTORY"
+  ],
+  "nodes": [
+    {
+      "id": "node-start",
+      "type": "start",
+      "label": "开始"
+    },
+    {
+      "id": "node-query-wo",
+      "type": "query",
+      "label": "查询工单",
+      "dsl_verbs": ["QUERY_WO"],
+      "entity_ref": "WorkOrder",
+      "config": { "isa95_object": "WorkOrder" }
+    },
+    {
+      "id": "node-worker-input",
+      "type": "action",
+      "label": "工人报工意图",
+      "dsl_verbs": [],
+      "config": { "skill_id": "skill-work-report-v1", "channel": "h5" }
+    },
+    {
+      "id": "node-supervisor-confirm",
+      "type": "confirm",
+      "label": "主管确认",
+      "dsl_verbs": [],
+      "config": { "required_role": "role:supervisor" }
+    },
+    {
+      "id": "node-write",
+      "type": "action",
+      "label": "报工写入 Legacy",
+      "dsl_verbs": ["WORK_REPORT"],
+      "entity_ref": "WorkOrder"
+    },
+    {
+      "id": "node-audit",
+      "type": "action",
+      "label": "审计",
+      "dsl_verbs": [],
+      "config": { "system": "audit", "automatic": true }
+    },
+    {
+      "id": "node-revert-gateway",
+      "type": "gateway",
+      "label": "可撤回",
+      "dsl_verbs": ["WORK_REPORT_REVERT"],
+      "config": { "revert_window_hours": 24 }
+    },
+    {
+      "id": "node-end",
+      "type": "end",
+      "label": "结束"
+    }
+  ],
+  "edges": [
+    { "id": "e1", "from": "node-start", "to": "node-query-wo", "condition": null, "label": "" },
+    { "id": "e2", "from": "node-query-wo", "to": "node-worker-input", "condition": null, "label": "" },
+    { "id": "e3", "from": "node-worker-input", "to": "node-supervisor-confirm", "condition": null, "label": "" },
+    { "id": "e4", "from": "node-supervisor-confirm", "to": "node-write", "condition": null, "label": "已确认" },
+    { "id": "e5", "from": "node-write", "to": "node-audit", "condition": null, "label": "" },
+    { "id": "e6", "from": "node-audit", "to": "node-revert-gateway", "condition": null, "label": "" },
+    { "id": "e7", "from": "node-revert-gateway", "to": "node-end", "condition": null, "label": "" }
+  ],
+  "metadata": {
+    "created_at": "2026-06-16T00:00:00Z",
+    "updated_at": "2026-06-16T00:00:00Z",
+    "frozen_at": null,
+    "frozen_by": null,
+    "description": "报工垂直闭环 Graph 模板（draft）。工厂 workshop 后 freeze 为租户实例。",
+    "pack_id": "graph-work-report"
+  }
+}

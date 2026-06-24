@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# FactoryOS Harness 统一入口（SH-步步流 L0–L3）
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+exec python3 "$ROOT/scripts/check_harness.py" "$@"

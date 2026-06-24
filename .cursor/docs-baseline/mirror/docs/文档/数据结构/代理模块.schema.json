@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/AgentModule/v0.1.0",
+  "title": "AgentModule",
+  "description": "Agent 模块定义：绑定 Graph、允许 DSL、工作流 FSM。Core 1.0 仅 filesystem（integration/packs/*/agent_modules/）；HTTP CRUD defer 至 P1（见 ADR-001 §3.1）。",
+  "type": "object",
+  "required": ["id", "version", "allowed_dsl", "workflow", "level"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^module-[a-z0-9-]+$" },
+    "version": { "type": "string", "pattern": "^v\\d+\\.\\d+\\.\\d+$" },
+    "level": { "type": "string", "enum": ["L0", "L1", "L2", "L3"] },
+    "graph_id": { "type": ["string", "null"] },
+    "allowed_dsl": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "workflow": {
+      "type": "object",
+      "required": ["initial", "states", "transitions"],
+      "properties": {
+        "initial": { "type": "string" },
+        "states": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to", "on"],
+            "properties": {
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "on": { "type": "string", "description": "事件名，如 intent.matched" }
+            }
+          }
+        }
+      }
+    },
+    "system_prompt_ref": { "type": ["string", "null"] },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "pack_id": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "op": "work_report",
+  "system": "mes",
+  "vendor": "acme",
+  "params": {
+    "work_order_id": "550e8400-e29b-41d4-a716-446655440001",
+    "wo_no": "MO-2026-001",
+    "quantity": 50,
+    "idempotency_key": "wr-2026-06-16-acme-001",
+    "reported_by": "actor-worker-001"
+  }
+}

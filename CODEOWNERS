@@ -1,0 +1,30 @@
+# CODEOWNERS · FactoryOS
+# 分治：内核 / 集成 / 应用 / 契约（B 策略 · SH-步步流）
+
+# 默认
+*                       @factoryos-platform
+
+# 内核（低频 · 全量 AC）
+/src/os_core/            @factoryos-core
+
+# 应用入口
+/src/apps/api/           @factoryos-core @factoryos-api
+/src/apps/web-admin/     @factoryos-frontend
+/src/apps/h5-worker/     @factoryos-frontend
+/src/apps/edge-agent/    @factoryos-core @factoryos-integration
+
+# 配置枢纽（高频 · contract tests）
+/src/integration/        @factoryos-integration
+
+# 契约真源
+/contracts/            @factoryos-core @factoryos-integration
+/scripts/                @factoryos-core
+
+# 研发策略（B · SH-步步流）
+/.cursor/                @factoryos-platform
+/_factoryos_pipeline/    @factoryos-platform
+
+# 引导
+/scripts/factoryos*    @factoryos-integration
+
+# 说明：将 @factoryos-* 替换为实际 GitLab/GitHub 团队或用户名

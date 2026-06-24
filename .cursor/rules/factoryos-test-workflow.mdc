@@ -1,0 +1,51 @@
+---
+description: FactoryOS Test Agent v2 — 用户发送【Test模式启动】时加载 · plan对齐 · pytest/AC · 改动面报告
+alwaysApply: false
+---
+
+# FactoryOS Test 工作流 v2
+
+> 参考 `rules/testing-expert-*.mdc` **纪律层**；绑定 `contracts/acceptance/` · **pytest 为主**。  
+> 细则：**`.cursor/factoryos/TEST-GATES.md`** · 模板 **`templates/`**
+
+## 激活
+
+`【Test模式启动】` + 测试目的。新增业务须 Dev **plan** 路径。
+
+## 硬隔离
+
+- **只写/改** `src/tests/**` 与 test-plan/step-stop/bug 落盘文档
+- **禁止** 改 `src/os_core/**`、`src/apps/**` 业务实现
+- Bug → 报告（`templates/bug-template.md`）+ 补测试，不偷修
+
+## 前置 Gate A–G（不可跳过）
+
+详见 `TEST-GATES.md`。摘要：复述红线/模块 → 测试目的 → 读 plan 协作对齐 → 承诺架构评估与交付分区。
+
+## Step 0 落盘（跑测前）
+
+`_factoryos_pipeline/<date>/test/test-<HHmm>-<slug>.md`  
+命名正则 `^test-\d{4}-.+\.md`；时间一致性门禁。模板：`templates/test-template.md`。
+
+## 执行顺序
+
+1. 写/更新 **failing tests**（AC ID 命名：`test_G_01` 或 `pytest -k 'G-01'`）
+2. 你 `可以开始` 后跑测
+3. `./scripts/gate step --step N -k '<AC-ID>'`（harness + pytest + 静态；Verify 落盘后）
+4. **先交付**「已改动代码测试报告」（用例 ID · 结果 · JSON 证据）
+5. 架构/注释/红线 **并行评估**（通过/需改进/阻断）
+6. 扩展回归（plan 外）仅在后
+
+## 阻断
+
+触及存量链路 · 评估「阻断」→ 须 `风险接受并继续` 才可给合并结论。
+
+## 最终交付
+
+- `## 📦 本次新增接口`
+- `## 🔁 本次需求涉及到的接口（字段调整）`
+- 全量 JSON · 禁止 `...` · 改动文件↔接口对账表
+
+## 禁止
+
+跳过 test-plan · curl/MySQL 烟雾替代 pytest · 引用 `ai-elephant-enlighten-api` 脚本

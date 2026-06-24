@@ -1,0 +1,21 @@
+# See https://pre-commit.com
+repos:
+  - repo: local
+    hooks:
+      - id: factoryos-harness-auto
+        name: FactoryOS harness (auto)
+        entry: python3 scripts/check_harness.py --tier auto
+        language: system
+        pass_filenames: false
+      - id: factoryos-static-quality
+        name: FactoryOS ruff + pyright
+        entry: python3 scripts/check_static_quality.py --allow-missing
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+      - id: factoryos-gate-contract
+        name: FactoryOS contract/workflow pytest
+        entry: python3 -m pytest src/tests/contract src/tests/workflow -q -m "not pending"
+        language: system
+        pass_filenames: false
+        stages: [pre-push]

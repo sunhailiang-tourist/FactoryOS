@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/ConnectorBlueprint/v1.0.0",
+  "title": "ConnectorBlueprint",
+  "description": "GIP 声明式 Connector 契约；YAML 与 JSON 等价。",
+  "type": "object",
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": { "type": "string", "const": "factoryos.io/v1" },
+    "kind": { "type": "string", "const": "ConnectorBlueprint" },
+    "metadata": { "$ref": "#/$defs/BlueprintMetadata" },
+    "spec": { "$ref": "#/$defs/BlueprintSpec" }
+  },
+  "$defs": {
+    "BlueprintMetadata": {
+      "type": "object",
+      "required": ["pack_id", "system", "vendor", "level"],
+      "additionalProperties": false,
+      "properties": {
+        "pack_id": { "type": "string", "pattern": "^conn-[a-z0-9-]+$" },
+        "system": {
+          "type": "string",
+          "enum": ["mes", "erp", "wms", "oa", "crm", "csm", "aps", "plm", "qms", "mock"]
+        },
+        "vendor": { "type": "string", "minLength": 1 },
+        "level": { "type": "string", "enum": ["L0", "L2", "L3"] },
+        "certification": { "type": "string", "enum": ["bronze", "silver", "gold"] },
+        "path": { "type": "string", "enum": ["A", "B", "C"] }
+      }
+    },
+    "BlueprintSpec": {
+      "type": "object",
+      "required": ["auth", "base_url", "ops"],
+      "additionalProperties": false,
+      "properties": {
+        "auth": { "$ref": "#/$defs/AuthConfig" },
+        "base_url": { "type": "string", "minLength": 1 },
+        "ops": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/BlueprintOp" }
+        },
+        "resilience": { "$ref": "#/$defs/ResilienceConfig" }
+      }
+    },
+    "AuthConfig": {
+      "type": "object",
+      "required": ["type", "secrets_ref"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["oauth2_client_credentials", "api_key", "custom_sign", "none"]
+        },
+        "secrets_ref": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "BlueprintOp": {
+      "type": "object",
+      "required": ["verb", "method", "path"],
+      "additionalProperties": false,
+      "properties": {
+        "verb": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+        "method": { "type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"] },
+        "path": { "type": "string", "minLength": 1 },
+        "idempotency_header": { "type": "string" },
+        "mapping": { "type": "object", "additionalProperties": { "type": "string" } },
+        "response": { "type": "object", "additionalProperties": { "type": "string" } },
+        "revert": {
+          "type": "object",
+          "required": ["verb", "method", "path"],
+          "properties": {
+            "verb": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+            "method": { "type": "string" },
+            "path": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "reconcile": {
+          "type": "object",
+          "required": ["read_verb", "match_key"],
+          "properties": {
+            "read_verb": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+            "match_key": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "ResilienceConfig": {
+      "type": "object",
+      "properties": {
+        "timeout_ms": { "type": "integer", "minimum": 1000, "default": 8000 },
+        "retry": {
+          "type": "object",
+          "properties": {
+            "max": { "type": "integer", "minimum": 0, "maximum": 5 },
+            "backoff": { "type": "string", "enum": ["fixed", "exponential"] },
+            "retry_on": { "type": "array", "items": { "type": "integer" } }
+          }
+        },
+        "circuit_breaker": {
+          "type": "object",
+          "properties": {
+            "failure_threshold": { "type": "integer", "minimum": 1 },
+            "reset_ms": { "type": "integer", "minimum": 1000 }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

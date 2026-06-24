@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/RuleSet/v0.1.0",
+  "title": "RuleSet",
+  "description": "绑定 graph_id + graph_version 的规则集",
+  "type": "object",
+  "required": ["id", "graph_id", "graph_version", "status", "rules", "metadata"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^ruleset-[a-z0-9-]+$" },
+    "graph_id": { "type": "string" },
+    "graph_version": { "type": "string", "pattern": "^v\\d+\\.\\d+\\.\\d+$" },
+    "status": { "type": "string", "enum": ["draft", "frozen", "deprecated"] },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Rule" }
+    },
+    "default_effect": {
+      "type": "string",
+      "enum": ["deny", "allow"],
+      "default": "deny",
+      "description": "无匹配规则时的默认效果"
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["created_at", "updated_at"],
+      "properties": {
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "frozen_at": { "type": ["string", "null"], "format": "date-time" },
+        "frozen_by": { "type": ["string", "null"] }
+      }
+    }
+  },
+  "$defs": {
+    "Rule": {
+      "type": "object",
+      "required": ["id", "effect", "subjects", "actions"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^rule-[a-z0-9-]+$" },
+        "effect": { "type": "string", "enum": ["allow", "deny"] },
+        "subjects": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "角色或主体，如 role:worker"
+        },
+        "actions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "DSL 动词，如 WORK_REPORT"
+        },
+        "conditions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Condition" }
+        },
+        "priority": { "type": "integer", "default": 0 }
+      }
+    },
+    "Condition": {
+      "type": "object",
+      "required": ["field", "op", "value"],
+      "properties": {
+        "field": { "type": "string", "description": "如 time.within_shift, record.age_hours" },
+        "op": { "type": "string", "enum": ["eq", "ne", "lt", "lte", "gt", "gte", "in", "not_in"] },
+        "value": {}
+      }
+    }
+  }
+}

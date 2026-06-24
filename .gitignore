@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+.venv-*/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+
+# Cursor hook cache
+.cursor/hooks/__pycache__/
+
+# docs-baseline local reports (manifest/mirror 仍提交)
+.cursor/docs-baseline/reports/*
+!.cursor/docs-baseline/reports/.gitignore
+
+# pipeline local optional reports
+_factoryos_pipeline/**/report/

@@ -1,0 +1,3 @@
+wo_no,material_code,work_center_code,planned_qty,status
+WO-2026-001,MAT-SHOE-01,LINE-01,500,released
+WO-2026-002,MAT-SHOE-02,LINE-01,300,in_progress

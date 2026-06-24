@@ -1,0 +1,154 @@
+# FactoryOS Canonical Manufacturing Verbs (CMV)
+# 单一真源：DSL Registry · Blueprint spec.ops[].verb · MCP tools/list
+# 版本：v1.1.0 | 2026-06-16 | E0-7 params_schema
+
+apiVersion: factoryos.io/v1
+kind: CMVRegistry
+
+verbs:
+  - verb: QUERY_ENTITY
+    level: L0
+    compensator: null
+    idempotent: true
+    description: 跨系统只读查询（抽象 entity）
+    params_schema:
+      type: object
+      required: [entity_type, entity_id]
+      properties:
+        entity_type: { type: string }
+        entity_id: { type: string }
+        fields: { type: array, items: { type: string } }
+    connector_ops: []
+
+  - verb: GOVERNED_WRITE
+    level: L2
+    compensator: GOVERNED_WRITE_REVERT
+    idempotent: true
+    description: 底座 governed 写测试
+    params_schema:
+      type: object
+      required: [entity_type, entity_id, payload]
+      properties:
+        entity_type: { type: string }
+        entity_id: { type: string }
+        payload: { type: object }
+        idempotency_key: { type: string }
+    connector_ops:
+      - system: mock
+        operation: entity.update
+
+  - verb: GOVERNED_WRITE_REVERT
+    level: L2
+    compensator: null
+    idempotent: true
+    description: 底座写撤销
+    params_schema:
+      type: object
+      required: [legacy_ref]
+      properties:
+        legacy_ref: { type: string }
+        reason: { type: string }
+    connector_ops:
+      - system: mock
+        operation: entity.revert
+
+  - verb: QUERY_EXECUTION_HISTORY
+    level: L0
+    compensator: null
+    idempotent: true
+    description: 查询 ExecutionRecord
+    params_schema:
+      type: object
+      properties:
+        exec_id: { type: string, format: uuid }
+        since: { type: string, format: date-time }
+        limit: { type: integer, minimum: 1, maximum: 100 }
+    connector_ops: []
+
+  - verb: QUERY_WO
+    level: L0
+    compensator: null
+    idempotent: true
+    description: 工单/制令查询
+    params_schema:
+      type: object
+      properties:
+        work_order_id: { type: string, format: uuid }
+        wo_no: { type: string }
+      anyOf:
+        - required: [work_order_id]
+        - required: [wo_no]
+    connector_ops:
+      - system: erp
+        operation: query_work_order
+      - system: mes
+        operation: query_work_order
+      - system: mock
+        operation: query_work_order
+
+  - verb: WORK_REPORT
+    level: L2
+    compensator: WORK_REPORT_REVERT
+    idempotent: true
+    description: 报工写入
+    params_schema:
+      type: object
+      required: [work_order_id, quantity, idempotency_key]
+      properties:
+        work_order_id: { type: string, format: uuid }
+        wo_no: { type: string }
+        quantity: { type: number, exclusiveMinimum: 0 }
+        reported_by: { type: string }
+        work_center_code: { type: string }
+        idempotency_key: { type: string, minLength: 8 }
+    connector_ops:
+      - system: erp
+        operation: work_report
+      - system: mes
+        operation: work_report
+      - system: mock
+        operation: work_report
+
+  - verb: WORK_REPORT_REVERT
+    level: L2
+    compensator: null
+    idempotent: true
+    description: 报工撤销
+    params_schema:
+      type: object
+      required: [legacy_ref]
+      properties:
+        legacy_ref: { type: string }
+        reason: { type: string }
+        idempotency_key: { type: string }
+    connector_ops:
+      - system: erp
+        operation: work_report_revert
+      - system: mes
+        operation: work_report_revert
+      - system: mock
+        operation: work_report_revert
+
+  - verb: QUERY_REPORT_HISTORY
+    level: L0
+    compensator: null
+    idempotent: true
+    description: 报工历史只读
+    params_schema:
+      type: object
+      properties:
+        work_order_id: { type: string, format: uuid }
+        wo_no: { type: string }
+        since: { type: string, format: date-time }
+        limit: { type: integer, minimum: 1, maximum: 50 }
+    connector_ops:
+      - system: erp
+        operation: query_report_history
+      - system: mes
+        operation: query_report_history
+
+rules:
+  - 禁止 vendor 私有动词进入 Registry（ADR-004）
+  - Blueprint reconcile.read_verb 须引用本表 L0 动词
+  - 新 L2 动词须 ADR 或 Pack 版本说明 + compensator
+  - params_schema 与 CMV同步规则.md 一致；W1 由 check_cmv_sync.py 校验

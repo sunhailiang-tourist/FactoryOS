@@ -1,0 +1,14 @@
+{
+  "wo_id": "550e8400-e29b-41d4-a716-446655440001",
+  "wo_no": "SCDD-2026-001",
+  "material_code": "MAT-SHOE-01",
+  "material_name": "运动鞋款 A",
+  "work_center_code": "LINE-01",
+  "planned_qty": 500,
+  "completed_qty": 120,
+  "status": "in_progress",
+  "unit": "双",
+  "legacy_system": "erp",
+  "legacy_vendor": "kingdee",
+  "legacy_ref": "PRD_MO:100001"
+}

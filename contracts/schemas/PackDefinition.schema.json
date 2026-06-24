@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/PackDefinition/v1.0.0",
+  "title": "PackDefinition",
+  "description": "模块包元数据；对齐 模块包规格 §3。",
+  "type": "object",
+  "required": [
+    "pack_id",
+    "pack_type",
+    "display_name",
+    "description",
+    "version",
+    "maturity",
+    "requires",
+    "binds",
+    "license",
+    "created_at",
+    "updated_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "pack_id": { "type": "string", "pattern": "^(graph|cap|conn|skill|override|impl)-[a-z0-9-]+$" },
+    "pack_type": {
+      "type": "string",
+      "enum": ["graph", "capability", "connector", "skill", "override", "implementation"]
+    },
+    "display_name": { "type": "string" },
+    "description": { "type": "string" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "maturity": { "type": "string", "enum": ["M0", "M1", "M2", "M3", "M4", "M5"] },
+    "requires": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/PackDependency" }
+    },
+    "recommends": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/PackDependency" }
+    },
+    "binds": { "$ref": "#/$defs/PackBinding" },
+    "license": { "$ref": "#/$defs/PackLicenseMeta" },
+    "docs": {
+      "type": "object",
+      "properties": {
+        "spec_ref": { "type": "string" },
+        "acceptance_ref": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "PackDependency": {
+      "type": "object",
+      "required": ["pack_id", "min_version"],
+      "properties": {
+        "pack_id": { "type": "string" },
+        "min_version": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "PackBinding": {
+      "type": "object",
+      "properties": {
+        "graph_template": { "type": "string" },
+        "dsl_actions": { "type": "array", "items": { "type": "string" } },
+        "agent_modules": { "type": "array", "items": { "type": "string" } },
+        "connector_registry_key": { "type": "string" },
+        "legacy_system": {
+          "type": "string",
+          "enum": ["mes", "erp", "wms", "oa", "crm", "csm", "aps", "plm", "qms", "mock"]
+        },
+        "max_agent_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3"] }
+      },
+      "additionalProperties": false
+    },
+    "PackLicenseMeta": {
+      "type": "object",
+      "required": ["revenue_layer", "sellable_standalone"],
+      "properties": {
+        "revenue_layer": { "type": "string", "enum": ["L0", "L1", "L2", "L3"] },
+        "sellable_standalone": { "type": "boolean" },
+        "default_plans": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["community", "starter-a", "starter", "starter-b-lite", "pro", "enterprise"]
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

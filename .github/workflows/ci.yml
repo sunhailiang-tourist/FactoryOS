@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  harness-and-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "0.6"
+
+      - name: Sync dependencies
+        run: uv sync --extra dev
+
+      - name: Gate PR (harness · pytest · static)
+        run: uv run python scripts/gate_cli.py pr
+
+      - name: Tenant secrets grep
+        run: |
+          if rg -n "password|api_key|secret:" src/integration/tenants/ --glob '!*.md' 2>/dev/null; then
+            echo "Possible plaintext secret in integration/tenants"
+            exit 1
+          fi
+          echo "No obvious plaintext secrets"
+
+  pr-policy:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: PR traceability (plan + AC in body)
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: echo "$PR_BODY" | python3 scripts/check_pr_traceability.py
+
+      - name: PR diff policy (business needs tests)
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1 || true
+          python3 scripts/check_pr_diff.py --base origin/${{ github.base_ref }}
+
+      - name: Docs baseline sync (Tier-A/C fail · Tier-B warn)
+        run: python3 scripts/docs_baseline.py gate
+
+  # Gate 0：52 P0 全绿后取消注释，与 tag core-v1.0.0 同步
+  # gate0-ac-full:
+  #   runs-on: ubuntu-latest
+  #   needs: harness-and-contracts
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: astral-sh/setup-uv@v4
+  #     - run: uv sync --extra dev
+  #     - run: uv run pytest -v --tb=short
+  #     - run: uv run python scripts/gate_cli.py gate0

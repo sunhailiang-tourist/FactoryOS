@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/DslPlan/v1.0.0",
+  "title": "DslPlan",
+  "description": "Agent/MCP/Harness 产出的 DSL 执行计划；确认前不得写 Legacy。",
+  "type": "object",
+  "required": [
+    "plan_id",
+    "tenant_id",
+    "graph_id",
+    "graph_version",
+    "steps",
+    "source",
+    "created_at",
+    "expires_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "plan_id": { "type": "string", "format": "uuid" },
+    "tenant_id": { "type": "string" },
+    "graph_id": { "type": "string" },
+    "graph_version": { "type": "string", "pattern": "^v\\d+\\.\\d+\\.\\d+$" },
+    "ruleset_id": { "type": ["string", "null"] },
+    "scope_id": { "type": ["string", "null"] },
+    "source": {
+      "type": "string",
+      "enum": ["mcp", "agent", "harness", "perception", "api"]
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/PlanStep" }
+    },
+    "dry_run": { "type": "boolean", "default": false },
+    "perception_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["modality", "ref_id"],
+        "properties": {
+          "modality": { "type": "string", "enum": ["voice", "image", "scan", "text"] },
+          "ref_id": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "summary": { "type": "string", "description": "面向用户的计划摘要" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "confirmed_at": { "type": ["string", "null"], "format": "date-time" },
+    "confirmed_by": { "type": ["string", "null"] }
+  },
+  "$defs": {
+    "PlanStep": {
+      "type": "object",
+      "required": ["verb", "params"],
+      "additionalProperties": false,
+      "properties": {
+        "verb": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+        "params": { "type": "object" },
+        "idempotency_key": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

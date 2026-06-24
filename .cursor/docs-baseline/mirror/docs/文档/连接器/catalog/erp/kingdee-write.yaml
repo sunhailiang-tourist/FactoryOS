@@ -1,0 +1,64 @@
+# conn-erp-kingdee-write — Bronze Blueprint（Path A 灯塔）
+# 样例：文档/连接器/erp/kingdee/samples/
+# 校验：POST /v1/integration/blueprint/validate
+
+apiVersion: factoryos.io/v1
+kind: ConnectorBlueprint
+metadata:
+  pack_id: conn-erp-kingdee-write
+  system: erp
+  vendor: kingdee
+  level: L2
+  certification: bronze
+  path: A
+spec:
+  base_url: "${KINGDEE_BASE_URL}"
+  auth:
+    type: oauth2_client_credentials
+    secrets_ref: "secrets/kingdee/${tenant_id}"
+  resilience:
+    timeout_ms: 8000
+    retry:
+      max: 2
+      backoff: exponential
+      retry_on: [502, 503, 504]
+  ops:
+    - verb: QUERY_WO
+      method: GET
+      path: "/api/production/order/{wo_no}"
+      mapping:
+        wo_no: "$.params.wo_no"
+      response:
+        wo_id: "$.data.id"
+        wo_no: "$.data.wo_no"
+        completed_qty: "$.data.completed_qty"
+        planned_qty: "$.data.planned_qty"
+    - verb: WORK_REPORT
+      method: POST
+      path: /api/production/report
+      idempotency_header: X-Idempotency-Key
+      mapping:
+        work_order_id: "$.params.work_order_id"
+        wo_no: "$.params.wo_no"
+        quantity: "$.params.quantity"
+        operator: "$.params.reported_by"
+        work_center_code: "$.params.work_center_code"
+      response:
+        legacy_ref: "$.data.bill_id"
+        after_snapshot.completed_qty: "$.data.completed_qty"
+      revert:
+        verb: WORK_REPORT_REVERT
+        method: POST
+        path: /api/production/report/revert
+      reconcile:
+        read_verb: QUERY_WO
+        match_key: completed_qty
+    - verb: WORK_REPORT_REVERT
+      method: POST
+      path: /api/production/report/revert
+      mapping:
+        legacy_ref: "$.params.legacy_ref"
+        reason: "$.params.reason"
+      response:
+        legacy_ref: "$.data.reverted_ref"
+        after_snapshot.completed_qty: "$.data.completed_qty"

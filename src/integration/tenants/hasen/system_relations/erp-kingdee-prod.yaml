@@ -1,0 +1,24 @@
+apiVersion: factoryos.io/v1
+kind: SystemRelation
+metadata:
+  relation_id: sr-hasen-erp-kingdee-prod
+  tenant_id: hasen-lighthouse
+  name: 哈森金蝶 ERP 生产
+  path: A
+spec:
+  connector:
+    pack_id: conn-erp-kingdee-write
+    registry_key: erp/kingdee/write
+    blueprint_ref: catalog/erp/kingdee/blueprint.yaml
+    certification_min: silver
+  environment: prod
+  instance:
+    display_name: 金蝶云星空（哈森）
+    base_url: https://erp.hasen.internal.example
+    secrets_ref: vault://hasen-lighthouse/prod/erp-kingdee
+    edge_agent_id: edge-hasen-erp-01
+  mapping_overrides: {}
+status:
+  lifecycle: draft
+  approved_by: null
+  approved_at: null

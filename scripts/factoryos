@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# FactoryOS 统一 CLI 入口
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+exec python3 "$ROOT/scripts/factoryos_cli.py" "$@"
