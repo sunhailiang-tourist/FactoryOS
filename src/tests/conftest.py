@@ -13,6 +13,10 @@ import pytest
 
 from tests.ac_registry import load_ac_ids
 
+ROOT = Path(__file__).resolve().parents[2]
+CONTRACTS = ROOT / "contracts"
+OPENAPI = CONTRACTS / "openapi" / "工厂操作系统-v1.1.yaml"
+
 AC_IDS = load_ac_ids()
 
 

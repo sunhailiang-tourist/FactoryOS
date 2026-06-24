@@ -33,12 +33,13 @@ Overlay on ERP/MES · 双极：终端多模态 + 内核 Graph/Rule/Revert 门禁
 | **Test** | `【Test模式启动】` + plan 路径 | **仅** `src/tests/**` | 改业务代码 |
 | **Verify** | `【Verify回合】Step N`（**新对话**） | `verify/` 审阅 | 写实现 |
 
-### 激活（复制执行）
+### 激活开发环境工作流（复制执行）
 
 ```bash
 python3 --version                    # 3.12+
-curl -LsSf https://astral.sh/uv/install.sh | sh
-uv sync --extra dev
+curl -LsSf https://astral.sh/uv/install.sh | sh # 安装
+source $HOME/.local/bin/env # 激活
+uv sync --extra dev # 安装依赖
 ./scripts/docs_baseline refresh          # docs 认知基线（首仓 / 大改 docs 后）
 uv run python scripts/gate_cli.py pr     # 验证工作流
 pre-commit install && pre-commit install --hook-type pre-push   # 推荐
