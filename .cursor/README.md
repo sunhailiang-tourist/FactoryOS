@@ -32,7 +32,7 @@
 contracts/     机器契约（OpenAPI · Schema · AC）
 src/           代码（os_core · apps · integration · tests）
 scripts/       gate · harness · docs_baseline
-_factoryos_pipeline/   运行时落盘（plan · test · verify · summary）
+_factoryos_pipeline/   运行时落盘（过程产物 + 强制结论 dev/test/verify）
 docs/          厚文档（可选外迁；变更用 docs-baseline 检测）
 rules/         参考存档（非真源 · 见 rules/README.md）
 ```

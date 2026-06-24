@@ -46,6 +46,16 @@ curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 
 Agent **收到用户关键词后必须先改** `_factoryos_pipeline/workflow_state.md`，再写对应目录。
 
+### 强制输出（你每天只看当日目录即可）
+
+每次执行 `./scripts/gate ...`，都会自动创建并写入：
+
+- `_factoryos_pipeline/<YYYY-MM-DD>/dev/HH-MM_*.md`
+- `_factoryos_pipeline/<YYYY-MM-DD>/test/HH-MM_*.md`
+- `_factoryos_pipeline/<YYYY-MM-DD>/verify/HH-MM_*.md`
+
+其中 `HH-MM` 为 **UTC** 时间前缀，用于排序；文件内容包含 cmd、exit_code、stdout/stderr，作为当日“计划/结论/验收结论”的统一证据。
+
 | 用户关键词 | 更新 state | 建议 Gate |
 |------------|------------|-----------|
 | `可以继续`（Step0 后） | `phase: PLANNING` | — |

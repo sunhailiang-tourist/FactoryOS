@@ -19,6 +19,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from pipeline_artifacts import write_artifact
+
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = Path(__file__).resolve().parent
 PIPELINE = ROOT / "_factoryos_pipeline"
@@ -28,6 +30,59 @@ PLAN_GATE = PIPELINE / ".gates" / "plan.ok"
 def run(cmd: list[str]) -> int:
     print(f"\n▶ {' '.join(cmd)}")
     return subprocess.run(cmd, cwd=ROOT).returncode
+
+
+def run_logged(*, bucket: str, stem: str, cmd: list[str]) -> int:
+    """运行命令并强制落盘输出（dev/test/verify）。
+
+    功能/业务含义：
+    - gate 的“结论/证据”必须落到 `_factoryos_pipeline/<date>/<bucket>/HH-MM_*.md`，
+      让使用者只关注当天目录即可复盘。
+
+    上游调用方：
+    - `gate_plan/gate_test/gate_step/gate_verify/gate_pr/...`
+
+    下游被调方：
+    - `scripts/pipeline_artifacts.write_artifact`
+    """
+
+    started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    print(f"\n▶ {' '.join(cmd)}")
+    p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
+    finished = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    stdout = (p.stdout or "").rstrip()
+    stderr = (p.stderr or "").rstrip()
+    body = "\n".join(
+        [
+            f"# Gate 结论：`{stem}`",
+            "",
+            f"- 时间(UTC): {started} → {finished}",
+            f"- exit_code: {p.returncode}",
+            f"- cmd: `{' '.join(cmd)}`",
+            "",
+            "## stdout",
+            "```text",
+            stdout,
+            "```",
+            "",
+            "## stderr",
+            "```text",
+            stderr,
+            "```",
+            "",
+        ]
+    )
+    ref = write_artifact(bucket=bucket, stem=stem, content=body)
+    print(f"Wrote {ref.relpath}")
+
+    if p.returncode != 0:
+        # 失败时把 stderr 尾部再提示一次，减少来回翻文件成本
+        tail = "\n".join(stderr.splitlines()[-40:]) if stderr else ""
+        if tail:
+            print("\n--- stderr (tail) ---", file=sys.stderr)
+            print(tail, file=sys.stderr)
+    return p.returncode
 
 
 def pytest_available() -> bool:
@@ -51,7 +106,7 @@ def run_static_quality() -> int:
     return run([sys.executable, str(SCRIPTS / "check_static_quality.py")])
 
 
-def run_contract_workflow_pytest(*, exclude_pending: bool) -> int:
+def run_contract_workflow_pytest(*, bucket: str, stem: str, exclude_pending: bool) -> int:
     cmd = [
         sys.executable,
         "-m",
@@ -63,18 +118,26 @@ def run_contract_workflow_pytest(*, exclude_pending: bool) -> int:
     ]
     if exclude_pending:
         cmd.extend(["-m", "not pending"])
-    return run(cmd)
+    return run_logged(bucket=bucket, stem=stem, cmd=cmd)
 
 
 def gate_plan(plan: Path | None) -> int:
-    if run([sys.executable, str(SCRIPTS / "check_harness.py"), "--tier", "contracts"]) != 0:
+    if run_logged(
+        bucket="dev",
+        stem="gate-plan_harness-contracts",
+        cmd=[sys.executable, str(SCRIPTS / "check_harness.py"), "--tier", "contracts"],
+    ) != 0:
         return 1
     cmd = [sys.executable, str(SCRIPTS / "check_plan_spec.py")]
     if plan:
         cmd.extend(["--plan", str(plan)])
-    if run(cmd) != 0:
+    if run_logged(bucket="dev", stem="gate-plan_check-plan-spec", cmd=cmd) != 0:
         return 1
-    if run([sys.executable, str(SCRIPTS / "check_pipeline.py"), "--gate", "plan"]) != 0:
+    if run_logged(
+        bucket="dev",
+        stem="gate-plan_check-pipeline",
+        cmd=[sys.executable, str(SCRIPTS / "check_pipeline.py"), "--gate", "plan"],
+    ) != 0:
         return 1
     write_plan_gate(plan)
     print("\nGate plan OK (analyze passed · plan.ok stamped)")
@@ -85,7 +148,11 @@ def gate_test() -> int:
     if not PLAN_GATE.is_file():
         print("Missing plan.ok — run ./scripts/gate plan first", file=sys.stderr)
         return 1
-    if run([sys.executable, str(SCRIPTS / "check_pipeline.py"), "--gate", "test"]) != 0:
+    if run_logged(
+        bucket="test",
+        stem="gate-test_check-pipeline",
+        cmd=[sys.executable, str(SCRIPTS / "check_pipeline.py"), "--gate", "test"],
+    ) != 0:
         return 1
     print("\nGate test OK")
     return 0
@@ -95,7 +162,7 @@ def gate_verify(step: int, require_pass: bool) -> int:
     cmd = [sys.executable, str(SCRIPTS / "check_verify.py"), "--step", str(step)]
     if require_pass:
         cmd.append("--require-pass")
-    if run(cmd) != 0:
+    if run_logged(bucket="verify", stem=f"gate-verify_step{step}", cmd=cmd) != 0:
         return 1
     print("\nGate verify OK")
     return 0
@@ -107,48 +174,94 @@ def gate_step(pytest_k: str | None, extra: list[str], step: int) -> int:
         cmd.extend(["--pytest", pytest_k, *extra])
     elif extra:
         cmd.extend(extra)
-    if run(cmd) != 0:
+    if run_logged(bucket="dev", stem=f"gate-step_harness-full_step{step}", cmd=cmd) != 0:
         return 1
     if not pytest_k and pytest_available():
-        if run_contract_workflow_pytest(exclude_pending=True) != 0:
+        if (
+            run_contract_workflow_pytest(
+                bucket="test",
+                stem=f"gate-step_pytest-contract-workflow_step{step}",
+                exclude_pending=True,
+            )
+            != 0
+        ):
             return 1
-    if run_static_quality() != 0:
+    if run_logged(
+        bucket="dev",
+        stem=f"gate-step_static-quality_step{step}",
+        cmd=[sys.executable, str(SCRIPTS / "check_static_quality.py")],
+    ) != 0:
         return 1
     if gate_verify(step, require_pass=True) != 0:
         return 1
-    if run([sys.executable, str(SCRIPTS / "check_pipeline.py"), "--gate", "step", "--step", str(step)]) != 0:
+    if run_logged(
+        bucket="dev",
+        stem=f"gate-step_check-pipeline_step{step}",
+        cmd=[
+            sys.executable,
+            str(SCRIPTS / "check_pipeline.py"),
+            "--gate",
+            "step",
+            "--step",
+            str(step),
+        ],
+    ) != 0:
         return 1
     print("\nGate step OK (harness · pytest · static · verify)")
     return 0
 
 
 def gate_pr() -> int:
-    if run([sys.executable, str(SCRIPTS / "check_harness.py"), "--tier", "full"]) != 0:
+    if run_logged(
+        bucket="dev",
+        stem="gate-pr_harness-full",
+        cmd=[sys.executable, str(SCRIPTS / "check_harness.py"), "--tier", "full"],
+    ) != 0:
         return 1
-    if run([sys.executable, str(SCRIPTS / "check_pipeline.py"), "--gate", "state"]) != 0:
+    if run_logged(
+        bucket="dev",
+        stem="gate-pr_check-pipeline-state",
+        cmd=[sys.executable, str(SCRIPTS / "check_pipeline.py"), "--gate", "state"],
+    ) != 0:
         return 1
     if not pytest_available():
         print("⚠ pytest missing — uv sync --extra dev", file=sys.stderr)
         return 1
-    if run_contract_workflow_pytest(exclude_pending=False) != 0:
+    if run_contract_workflow_pytest(bucket="test", stem="gate-pr_pytest", exclude_pending=False) != 0:
         return 1
-    if run_static_quality() != 0:
+    if run_logged(
+        bucket="dev",
+        stem="gate-pr_static-quality",
+        cmd=[sys.executable, str(SCRIPTS / "check_static_quality.py")],
+    ) != 0:
         return 1
-    if run([sys.executable, str(SCRIPTS / "check_deptry.py")]) != 0:
+    if run_logged(
+        bucket="dev",
+        stem="gate-pr_deptry",
+        cmd=[sys.executable, str(SCRIPTS / "check_deptry.py")],
+    ) != 0:
         return 1
     print("\nGate pr OK (T4.5 full)")
     return 0
 
 
 def gate_gate0() -> int:
-    if run([sys.executable, str(SCRIPTS / "check_harness.py"), "--tier", "full"]) != 0:
+    if run_logged(
+        bucket="dev",
+        stem="gate-gate0_harness-full",
+        cmd=[sys.executable, str(SCRIPTS / "check_harness.py"), "--tier", "full"],
+    ) != 0:
         return 1
     if not pytest_available():
         print("⚠ pytest missing — uv sync --extra dev", file=sys.stderr)
         return 1
-    if run_contract_workflow_pytest(exclude_pending=True) != 0:
+    if run_contract_workflow_pytest(bucket="test", stem="gate-gate0_pytest", exclude_pending=True) != 0:
         return 1
-    if run_static_quality() != 0:
+    if run_logged(
+        bucket="dev",
+        stem="gate-gate0_static-quality",
+        cmd=[sys.executable, str(SCRIPTS / "check_static_quality.py")],
+    ) != 0:
         return 1
     # 52 P0 全绿后启用：uv run pytest -v
     print("\nGate gate0 prep OK (enable full pytest in CI when AC suite green)")
@@ -156,14 +269,18 @@ def gate_gate0() -> int:
 
 
 def gate_docs_sync() -> int:
-    return run([sys.executable, str(SCRIPTS / "docs_baseline.py"), "gate"])
+    return run_logged(
+        bucket="dev",
+        stem="gate-docs-sync",
+        cmd=[sys.executable, str(SCRIPTS / "docs_baseline.py"), "gate"],
+    )
 
 
 def gate_analyze(plan: Path | None) -> int:
     cmd = [sys.executable, str(SCRIPTS / "check_plan_spec.py")]
     if plan:
         cmd.extend(["--plan", str(plan)])
-    return run(cmd)
+    return run_logged(bucket="dev", stem="gate-analyze_check-plan-spec", cmd=cmd)
 
 
 def main() -> int:

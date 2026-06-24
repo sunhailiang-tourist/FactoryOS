@@ -16,6 +16,9 @@ _factoryos_pipeline/
     report/                                 # 可选 pytest 摘要
     summary/change-summary-<HHmm>.md
     bug/bug-<HHmm>-<slug>.md                # Test 发现缺陷时
+    dev/HH-MM_gate-*.md                     # 强制结论输出（Gate 自动写）
+    test/HH-MM_gate-*.md                    # 强制结论输出（Gate 自动写，含 pytest）
+    verify/HH-MM_gate-*.md                  # 强制结论输出（Gate 自动写，Verify 回合）
 ```
 
 ## 模板（复制用）

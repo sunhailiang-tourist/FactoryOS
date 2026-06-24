@@ -28,6 +28,7 @@
 | **`activate_dev_env.sh`** | **开发环境激活**（README 唯一入口 · frozen sync · gate pr · pre-commit） |
 | **`gate`** | Bash 入口 → `gate_cli.py` |
 | **`gate_cli.py`** | **Spec×Harness Gate**：`plan` · `test` · `step` · `pr` · `gate0` · `analyze` · `docs-sync` |
+| **`pipeline_artifacts.py`** | Gate 强制输出：`_factoryos_pipeline/<date>/{dev,test,verify}/HH-MM_*.md` |
 | **`check_deptry.py`** | import ↔ `pyproject.toml` 声明（`gate pr` · DEP001） |
 | **`check_uv_lock.sh`** | `uv lock --check`（pre-commit · pyproject 变更时） |
 | **`venv_exec.sh`** | pre-commit 统一走 `.venv/bin/python` |
