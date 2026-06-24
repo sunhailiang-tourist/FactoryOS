@@ -23,10 +23,11 @@ alwaysApply: true
 
 `_factoryos_pipeline/<YYYY-MM-DD>/{plan,test,step-stop,verify,summary}/` — 聊天不能代替文件
 
-## 双 Agent
+## 三 Agent
 
 - **Dev**：`【Dev模式启动】` → `.cursor/rules/factoryos-dev-workflow.mdc` · 细则 `STEP0.md` `DEV-GATES.md`
 - **Test**：`【Test模式启动】` → `.cursor/rules/factoryos-test-workflow.mdc` · 细则 `TEST-GATES.md`
+- **Verify**：`【Verify回合】Step N`（**新对话**）→ 细则 `VERIFY-GATES.md` · 只写 `verify/`
 
 Test 只写 `src/tests/**`；禁止改业务实现。
 

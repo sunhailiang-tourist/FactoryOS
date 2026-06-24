@@ -21,14 +21,15 @@
 | L2 Spec 轨 | `contracts/` + plan AC/红线对账 |
 | L3 Harness 轨 | `./scripts/gate step` · [ACTIVATION.md](./ACTIVATION.md) |
 
-## 双 Agent
+## 三 Agent
 
 | Agent | 激活 | 细则 |
 |-------|------|------|
 | Dev | `【Dev模式启动】` | [STEP0.md](./STEP0.md) · [DEV-GATES.md](./DEV-GATES.md) |
 | Test | `【Test模式启动】` | [TEST-GATES.md](./TEST-GATES.md) |
+| Verify | `【Verify回合】Step N`（**新对话**） | [VERIFY-GATES.md](./VERIFY-GATES.md) |
 
-Test 只写 `src/tests/**`；Dev 不宣称测过。
+Test 只写 `src/tests/**`；Dev 不宣称测过；Verify 只写 `verify/` 审阅。
 
 ## 单次迭代
 

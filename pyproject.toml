@@ -49,5 +49,7 @@ select = ["E", "F", "I", "UP"]
 
 [tool.pyright]
 pythonVersion = "3.12"
+venvPath = "."
+venv = ".venv"
 include = ["src/os_core", "src/apps", "src/tests"]
 typeCheckingMode = "basic"

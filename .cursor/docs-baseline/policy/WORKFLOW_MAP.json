@@ -103,7 +103,30 @@
       "affects": ["contracts/schemas/", "contracts/cmv/"]
     },
     {
-      "id": "openapi-superseded",
+      "id": "ui-first-principle",
+      "match": "docs/文档/规格说明/Integration-Studio规格.md",
+      "affects": [
+        ".cursor/factoryos/UI-FIRST-CONFIG-PRINCIPLE.md",
+        ".cursor/factoryos/INTEGRATION-CHAIN.md"
+      ]
+    },
+    {
+      "id": "integration-playbook",
+      "match": "docs/文档/规格说明/人工决策Playbook.md",
+      "affects": [
+        ".cursor/factoryos/INTEGRATION-CHAIN.md",
+        "src/integration/tools/guide/flows.json"
+      ]
+    },
+    {
+      "id": "factoryos-guide-spec",
+      "match": "docs/文档/规格说明/factoryos-guide规格.md",
+      "affects": [
+        ".cursor/factoryos/INTEGRATION-CHAIN.md",
+        "scripts/factoryos_cli.py"
+      ]
+    },
+    {
       "match": "docs/文档/接口/**",
       "note": "superseded_by contracts/openapi/",
       "affects": ["contracts/openapi/"]

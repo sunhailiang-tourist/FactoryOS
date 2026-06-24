@@ -193,9 +193,9 @@ _factoryos_pipeline/
 
 ### 开工前你必须做（人）⚠️
 
-1. 本地 **ACTIVATION 清单 1–9** 打勾
+1. 本地 **ACTIVATION 清单 1–9** 打勾（含 `gate pr` 绿 · pre-commit）
 2. 新 Dev 对话：`【Dev模式启动】W1 …` → 走完 Step0 → plan → Test → `可以开始`
-3. 治理包 **首次 commit**（大量 `??` 未入库则协作不可追溯）
+3. 工作流速查：仓库根 [README.md §完整工作流](../../README.md#完整工作流)（对话轨 / 终端轨分离）
 
 ### 建议后续增强（不挡 W1）💡
 
@@ -204,9 +204,10 @@ _factoryos_pipeline/
 | Verify 强制子 Agent | 现靠「新会话」纪律 | Task readonly 子 Agent + gate verify 硬拦 |
 | `workflow_state` 自动写 | 现靠 Agent 自觉 | hook 在关键词消息时提示更新 state |
 | Gate 0 CI job | 52 P0 仍 pending | AC 绿后取消注释 `gate0-ac-full` |
-| 可观测 dashboard | 落盘分散 | 可选 `scripts/pipeline_status.py` 汇总最近工件 |
+| commit-msg 格式 | commit 与 AC 未绑定 | 轻量 pre-commit hook（非 Commitizen） |
+| WORKFLOW_MAP 补 UI-FIRST | docs 改后漏同步 | 增映射条 |
+| 可观测 dashboard | 落盘分散 | 可选 `scripts/pipeline_status.py` |
 | Studio v0 与 W1 并行 | UI-FIRST §U5 | Tenant/Connect/Gate 状态页（mock→真 API） |
-| `docs/scripts/` 废弃 | 与根 scripts 重复 | 在 docs README 标「已废弃，勿改」 |
 
 ### 开发前总判定
 
@@ -214,7 +215,7 @@ _factoryos_pipeline/
 |------|------|
 | 链路完整度 | **完整** — 文档·脚本·CI·落盘·基线闭环 |
 | 可观测 | **良** — gate 命令 + CI + 落盘路径 + MANIFEST |
-| 可追踪 | **良** — PR 模板 + plan.ok + pipeline 目录 |
+| 可追踪 | **良** — 治理包已入库 · PR 模板 + plan.ok |
 | 低智管理 | **良** — 机械门禁为主；Verify/state 仍少量纪律 |
 | 现在开 W1 | **可以** — 完成 ACTIVATION + 首轮 SH-步步流即可 |
 
