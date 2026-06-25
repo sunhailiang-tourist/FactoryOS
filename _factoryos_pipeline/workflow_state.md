@@ -4,12 +4,13 @@
 > 真源说明：[ACTIVATION.md](../.cursor/factoryos/ACTIVATION.md)
 
 ```yaml
-phase: STEP0
+phase: PLANNING
 agent: dev
 step: 0
-plan:
+plan: _factoryos_pipeline/2026-06-25/plan/plan-0116-w1-base.md
 test_plan:
-updated: 2026-06-16
+updated: 2026-06-25
+goal: W1 基座首轮 — shared_contracts · Alembic S-01～S-04 · mock connector · import_boundaries
 ```
 
 ## phase 取值
@@ -32,3 +33,4 @@ updated: 2026-06-16
 ## 变更日志
 
 - 2026-06-16 初始化 · 治理包落地
+- 2026-06-25 W1 基座 · Step0 通过 → PLANNING · plan-0116-w1-base.md
