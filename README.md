@@ -90,6 +90,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 | **UI-First 产品宪法** | [UI-FIRST-CONFIG-PRINCIPLE](.cursor/factoryos/UI-FIRST-CONFIG-PRINCIPLE.md) |
 | **接入/扩展链** | [INTEGRATION-CHAIN](.cursor/factoryos/INTEGRATION-CHAIN.md) |
 | **开发前全链路** | [PRE-DEV-CHAIN](.cursor/factoryos/PRE-DEV-CHAIN.md) |
+| **ORM · 迁移纪律** | [ORM-MIGRATION-PRINCIPLE](.cursor/factoryos/ORM-MIGRATION-PRINCIPLE.md) |
 | 索引 | [.cursor/factoryos/INDEX.md](.cursor/factoryos/INDEX.md) |
 | Agent 根 | [.cursor/README.md](.cursor/README.md) |
 | Dev / Test / Verify | [DEV-GATES](.cursor/factoryos/DEV-GATES.md) · [TEST-GATES](.cursor/factoryos/TEST-GATES.md) · [VERIFY-GATES](.cursor/factoryos/VERIFY-GATES.md) |

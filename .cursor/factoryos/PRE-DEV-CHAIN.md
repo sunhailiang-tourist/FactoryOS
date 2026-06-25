@@ -155,6 +155,7 @@ _factoryos_pipeline/
 | `docs/` Tier-C | `contracts-crosscheck` 若改了文件 | **只改 contracts/** 为真源 |
 | `scripts/` 新门禁 | 注册 `check_harness.py` + `ci.yml` + README | HARNESS-SCRIPTS.md |
 | `pyproject.toml` 依赖 | 同 commit 提交 `uv.lock` · `gate pr`（deptry） | pre-commit `uv lock --check` · 见 README §激活 |
+| `src/os_core/**/models` · `alembic/` | `alembic check` · `upgrade head`（W1 起） | [ORM-MIGRATION-PRINCIPLE](./ORM-MIGRATION-PRINCIPLE.md) · ADR-007 S-01～S-04 |
 | `workflow_state` 关键词后 | Agent 必须更新 state 文件 | hooks 依赖 |
 
 映射详表：`.cursor/docs-baseline/policy/WORKFLOW_MAP.json`
