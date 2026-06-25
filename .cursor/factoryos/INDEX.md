@@ -32,6 +32,7 @@
 | [TEST-GATES.md](./TEST-GATES.md) | Gate A–G · 交付 · 回归 |
 | [VERIFY-GATES.md](./VERIFY-GATES.md) | Verify 独立审阅回合 |
 | [HARNESS-SCRIPTS.md](./HARNESS-SCRIPTS.md) | gate / harness 节点映射 |
+| [ORM-MIGRATION-PRINCIPLE.md](./ORM-MIGRATION-PRINCIPLE.md) | **ORM 即设计 · Alembic 即部署**（开发快 · 迁移稳） |
 | [docs-baseline](../docs-baseline/BASELINE.md) | **docs 认知基线**（漂移检测 → 工作流同步） |
 | [ACTIVATION.md](./ACTIVATION.md) | **完全激活清单**（Hooks · uv · pre-commit） |
 | [templates/](./templates/) | plan · test · step-stop · verify · bug · summary |

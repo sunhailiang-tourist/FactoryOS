@@ -35,7 +35,7 @@
 3. 关键状态字段分布（轻量统计）
 4. 缺口分级：**A 类**（缺表/缺字段阻断）→ 停 Step 0 等你拍板
 
-无库时：写明「Schema 以 `contracts/schemas` + 计划迁移为准」，不跳过 0-A/0-B。
+无库时：写明「Schema 以 SQLAlchemy Models + Alembic 迁移为准（见 [ORM-MIGRATION-PRINCIPLE](./ORM-MIGRATION-PRINCIPLE.md)）；对外形状以 `contracts/schemas` 为准」，不跳过 0-A/0-B。
 
 ---
 
