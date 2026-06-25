@@ -76,12 +76,35 @@ def check_gate_step(step: int) -> list[str]:
     stops = glob_any(pattern)
     if not stops:
         errors.append(f"missing step-stop for step {step}: {pattern}")
+    test_pattern = f"*/test/test-*-step{step}-regression.md"
+    if not glob_any(test_pattern):
+        errors.append(
+            f"missing Test step regression for step {step}: {test_pattern} "
+            f"(【Test·Step {step} 验收】落盘)"
+        )
     verify_pattern = f"*/verify/verify-*-step{step}.md"
     if not glob_any(verify_pattern):
         errors.append(f"missing verify for step {step}: {verify_pattern}")
     state = read_state()
     if state.get("phase") != "CAN_CODE":
         errors.append("phase must be CAN_CODE for step-stop (用户 可以开始 后)")
+    return errors
+
+
+def check_gate_delivery() -> list[str]:
+    errors: list[str] = []
+    final_pattern = "*/test/test-*-final-regression.md"
+    if not glob_any(final_pattern):
+        errors.append(
+            "missing Test final regression: */test/test-*-final-regression.md "
+            "(【Test·终轮回归】落盘)"
+        )
+    summaries = glob_any("*/summary/change-summary-*.md")
+    if not summaries:
+        errors.append("missing change-summary: */summary/change-summary-*.md")
+    state = read_state()
+    if state.get("phase") != "DELIVERY":
+        errors.append("phase must be DELIVERY before gate delivery / commit")
     return errors
 
 
@@ -105,7 +128,7 @@ def main() -> int:
     p.add_argument(
         "--gate",
         required=True,
-        choices=["plan", "test", "step", "state", "all"],
+        choices=["plan", "test", "step", "delivery", "state", "all"],
     )
     p.add_argument("--step", type=int, default=1, help="for --gate step")
     args = p.parse_args()
@@ -117,6 +140,8 @@ def main() -> int:
         errors.extend(check_gate_test())
     if args.gate in ("step", "all"):
         errors.extend(check_gate_step(args.step))
+    if args.gate in ("delivery", "all"):
+        errors.extend(check_gate_delivery())
     if args.gate in ("state", "all"):
         errors.extend(check_gate_state())
 

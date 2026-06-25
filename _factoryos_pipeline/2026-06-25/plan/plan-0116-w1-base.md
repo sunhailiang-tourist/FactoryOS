@@ -14,7 +14,7 @@
 | 项 | 结论 |
 |----|------|
 | **本轮落点** | W1 工程骨架：`shared_contracts` · Alembic **S-01～S-04** · `connector_sdk` mock · `integration/tenants/_template` 校验；**不含** Graph/Rule/Execution 业务闭环（W2–W3） |
-| **写路径** | 本轮无 Legacy 写；仅预埋表 + 契约模型 + mock health；写路径 R-01～R-11 **设计约束**，Step 4 前不触达 execution |
+| **写路径** | 本轮无 Legacy 写；仅预埋表 + 契约模型 + mock health；ADR-002 执行红线（`REDLINES.md`）为设计约束，Step 4 前不触达 execution |
 | **apps/api** | Step 1 仅 app 工厂 + `/health`；OpenAPI 域路由 W2+ 按模块递增 |
 | **integration** | 禁 import os_core 私有 API；本轮 YAML/catalog 契约校验 + 模板完善 |
 | **0-DB** | 仓库 **无 Alembic 目录**；本地 PG **未绑定** → Schema 以 `contracts/schemas` + Step 3 迁移为准 |
@@ -39,6 +39,18 @@
 
 ---
 
+## 1.1 编码与架构纪律（全程强制）
+
+| 维度 | 要求 |
+|------|------|
+| **架构合理性** | Modular Monolith；`apps/api` 薄路由；业务只在 `os_core`；integration 仅 OpenAPI + connector_sdk 公开面 |
+| **灵活性** | 客户差异不进内核（无 `if tenant_id`）；规模预埋（S-*）用接口抽象（TenantRegistry · OutboxPort），S1 可换实现 |
+| **可约定性** | 类型/错误码/API 以 `contracts/` 为准；Pydantic 与 JSON Schema 字段一一对应 |
+| **中文注释** | 每 `.py` 文件头 + 函数 docstring + 字段四要素（见 `编码绝对门禁.mdc`） |
+| **无重复** | ≥2 处相同逻辑须抽取；禁止 api 重复 os_core 能力 |
+
+---
+
 ## 2. AC 对账表
 
 | AC ID | 标题 | 本迭代 | 验证方式 |
@@ -60,13 +72,15 @@
 
 ## 3. 红线对账
 
-| 红线 | 本迭代涉及 | 负向测试 / 静态 |
+> 红线全文见 `.cursor/factoryos/REDLINES.md`（plan 内不逐条写 R-xx，避免与 AC ID 混淆）。
+
+| 主题 | 本迭代涉及 | 负向测试 / 静态 |
 |------|------------|-----------------|
-| R-01 | 否（无 agent 写） | E-08 仍 pending |
-| R-02 | 否（无 execution 写） | import 矩阵禁止 orchestrator→connector.write |
-| R-03 | 否 | G-03 pending |
-| R-04 | 否 | R-01 pending |
-| R-05～R-11 | 否 | W2+ |
+| Agent 禁直写 Legacy | 否（无 agent 写） | E-08 仍 pending |
+| 写经 execution_service | 否（无 execution 写） | import 矩阵禁止 orchestrator→connector.write |
+| 未 freeze 禁 L2 写 | 否 | G-03 pending |
+| Rule 默认 deny | 否 | AC R-01 pending |
+| 其余 ADR-002 红线 | 否 | W2+ 运行时 AC |
 | **架构** | integration 禁私有 API | `check_import_boundaries.py` 每 Step |
 
 ---

@@ -35,7 +35,7 @@
 | [ORM-MIGRATION-PRINCIPLE.md](./ORM-MIGRATION-PRINCIPLE.md) | **ORM 即设计 · Alembic 即部署**（开发快 · 迁移稳） |
 | [docs-baseline](../docs-baseline/BASELINE.md) | **docs 认知基线**（漂移检测 → 工作流同步） |
 | [ACTIVATION.md](./ACTIVATION.md) | **完全激活清单**（Hooks · uv · pre-commit） |
-| [templates/](./templates/) | plan · test · step-stop · verify · bug · summary |
+| [templates/](./templates/) | plan · test · test-step-regression · test-final-regression · step-stop · verify · bug · summary |
 | [scripts/README.md](../../scripts/README.md) | 脚本目录（新人入口） |
 
 ## 架构与验收
@@ -51,11 +51,11 @@
 
 ## 激活 Agent
 
-| 模式 | 口令 |
-|------|------|
-| 开发 | `【Dev模式启动】` + 本轮目标 |
-| 测试 | `【Test模式启动】` + 目的 + plan 路径 |
-| 审阅 | `【Verify回合】Step N`（新对话 · 见 VERIFY-GATES） |
+| 模式 | 口令 | 细则 |
+|------|------|------|
+| 开发 | `【Dev模式启动】` + 本轮目标 | [DEV-GATES.md](./DEV-GATES.md) |
+| 测试 | `【Test模式启动】` · `【Test·Step N 验收】` · `【Test·终轮回归】` | [TEST-GATES.md](./TEST-GATES.md) |
+| 审阅 | `【Verify回合】Step N`（Test 之后 · 新对话） | [VERIFY-GATES.md](./VERIFY-GATES.md) |
 
 ## Cursor 规则
 
@@ -63,8 +63,9 @@
 |------|------|
 | `.cursor/rules/SH-步步流.mdc` | alwaysApply |
 | `.cursor/rules/factoryos-dev-workflow.mdc` | `【Dev模式启动】` |
-| `.cursor/rules/factoryos-test-workflow.mdc` | `【Test模式启动】` |
+| `.cursor/rules/factoryos-test-workflow.mdc` | `【Test模式启动】` · `【Test·Step N 验收】` · `【Test·终轮回归】` |
 | `.cursor/rules/编码绝对门禁.mdc` | alwaysApply |
+| `.cursor/rules/项目结构变更门禁.mdc` | alwaysApply · 新建目录须用户确认 + README |
 
 ## 目录入口
 

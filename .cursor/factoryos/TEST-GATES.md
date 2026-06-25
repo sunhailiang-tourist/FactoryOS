@@ -1,6 +1,18 @@
 # Test · Gate A–G 与交付纪律
 
-> 正式跑测前须完成 Gate A–G 承诺；Step 0 test-plan **先落盘**。
+> 正式跑测前须完成 Gate A–G 承诺；**每 Step 与终轮各有独立 Test 回合**，不可省略。
+
+## 三档 Test 回合（强制）
+
+| 回合 | 口令 | 时机 | 落盘 | gate |
+|------|------|------|------|------|
+| **编码前** | `【Test模式启动】` + plan | `确认规划` 后 · 首个 `可以开始` 前 | `test-<HHmm>-<slug>.md` + failing tests | `gate test` |
+| **每 Step** | `【Test·Step N 验收】` | Dev step-stop 后 · **Verify 之前** | `test-<HHmm>-stepN-regression.md` | `gate step` 校验 |
+| **终轮** | `【Test·终轮回归】` | 全部 Step `可以继续` 后 · **commit 前** | `test-<HHmm>-final-regression.md` | `gate delivery` |
+
+模板：`templates/test-step-regression-template.md` · `templates/test-final-regression-template.md`
+
+---
 
 ## Gate A · 全量复盘（只读）
 
@@ -43,24 +55,54 @@
 
 ---
 
-## 执行顺序（Step 0 后）
+## 每 Step 验收（`【Test·Step N 验收】` · 强制）
 
-```text
-failing tests（红）
-  → 你：可以开始
-  → `./scripts/gate step --step N -k '<AC-ID>'`
-  → 已改动代码测试报告（优先）
-  → 架构评估
-  → 扩展回归（次要）
-  → 最终总结 + 两类接口分区 + 文件↔接口对账表
+**输入**：plan Step N · Dev step-stop · `git diff` 本步改动面
+
+**必须输出**：
+
+1. **硬性验收计划执行表**（AC ID · 业务项 · pytest 证据 · PASS/FAIL）
+2. **代码落位合理性**（分层 · 写路径 · 红线 · 注释 · 模块治理）
+3. **已改动代码测试报告**（用例 ID · JSON 证据）
+4. **结论**：通过 / 需改进 / 阻断
+
+**pytest 最低要求**：
+
+```bash
+./scripts/gate step --step N -k '<AC-ID>'
+# 本步触及存量时追加（不得省略）：
+uv run pytest src/tests/workflow/ src/tests/contract/ -q
+# 触及 DB/connector/integration 时：
+uv run pytest src/tests/integration/ -q
 ```
 
-## 已改动代码测试报告（模板节）
+阻断 → 禁止进入 Verify · `测试不通过`  
+需改进 → 须 `风险接受并继续` 后方可 Verify
 
-| 用例ID | AC/接口 | 步骤 | 结果 |
-|--------|---------|------|------|
+---
 
-每接口：**入参 JSON** + **出参 JSON** + 结构依据（Schema 路径）。
+## 终轮回归（`【Test·终轮回归】` · commit 前强制）
+
+**输入**：全 plan · 全量 `git diff` · 全部 step-stop / verify 落盘
+
+**必须证明**：
+
+| 维度 | 要求 |
+|------|------|
+| 新增功能 | 本轮全部 AC 仍绿 |
+| 存量功能 | workflow + contract + integration 全量回归 |
+| 代码落位 | 无超 plan 文件 · 无重复逻辑 · 注释可读 |
+| 优雅性 | 3–5 条终轮评估（可改进项列清） |
+
+```bash
+./scripts/gate delivery
+```
+
+**仅** `gate delivery` 绿 + 你 `可以提交` 后，Agent 才可提示 `git commit`。
+
+终轮落盘须含 **文件↔接口对账表** 与 **两类接口分区**（Gate E）。
+
+---
 
 ## 架构与代码质量评估
 
@@ -85,13 +127,16 @@ failing tests（红）
 | `contracts/schemas` | contract tests + OpenAPI ref |
 | `integration/packs` | pack contract + Path A/B/C 参数化 |
 
-## FactoryOS 验收盘（替代 curl 烟雾）
+## FactoryOS 验收盘
 
-Step **停机**用 `./scripts/gate step`（harness + pytest + 静态 + verify 落盘）；**编码中**用 `./scripts/harness --tier auto`。见 [HARNESS-SCRIPTS.md](./HARNESS-SCRIPTS.md)。
+| 节点 | 命令 |
+|------|------|
+| Step 停机 | `./scripts/gate step --step N -k '<AC-ID>'` |
+| 编码中 | `./scripts/harness --tier auto` |
+| commit 前 | `./scripts/gate delivery` |
+| PR | `./scripts/gate pr` |
 
-```bash
-./scripts/gate step --step N -k '<AC-ID>'
-```
+见 [HARNESS-SCRIPTS.md](./HARNESS-SCRIPTS.md)。
 
 ## 禁止替 Dev 改业务
 

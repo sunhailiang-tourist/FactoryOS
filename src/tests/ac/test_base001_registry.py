@@ -9,10 +9,13 @@ import pytest
 from tests.ac_registry import load_ac_ids
 
 AC_IDS = load_ac_ids()
+# W1 plan 已拆出独立 failing tests，不再走 pending 占位
+W1_ACTIVE_AC_IDS = frozenset({"S-01", "S-02", "S-03", "S-04", "C-01"})
+PENDING_AC_IDS = [ac_id for ac_id in AC_IDS if ac_id not in W1_ACTIVE_AC_IDS]
 
 
 @pytest.mark.pending
-@pytest.mark.parametrize("ac_id", AC_IDS)
+@pytest.mark.parametrize("ac_id", PENDING_AC_IDS)
 def test_ac_pending_until_implemented(ac_id: str) -> None:
   pytest.fail(
     f"AC {ac_id} not implemented — W1+ Step 按 plan 实现后移除此 pending 或改为真实断言"

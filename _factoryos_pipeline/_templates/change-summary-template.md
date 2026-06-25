@@ -20,7 +20,7 @@
 
 ## 测试结论（Test）
 
-- `./scripts/gate step --step N -k '...'` 或 `./scripts/gate pr`：
+- `./scripts/gate step --step N -k '...'` · `./scripts/gate delivery` · `./scripts/gate pr`：
 
 ## Summary（3 条，可贴 PR）
 

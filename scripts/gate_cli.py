@@ -6,6 +6,7 @@ Usage:
   python scripts/gate_cli.py test
   python scripts/gate_cli.py step [-k AC] [--step N]  # 停机：harness+pytest+静态+verify
   python scripts/gate_cli.py verify --step N
+  python scripts/gate_cli.py delivery            # 终轮回归验收盘（commit 前）
   python scripts/gate_cli.py pr                  # PR 验收盘（含 deptry）
   python scripts/gate_cli.py gate0
   python scripts/gate_cli.py analyze [--plan P]
@@ -106,6 +107,22 @@ def run_static_quality() -> int:
     return run([sys.executable, str(SCRIPTS / "check_static_quality.py")])
 
 
+def run_full_regression_pytest(*, bucket: str, stem: str, exclude_pending: bool) -> int:
+    cmd = [
+        sys.executable,
+        "-m",
+        "pytest",
+        "src/tests/contract",
+        "src/tests/workflow",
+        "src/tests/integration",
+        "-v",
+        "--tb=short",
+    ]
+    if exclude_pending:
+        cmd.extend(["-m", "not pending"])
+    return run_logged(bucket=bucket, stem=stem, cmd=cmd)
+
+
 def run_contract_workflow_pytest(*, bucket: str, stem: str, exclude_pending: bool) -> int:
     cmd = [
         sys.executable,
@@ -192,6 +209,18 @@ def gate_step(pytest_k: str | None, extra: list[str], step: int) -> int:
         cmd=[sys.executable, str(SCRIPTS / "check_static_quality.py")],
     ) != 0:
         return 1
+    if run_logged(
+        bucket="test",
+        stem=f"gate-step_check-test-regression_step{step}",
+        cmd=[
+            sys.executable,
+            str(SCRIPTS / "check_test_regression.py"),
+            "--step",
+            str(step),
+            "--require-pass",
+        ],
+    ) != 0:
+        return 1
     if gate_verify(step, require_pass=True) != 0:
         return 1
     if run_logged(
@@ -208,6 +237,37 @@ def gate_step(pytest_k: str | None, extra: list[str], step: int) -> int:
     ) != 0:
         return 1
     print("\nGate step OK (harness · pytest · static · verify)")
+    return 0
+
+
+def gate_delivery() -> int:
+    if run_logged(
+        bucket="test",
+        stem="gate-delivery_check-test-final-regression",
+        cmd=[
+            sys.executable,
+            str(SCRIPTS / "check_test_regression.py"),
+            "--final",
+            "--require-pass",
+        ],
+    ) != 0:
+        return 1
+    if not pytest_available():
+        print("⚠ pytest missing — uv sync --extra dev", file=sys.stderr)
+        return 1
+    if run_full_regression_pytest(
+        bucket="test",
+        stem="gate-delivery_pytest-full-regression",
+        exclude_pending=True,
+    ) != 0:
+        return 1
+    if run_logged(
+        bucket="dev",
+        stem="gate-delivery_check-pipeline",
+        cmd=[sys.executable, str(SCRIPTS / "check_pipeline.py"), "--gate", "delivery"],
+    ) != 0:
+        return 1
+    print("\nGate delivery OK (终轮回归 · 可提示 commit)")
     return 0
 
 
@@ -301,6 +361,7 @@ def main() -> int:
     sv.add_argument("--step", type=int, required=True)
     sv.add_argument("--require-pass", action="store_true", default=True)
 
+    sub.add_parser("delivery", help="终轮回归验收盘（commit 前）")
     sub.add_parser("pr", help="PR 验收盘")
     sub.add_parser("gate0", help="Gate 0")
 
@@ -319,6 +380,8 @@ def main() -> int:
         return gate_step(getattr(args, "pytest", None), args.pytest_extra, args.step)
     if args.gate == "verify":
         return gate_verify(args.step, args.require_pass)
+    if args.gate == "delivery":
+        return gate_delivery()
     if args.gate == "pr":
         return gate_pr()
     if args.gate == "gate0":

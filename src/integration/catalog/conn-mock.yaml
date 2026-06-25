@@ -1,0 +1,7 @@
+# conn-mock · W1 Connector 占位 Blueprint
+# 业务：C-01 health mock；无真实 Legacy 端点
+pack_id: conn-mock
+system: mock
+vendor: factoryos
+version: "0.1.0"
+description: W1 规模预埋与健康检查占位 Pack

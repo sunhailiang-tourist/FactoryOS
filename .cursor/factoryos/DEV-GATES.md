@@ -93,9 +93,19 @@ Step N — <名>（流程节点：xxx）
 
 ## Step 停机输出（必用 `templates/step-stop-template.md`）
 
-Step ID · 改动文件 · 10 项自检 · `./scripts/gate step --step N` 摘要 · **Verify 落盘** · 等你 `可以继续`
+Step ID · 改动文件 · 10 项自检 · 等你进入 **Test 单步验收**
 
-Verify 细则：[VERIFY-GATES.md](./VERIFY-GATES.md)
+**停机全链**（次序强制）：
+
+```text
+step-stop 落盘
+  → 【Test·Step N 验收】→ test-*-stepN-regression.md
+  → 【Verify回合】Step N → verify-*-stepN.md
+  → ./scripts/gate step --step N -k '<AC-ID>' 绿
+  → 你：可以继续
+```
+
+Verify 细则：[VERIFY-GATES.md](./VERIFY-GATES.md) · Test 细则：[TEST-GATES.md](./TEST-GATES.md)
 
 ---
 

@@ -27,17 +27,19 @@
 |------|------|
 | **`activate_dev_env.sh`** | **开发环境激活**（README 唯一入口 · frozen sync · gate pr · pre-commit） |
 | **`gate`** | Bash 入口 → `gate_cli.py` |
-| **`gate_cli.py`** | **Spec×Harness Gate**：`plan` · `test` · `step` · `pr` · `gate0` · `analyze` · `docs-sync` |
+| **`gate_cli.py`** | **Spec×Harness Gate**：`plan` · `test` · `step` · `delivery` · `verify` · `pr` · `gate0` · `analyze` · `docs-sync` |
 | **`pipeline_artifacts.py`** | Gate 强制输出：`_factoryos_pipeline/<date>/{dev,test,verify}/HH-MM_*.md` |
 | **`check_deptry.py`** | import ↔ `pyproject.toml` 声明（`gate pr` · DEP001） |
 | **`check_uv_lock.sh`** | `uv lock --check`（pre-commit · pyproject 变更时） |
 | **`venv_exec.sh`** | pre-commit 统一走 `.venv/bin/python` |
 | **`check_plan_spec.py`** | plan ↔ contracts AC/路径一致性（确认规划门） |
-| **`check_pipeline.py`** | 落盘工件 + `workflow_state` 阶段检查 |
+| **`check_pipeline.py`** | 落盘工件 + `workflow_state` 阶段检查（含 step 单步 Test · delivery 终轮） |
+| **`check_test_regression.py`** | 单步/终轮 Test 落盘与结论门禁 |
 
 ```bash
 ./scripts/gate plan
-./scripts/gate step -k 'G-01'
+./scripts/gate step --step N -k 'G-01'
+./scripts/gate delivery
 ./scripts/gate pr
 ./scripts/factoryos gate gate0
 ```

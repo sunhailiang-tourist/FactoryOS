@@ -4,13 +4,21 @@
 > 真源说明：[ACTIVATION.md](../.cursor/factoryos/ACTIVATION.md)
 
 ```yaml
-phase: PLANNING
-agent: dev
-step: 0
+phase: DELIVERY
+agent: test
+step: 4
 plan: _factoryos_pipeline/2026-06-25/plan/plan-0116-w1-base.md
-test_plan:
+test_plan: _factoryos_pipeline/2026-06-25/test/test-1443-w1-step1-4.md
+summary: _factoryos_pipeline/2026-06-25/summary/change-summary-0807-w1-base.md
 updated: 2026-06-25
-goal: W1 基座首轮 — shared_contracts · Alembic S-01～S-04 · mock connector · import_boundaries
+goal: W1 基座首轮 — 完成
+w1_coding_gate: confirmed
+step1_gate: green
+step2_gate: green
+step3_gate: green
+step4_gate: green
+step4_verify: _factoryos_pipeline/2026-06-25/verify/verify-1558-step4.md
+gate_pr: green
 ```
 
 ## phase 取值
@@ -34,3 +42,10 @@ goal: W1 基座首轮 — shared_contracts · Alembic S-01～S-04 · mock connec
 
 - 2026-06-16 初始化 · 治理包落地
 - 2026-06-25 W1 基座 · Step0 通过 → PLANNING · plan-0116-w1-base.md
+- 2026-06-25 用户确认规划 → CAN_TEST · plan §1.1 编码纪律
+- 2026-06-25 W1 编码门禁口令已确认 · gate test 绿 · 待 `可以开始` Step 1
+- 2026-06-25 Step 1 停机 + Verify 通过 · 用户 `可以继续` → 进入 Step 2 待开工
+- 2026-06-25 Step 2 shared_contracts 实现完成 · 待 Verify + gate step 2
+- 2026-06-25 Step 2 停机 + Verify 通过 · 用户 `可以继续` → 进入 Step 3 待开工
+- 2026-06-25 Step 4 mock connector + C-01 完成 · 待 Verify
+- 2026-06-25 W1 四轮 Step+Verify 全绿 · gate pr 绿 · summary 落盘 · phase DELIVERY

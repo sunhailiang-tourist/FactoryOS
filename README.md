@@ -30,8 +30,8 @@ Overlay on ERP/MES · 双极：终端多模态 + 内核 Graph/Rule/Revert 门禁
 | Agent | 口令 | 写什么 | 禁止 |
 |-------|------|--------|------|
 | **Dev** | `【Dev模式启动】` + 目标 | `src/os_core` · `apps` · `integration` | 不宣称已测过 |
-| **Test** | `【Test模式启动】` + plan 路径 | **仅** `src/tests/**` | 改业务代码 |
-| **Verify** | `【Verify回合】Step N`（**新对话**） | `verify/` 审阅 | 写实现 |
+| **Test** | `【Test模式启动】` · `【Test·Step N 验收】` · `【Test·终轮回归】` | `src/tests/**` + test 落盘 | 改业务代码 |
+| **Verify** | `【Verify回合】Step N`（Test 之后 · **新对话**） | `verify/` 审阅 | 写实现 |
 
 ### 完整工作流
 
@@ -48,17 +48,20 @@ Overlay on ERP/MES · 双极：终端多模态 + 内核 Graph/Rule/Revert 门禁
 | **6** | 测试 | 写 failing tests | 对话 | **Test 对话** · `【Test模式启动】` + plan 路径 | Test **只**写 `src/tests/**`，不改业务码 |
 | **7** | 测试 | test-plan 门禁 | 终端 | `./scripts/gate test` | test-plan 与 plan 对齐；并强制输出 `test/HH-MM_gate-test_*.md`（pytest 结论在 step/pr） |
 | **8** | 编码 | 开始本 Step | 对话 | `可以开始` | **仅当前 Step**；Hooks 才放行写 `src/os_core` 等 |
-| **9** | 编码 | 编码与提交 | 终端 | `./scripts/harness --tier auto` · `git add` · `git commit -m 'feat(scope): G-01 …'` | 编码中随时跑；pre-commit 自动检 |
+| **9** | 编码 | 编码中自检 | 终端 | `./scripts/harness --tier auto` | 编码中随时跑；pre-commit 自动检 |
 | **10** | 编码 | 停机落盘 | 对话 | （Agent 写 step-stop） | 落盘 `_factoryos_pipeline/…/step-stop/` |
-| **11** | 验收 | Step 停机检 | 终端 | `./scripts/gate step --step N -k 'G-01'` | harness + pytest + 静态须全绿；强制输出：`dev/`（harness/static/pipeline）+ `test/`（pytest）+ `verify/`（verify gate） |
-| **12** | 验收 | 独立审阅 | 对话 | **Verify 新对话** · `【Verify回合】Step N` | 只读审阅，不写实现 |
-| **13** | 验收 | 过关或回修 | 对话 | `可以继续`（过关）或 `测试不通过`（回修） | 过关 → 下一 Step 回到 **#8**；不过 → Dev 回修后再 **#11** |
-| **14** | 交付 | 汇总 | 对话 | （Agent 落 summary） | `_factoryos_pipeline/…/summary/` |
-| **15** | 交付 | 推 PR | 终端 | `./scripts/gate pr` · `./scripts/gate docs-sync` · `git push` · 开 PR | PR body 写 plan 路径 + AC ID |
+| **11** | 验收 | **单步 Test** | 对话 | **Test 新对话** · `【Test·Step N 验收】` | git diff 本步 · 业务+落位 · `test-*-stepN-regression.md` |
+| **12** | 验收 | 独立审阅 | 对话 | **Verify 新对话** · `【Verify回合】Step N` | **须在 #11 之后**；只读审阅 |
+| **13** | 验收 | Step 停机检 | 终端 | `./scripts/gate step --step N -k 'G-01'` | harness + pytest + Test/Verify 落盘 + 静态 |
+| **14** | 验收 | 过关或回修 | 对话 | `可以继续`（过关）或 `测试不通过`（回修） | 过关 → 下一 Step 回到 **#8** |
+| **15** | 交付 | 汇总 | 对话 | （Agent 落 summary · state→DELIVERY） | `_factoryos_pipeline/…/summary/` |
+| **16** | 交付 | **终轮回归** | 对话 | **Test** · `【Test·终轮回归】` | `test-*-final-regression.md` · 全量存量+新增 |
+| **17** | 交付 | 终轮门禁 | 终端 | `./scripts/gate delivery` · `./scripts/gate pr` | integration 全量 pytest · commit 前必绿 |
+| **18** | 交付 | 提交 | 对话 | `可以提交` | **仅 #17 绿后** · 才 `git commit` / 推 PR |
 
-**↻** #8–#13 每个 Step 重复，直到 plan 里所有 Step 完成。
+**↻** #8–#14 每个 Step 重复，直到 plan 里所有 Step 完成。**次序不可乱**：#11 Test → #12 Verify → #13 gate step。
 
-**三个 Agent 在哪用：** #1–#5、#8–#10、#13–#14 用 **Dev**；#6–#7 用 **Test**；#12 用 **Verify**（必须**新开对话**）。
+**三个 Agent 在哪用：** #1–#5、#8–#10、#14–#15 用 **Dev**；#6–#7、#11、#16 用 **Test**；#12 用 **Verify**（必须**新开对话**）。
 
 **里程碑附加口令**（非通用机制）：若 plan 或 [编码绝对门禁](.cursor/rules/编码绝对门禁.mdc) 要求首轮业务码前多一道总闸，在 **`可以开始` 之前**按 plan 说即可（例：当前 W1 → `确认编码门禁，开始 W1`）。见 [ACTIVATION §四](.cursor/factoryos/ACTIVATION.md)。
 

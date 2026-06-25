@@ -27,7 +27,7 @@ alwaysApply: false
 必填：AC 对账 · 红线对账 · 接口清单 · Step 列表 · 每 Step Harness 验收盘。  
 Gate 1–4 / 合并模式 / 快速路径见 `DEV-GATES.md`。模板：`templates/plan-template.md`。
 
-## 每 Step N（→ `可以开始` → step-stop → Verify → gate step 绿 → `可以继续`）
+## 每 Step N（→ `可以开始` → step-stop → Test验收 → Verify → gate step 绿 → `可以继续`）
 
 1. 确认 Test 已写/更新 **failing tests**（对应用例 AC ID）
 2. 你 `可以开始` 后 **仅本 Step** 实现
@@ -35,8 +35,19 @@ Gate 1–4 / 合并模式 / 快速路径见 `DEV-GATES.md`。模板：`templates
 4. `apps/api` 薄路由；业务只在 `os_core`；唯一写 Legacy 经 `execution_service`
 5. **git diff** 复核 Step 1…N-1
 6. 停机落盘：`templates/step-stop-template.md` → `step-stop/`
-7. **Verify 新会话**：`【Verify回合】Step N` → `verify/verify-<HHmm>-stepN.md`（见 `VERIFY-GATES.md`）
-8. `./scripts/gate step --step N -k '<AC-ID>'` 全绿
+7. **Test 新会话**：`【Test·Step N 验收】` → `test/test-<HHmm>-stepN-regression.md`（见 `TEST-GATES.md`）
+8. **Verify 新会话**：`【Verify回合】Step N` → `verify/verify-<HHmm>-stepN.md`（见 `VERIFY-GATES.md`）
+9. `./scripts/gate step --step N -k '<AC-ID>'` 全绿
+
+## 交付（→ `可以提交` 后才能 commit）
+
+全部 Step `可以继续` 后：
+
+1. `summary/change-summary-<HHmm>.md`（`templates/change-summary-template.md`）
+2. `workflow_state` → `DELIVERY`
+3. **Test 终轮**：`【Test·终轮回归】` → `test/test-<HHmm>-final-regression.md`
+4. `./scripts/gate delivery` 绿 → `./scripts/gate pr` 绿
+5. 你 `可以提交` 后，才提示 `git commit` / 推 PR
 
 ## 需求变更 / 测试不通过
 
@@ -46,7 +57,7 @@ Gate 1–4 / 合并模式 / 快速路径见 `DEV-GATES.md`。模板：`templates
 
 ## 交付
 
-你「整体测试通过」后：`summary/change-summary-<HHmm>.md`（`templates/change-summary-template.md`）
+你 `可以提交` 后：`summary/change-summary-<HHmm>.md`（须先 `gate delivery` 绿）
 
 ## 禁止
 

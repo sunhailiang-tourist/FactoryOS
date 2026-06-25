@@ -22,7 +22,13 @@
 
 ## 本地开发
 
-W1 起：`uv run uvicorn apps.api.main:app --reload`（路径待实现）。
+```bash
+uv sync --extra dev
+uv run uvicorn apps.api.main:app --reload --host 127.0.0.1 --port 8000
+curl -s http://127.0.0.1:8000/health
+```
+
+W1 Step1 已交付：`create_app()` + `GET /health`；`/v1/*` 按 plan Step2+ 递增。
 
 ## 相关文档
 

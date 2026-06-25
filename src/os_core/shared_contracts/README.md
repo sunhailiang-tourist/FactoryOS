@@ -6,9 +6,9 @@
 
 ## 主要功能
 
-- 对齐 `文档/数据结构/*.schema.json`
+- 对齐 `contracts/schemas/*.schema.json`（实现见 [`models/`](./models/)）
 - 跨模块 DTO、HTTP 请求/响应类型
-- 错误码常量与事件信封
+- 错误码常量与事件信封（`errors.py` · `schema_loader.py` · `tenant_registry.py` · `outbox.py`）
 
 ## 不负责什么
 
@@ -22,4 +22,4 @@
 
 ## 相关文档
 
-- [CMV 注册表](../文档/数据结构/CMV注册表.yaml) · OpenAPI v1.1.1
+- [`models/README.md`](./models/README.md) · [contracts/schemas/](../../../contracts/schemas/)

@@ -64,12 +64,19 @@ flowchart TD
   H --> I{用户: 可以开始}
   I --> J[Dev 实现本 Step]
   J --> K[step-stop 落盘]
-  K --> L[【Verify回合】新会话]
-  L --> M[verify/ 落盘]
-  M --> N[gate step]
-  N --> O{用户: 可以继续}
-  O --> P[下一 Step 或 DELIVERY]
-  P --> Q[change-summary · gate pr · PR]
+  K --> L[【Test·Step N 验收】]
+  L --> M[test-stepN-regression 落盘]
+  M --> N[【Verify回合】新会话]
+  N --> O[verify/ 落盘]
+  O --> P[gate step]
+  P --> Q{用户: 可以继续}
+  Q --> R[下一 Step 或 DELIVERY]
+  R --> S[change-summary]
+  S --> T[【Test·终轮回归】]
+  T --> U[gate delivery]
+  U --> V[gate pr]
+  V --> W{用户: 可以提交}
+  W --> X[git commit · PR]
 ```
 
 ### 关键词 → state → 允许写入
@@ -80,8 +87,9 @@ flowchart TD
 | `可以继续`（Step0 后） | `PLANNING` | + plan/ |
 | `确认规划` | `CAN_TEST` + plan.ok | + test/ · src/tests/ |
 | `可以开始` | `CAN_CODE` | + src/os_core · apps · integration 业务码 |
-| Step 验收 `可以继续` | 下一 Step | 保持 CAN_CODE 或回 PLANNING |
-| 整体交付 | `DELIVERY` | summary · PR |
+| Step 验收 `可以继续` | 下一 Step | 保持 CAN_CODE |
+| 全部 Step 完成 | `DELIVERY` | summary · 终轮 Test |
+| `可以提交` | `DELIVERY` | git commit · push · PR（须 gate delivery 绿） |
 
 真源：`_factoryos_pipeline/workflow_state.md` · [GATES.md](./GATES.md)
 
@@ -90,7 +98,7 @@ flowchart TD
 | Agent | 口令 | 细则 |
 |-------|------|------|
 | Dev | `【Dev模式启动】` + 目标 | [STEP0](./STEP0.md) · [DEV-GATES](./DEV-GATES.md) |
-| Test | `【Test模式启动】` + plan 路径 | [TEST-GATES](./TEST-GATES.md) |
+| Test | `【Test模式启动】` · `【Test·Step N 验收】` · `【Test·终轮回归】` | [TEST-GATES](./TEST-GATES.md) |
 | Verify | `【Verify回合】Step N`（**新对话**） | [VERIFY-GATES](./VERIFY-GATES.md) |
 
 **里程碑附加口令**（非 SH-步步流通用）：plan / [编码绝对门禁](../rules/编码绝对门禁.mdc) 可约定首轮业务码总闸。当前 W1：`确认编码门禁，开始 W1`（在 `可以开始` 之前）。
@@ -104,7 +112,8 @@ flowchart TD
 | 确认规划 | `./scripts/gate plan` | `.gates/plan.ok` |
 | test-plan | `./scripts/gate test` | stdout PASS |
 | 编码中 | `./scripts/harness --tier auto` | 四门子集 |
-| Step 停机 | `./scripts/gate step --step N -k 'AC'` | harness+pytest+static+verify |
+| Step 停机 | `./scripts/gate step --step N -k 'AC'` | harness+pytest+Test落盘+verify+static |
+| commit 前 | `./scripts/gate delivery` | 终轮回归 pytest 全量 + final-regression 落盘 |
 | PR | `./scripts/gate pr` | CI 同款 |
 | docs 漂移 | `./scripts/gate docs-sync` | Tier-A/C fail · B warn |
 | Gate 0 | `./scripts/gate gate0` | 52 P0 预备 |
@@ -121,12 +130,16 @@ _factoryos_pipeline/
   .gates/plan.ok
   <YYYY-MM-DD>/
     plan/ · test/ · step-stop/ · verify/ · summary/ · bug/
+    test/test-*-stepN-regression.md    # 每 Step 强制
+    test/test-*-final-regression.md    # commit 前强制
 ```
 
 | 工件 | 模板 | 追溯用途 |
 |------|------|----------|
 | plan | `.cursor/factoryos/templates/plan-template.md` | PR body 必填路径 · AC 对账 |
-| test | `test-template.md` | Test Gate A–G 证据 |
+| test | `test-template.md` | Test Gate A–G · 编码前 |
+| test-step | `test-step-regression-template.md` | **每 Step 硬性验收** |
+| test-final | `test-final-regression-template.md` | **终轮回归 · commit 前** |
 | step-stop | `step-stop-template.md` | Step 十项自检 |
 | verify | `verify-template.md` | 独立审阅 · gate step 前置 |
 | summary | `change-summary-template.md` | PR 摘要 |
@@ -198,7 +211,6 @@ _factoryos_pipeline/
 
 | 项 | 原因 | 建议 |
 |----|------|------|
-| Verify 强制子 Agent | 现靠「新会话」纪律 | Task readonly 子 Agent + gate verify 硬拦 |
 | `workflow_state` 自动写 | 现靠 Agent 自觉 | hook 在关键词消息时提示更新 state |
 | Gate 0 CI job | 52 P0 仍 pending | AC 绿后取消注释 `gate0-ac-full` |
 | commit-msg 格式 | commit 与 AC 未绑定 | 轻量 pre-commit hook（可选） |
@@ -225,7 +237,7 @@ _factoryos_pipeline/
 ./scripts/activate_dev_env.sh
 
 # 一轮迭代
-./scripts/gate plan | test | step --step N -k 'G-01' | pr
+./scripts/gate plan | test | step --step N -k 'G-01' | delivery | pr
 ./scripts/gate docs-sync
 
 # docs 大改后

@@ -1,9 +1,9 @@
 ---
-description: SH-步步流 v2 总纲 — L1人机轨 + Spec + Harness · 步步确认 · contracts/ 真源
+description: SH-步步流 v2.1 总纲 — 每Step Test验收+Verify · 终轮回归后才能commit
 alwaysApply: true
 ---
 
-# SH-步步流 v2（FactoryOS 研发总纲）
+# SH-步步流 v2.1（FactoryOS 研发总纲）
 
 **真源**：`.cursor/factoryos/INDEX.md` · `contracts/` · `REDLINES.md` · [ACTIVATION.md](../factoryos/ACTIVATION.md)
 
@@ -11,38 +11,40 @@ alwaysApply: true
 
 | 层 | 作用 |
 |----|------|
-| **L1 人机轨** | 关键词闸门；每 Step 停机等你确认 |
+| **L1 人机轨** | 关键词闸门；每 Step 停机；commit 前 `可以提交` |
 | **L2 Spec 轨** | `contracts/` + plan 内 AC ID + 红线对账 |
-| **L3 Harness 轨** | failing test（红）→ 实现（绿）→ 按改动面 L0–L2 + 停机 L0–L3 全绿 |
+| **L3 Harness 轨** | 每 Step `gate step` · 终轮 `gate delivery` |
 
 ## 关键词（缺一不可）
 
-`可以继续` → `确认规划` → `可以开始` →（每 Step）`可以继续` · 阻断时 `风险接受并继续` · 失败时 `测试不通过`
+`可以继续` → `确认规划` → `可以开始` →（每 Step）Test验收→Verify→`gate step`绿→`可以继续` →（终轮）`gate delivery`绿→`可以提交`
+
+阻断：`测试不通过` · `风险接受并继续`（需改进时）
 
 ## 落盘（反黑盒）
 
-`_factoryos_pipeline/<YYYY-MM-DD>/{plan,test,step-stop,verify,summary}/` — 聊天不能代替文件
+`_factoryos_pipeline/<YYYY-MM-DD>/{plan,test,step-stop,verify,summary}/`  
+每 Step 强制：`test-*-stepN-regression.md` · commit 前强制：`test-*-final-regression.md`
 
 ## 三 Agent
 
-- **Dev**：`【Dev模式启动】` → `.cursor/rules/factoryos-dev-workflow.mdc` · 细则 `STEP0.md` `DEV-GATES.md`
-- **Test**：`【Test模式启动】` → `.cursor/rules/factoryos-test-workflow.mdc` · 细则 `TEST-GATES.md`
-- **Verify**：`【Verify回合】Step N`（**新对话**）→ 细则 `VERIFY-GATES.md` · 只写 `verify/`
+- **Dev**：`【Dev模式启动】` → `STEP0.md` `DEV-GATES.md`
+- **Test**：`【Test模式启动】` · `【Test·Step N 验收】` · `【Test·终轮回归】` → `TEST-GATES.md`
+- **Verify**：`【Verify回合】Step N`（Test 之后 · **新对话**）→ `VERIFY-GATES.md`
 
 Test 只写 `src/tests/**`；禁止改业务实现。
 
-## 单轮节拍
+## 单轮节拍（次序强制 · 节奏可快）
 
-Step0理解 → plan落盘 → test-plan+failing test → 每Step：可以开始→实现→step-stop→Verify新会话→gate step绿→可以继续 → summary交付
+plan → test-plan → **每 Step**：可以开始→实现→step-stop→**Test·Step N**→Verify→gate step绿→可以继续 → summary→**Test·终轮**→gate delivery绿→**可以提交**
 
-## Step 验收盘（未绿禁止「可继续」）
-
-详 [HARNESS-SCRIPTS.md](../factoryos/HARNESS-SCRIPTS.md) · [scripts/README.md](../../scripts/README.md)
+## Step 验收盘
 
 ```bash
 ./scripts/gate step --step N -k '<AC-ID>'
+./scripts/gate delivery    # commit 前
 ```
 
 ## 禁止
 
-跳 Step · 超 plan · 无落盘写码 · pytest/CI 未绿宣称通过 · Test 偷改 `os_core`/`apps` 业务
+跳 Step · 乱序（Test 前 Verify）· 无单步/终轮 Test 落盘 · 无 `gate delivery` 绿提示 commit · Test 偷改业务

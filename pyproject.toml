@@ -5,7 +5,11 @@ description = "FactoryOS manufacturing AI execution platform"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aiosqlite>=0.22.1",
+    "alembic>=1.18.4",
+    "fastapi>=0.115,<1",
     "pydantic>=2.10,<3",
+    "sqlalchemy[asyncio]>=2.0,<3",
 ]
 
 [project.optional-dependencies]
@@ -27,6 +31,11 @@ optional_dependencies_dev_groups = ["dev"]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[dependency-groups]
+dev = [
+    "uvicorn[standard]>=0.34,<1",
+]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/os_core"]
 
@@ -42,6 +51,7 @@ markers = [
     "pending: W1+ implementation not started — expected fail until green",
     "contract: OpenAPI / Schema contract tests",
     "workflow: SH-步步流 / harness meta tests",
+    "integration: DB / API integration tests (W1 S-* / C-*)",
 ]
 filterwarnings = ["ignore::DeprecationWarning"]
 
