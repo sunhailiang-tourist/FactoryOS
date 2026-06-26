@@ -1,7 +1,34 @@
-# conn-mock · W1 Connector 占位 Blueprint
-# 业务：C-01 health mock；无真实 Legacy 端点
-pack_id: conn-mock
-system: mock
-vendor: factoryos
-version: "0.1.0"
-description: W1 规模预埋与健康检查占位 Pack
+# conn-mock · W4 ConnectorBlueprint 样例（B-01 catalog · C-01 health）
+apiVersion: factoryos.io/v1
+kind: ConnectorBlueprint
+metadata:
+  pack_id: conn-mock
+  system: mock
+  vendor: factoryos
+  level: L2
+  certification: bronze
+spec:
+  auth:
+    type: none
+    secrets_ref: none
+  base_url: http://mock.local
+  ops:
+    - verb: QUERY_ENTITY
+      method: GET
+      path: /entity/{entity_type}/{entity_id}
+      mapping:
+        entity_type: $.params.entity_type
+        entity_id: $.params.entity_id
+    - verb: GOVERNED_WRITE
+      method: POST
+      path: /entity/update
+      mapping:
+        entity_type: $.params.entity_type
+        entity_id: $.params.entity_id
+        fields: $.params.fields
+      response:
+        legacy_id: $.legacy_id
+      revert:
+        verb: GOVERNED_WRITE_REVERT
+        method: POST
+        path: /entity/revert

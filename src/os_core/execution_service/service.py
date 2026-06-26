@@ -1,9 +1,9 @@
-"""execution_service 执行入口（W2 dry_run · 幂等 · W3 Graph/Rule/DSL 门禁）。
+"""execution_service 执行入口（W2 dry_run · 幂等 · W3 门禁 · W4 L2 runtime）。
 
-作用：唯一写 Legacy 路径编排；W3 接入 graph freeze · rule evaluate · CMV。
+作用：唯一写 Legacy 路径编排；W4 L2 真写经 connector_sdk runtime。
 业务关联：E-01～E-09 · G-03 · R-01 · D-02/D-03。
 上游：apps/api/routes/execute
-下游：graph_service · rule_engine · audit_service · connector_sdk
+下游：graph_service · rule_engine · audit_service · connector_sdk.runtime
 """
 from __future__ import annotations
 
@@ -14,11 +14,12 @@ from uuid import UUID, uuid4
 from sqlalchemy.orm import Session
 
 from os_core.audit_service.store import append_audit_event, list_audit_events
-from os_core.connector_sdk import mock_legacy
+from os_core.connector_sdk.runtime.execute import execute_op
 from os_core.execution_service.store import (
   find_by_exec_id,
   find_by_idempotency,
   insert_execution_record,
+  update_execution_status,
 )
 from os_core.graph_service import assert_graph_executable
 from os_core.rule_engine import assert_allowed_for_execute
@@ -31,15 +32,25 @@ from os_core.shared_contracts.models.execution import (
   ExecuteRequest,
   ExecutionEvidence,
   ExecutionRecord,
+  LegacyRef,
 )
+
+DEFAULT_PACK_ID = "conn-mock"
+
+
+def _runtime_legacy_refs(raw: dict[str, Any]) -> list[LegacyRef]:
+  """Runtime dict legacy_refs → OpenAPI LegacyRef 列表。"""
+  return [
+    LegacyRef(
+      system="mock",
+      ref_type=str(raw.get("entity_type", "entity")),
+      ref_id=str(raw.get("legacy_id") or raw.get("entity_id", "")),
+    )
+  ]
 
 
 def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> ExecutionRecord:
-  """执行 DSL 请求（W3：Graph/Rule/DSL 门禁 + dry_run/幂等）。
-
-  功能：校验 frozen · Rule allow · CMV；L0 不写 Legacy；L2 dry_run 不写。
-  业务含义：写路径唯一入口；同 idempotency_key 返回同一 exec。
-  """
+  """执行 DSL 请求（W3 门禁 + W4 L2 runtime 真写）。"""
   req = (
     request
     if isinstance(request, ExecuteRequest)
@@ -93,8 +104,23 @@ def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> Execu
   writes_legacy = verb_level == "L2" and not dry_run
   status: str = "simulated" if dry_run and verb_level == "L2" else "success"
 
+  before_snapshot: dict[str, Any] | None = None
+  after_snapshot: dict[str, Any] | None = None
+  legacy_refs: list[LegacyRef] | None = None
+
   if writes_legacy:
-    mock_legacy.mock_legacy_write(pack_id="conn-mock", verb=req.verb)
+    op_result = execute_op(
+      pack_id=DEFAULT_PACK_ID,
+      tenant_id=req.tenant_id,
+      verb=req.verb,
+      params=dict(req.params or {}),
+      idempotency_key=req.idempotency_key,
+    )
+    before_snapshot = op_result.get("before_snapshot")
+    after_snapshot = op_result.get("after_snapshot")
+    raw_refs = op_result.get("legacy_refs")
+    if isinstance(raw_refs, dict):
+      legacy_refs = _runtime_legacy_refs(raw_refs)
 
   record = ExecutionRecord(
     exec_id=exec_id,
@@ -110,6 +136,9 @@ def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> Execu
     idempotency_key=req.idempotency_key,
     shadow_mode=dry_run,
     params=req.params,
+    before_snapshot=before_snapshot,
+    after_snapshot=after_snapshot,
+    legacy_refs=legacy_refs,
     dry_run=dry_run,
     finished_at=now,
   )
@@ -144,14 +173,7 @@ def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> Execu
 
 
 def assemble_evidence(session: Session, exec_id: UUID) -> ExecutionEvidence | None:
-  """组装 ExecutionEvidence（E-09 可重建审计包）。
-
-  功能：聚合 execution_records + audit_events。
-  业务含义：合规只读入口；W2 不含 rule_snapshot。
-  上游调用方：GET /v1/executions/{execId}/evidence
-  参数 exec_id：执行 UUID
-  返回：ExecutionEvidence；无记录时 None
-  """
+  """组装 ExecutionEvidence（E-09 可重建审计包）。"""
   record = find_by_exec_id(session, exec_id)
   if record is None:
     return None
@@ -169,3 +191,72 @@ def assemble_evidence(session: Session, exec_id: UUID) -> ExecutionEvidence | No
     audit_events=events,
     assembled_at=datetime.now(UTC),
   )
+
+
+def revert_execution(session: Session, exec_id: UUID) -> ExecutionRecord:
+  """Revert 已成功的 L2 执行（E-04 · E-05）。
+
+  功能：恢复 Legacy 至 before_snapshot；原记录 status→reverted。
+  业务含义：补偿写路径；重复 revert 或 simulated → 409。
+  """
+  record = find_by_exec_id(session, exec_id)
+  if record is None:
+    raise PlatformError(
+      ErrorCode.REVERT_NOT_ALLOWED,
+      f"Execution not found: {exec_id}",
+      http_status=404,
+    )
+
+  if record.status == "reverted":
+    raise PlatformError(
+      ErrorCode.REVERT_NOT_ALLOWED,
+      "Execution already reverted",
+      http_status=409,
+    )
+
+  if record.dry_run or record.status == "simulated":
+    raise PlatformError(
+      ErrorCode.REVERT_NOT_ALLOWED,
+      "Cannot revert simulated or dry_run execution",
+      http_status=409,
+    )
+
+  before = record.before_snapshot
+  if not before or not isinstance(before, dict):
+    raise PlatformError(
+      ErrorCode.REVERT_NOT_ALLOWED,
+      "No before_snapshot to revert",
+      http_status=409,
+    )
+
+  params = record.params or {}
+  entity_type = str(before.get("entity_type") or params.get("entity_type", "work_order"))
+  entity_id = str(before.get("entity_id") or params.get("entity_id", ""))
+  fields = dict(before.get("fields") or {})
+
+  from os_core.connector_sdk import mock_legacy
+
+  mock_legacy.restore_entity(
+    entity_type=entity_type,
+    entity_id=entity_id,
+    fields=fields,
+    pack_id=DEFAULT_PACK_ID,
+  )
+
+  now = datetime.now(UTC)
+  update_execution_status(session, exec_id, status="reverted", finished_at=now)
+
+  append_audit_event(
+    session=session,
+    tenant_id=record.tenant_id,
+    event_type=AuditEventType.EXECUTE_REVERTED,
+    actor=record.actor,
+    exec_id=exec_id,
+    graph_id=record.graph_id,
+    graph_version=record.graph_version,
+    payload={"reverted_from": record.status},
+  )
+
+  updated = find_by_exec_id(session, exec_id)
+  assert updated is not None
+  return updated

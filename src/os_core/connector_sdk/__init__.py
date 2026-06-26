@@ -10,5 +10,12 @@ from os_core.connector_sdk.health import (
   ConnectorHealthResponse,
   check_connector_health,
 )
+from os_core.connector_sdk.registry import load_blueprint, validate_blueprint
 
-__all__ = ["ConnectorHealthResponse", "check_connector_health"]
+__all__ = [
+  "ConnectorHealthResponse",
+  "check_connector_health",
+  "load_blueprint",
+  "validate_blueprint",
+]
+

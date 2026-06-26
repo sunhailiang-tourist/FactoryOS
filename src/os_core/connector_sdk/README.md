@@ -6,7 +6,8 @@ Legacy **读/写** httpx 适配、Blueprint Runtime、Pack Registry 加载。
 
 ## 主要功能
 
-- Connector Pack 实例化、mapping、resilience
+- `registry.load_blueprint` · Blueprint 校验（W4 Step1）
+- Connector Pack 实例化、mapping、resilience（W4 Step2+ runtime）
 - 仅被 `execution_service` 调用写路径
 
 ## 不负责什么
