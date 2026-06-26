@@ -4,7 +4,7 @@
 
 - **产品宪法（UI-First）** → [.cursor/factoryos/UI-FIRST-CONFIG-PRINCIPLE.md](../.cursor/factoryos/UI-FIRST-CONFIG-PRINCIPLE.md)
 - 策略 / 工作流真源 → `.cursor/factoryos/`
-- 机器契约 → `contracts/`
+- 机器契约 → `contracts/` export 镜像 + **Contract Registry（DB published）** · ADR-008
 - **docs 认知基线**（漂移检测）→ `.cursor/docs-baseline/`（`./scripts/docs_baseline refresh`）
 - 本目录 → `文档/` ADR 长文 · `准备/` 战略材料
 

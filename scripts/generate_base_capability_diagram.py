@@ -3,11 +3,9 @@
 """Generate FactoryOS base capability diagram (SVG + PNG)."""
 from pathlib import Path
 
-import cairosvg
+from diagram_export import write_svg_and_png
 
 OUT_DIR = Path(__file__).resolve().parents[1] / "docs" / "文档" / "架构"
-SVG_PATH = OUT_DIR / "基座能力说明图.svg"
-PNG_PATH = OUT_DIR / "基座能力说明图.png"
 
 W, H = 1800, 3380
 
@@ -285,15 +283,7 @@ SVG = f'''<?xml version="1.0" encoding="UTF-8"?>
 
 
 def main():
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    SVG_PATH.write_text(SVG, encoding="utf-8")
-    cairosvg.svg2png(
-        bytestring=SVG.encode("utf-8"),
-        write_to=str(PNG_PATH),
-        output_width=2400,
-    )
-    print(f"Wrote {SVG_PATH}")
-    print(f"Wrote {PNG_PATH} ({PNG_PATH.stat().st_size} bytes)")
+    write_svg_and_png(OUT_DIR, "基座能力说明图", SVG, png_width=2400)
 
 
 if __name__ == "__main__":

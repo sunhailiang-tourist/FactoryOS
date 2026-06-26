@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://factoryos.local/schemas/SystemRelation/v1.0.0",
   "title": "SystemRelation",
-  "description": "租户与 Legacy 系统绑定声明；对齐 配置枢纽与关系模型 §4。Git 草案真源，activate 后映射 connector_instances。",
+  "description": "租户与 Legacy 系统绑定声明；对齐 配置枢纽 §4。Registry system_relations 为 published 真源；本 Schema 为 artifact/export 格式。",
   "type": "object",
   "required": ["apiVersion", "kind", "metadata", "spec", "status"],
   "additionalProperties": false,

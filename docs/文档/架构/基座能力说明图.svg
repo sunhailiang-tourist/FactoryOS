@@ -267,3 +267,4 @@
 
   <text x="900" y="1730" text-anchor="middle" class="t2">FactoryOS Core Base · 设计 v3.3.3 · 16-OS核心基座 · ADR-000～007 · 2026-06-16</text>
   <text x="900" y="1754" text-anchor="middle" class="hi">生成：scripts/generate_base_capability_diagram.py · 详述见 准备/2026-06-16/16-OS核心基座架构设计方案.md</text>
+</svg>

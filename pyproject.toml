@@ -22,11 +22,14 @@ dev = [
     "pyright>=1.1.390",
     "pre-commit>=4.0",
     "deptry>=0.23",
+    "cairosvg>=2.7",
 ]
 
 [tool.deptry]
 extend_exclude = ["scripts", "docs", "_factoryos_pipeline", ".cursor"]
 optional_dependencies_dev_groups = ["dev"]
+# uv workspace 布局：src/server(os_core·server.api) · src/integration · src/tests
+known_first_party = ["os_core", "server", "integration", "tests"]
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["plan_gate_lib", "step_chain_lib"]

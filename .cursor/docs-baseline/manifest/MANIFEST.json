@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "created_at": "2026-06-24T02:30:16Z",
-  "git_commit": "2f5843ae6df3a92404c821cba07ae6ddc1038bd7",
+  "created_at": "2026-06-26T14:22:59Z",
+  "git_commit": "7a2a07769949a15235e26d2a48ec5e80007c8666",
   "docs_root": "docs/",
   "baseline_root": ".cursor/docs-baseline/",
-  "file_count": 134,
+  "file_count": 135,
   "tier_counts": {
-    "A": 25,
+    "A": 26,
     "B": 79,
     "C": 19,
     "D": 11
@@ -14,10 +14,10 @@
   "files": [
     {
       "path": "docs/README.md",
-      "sha256": "a3d7b39ef49a7e0064c8339141c36cb5e8de79a1e5d71b2eeed249aa2aee890d",
+      "sha256": "eeee7248b612eff831387434901f5653105155f733b754eb4484e39832dfaa8c",
       "tier": "B",
       "mirrored": true,
-      "size": 685
+      "size": 752
     },
     {
       "path": "docs/准备/2026-06-16/00-今日沟通结论清单.md",
@@ -28,10 +28,10 @@
     },
     {
       "path": "docs/准备/2026-06-16/03-锁定实施策略.md",
-      "sha256": "54cefbbffa4699046f8bfb62778a23a1c57ddb0f5bfe51d149c289127436f5a3",
+      "sha256": "498bca30449bcec0f152f91d8389baaabcb0fdd706287a8528bfe25787bf7eea",
       "tier": "B",
       "mirrored": true,
-      "size": 13927
+      "size": 13515
     },
     {
       "path": "docs/准备/2026-06-16/04-工厂实施手册.md",
@@ -42,10 +42,10 @@
     },
     {
       "path": "docs/准备/2026-06-16/05-模块化与商业化方案.md",
-      "sha256": "3338a086c40ffa1e3bb5a7d39de815127a16a1822125491f91379c813a389901",
+      "sha256": "3755008119f2d61475f0ad6de386e837bec93cf9c6884694ee9d1d14f8b2eaf5",
       "tier": "B",
       "mirrored": true,
-      "size": 11027
+      "size": 11035
     },
     {
       "path": "docs/准备/2026-06-16/06-数据边界与部署策略.md",
@@ -77,10 +77,10 @@
     },
     {
       "path": "docs/准备/2026-06-16/10-阿里云基础设施定版方案.md",
-      "sha256": "f2f84230efcfd472e9e5f185756cbfe57cf15584c955b738666f69b25accea7b",
+      "sha256": "2106199da11e6a7435bd8c529c2f627aeabda0ac60e5cc95a064516ea895dc02",
       "tier": "B",
       "mirrored": true,
-      "size": 13931
+      "size": 13933
     },
     {
       "path": "docs/准备/2026-06-16/11-内部宣讲PPT大纲.md",
@@ -105,10 +105,10 @@
     },
     {
       "path": "docs/准备/2026-06-16/14-一年冲刺路线图与并行研发.md",
-      "sha256": "7ee97c06b902aea6fe29ed2b5a8b0431053074c8ea732dfaa20426be788abe7e",
+      "sha256": "41fb17019d1476a0ce2b809dc7441232d8f0058d05088247af3d76ed0e7a2cb2",
       "tier": "B",
       "mirrored": true,
-      "size": 5288
+      "size": 5292
     },
     {
       "path": "docs/准备/2026-06-16/15-研发资源与云环境用途清单.md",
@@ -119,24 +119,24 @@
     },
     {
       "path": "docs/准备/2026-06-16/16-OS核心基座架构设计方案.md",
-      "sha256": "e22c7771daef592ac342bfdab14fffeb1fbfc6c8cc2302045ffaa7b278ecb2db",
+      "sha256": "80548354343dedd3785bb30120dce556055755f2002b1ceb72fd61dc74777b99",
       "tier": "B",
       "mirrored": true,
-      "size": 21758
+      "size": 21500
     },
     {
       "path": "docs/准备/2026-06-16/17-集成平台化战略(GIP).md",
-      "sha256": "4d7bf11f2b7735f2905685fb0daf975c1e49a4af395c94275ca9997302b47ead",
+      "sha256": "19a0f5731f67c0f34381f509a1c67995cc5485b0e0b56724b459ed48b9708979",
       "tier": "B",
       "mirrored": true,
-      "size": 13674
+      "size": 13935
     },
     {
       "path": "docs/准备/2026-06-16/18-基座文档一致性矩阵.md",
-      "sha256": "7f176c2c142b82855c3f17f174d49308d43045f0899a3cfd0d52883752514afc",
+      "sha256": "f6b04790f5e9a91202cec7596915333f63c57a1fb388ab394a49399935482523",
       "tier": "B",
       "mirrored": true,
-      "size": 14115
+      "size": 14331
     },
     {
       "path": "docs/准备/软件项目计划管理.xlsx",
@@ -189,11 +189,11 @@
     },
     {
       "path": "docs/文档/接口/工厂操作系统-v1.1.yaml",
-      "sha256": "ffd10fbe2e7c48f2c5a8eebab503b2651a16d2bc4fbad73da286abb7957bfb81",
+      "sha256": "16659dbaa0e80a61c467b428093f01a1329fd0546a822701782f0915e8f25788",
       "tier": "C",
       "mirrored": true,
       "superseded_by": "contracts/openapi/工厂操作系统-v1.1.yaml",
-      "size": 32974
+      "size": 39831
     },
     {
       "path": "docs/文档/数据结构/AuditEvent.schema.json",
@@ -301,11 +301,11 @@
     },
     {
       "path": "docs/文档/数据结构/SystemRelation.schema.json",
-      "sha256": "0ee4438ee9887675dbb8cdb5df255634581bb46c38a02ce0e9ef2fa559d44593",
+      "sha256": "874df718c5be7665d5110084149d90a67be85315973fde638231ab4ebc3cfeb5",
       "tier": "C",
       "mirrored": true,
       "superseded_by": "contracts/schemas/SystemRelation.schema.json",
-      "size": 3696
+      "size": 3710
     },
     {
       "path": "docs/文档/数据结构/业务图谱.schema.json",
@@ -348,24 +348,24 @@
     },
     {
       "path": "docs/文档/架构/FactoryOS完整架构设计.md",
-      "sha256": "0dfe9bcfcfc06262bf5f71660e748b5c2fefeb9730bd161482ca6fec2e750b7a",
+      "sha256": "5ebd020767b071b1c9557fe11f44b5ebe6b480b54cf26804c9523317615f9c4c",
       "tier": "B",
       "mirrored": true,
-      "size": 20193
+      "size": 20966
     },
     {
       "path": "docs/文档/架构/os_core-public-api.md",
-      "sha256": "e6d36aac36367a3b7c0c2e99cbb88bb1a5250aac89992e902413318d9c569085",
+      "sha256": "224a1818cb805b02572bedc2c8295c17a0ff7fd94ebe047cd94509195ba42ae7",
       "tier": "A",
       "mirrored": true,
-      "size": 1282
+      "size": 1288
     },
     {
       "path": "docs/文档/架构/命名约定.md",
-      "sha256": "2d0846af3c39b97b1bd53cc30b5ab9f33c3151a2ae1f2e7afc89442b09451a30",
+      "sha256": "5bbf306a8e30e33918bd18bc67968792f9296d6e155c84a51f93ad1a20229d92",
       "tier": "A",
       "mirrored": true,
-      "size": 3225
+      "size": 4098
     },
     {
       "path": "docs/文档/架构/基座能力说明图.png",
@@ -376,10 +376,10 @@
     },
     {
       "path": "docs/文档/架构/基座能力说明图.svg",
-      "sha256": "0e9a9002007f4c737a49c5c4a0cf933442f09afd787c2157d6891a6605a56b0a",
+      "sha256": "710b16ea32a96b7a820eddc6117dda55ab57f9c95d41beca3aeae00820a00d1a",
       "tier": "D",
       "mirrored": false,
-      "size": 20909
+      "size": 20919
     },
     {
       "path": "docs/文档/架构/技术架构图.png",
@@ -390,17 +390,17 @@
     },
     {
       "path": "docs/文档/架构/技术架构图.svg",
-      "sha256": "bf3d756a64ba7899b487701a58904e2df60a576895b24d5cc58fb5042c67f0d0",
+      "sha256": "eb2cd53c9d725f118f4b8edde565500432ea1fa47cb23aed1ecb91f189f1506d",
       "tier": "D",
       "mirrored": false,
-      "size": 10653
+      "size": 10719
     },
     {
       "path": "docs/文档/架构/技术架构图说明.md",
-      "sha256": "1cb3cfd08e4d83bc18585a4c163bff0308a58f11f61497159616dcceba96c037",
+      "sha256": "792cf943a9259b50cf105c72f814ff9d4cde97b4f5260b3280f262e89e59768a",
       "tier": "B",
       "mirrored": true,
-      "size": 4940
+      "size": 4950
     },
     {
       "path": "docs/文档/架构/数据架构图.png",
@@ -425,24 +425,24 @@
     },
     {
       "path": "docs/文档/架构/架构决策记录-000-闸门零决策摘要.md",
-      "sha256": "99b33adffd86fa21e3cc5f28494a0f94fe9f11ca0f989a5d912e41040c114ba3",
+      "sha256": "3827ecdb55adaba40346e2d401f7032d236e9b2585d43ad0d6b66f09f7e8a1c0",
       "tier": "A",
       "mirrored": true,
-      "size": 2145
+      "size": 2147
     },
     {
       "path": "docs/文档/架构/架构决策记录-000-闸门零总决策.md",
-      "sha256": "fc0d322532635b9b00f017d0ad63f36f6f6558787524f84643c97e99dba19fa5",
+      "sha256": "86fad417837321399da4bfae8b1609966281613112bcc5c05f7c0be239f4b74e",
       "tier": "A",
       "mirrored": true,
-      "size": 16165
+      "size": 16169
     },
     {
       "path": "docs/文档/架构/架构决策记录-001-系统架构总览.md",
-      "sha256": "ff7dcfdf31f42e80a2c59c8ea2a7ed1bb358b5f75de104cbdcab57c5be59417b",
+      "sha256": "e7530ecdb8c7ea32f56b7fd3d9c0b508b607a5d2bf12d08808c5d60074fd9cae",
       "tier": "A",
       "mirrored": true,
-      "size": 8062
+      "size": 8010
     },
     {
       "path": "docs/文档/架构/架构决策记录-002-安全与执行红线.md",
@@ -460,10 +460,10 @@
     },
     {
       "path": "docs/文档/架构/架构决策记录-004-集成平台化GIP.md",
-      "sha256": "5f6104f546ae467149a6689b2c7252de11932d59a2f3029f054bd58ed26a94c3",
+      "sha256": "c4cc0a23359104c8b79cbf00189c3a6682211fce1db7f2280b85576ee591dc51",
       "tier": "A",
       "mirrored": true,
-      "size": 5865
+      "size": 5873
     },
     {
       "path": "docs/文档/架构/架构决策记录-005-双写入路径与灯塔定版.md",
@@ -474,24 +474,31 @@
     },
     {
       "path": "docs/文档/架构/架构决策记录-006-ISA95边界与MCP演进.md",
-      "sha256": "e89d0ef65135492192d0bc631f988030ac5e7b1a146751d4d106ca6a0afeb8bd",
+      "sha256": "e0b94398b6b19bcee25d010bbdcd5464086766e7700b8f14c95bc76291f275e0",
       "tier": "A",
       "mirrored": true,
-      "size": 5509
+      "size": 5513
     },
     {
       "path": "docs/文档/架构/架构决策记录-007-百级千级演进策略.md",
-      "sha256": "90ef3e4e7ba0d0a9e9e39ffefee9fd94327d3514da21c7e2e6bd216f5b8bd642",
+      "sha256": "dd1c59d63482fe710c3a01a810ceadd43d7c344c33db833bbbe9d5a0f28bea22",
       "tier": "A",
       "mirrored": true,
-      "size": 16106
+      "size": 16112
+    },
+    {
+      "path": "docs/文档/架构/架构决策记录-008-配置与契约平面DB化.md",
+      "sha256": "cc5cff6db5cc4f78cca8bbb190919397452281cb13fba7902a0f21d278150c99",
+      "tier": "A",
+      "mirrored": true,
+      "size": 2749
     },
     {
       "path": "docs/文档/架构/架构闭合清单.md",
-      "sha256": "d7e4e0182b7ebec32ad569ebb48be76a8643949cc76eb100804f4653a714f793",
+      "sha256": "f5aa7be13456f588abf3f3fd4e2cb316d1119d1a748c6b5ced85940e40848999",
       "tier": "A",
       "mirrored": true,
-      "size": 1587
+      "size": 1591
     },
     {
       "path": "docs/文档/架构/核心模块架构图.png",
@@ -502,17 +509,17 @@
     },
     {
       "path": "docs/文档/架构/核心模块架构图.svg",
-      "sha256": "fedc8c258b5e91ee13cdb6660d2d73d4f270c1507bd0899a1d3d1bc120b87729",
+      "sha256": "9c52c935ff17df8b31d93ec5d51f022884204aa7579927c7e7403e576c428bb1",
       "tier": "D",
       "mirrored": false,
-      "size": 11120
+      "size": 11127
     },
     {
       "path": "docs/文档/架构/核心模块架构图说明.md",
-      "sha256": "e6f3325c890bd3e59069dfbfd6046a4abee81025176f58a484c5c4ee47e6f453",
+      "sha256": "648e4cc3145190dd29ae9cc034dd11093f2f82d81b4e65d319defeeb731e01bd",
       "tier": "B",
       "mirrored": true,
-      "size": 3720
+      "size": 3724
     },
     {
       "path": "docs/文档/架构/治理规范.md",
@@ -530,17 +537,17 @@
     },
     {
       "path": "docs/文档/架构/系统架构图.svg",
-      "sha256": "9a11eb252d0beeb8554ac631711a807a73b97774350415bf1d5ee850433d693b",
+      "sha256": "07a2396e093024470097c9810b0958ae2aabab048eeb8df94ae6384f01d8e45a",
       "tier": "D",
       "mirrored": false,
-      "size": 9917
+      "size": 9919
     },
     {
       "path": "docs/文档/架构/系统架构图说明.md",
-      "sha256": "2ddca5307fd8c3ba646e0dfbc0fdd734194fd0e591846fbda151f63545529bc6",
+      "sha256": "733335945759435c9da10854b8336e4bb68b7a4dfee4caaaab4e53dceb2a9b29",
       "tier": "B",
       "mirrored": true,
-      "size": 5353
+      "size": 5355
     },
     {
       "path": "docs/文档/架构/索引.md",
@@ -551,45 +558,45 @@
     },
     {
       "path": "docs/文档/架构/编码绝对门禁.md",
-      "sha256": "0acb3fc2ec6cd3c60346b16e37b1ba5ee4a34974b2319f49672024dbdbbc940f",
+      "sha256": "441e22274a0e76e620c2622b58b60152b7680331a8f09c1746fc5d59035e4c62",
       "tier": "A",
       "mirrored": true,
-      "size": 7157
+      "size": 7264
     },
     {
       "path": "docs/文档/架构/能力-模块包-模块追溯矩阵.md",
-      "sha256": "3f98baeb1781c874ea49fb9d4da0c0f330947f8278c425cc16962afa55ba5fdb",
+      "sha256": "71c91f804e2898918e9f1727367a9012a9cfd37d921b2807ad69991076773b86",
       "tier": "A",
       "mirrored": true,
-      "size": 8784
+      "size": 8802
     },
     {
       "path": "docs/文档/架构/膨胀期架构守则.md",
-      "sha256": "233ed7bc8121520bdb33433a52a3642c1b9a9c06d5bd8d34e11aca901cc6f4fe",
+      "sha256": "dba20d70fbd7ea7db9ae18c18b5a5b3d1d84e3f897b3be841117b678ece78ed8",
       "tier": "A",
       "mirrored": true,
-      "size": 4510
+      "size": 4516
     },
     {
       "path": "docs/文档/架构/过渡架构-四态演进.md",
-      "sha256": "69c774ccd90e0b7f0081200eda6e19fcd7b7548857d8e269a988052dd04496f6",
+      "sha256": "d7347bd33271b8199e3886209d4a3eb34f0ed10a00919731b66ae770f4fb3963",
       "tier": "B",
       "mirrored": true,
-      "size": 4973
+      "size": 4977
     },
     {
       "path": "docs/文档/架构/配置枢纽与关系模型.md",
-      "sha256": "e766c57b5c6007866992cf6c1898e2d861cb48e98a48d13f2f1d6d147496414b",
+      "sha256": "e798966a9fd2be0931b1bb9f670d2a8cb5f11ff4dc077687e7e4fd5a6e67df2e",
       "tier": "B",
       "mirrored": true,
-      "size": 14800
+      "size": 15405
     },
     {
       "path": "docs/文档/索引.md",
-      "sha256": "89de609107cad37b1d2902cb540c805779fb05cab3a6859e79c8097d5c2a383e",
+      "sha256": "73fef071e6afb2436ba5b1056e008a03312407c672ca910fdc4a06b000fc38b2",
       "tier": "B",
       "mirrored": true,
-      "size": 6466
+      "size": 6558
     },
     {
       "path": "docs/文档/规格说明/Connector-Agent规格.md",
@@ -621,17 +628,17 @@
     },
     {
       "path": "docs/文档/规格说明/Harness终端体验.md",
-      "sha256": "60cae434e5bf1326b315c1dff932e220f720773f096c0b38b517d53bc757e676",
+      "sha256": "9b8f9cfcc915b4ee39ff89a7ed8b6bd1a7397f5f8e50165ab9200c8ce236eaba",
       "tier": "B",
       "mirrored": true,
-      "size": 5461
+      "size": 5465
     },
     {
       "path": "docs/文档/规格说明/Integration-Studio规格.md",
-      "sha256": "957f92a708909b2e11c3e7f3885ff87e3a0c8e4cce6fb976885b3a7eb1b5c80b",
+      "sha256": "9ab6a426712e169c6fe785f6b0459aa41e949c66a06dd9de9dbd5d979f8ca928",
       "tier": "B",
       "mirrored": true,
-      "size": 2305
+      "size": 2857
     },
     {
       "path": "docs/文档/规格说明/MCP-Gateway规格.md",
@@ -684,17 +691,17 @@
     },
     {
       "path": "docs/文档/规格说明/多租户与隔离.md",
-      "sha256": "025bd1ff55bbac1eaae84adb107b029293109a22958fc99d7ee575fac4ee0c63",
+      "sha256": "3582ce67fac0878894e9157486e7ae921185c3fbf3c111197834945777d9d4ea",
       "tier": "A",
       "mirrored": true,
-      "size": 2874
+      "size": 2876
     },
     {
       "path": "docs/文档/规格说明/感知与多模态入口.md",
-      "sha256": "e61712bc13536b37a4433e98ac3f8e2ecb8334a593e1cb863cc89df953e936b4",
+      "sha256": "b89f31e64aa22eb36eb0c24de503f61a0c9f60ace1a290980dccf23474dd3106",
       "tier": "B",
       "mirrored": true,
-      "size": 6823
+      "size": 6827
     },
     {
       "path": "docs/文档/规格说明/执行与回滚.md",

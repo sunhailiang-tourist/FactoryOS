@@ -24,6 +24,17 @@
 | 5 | **freeze** | Graph 工作坊提交/冻结 | `POST /v1/graphs/{id}/versions/{version}/submit` · `.../freeze` | frozen Graph |
 | 6 | **export** | Implementation Package | `POST /v1/packages/export` | Package JSON |
 
+## 2.1 Platform Registry（ADR-008 · 配置真源）
+
+| 能力 | API | 说明 |
+|------|-----|------|
+| 读 Pack/Tenant/Contract | `GET /v1/registry/*` | Studio 列表与详情 |
+| AI/人提案 | `POST /v1/registry/change-requests` | **pending**，不直接改库 |
+| 人审批准 | `POST .../approve` | 写入 `pack_registry` / `system_relations` |
+| 人审拒绝 | `POST .../reject` | R-09：AI 不得自动 publish |
+
+`contracts/openapi` 与 `server/api/data/studio_flows.json` 为 export/辅助；**运行时真源 = PostgreSQL Registry**。
+
 ## 3. Prove 步硬规则
 
 1. `tenant.shadow_mode=true` 期间 **禁止** 开生产写（见 Shadow 规格）。

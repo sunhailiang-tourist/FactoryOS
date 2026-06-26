@@ -43,7 +43,7 @@
 | 需求 | 路径 |
 |------|------|
 | ADR-002 红线 | [REDLINES.md](./REDLINES.md) |
-| 九模块 | [MODULE-MAP.md](./MODULE-MAP.md) |
+| 十内核模块 | [MODULE-MAP.md](./MODULE-MAP.md) |
 | 52 P0 | [AC-P0-INDEX.md](./AC-P0-INDEX.md) |
 | OpenAPI | [contracts/openapi/](../../contracts/openapi/) |
 | 验收全文 | [contracts/acceptance/](../../contracts/acceptance/) |

@@ -17,7 +17,7 @@
 | 看有哪些接入链路（调试） | `./scripts/factoryos guide list` |
 | 改契约后自检 | `./scripts/harness --tier contracts` |
 | 改 `src/server/os_core` 后自检 | `./scripts/harness --tier auto` |
-| 更新架构图 PNG/SVG | `python scripts/generate_all_diagrams.py`（需 `cairosvg`） |
+| 更新架构图 PNG/SVG | `uv run python scripts/generate_all_diagrams.py`（SVG 必出；PNG 需系统 **libcairo**：macOS `brew install cairo`） |
 
 ---
 
@@ -114,7 +114,7 @@ GitHub Actions：`.github/workflows/ci.yml` 跑 `check_harness.py --tier full` +
 
 ### 文档图 · 一次性生成（非 CI）
 
-依赖 **`cairosvg`**（架构图）、**`python-pptx`**（宣讲 PPT）。改 ADR/架构说明后手动跑，**不**纳入每 Step Harness。
+依赖 **`cairosvg`**（Python）+ 系统 **libcairo**（PNG 导出；无则仅更新 SVG）。**`python-pptx`**（宣讲 PPT）。改 ADR/架构说明后手动跑，**不**纳入每 Step Harness。
 
 | 文件 | 输出 | 说明 |
 |------|------|------|

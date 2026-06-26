@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import cairosvg
+from diagram_export import write_svg_and_png
 
 OUT = Path(__file__).resolve().parents[1] / "docs" / "文档" / "架构"
 
@@ -23,13 +23,7 @@ STYLES = f"""
 
 
 def _write(name: str, svg: str, width: int = 2400) -> None:
-    svg_path = OUT / f"{name}.svg"
-    png_path = OUT / f"{name}.png"
-    OUT.mkdir(parents=True, exist_ok=True)
-    svg_path.write_text(svg, encoding="utf-8")
-    cairosvg.svg2png(bytestring=svg.encode("utf-8"), write_to=str(png_path), output_width=width)
-    print(f"Wrote {svg_path}")
-    print(f"Wrote {png_path} ({png_path.stat().st_size} bytes)")
+    write_svg_and_png(OUT, name, svg, png_width=width)
 
 
 def system_architecture() -> None:
