@@ -9,9 +9,12 @@ import pytest
 from tests.ac_registry import load_ac_ids
 
 AC_IDS = load_ac_ids()
-# W1 plan 已拆出独立 failing tests，不再走 pending 占位
-W1_ACTIVE_AC_IDS = frozenset({"S-01", "S-02", "S-03", "S-04", "C-01"})
-PENDING_AC_IDS = [ac_id for ac_id in AC_IDS if ac_id not in W1_ACTIVE_AC_IDS]
+# W1/W2 plan 已拆出独立 failing tests，不再走 pending 占位
+ACTIVE_AC_IDS = frozenset({
+  "S-01", "S-02", "S-03", "S-04", "C-01",
+  "E-03", "E-06", "E-07", "E-09",
+})
+PENDING_AC_IDS = [ac_id for ac_id in AC_IDS if ac_id not in ACTIVE_AC_IDS]
 
 
 @pytest.mark.pending

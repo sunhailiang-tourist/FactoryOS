@@ -75,6 +75,34 @@ def migrated_db_session(repo_root: Path):
         engine.dispose()
 
 
+@pytest.fixture
+def api_client():
+    """FastAPI 同步测试客户端（W1+ HTTP 集成用例共用）。"""
+    import importlib
+
+    from fastapi.testclient import TestClient
+
+    main = importlib.import_module("apps.api.main")
+    create_app = getattr(main, "create_app", None)
+    assert create_app is not None, "apps.api.main 缺少 create_app"
+    return TestClient(create_app())
+
+
+@pytest.fixture
+def sample_execute_request() -> dict:
+    """W2 试跑 ExecuteRequest 样例（dry_run · 无 Rule/Graph 运行时）。"""
+    return {
+        "tenant_id": "default",
+        "graph_id": "graph-d1-generic-template",
+        "graph_version": "v1.0.0",
+        "verb": "GOVERNED_WRITE",
+        "params": {"entity": "work_order", "action": "mock_update"},
+        "dry_run": True,
+        "idempotency_key": "test-idem-w2-001",
+        "actor": {"user_id": "test-operator", "role": "operator", "channel": "api"},
+    }
+
+
 @pytest.fixture(scope="session")
 def contracts_dir() -> Path:
     return CONTRACTS

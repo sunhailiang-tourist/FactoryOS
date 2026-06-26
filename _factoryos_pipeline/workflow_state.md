@@ -5,20 +5,26 @@
 
 ```yaml
 phase: DELIVERY
-agent: test
+agent: dev
 step: 4
-plan: _factoryos_pipeline/2026-06-25/plan/plan-0116-w1-base.md
-test_plan: _factoryos_pipeline/2026-06-25/test/test-1443-w1-step1-4.md
-summary: _factoryos_pipeline/2026-06-25/summary/change-summary-0807-w1-base.md
-updated: 2026-06-25
-goal: W1 基座首轮 — 完成
-w1_coding_gate: confirmed
-step1_gate: green
-step2_gate: green
-step3_gate: green
-step4_gate: green
-step4_verify: _factoryos_pipeline/2026-06-25/verify/verify-1558-step4.md
-gate_pr: green
+plan: _factoryos_pipeline/2026-06-25/plan/plan-1809-w2-audit-execution.md
+test_plan: _factoryos_pipeline/2026-06-25/test/test-1813-w2-audit-execution.md
+summary: _factoryos_pipeline/2026-06-25/summary/change-summary-1105-w2-audit-execution.md
+updated: 2026-06-26
+goal: W2 — audit_service · execution shadow/idempotency
+w2_final_test: _factoryos_pipeline/2026-06-25/test/test-1105-w2-final-regression.md
+w2_step1_verify: _factoryos_pipeline/2026-06-25/verify/verify-0935-step1.md
+w2_step1_gate: green
+w2_step2_verify: _factoryos_pipeline/2026-06-25/verify/verify-1009-step2.md
+w2_step2_test: _factoryos_pipeline/2026-06-25/test/test-0950-step2-regression.md
+w2_step2_gate: green
+w2_step3_verify: _factoryos_pipeline/2026-06-25/verify/verify-1056-step3.md
+w2_step3_test: _factoryos_pipeline/2026-06-25/test/test-1053-step3-regression.md
+w2_step3_gate: green
+w2_step4_verify: _factoryos_pipeline/2026-06-25/verify/verify-1103-step4.md
+w2_step4_test: _factoryos_pipeline/2026-06-25/test/test-1102-step4-regression.md
+w2_step4_gate: green
+w2_all_steps: complete
 ```
 
 ## phase 取值
@@ -49,3 +55,13 @@ gate_pr: green
 - 2026-06-25 Step 2 停机 + Verify 通过 · 用户 `可以继续` → 进入 Step 3 待开工
 - 2026-06-25 Step 4 mock connector + C-01 完成 · 待 Verify
 - 2026-06-25 W1 四轮 Step+Verify 全绿 · gate pr 绿 · summary 落盘 · phase DELIVERY
+- 2026-06-25 W1 commit 远端 · 【Dev模式启动】W2 → phase STEP0
+- 2026-06-25 W2 Step0 通过 · plan-1809-w2-audit-execution.md → PLANNING
+- 2026-06-25 用户确认规划 · gate plan 绿 → CAN_TEST
+- 2026-06-25 W2 Step1 audit_service 内核完成 · Test·Step1 + Verify 通过
+- 2026-06-26 用户 `可以继续` → 进入 W2 Step 2 待开工
+- 2026-06-26 W2 Step2 audit HTTP + E-03 · Test·Step2 + Verify 通过 · gate step 2 绿
+- 2026-06-26 用户 `可以继续` → 进入 W2 Step 3 待开工
+- 2026-06-26 W2 Step3 E-06/E-07 复验 · Test·Step3 + Verify 通过 · gate step 3 绿
+- 2026-06-26 gate step 4 绿（phase 回 CAN_CODE 后通过）
+- 2026-06-26 W2 Step4 Verify 通过 · 用户 `可以继续` → phase DELIVERY · 四轮全绿

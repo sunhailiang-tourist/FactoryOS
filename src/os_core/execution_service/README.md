@@ -6,9 +6,20 @@
 
 ## 主要功能
 
+- `execute(session, request)` — W2 Step3：**dry_run → simulated**（E-06）· **idempotency_key 幂等**（E-07）
+- `assemble_evidence(session, exec_id)` — W2 Step4：**ExecutionEvidence 聚合**（E-09）
 - DSL 解释执行、ExecutionRecord 落库
-- Connector 调度、idempotency、connector_trace
-- Revert / 对账钩子
+- Connector 调度（经 `connector_sdk.mock_legacy`）、connector_trace
+- Revert / 对账钩子（W4+）
+
+## W2 验收盘
+
+```bash
+pytest src/tests/integration/test_execution_e06_e07.py -k 'E-06'
+./scripts/gate step --step 3 -k 'E-06'
+pytest src/tests/integration/test_execution_e09.py -k 'E-09'
+./scripts/gate step --step 4 -k 'E-09'
+```
 
 ## 不负责什么
 

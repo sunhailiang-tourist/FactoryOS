@@ -10,7 +10,10 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
+from apps.api.routes.audit import router as audit_router
 from apps.api.routes.connectors import router as connectors_router
+from apps.api.routes.execute import router as execute_router
+from apps.api.routes.executions import router as executions_router
 
 
 def create_app() -> FastAPI:
@@ -29,6 +32,9 @@ def create_app() -> FastAPI:
   )
 
   application.include_router(connectors_router)
+  application.include_router(audit_router)
+  application.include_router(execute_router)
+  application.include_router(executions_router)
 
   @application.get("/health")
   def health() -> dict[str, str]:

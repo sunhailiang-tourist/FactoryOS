@@ -5,6 +5,9 @@
 | 路径 | 内容 |
 |------|------|
 | `connectors.py` | `GET /v1/connectors/{pack_id}/health`（AC C-01） |
+| `audit.py` | `GET /v1/audit/events`（E-03） |
+| `execute.py` | `POST /v1/execute`（E-03/06/07） |
+| `executions.py` | `GET /v1/executions/{execId}/evidence`（E-09） |
 | `__init__.py` | 路由包标记 |
 
 ## 门禁

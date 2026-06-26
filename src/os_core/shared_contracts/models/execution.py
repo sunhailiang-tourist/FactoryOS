@@ -18,6 +18,23 @@ from os_core.shared_contracts.models.audit import AuditEvent
 from os_core.shared_contracts.models.common import Actor, ConnectorOutcome, ExecutionStatus
 
 
+class ExecuteRequest(BaseModel):
+  """POST /v1/execute 请求体（对齐 OpenAPI ExecuteRequest）。"""
+
+  model_config = ConfigDict(extra="forbid")
+
+  tenant_id: str = Field(description="租户 ID")
+  graph_id: str = Field(description="业务图谱 ID")
+  graph_version: str = Field(description="图谱版本")
+  verb: str = Field(description="DSL 动词")
+  params: dict[str, Any] = Field(description="动词参数")
+  actor: Actor = Field(description="操作者")
+  ruleset_id: str | None = Field(default=None, description="RuleSet ID")
+  scope_id: str | None = Field(default=None, description="作用域 ID")
+  idempotency_key: str | None = Field(default=None, description="幂等键")
+  dry_run: bool = Field(default=False, description="试跑不写 Legacy")
+
+
 class LegacyRef(BaseModel):
   """Legacy 系统实体引用。"""
 
