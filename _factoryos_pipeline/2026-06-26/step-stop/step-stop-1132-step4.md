@@ -11,10 +11,10 @@ Step 4 — DSL registry + execution 门禁链 + E-01（harness `-k 'E-01'`）
 
 | 路径 | 变更 |
 |------|------|
-| `src/os_core/shared_contracts/cmv_registry.py` | CMV yaml 动词白名单 |
-| `src/os_core/shared_contracts/exceptions.py` | `PlatformError` · `ErrorCode` |
-| `src/os_core/execution_service/service.py` | graph→rule→DSL 门禁链 |
-| `src/apps/api/routes/dsl.py` | `GET /v1/dsl/registry` |
+| `src/server/os_core/shared_contracts/cmv_registry.py` | CMV yaml 动词白名单 |
+| `src/server/os_core/shared_contracts/exceptions.py` | `PlatformError` · `ErrorCode` |
+| `src/server/os_core/execution_service/service.py` | graph→rule→DSL 门禁链 |
+| `src/server/api/modules/*/controllers/dsl.py` | `GET /v1/dsl/registry` |
 | `src/tests/integration/test_dsl_w3.py` | D-01～D-03 |
 | `src/tests/integration/test_execution_e01.py` | E-01 L0 QUERY |
 

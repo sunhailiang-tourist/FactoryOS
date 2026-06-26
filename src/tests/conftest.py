@@ -9,7 +9,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from tests.ac_registry import load_ac_ids
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -68,9 +67,14 @@ def migrated_db_session(repo_root: Path):
 
     factory = sessionmaker(bind=engine)
     session = factory()
+    from os_core.platform_registry import bootstrap_registry, set_registry_session
+
+    bootstrap_registry(session, root=repo_root)
+    set_registry_session(session)
     try:
         yield session
     finally:
+        set_registry_session(None)
         session.close()
         engine.dispose()
 
@@ -82,9 +86,9 @@ def api_client():
 
     from fastapi.testclient import TestClient
 
-    main = importlib.import_module("apps.api.main")
+    main = importlib.import_module("server.api.main")
     create_app = getattr(main, "create_app", None)
-    assert create_app is not None, "apps.api.main 缺少 create_app"
+    assert create_app is not None, "server.api.main 缺少 create_app"
     return TestClient(create_app())
 
 

@@ -49,7 +49,7 @@ SVG = f'''<?xml version="1.0" encoding="UTF-8"?>
   <rect x="40" y="180" width="1720" height="30" rx="8" fill="#2c3e50"/>
   <text x="58" y="200" class="zt">A · 基座物理组成（可独立部署）</text>
   <rect x="58" y="220" width="150" height="76" rx="6" fill="#d5e8d4" stroke="#82b366"/>
-  <text x="70" y="242" class="bt">apps/api</text>
+  <text x="70" y="242" class="bt">server/api</text>
   <text x="70" y="262" class="sm">唯一生产后端</text>
   <text x="70" y="280" class="hi">FastAPI · OpenAPI v1.1.1</text>
   <rect x="220" y="220" width="420" height="76" rx="6" fill="#dae8fc" stroke="#6c8ebf"/>

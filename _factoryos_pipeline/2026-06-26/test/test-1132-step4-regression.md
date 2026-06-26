@@ -8,10 +8,10 @@
 
 | 路径 | 变更 | plan 预期落位 | 实际落位 | 结论 |
 |------|------|---------------|----------|------|
-| `src/os_core/shared_contracts/cmv_registry.py` | 新增 | CMV 动词表 | ✅ | PASS |
-| `src/os_core/shared_contracts/exceptions.py` | 新增 | PlatformError | ✅ | PASS |
-| `src/os_core/execution_service/service.py` | 修改 | graph→rule→DSL 链 | ✅ | PASS |
-| `src/apps/api/routes/dsl.py` | 新增 | GET registry | ✅ | PASS |
+| `src/server/os_core/shared_contracts/cmv_registry.py` | 新增 | CMV 动词表 | ✅ | PASS |
+| `src/server/os_core/shared_contracts/exceptions.py` | 新增 | PlatformError | ✅ | PASS |
+| `src/server/os_core/execution_service/service.py` | 修改 | graph→rule→DSL 链 | ✅ | PASS |
+| `src/server/api/modules/*/controllers/dsl.py` | 新增 | GET registry | ✅ | PASS |
 | `src/tests/integration/test_dsl_w3.py` | 新增 | D-01～D-03 | ✅ | PASS |
 | `src/tests/integration/test_execution_e01.py` | 新增 | E-01 | ✅ | PASS |
 

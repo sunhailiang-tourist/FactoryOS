@@ -11,11 +11,11 @@
 | 路径 | 变更 | plan Step | 落位合理 | 备注 |
 |------|------|-----------|----------|------|
 | `pyproject.toml` · `uv.lock` | 修改 | 1 | ✅ | FastAPI · SQLAlchemy · Alembic · asyncpg |
-| `src/apps/api/main.py` | 新增 | 1 | ✅ | app 工厂 + `/health` |
-| `src/apps/api/routes/connectors.py` | 新增 | 4 | ✅ | 薄路由，无业务规则 |
-| `src/os_core/shared_contracts/` | 新增 | 2–3 | ✅ | Pydantic · TenantRegistry · OutboxPort |
+| `src/server/api/main.py` | 新增 | 1 | ✅ | app 工厂 + `/health` |
+| `src/server/api/modules/*/controllers/connectors.py` | 新增 | 4 | ✅ | 薄路由，无业务规则 |
+| `src/server/os_core/shared_contracts/` | 新增 | 2–3 | ✅ | Pydantic · TenantRegistry · OutboxPort |
 | `alembic/` · `alembic.ini` | 新增 | 3 | ✅ | `001_scale_s01_s04` |
-| `src/os_core/connector_sdk/health.py` | 新增 | 4 | ✅ | mock C-01，无 write |
+| `src/server/os_core/connector_sdk/health.py` | 新增 | 4 | ✅ | mock C-01，无 write |
 | `src/integration/catalog/conn-mock.yaml` | 新增 | 4 | ✅ | mock Pack 占位 |
 | `src/tests/workflow/` · `contract/` · `integration/` | 新增/改 | Test | ✅ | W1 AC 子集 |
 | `.cursor/rules/项目结构变更门禁.mdc` | 新增 | 治理 | ✅ | 新建目录须 README |
@@ -54,7 +54,7 @@ uv run python scripts/gate_cli.py delivery   # 终轮验收盘（本报告落盘
 
 | 维度 | 结论 | 说明 |
 |------|------|------|
-| 模块边界 | **通过** | `apps/api` 薄路由；业务在 `os_core`；integration 无 os_core 私有 import |
+| 模块边界 | **通过** | `server/api` 薄路由；业务在 `os_core`；integration 无 os_core 私有 import |
 | 重复逻辑 | **通过** | health 逻辑单点在 `connector_sdk.health`；路由仅 model_dump |
 | 注释可读性 | **通过** | 文件头 + 函数 docstring 四要素齐全 |
 | 与 plan 一致 | **通过** | 无 G/R/E 业务闭环；无超 scope Legacy 写 |
@@ -79,7 +79,7 @@ uv run python scripts/gate_cli.py delivery   # 终轮验收盘（本报告落盘
 }
 ```
 
-结构依据：apps/api/main.py 内联返回；workflow 测试断言。
+结构依据：server/api/main.py 内联返回；workflow 测试断言。
 
 #### `GET /v1/connectors/{packId}/health`（Step4 · C-01）
 
@@ -115,13 +115,13 @@ uv run python scripts/gate_cli.py delivery   # 终轮验收盘（本报告落盘
 
 | 文件 | 接口/AC | 说明 |
 |------|---------|------|
-| `src/apps/api/main.py` | `GET /health` | workflow |
-| `src/apps/api/routes/connectors.py` | `GET /v1/connectors/{packId}/health` | C-01 |
-| `src/os_core/connector_sdk/health.py` | C-01 响应体 | mock health 实现 |
-| `src/os_core/shared_contracts/models/*.py` | contract | 7 Schema Pydantic |
+| `src/server/api/main.py` | `GET /health` | workflow |
+| `src/server/api/modules/*/controllers/connectors.py` | `GET /v1/connectors/{packId}/health` | C-01 |
+| `src/server/os_core/connector_sdk/health.py` | C-01 响应体 | mock health 实现 |
+| `src/server/os_core/shared_contracts/models/*.py` | contract | 7 Schema Pydantic |
 | `alembic/versions/001_scale_s01_s04.py` | S-01 | 规模表 migration |
-| `src/os_core/shared_contracts/tenant_registry.py` | S-03 | get_cell |
-| `src/os_core/shared_contracts/outbox.py` | S-04 | OutboxPort.publish |
+| `src/server/os_core/shared_contracts/tenant_registry.py` | S-03 | get_cell |
+| `src/server/os_core/shared_contracts/outbox.py` | S-04 | OutboxPort.publish |
 | `scripts/check_import_boundaries.py` | workflow | 静态边界 |
 | `src/tests/integration/test_scale_s01_s04.py` | S-01～S-04 | 集成断言 |
 | `src/tests/integration/test_connector_c01.py` | C-01 | HTTP 集成 |

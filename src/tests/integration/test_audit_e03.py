@@ -1,7 +1,7 @@
 """W2 Step1–2：audit migration + E-03 append-only 查询。
 
 业务：执行产生审计；GET /v1/audit/events 按 tenant/exec_id 可查。
-上游：audit_service · apps/api/routes/audit
+上游：audit_service · server.api.modules.audit.controllers
 下游：gate step --step 2 -k 'E-03'
 """
 from __future__ import annotations

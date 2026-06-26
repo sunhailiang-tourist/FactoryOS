@@ -10,8 +10,8 @@
 | `execution_service/service.py` | `revert_execution` |
 | `execution_service/store.py` | `update_execution_status` |
 | `connector_sdk/mock_legacy.py` | `restore_entity` |
-| `apps/api/routes/execute.py` | `POST /v1/execute/{execId}/revert` |
-| `apps/api/routes/executions.py` | `GET /v1/executions/{execId}` |
+| `server/api/modules/*/controllers/execute.py` | `POST /v1/execute/{execId}/revert` |
+| `server/api/modules/*/controllers/executions.py` | `GET /v1/executions/{execId}` |
 
 ## AC 结果
 

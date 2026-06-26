@@ -11,12 +11,12 @@
 | 我想… | 命令 / 入口 |
 |--------|-------------|
 | **激活开发环境（首仓/新机器）** | [README §激活](../README.md#激活开发环境) · `./scripts/activate_dev_env.sh` |
-| **接入/扩展（实施/客户）** | **Integration Studio**（`apps/web-admin`）— 见 [INTEGRATION-CHAIN](../.cursor/factoryos/INTEGRATION-CHAIN.md) |
+| **接入/扩展（实施/客户）** | **Integration Studio**（`src/apps/web-admin`）— 见 [INTEGRATION-CHAIN](../.cursor/factoryos/INTEGRATION-CHAIN.md) |
 | 平台研发：本地跑 CI 同款检查 | `./scripts/harness` 或 `./scripts/factoryos harness` |
 | 平台研发：调试 flows 状态机 | `./scripts/factoryos guide`（**非实施主路径**） |
 | 看有哪些接入链路（调试） | `./scripts/factoryos guide list` |
 | 改契约后自检 | `./scripts/harness --tier contracts` |
-| 改 `src/os_core` 后自检 | `./scripts/harness --tier auto` |
+| 改 `src/server/os_core` 后自检 | `./scripts/harness --tier auto` |
 | 更新架构图 PNG/SVG | `python scripts/generate_all_diagrams.py`（需 `cairosvg`） |
 
 ---
@@ -84,8 +84,8 @@
 | tier | 层级 | 跑哪些 |
 |------|------|--------|
 | `contracts` | L0 | openapi refs · cmv sync |
-| `boundaries` | L1 | + import boundaries |
-| `step` / `full` | L2 | + code redundancy（四门） |
+| `boundaries` | L1 | + import boundaries · kernel/router/integration registry · legacy paths |
+| `step` / `full` | L2 | + code redundancy |
 | `auto` | 推断 | 按 git diff 选上表最高层；无 diff → `full` |
 
 四门均为 **stdlib only**，无第三方依赖。也可单独跑子脚本（调试时）：
@@ -94,8 +94,12 @@
 |------|----------|----------|------------|
 | **`check_openapi_schema_refs.py`** | OpenAPI 中 `$ref` 是否指向存在的 JSON Schema | `contracts/openapi/` → `contracts/schemas/` | 接口文档与 Schema 断裂；前端/测试契约不可信 |
 | **`check_cmv_sync.py`** | CMV 动词注册表：命名、L2 补偿器、connector_ops 完整性 | `contracts/cmv/CMV注册表.yaml` | 新 DSL 动词不合规；Revert 链断裂 |
-| **`check_import_boundaries.py`** | `os_core` 九模块依赖矩阵 + `integration/` 禁止 import 私有 API | `src/os_core/` · `src/integration/` | 架构分层被破坏；integration 耦合内核 |
-| **`check_code_redundancy.py`** | `os_core` / `apps` 跨文件重复函数体（≥8 行 AST 哈希） | `src/os_core/` · `src/apps/` | 违反编码绝对门禁「禁止重复逻辑」 |
+| **`check_import_boundaries.py`** | `os_core` 十模块依赖矩阵 + `integration/` 禁止 import 私有 API | `src/server/os_core/` · `src/integration/` | 架构分层被破坏 |
+| **`check_kernel_registry.py`** | `os_core/registry.py` ↔ 磁盘 10 内核模块 | `src/server/os_core/` | 内核模块漏登记 |
+| **`check_router_registry.py`** | `router/v1/registry.py` ↔ `modules/*/routers.py`；main 禁 include_router | `src/server/api/` | HTTP 面失控 |
+| **`check_integration_registry.py`** | `integration/registry.py` ↔ GIP 挂载 | `src/integration/` | 集成目录漏登记 |
+| **`check_legacy_paths.py`** | 禁止 `src/apps/api` · `src/os_core` · `src/db` 等废止路径复活 | `src/` | 结构回退 |
+| **`check_code_redundancy.py`** | `os_core` / `server.api` 跨文件重复函数体 | `src/server/os_core/` · `src/server/api/` | 违反编码绝对门禁 |
 
 ```bash
 python scripts/check_import_boundaries.py   # 单独调试
@@ -136,8 +140,8 @@ python scripts/generate_internal_deck.py   # 可选
 | 层级 | 何时跑 | 脚本 |
 |------|--------|------|
 | **L0 · 契约基线** | Step 0-B · `确认规划` · 仅改 `contracts/` | `./scripts/harness --tier contracts` |
-| **L1 · 模块边界** | 改 `src/os_core` · `src/integration` | `./scripts/harness --tier boundaries` |
-| **L2 · 代码质量** | 改 `os_core` / `apps` 业务 `.py` | `./scripts/harness --tier step` |
+| **L1 · 模块边界** | 改 `src/server/os_core` · `src/integration` | `./scripts/harness --tier boundaries` |
+| **L2 · 代码质量** | 改 `os_core` / `src/apps` 业务 `.py` | `./scripts/harness --tier step` |
 | **L3 · 行为证明** | Step 停机 · Test | `./scripts/harness --tier full --pytest -k '<AC-ID>'` |
 
 ### 工作流节点对照
@@ -158,8 +162,8 @@ python scripts/generate_internal_deck.py   # 可选
 |----------|----------|
 | `contracts/openapi` · `contracts/schemas` | `check_openapi_schema_refs` |
 | `contracts/cmv` · 新 DSL 动词 | `check_cmv_sync` |
-| `src/os_core/**` · `src/integration/**` | `check_import_boundaries` |
-| `src/os_core/**` · `src/apps/**` 业务逻辑 | `check_code_redundancy` |
+| `src/server/os_core/**` · `src/integration/**` | `check_import_boundaries` |
+| `src/server/os_core/**` · `src/server/api/**` 业务逻辑 | `check_code_redundancy` |
 
 ### 结论
 

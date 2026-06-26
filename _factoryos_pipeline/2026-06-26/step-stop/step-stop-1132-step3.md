@@ -11,12 +11,12 @@ Step 3 — `rule_engine` + rulesets HTTP（R-01～R-05 · harness `-k 'R-01'`）
 
 | 路径 | 变更 |
 |------|------|
-| `src/os_core/rule_engine/__init__.py` | 包入口 |
-| `src/os_core/rule_engine/store.py` | RuleSet ORM |
-| `src/os_core/rule_engine/evaluate.py` | deny 优先 · allow 匹配 |
-| `src/os_core/rule_engine/service.py` | CRUD · freeze · evaluate |
-| `src/os_core/rule_engine/README.md` | 模块说明 |
-| `src/apps/api/routes/rulesets.py` | RuleSet HTTP 薄路由 |
+| `src/server/os_core/rule_engine/__init__.py` | 包入口 |
+| `src/server/os_core/rule_engine/store.py` | RuleSet ORM |
+| `src/server/os_core/rule_engine/evaluate.py` | deny 优先 · allow 匹配 |
+| `src/server/os_core/rule_engine/service.py` | CRUD · freeze · evaluate |
+| `src/server/os_core/rule_engine/README.md` | 模块说明 |
+| `src/server/api/modules/*/controllers/rulesets.py` | RuleSet HTTP 薄路由 |
 | `src/tests/integration/test_rule_w3.py` | R-01～R-05 |
 
 ## 3. AC / 接口

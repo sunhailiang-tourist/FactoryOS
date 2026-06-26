@@ -76,7 +76,7 @@ Level 2  设备 / SCADA（不经由 FactoryOS 直控）
 
 | Phase | 决策 |
 |-------|------|
-| **P1 MVP** | Studio 路由宿主 **`apps/web-admin`**，路径前缀 `/studio/*`；与 Graph 管理同 deployable |
+| **P1 MVP** | Studio 路由宿主 **`src/apps/web-admin`**，路径前缀 `/studio/*`；与 Graph 管理同 deployable |
 | **Y2 可选** | 若前端 bundle 过大，可拆 **`apps/integration-studio/`** 独立构建，**API 不变** |
 
 **决策 I6-08**：OpenAPI v1.1.1 路由为真源；`apps/integration-studio/` 目录名保留为 **Y2 拆分目标**，P1 可不建独立 app 工程。

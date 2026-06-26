@@ -9,10 +9,10 @@
 
 | 路径 | 变更 | plan 预期 | 结论 |
 |------|------|-----------|------|
-| `src/os_core/execution_service/service.py` | `assemble_evidence` | Step4 | PASS |
-| `src/os_core/execution_service/store.py` | `find_by_exec_id` | Step4 | PASS |
-| `src/apps/api/routes/executions.py` | **新增** | Step4 | PASS |
-| `src/apps/api/main.py` | 注册 executions router | Step4 | PASS |
+| `src/server/os_core/execution_service/service.py` | `assemble_evidence` | Step4 | PASS |
+| `src/server/os_core/execution_service/store.py` | `find_by_exec_id` | Step4 | PASS |
+| `src/server/api/modules/*/controllers/executions.py` | **新增** | Step4 | PASS |
+| `src/server/api/main.py` | 注册 executions router | Step4 | PASS |
 
 ## 2. 硬性验收计划（执行记录）
 

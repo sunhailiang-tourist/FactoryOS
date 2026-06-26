@@ -11,10 +11,10 @@ Step 2 — Graph 生命周期 HTTP + G-03/06/08（harness `-k 'G-05'`）
 
 | 路径 | 变更 |
 |------|------|
-| `src/os_core/graph_service/service.py` | submit · freeze · clone · deprecate |
-| `src/apps/api/routes/graphs.py` | Graph HTTP 薄路由 |
-| `src/apps/api/routes/error_handlers.py` | `PlatformError` → HTTP |
-| `src/apps/api/main.py` | 注册 graphs 路由 |
+| `src/server/os_core/graph_service/service.py` | submit · freeze · clone · deprecate |
+| `src/server/api/modules/*/controllers/graphs.py` | Graph HTTP 薄路由 |
+| `src/server/api/modules/*/controllers/error_handlers.py` | `PlatformError` → HTTP |
+| `src/server/api/main.py` | 注册 graphs 路由 |
 | `src/tests/integration/test_graph_w3.py` | G-02～G-08 用例 |
 
 ## 3. AC / 接口

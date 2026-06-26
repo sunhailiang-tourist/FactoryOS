@@ -1,21 +1,17 @@
-# src · 代码根目录
+# src · 核心代码、测试与 integration export 镜像
 
-> 布局与 [仓库根 README](../README.md) 一致；契约在 `contracts/`，工作流在 `.cursor/factoryos/`。  
-> **对外实施主路径**：`apps/web-admin` Integration Studio — [UI-FIRST](../.cursor/factoryos/UI-FIRST-CONFIG-PRINCIPLE.md)
+> **代码根**：`src/server/`（内核 + API + 迁移）· `src/apps/`（Web/H5 客户端壳）  
+> **对外实施主路径**：`src/apps/web-admin` Integration Studio — [UI-FIRST](../.cursor/factoryos/UI-FIRST-CONFIG-PRINCIPLE.md)
 
 ## 结构
 
 ```text
 src/
-├── os_core/        # 平台内核九模块（唯一写 Legacy 经 execution_service）
-├── apps/           # api · web-admin · h5-worker · edge-agent
-├── integration/    # catalog · packs · tenants · tools（GIP 集成层）
-└── tests/          # contract · workflow · ac（Gate 0 验收）
+├── server/         # os_core · api · db/migrations · edge-agent（import: os_core.* · server.api.*）
+├── apps/           # web-admin · h5-worker
+├── integration/    # export/fixture 镜像（非编辑真源 · ADR-008）
+└── tests/          # contract · workflow · integration · ac
 ```
-
-## 开发顺序（Phase 1 · W1–W8）
-
-见 `.cursor/rules/工厂操作系统.md` §开发顺序；首轮：**shared_contracts → audit → execution → graph/rule → connector → agent → integration 样例**。
 
 ## 门禁
 
@@ -29,9 +25,9 @@ src/
 
 | 目录 | 说明 |
 |------|------|
-| [os_core/](os_core/README.md) | 内核 |
-| [apps/](apps/README.md) | 应用 |
-| [integration/](integration/README.md) | 集成层 |
+| [server/](server/README.md) | 服务端 |
+| [apps/](apps/web-admin/README.md) | 客户端壳 |
+| [integration/](integration/README.md) | export 镜像 |
 | [tests/](tests/README.md) | 测试 |
 
 ## 开发前全链路

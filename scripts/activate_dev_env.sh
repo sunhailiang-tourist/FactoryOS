@@ -33,7 +33,7 @@ cat <<'EOF'
 
 请人工完成：
   1. Cursor 打开仓库根 → Settings → Hooks 见 protect-paths → 重启 Cursor
-  2. 试写 src/os_core/x.py 应被拦截（未说「可以开始」）
+  2. 试写 src/server/os_core/x.py 应被拦截（未说「可以开始」）
 
 日常纪律（已编入 pre-commit / gate，无需另记流程）：
   · pull 后：再跑本脚本，或 uv sync --frozen --extra dev

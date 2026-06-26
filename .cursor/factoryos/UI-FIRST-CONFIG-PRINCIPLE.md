@@ -11,7 +11,7 @@
 | 平面 | 谁 | 主路径 | 沉淀什么 |
 |------|-----|--------|----------|
 | **配置/实施平面** | 实施顾问 · 客户 IT · 业务负责人 | **Integration Studio（web-admin）** | 界面易用性 · 向导 · 模板 · 复制速度 |
-| **平台研发平面** | FactoryOS 平台团队 | SH-步步流 · `contracts/` · `os_core` | 内核 · 红线 · 执行语义 · API |
+| **平台研发平面** | FactoryOS 平台团队 | SH-步步流 · Contract Registry · `os_core` | 内核 · 红线 · 执行语义 · API |
 
 **硬性规定**：配置/实施平面 **禁止** 以「改仓库 · 记命令 · 读厚文档」作为对外主路径。
 
@@ -56,11 +56,12 @@ R-01～R-11、Rule deny、Shadow 14d、Compensator 等由 **内核 + API 权限*
 ```text
 人工决策 Playbook（Gate 语义）
         ↕ 同步
-src/integration/tools/guide/flows.json   ← Studio 状态机后端模型
+src/integration/tools/guide/flows.json   ← export 镜像
+src/server/api/data/studio_flows.json        ← Studio 状态机后端模型
         ↕
-contracts/openapi  /v1/integration/*   ← UI 与 AI 共用 API
+contracts/openapi export  /v1/integration/*   ← UI 与 AI 共用 API
         ↕
-PostgreSQL + audit_service               ← 配置与人审落库
+PostgreSQL Registry + audit_service      ← contract/pack/tenant 与人审落库
 ```
 
 **实施界面只认 API + DB**；仓库 YAML 仅为 export/import 快照，不是编辑真源。
@@ -101,5 +102,5 @@ PostgreSQL + audit_service               ← 配置与人审落库
 
 ## 七、研发纪律（平台团队仍遵守）
 
-写 `apps/web-admin` Studio 页面 **仍走 SH-步步流**（plan · test · gate step）。  
+写 `src/apps/web-admin` Studio 页面 **仍走 SH-步步流**（plan · test · gate step）。  
 本宪法约束的是 **产品对外形态**，不削弱内核研发门禁。

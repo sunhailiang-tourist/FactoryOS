@@ -99,12 +99,14 @@ def is_business_path(path: str) -> bool:
     if not path.endswith((".py", ".ts", ".tsx", ".sql")):
         return False
     return path.startswith(
-        ("src/os_core/", "src/apps/", "src/integration/")
+        ("src/server/os_core/", "src/server/api/", "src/integration/")
     ) and not path.startswith("src/tests/")
 
 
 def is_migration_path(path: str) -> bool:
-    return path.startswith("alembic/versions/") and path.endswith(".py")
+    return (
+        path.startswith("src/server/db/migrations/versions/") or path.startswith("alembic/versions/")
+    ) and path.endswith(".py")
 
 
 def is_chain_pipeline_artifact(path: str) -> bool:

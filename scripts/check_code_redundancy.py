@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SCAN_DIRS = [ROOT / "src" / "os_core", ROOT / "src" / "apps"]
+SCAN_DIRS = [ROOT / "src" / "server" / "os_core", ROOT / "src" / "server" / "api"]
 MIN_LINES = 8
 SKIP_PARTS = {"__pycache__", ".venv", "node_modules", "tests"}
 

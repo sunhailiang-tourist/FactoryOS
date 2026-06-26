@@ -11,10 +11,10 @@ Step 4 — Connector 接入占位（mock health · C-01）
 
 | 路径 | 变更 |
 |------|------|
-| `src/os_core/connector_sdk/__init__.py` | 包导出 |
-| `src/os_core/connector_sdk/health.py` | `check_connector_health` mock |
-| `src/apps/api/routes/connectors.py` | `GET /v1/connectors/{pack_id}/health` |
-| `src/apps/api/main.py` | 挂载 connectors router |
+| `src/server/os_core/connector_sdk/__init__.py` | 包导出 |
+| `src/server/os_core/connector_sdk/health.py` | `check_connector_health` mock |
+| `src/server/api/modules/*/controllers/connectors.py` | `GET /v1/connectors/{pack_id}/health` |
+| `src/server/api/main.py` | 挂载 connectors router |
 | `src/integration/catalog/conn-mock.yaml` | mock Pack 占位 |
 
 ## 3. AC

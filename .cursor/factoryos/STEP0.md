@@ -19,9 +19,9 @@
 必须给出结论+证据路径：
 
 1. **写路径**：`perception/agent → DslPlan → harness/confirm → rule → execution → connector → audit`（R-01–R-11）
-2. **本轮落点**：`MODULE-MAP.md` 中哪些模块；`apps/api` 是否仅路由
+2. **本轮落点**：`MODULE-MAP.md` 中哪些模块；`src/server/api` 是否仅路由
 3. **integration 边界**：禁 import os_core 私有 API；仅 OpenAPI + connector_sdk 公开面
-4. **关键入口**：本轮将改的 `src/os_core/*`、`src/apps/api/*`、`src/integration/*` 路径清单
+4. **关键入口**：本轮将改的 `src/server/os_core/*`、`src/server/api/*`、`platform_registry/*` 路径清单
 5. **状态机/Graph**：是否涉及 freeze、Rule deny、Shadow/simulated
 
 ---
@@ -64,7 +64,7 @@
 
 大改 `docs/` 后运行 `./scripts/docs_baseline workflow-check`。若报 **Tier-A** 未同步 `.cursor/factoryos/` → 标 **B 类缺口**，等你拍板。详见 [docs-baseline/BASELINE.md](../docs-baseline/BASELINE.md)。
 
-### UI 字段对账（仅 `apps/h5-worker` / UX 迭代）
+### UI 字段对账（仅 `src/apps/h5-worker` / UX 迭代）
 
 有原型/截图时：界面字段表 + 接口字段对账表（参考 `rules/coder-expert-workflow` 图片门禁）。**kernel / os_core 迭代不强制**。
 

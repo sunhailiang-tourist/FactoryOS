@@ -26,7 +26,8 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-FLOWS_PATH = ROOT / "src" / "integration" / "tools" / "guide" / "flows.json"
+FLOWS_PATH = ROOT / "src" / "server" / "api" / "data" / "studio_flows.json"
+_FLOWS_LEGACY = ROOT / "src" / "integration" / "tools" / "guide" / "flows.json"
 
 # ANSI（非 TTY 时自动关闭）
 _USE_COLOR = sys.stdout.isatty()
@@ -63,10 +64,11 @@ def cyan(t: str) -> str:
 
 
 def load_data() -> dict[str, Any]:
-    if not FLOWS_PATH.is_file():
+    path = FLOWS_PATH if FLOWS_PATH.is_file() else _FLOWS_LEGACY
+    if not path.is_file():
         print(f"flows 真源缺失: {FLOWS_PATH}", file=sys.stderr)
         sys.exit(1)
-    return json.loads(FLOWS_PATH.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def substitute(text: str, tenant: str, vendor: str) -> str:

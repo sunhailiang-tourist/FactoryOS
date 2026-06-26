@@ -11,8 +11,8 @@
 | `execution_service/service.py` | `revert_execution` | Step4 | ✅ | PASS |
 | `execution_service/store.py` | `update_execution_status` | Step4 | ✅ | PASS |
 | `connector_sdk/mock_legacy.py` | `restore_entity` | Step4 | ✅ | PASS |
-| `apps/api/routes/execute.py` | POST revert | Step4 | ✅ | PASS |
-| `apps/api/routes/executions.py` | GET execution | 支撑 E-04 | ✅ | PASS |
+| `server/api/modules/*/controllers/execute.py` | POST revert | Step4 | ✅ | PASS |
+| `server/api/modules/*/controllers/executions.py` | GET execution | 支撑 E-04 | ✅ | PASS |
 
 ## 2. 本 Step 硬性验收计划（执行记录）
 

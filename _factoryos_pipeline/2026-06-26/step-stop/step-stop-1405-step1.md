@@ -11,11 +11,11 @@ Step 1 — `connector_sdk/registry` + `conn-mock` ConnectorBlueprint（B-01 · v
 
 | 路径 | 变更 |
 |------|------|
-| `src/os_core/connector_sdk/registry.py` | 新增 load_blueprint · validate_blueprint |
-| `src/os_core/connector_sdk/runtime/` | 包骨架 + README |
+| `src/server/os_core/connector_sdk/registry.py` | 新增 load_blueprint · validate_blueprint |
+| `src/server/os_core/connector_sdk/runtime/` | 包骨架 + README |
 | `src/integration/catalog/conn-mock.yaml` | 升级为 ConnectorBlueprint |
-| `src/os_core/shared_contracts/errors.py` | BLUEPRINT_INVALID 等 |
-| `src/os_core/connector_sdk/__init__.py` | 导出 registry |
+| `src/server/os_core/shared_contracts/errors.py` | BLUEPRINT_INVALID 等 |
+| `src/server/os_core/connector_sdk/__init__.py` | 导出 registry |
 
 ## 3. AC / 接口
 

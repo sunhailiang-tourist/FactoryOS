@@ -19,7 +19,7 @@ alwaysApply: false
 ## 硬隔离
 
 - **只写/改** `src/tests/**` 与 test-plan / step-regression / final-regression / bug 落盘
-- **禁止** 改 `src/os_core/**`、`src/apps/**` 业务实现
+- **禁止** 改 `src/server/os_core/**`、`src/server/api/**` 业务实现
 - Bug → 报告（`templates/bug-template.md`）+ 补测试，不偷修
 
 ## 前置 Gate A–G（编码前回合不可跳过）

@@ -13,9 +13,9 @@ Step 1 — 工程底座与 import 边界（Control Plane CI 就绪）
 |------|------|
 | `pyproject.toml` · `uv.lock` | + fastapi · uvicorn[standard] · sqlalchemy · alembic · aiosqlite |
 | `src/apps/__init__.py` | 新增 |
-| `src/apps/api/__init__.py` | 新增 |
-| `src/apps/api/main.py` | `create_app()` + `GET /health` |
-| `src/apps/api/README.md` | 本地开发命令更新 |
+| `src/server/api/__init__.py` | 新增 |
+| `src/server/api/main.py` | `create_app()` + `GET /health` |
+| `src/server/api/README.md` | 本地开发命令更新 |
 | `src/tests/workflow/test_api_health.py` | httpx→TestClient（httpx 0.28 ASGI 兼容） |
 | `src/tests/integration/test_connector_c01.py` | 同上（Step4 前置，消除 pyright 红） |
 | `src/tests/conftest.py` | 移除未使用 Session import（ruff） |
@@ -60,7 +60,7 @@ gate step : 未全绿（缺 verify 落盘）
 ```bash
 uv sync --extra dev
 uv run pytest src/tests/workflow/ -k workflow -v
-curl -s http://127.0.0.1:8000/health   # 需 uvicorn apps.api.main:app
+curl -s http://127.0.0.1:8000/health   # 需 uvicorn server.api.main:app
 ```
 
 ## 7. Verify（必填）

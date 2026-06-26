@@ -8,9 +8,9 @@
 
 | 路径 | 变更 | plan 预期落位 | 实际落位 | 结论 |
 |------|------|---------------|----------|------|
-| `src/os_core/graph_service/service.py` | 生命周期 | submit/freeze/clone/deprecate | ✅ | PASS |
-| `src/apps/api/routes/graphs.py` | 新增 | 薄 HTTP 路由 | ✅ | PASS |
-| `src/apps/api/routes/error_handlers.py` | 新增 | PlatformError 映射 | ✅ | PASS |
+| `src/server/os_core/graph_service/service.py` | 生命周期 | submit/freeze/clone/deprecate | ✅ | PASS |
+| `src/server/api/modules/*/controllers/graphs.py` | 新增 | 薄 HTTP 路由 | ✅ | PASS |
+| `src/server/api/modules/*/controllers/error_handlers.py` | 新增 | PlatformError 映射 | ✅ | PASS |
 | `src/tests/integration/test_graph_w3.py` | G-02～G-08 | 生命周期 AC | ✅ | PASS |
 
 ## 2. 本 Step 硬性验收计划（执行记录）
@@ -34,7 +34,7 @@ uv run python scripts/gate_cli.py step --step 2 -k 'G-05'
 
 | 维度 | 检查 | 结论 |
 |------|------|------|
-| 分层 | apps/api 仅路由；规则在 graph_service | **通过** |
+| 分层 | server/api 仅路由；规则在 graph_service | **通过** |
 | 写路径 | G-03 阻断未 freeze 的 L2 写 | **通过** |
 | 红线 | frozen 不可 PUT（G-06） | **通过** |
 | 注释 | graphs.py · error_handlers 文件头 | **通过** |

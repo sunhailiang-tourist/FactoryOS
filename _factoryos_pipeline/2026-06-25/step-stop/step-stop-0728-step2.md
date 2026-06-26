@@ -11,17 +11,17 @@ Step 2 — shared_contracts 核心 Pydantic（L0 契约代码化）
 
 | 路径 | 变更 |
 |------|------|
-| `src/os_core/shared_contracts/__init__.py` | 包导出 |
-| `src/os_core/shared_contracts/errors.py` | ErrorCode 枚举 |
-| `src/os_core/shared_contracts/schema_loader.py` | Schema 加载器 |
-| `src/os_core/shared_contracts/models/common.py` | Actor 等共享子模型 |
-| `src/os_core/shared_contracts/models/audit.py` | AuditEvent |
-| `src/os_core/shared_contracts/models/dsl.py` | DslPlan |
-| `src/os_core/shared_contracts/models/graph.py` | BusinessGraph |
-| `src/os_core/shared_contracts/models/rule.py` | RuleSet |
-| `src/os_core/shared_contracts/models/domain.py` | DomainEvent |
-| `src/os_core/shared_contracts/models/execution.py` | ExecutionRecord · ExecutionEvidence |
-| `src/os_core/shared_contracts/models/__init__.py` | 模型聚合导出 |
+| `src/server/os_core/shared_contracts/__init__.py` | 包导出 |
+| `src/server/os_core/shared_contracts/errors.py` | ErrorCode 枚举 |
+| `src/server/os_core/shared_contracts/schema_loader.py` | Schema 加载器 |
+| `src/server/os_core/shared_contracts/models/common.py` | Actor 等共享子模型 |
+| `src/server/os_core/shared_contracts/models/audit.py` | AuditEvent |
+| `src/server/os_core/shared_contracts/models/dsl.py` | DslPlan |
+| `src/server/os_core/shared_contracts/models/graph.py` | BusinessGraph |
+| `src/server/os_core/shared_contracts/models/rule.py` | RuleSet |
+| `src/server/os_core/shared_contracts/models/domain.py` | DomainEvent |
+| `src/server/os_core/shared_contracts/models/execution.py` | ExecutionRecord · ExecutionEvidence |
+| `src/server/os_core/shared_contracts/models/__init__.py` | 模型聚合导出 |
 
 ## 3. AC / 接口
 

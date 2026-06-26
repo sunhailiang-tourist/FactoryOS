@@ -9,8 +9,8 @@
 | 路径 | 变更 | plan 预期落位 | 实际落位 | 结论 |
 |------|------|---------------|----------|------|
 | `alembic/versions/002_audit_execution.py` | 新增 | Step1 migration | ✅ | PASS |
-| `src/os_core/audit_service/store.py` | 新增 | audit append/query | ✅ | PASS |
-| `src/os_core/audit_service/__init__.py` | 新增 | 包入口 | ✅ | PASS |
+| `src/server/os_core/audit_service/store.py` | 新增 | audit append/query | ✅ | PASS |
+| `src/server/os_core/audit_service/__init__.py` | 新增 | 包入口 | ✅ | PASS |
 
 ## 2. 本 Step 硬性验收计划（执行记录）
 
@@ -36,7 +36,7 @@ uv run python scripts/gate_cli.py step --step 1 -k 'workflow'
 
 | 维度 | 检查 | 结论 |
 |------|------|------|
-| 分层 | 业务在 `os_core/audit_service`；无 apps/api 写规则 | **通过** |
+| 分层 | 业务在 `os_core/audit_service`；无 server/api 写规则 | **通过** |
 | 写路径 | 仅 audit INSERT；无 Legacy 写 | **通过** |
 | 红线 | append-only；无 UPDATE/DELETE | **通过** |
 | 注释 | store.py 文件头 + 函数四要素 | **通过** |
@@ -95,7 +95,7 @@ uv run python scripts/gate_cli.py step --step 1 -k 'workflow'
 **Dev 回修 1 项**（Test 不偷改业务）：
 
 ```text
-src/os_core/audit_service/store.py:57
+src/server/os_core/audit_service/store.py:57
   datetime.now(timezone.utc) → datetime.now(datetime.UTC)
 ```
 

@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 import pytest
-
 from tests.ac_registry import load_ac_ids
 
 AC_IDS = load_ac_ids()

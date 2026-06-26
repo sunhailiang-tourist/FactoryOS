@@ -1,0 +1,418 @@
+{
+  "version": "1.0.0",
+  "flows": {
+    "onboard": {
+      "id": "onboard",
+      "title": "接入新客户（第一家 · D1 全链路）",
+      "summary": "从准入到 D1 结案：人审 Gate 与系统命令串联，Path A/B/C 在 G-PATH 裁定。",
+      "when": "第一家工厂、无 Silver Package 可 import",
+      "duration": "6～9 个月（探路）/ 4～8 周（有模板）",
+      "doc": "文档/规格说明/人工决策Playbook.md",
+      "steps": [
+        "G-ADMIT",
+        "G-PATH",
+        "G-CONNECT",
+        "G-DISCOVER",
+        "G-MAP",
+        "G-GRAPH-DRAFT",
+        "G-FREEZE",
+        "G-RULE-BIND",
+        "G-PROVE",
+        "G-WRITE-APPROVE",
+        "G-UAT",
+        "G-EXPORT",
+        "G-HANDOVER"
+      ]
+    },
+    "import": {
+      "id": "import",
+      "title": "接入新客户（第二家起 · S1 导入）",
+      "summary": "import Package + 改配置枢纽；治理 Gate（Prove、开写批准）不可跳过。",
+      "when": "已有 Silver Implementation Package",
+      "duration": "2～3 周 import + Shadow/UAT",
+      "doc": "文档/规格说明/人工决策Playbook.md#g-import",
+      "steps": [
+        "G-IMPORT",
+        "G-CONNECT",
+        "G-PROVE",
+        "G-WRITE-APPROVE",
+        "G-UAT",
+        "G-EXPORT"
+      ]
+    },
+    "extend-vendor": {
+      "id": "extend-vendor",
+      "title": "扩展系统（新 ERP/MES 厂商 · S2/S3）",
+      "summary": "新 Connector：Blueprint（S2）或 Python Pack（S3），必经人审与 Graph 冻结。",
+      "when": "10 类 Legacy 内的新 vendor；非新 system 类型",
+      "duration": "S2 ≤2 周 / S3 1～2 周",
+      "doc": "文档/架构/配置枢纽与关系模型.md",
+      "steps": [
+        "G-DISCOVER",
+        "G-MAP",
+        "G-BRONZE-REVIEW",
+        "G-CONNECT",
+        "G-GRAPH-DRAFT",
+        "G-FREEZE",
+        "G-RULE-BIND",
+        "G-PROVE",
+        "G-WRITE-APPROVE"
+      ]
+    },
+    "extend-d2": {
+      "id": "extend-d2",
+      "title": "扩展能力（D2 定制 · Pack 化）",
+      "summary": "工厂特异需求：先 Override，不行再新 Pack；≥70% 须 Pack 化。",
+      "when": "D1 结案后第二次交付",
+      "duration": "按 D2 范围",
+      "doc": "准备/2026-06-16/08-平台战略与两次交付模型.md",
+      "steps": [
+        "G-D2-PACK",
+        "G-GRAPH-DRAFT",
+        "G-FREEZE",
+        "G-RULE-BIND",
+        "G-PROVE",
+        "G-EXPORT"
+      ]
+    },
+    "ops": {
+      "id": "ops",
+      "title": "运维事件（漂移 / 撤回 / 熔断）",
+      "summary": "生产异常：先冻结写路径，按 Runbook 结案后重跑 Prove。",
+      "when": "drift_detected / revert_failed / circuit_open",
+      "duration": "SLA 见运维 Runbook",
+      "doc": "文档/规格说明/运维Runbook.md",
+      "steps": ["G-DRIFT", "G-PROVE"]
+    }
+  },
+  "gates": {
+    "G-ADMIT": {
+      "title": "准入评估",
+      "roles": ["integrator", "business_owner"],
+      "mode": "human",
+      "automated": false,
+      "forbidden": "未评估即连接生产 Legacy",
+      "do": [
+        "填写 ERP/MES/IM/部署形态系统清单（见 04 Step 0）",
+        "判定准入等级 S/A/B/C",
+        "确认 ERP 在认证 Connector 目录",
+        "确认已购 License Pack 列表"
+      ],
+      "commands": [],
+      "files": ["准备/2026-06-16/04-工厂实施手册.md"],
+      "artifacts": ["《准入评估报告》", "tenant.yaml 草案"],
+      "api": []
+    },
+    "G-PATH": {
+      "title": "写入路径裁定",
+      "roles": ["integrator", "platform"],
+      "mode": "human",
+      "automated": false,
+      "forbidden": "Path C 未经 platform 确认",
+      "do": [
+        "有 ERP 无 MES → Path A（哈森灯塔）",
+        "有 MES → Path B",
+        "无 ERP B-Lite → Path C",
+        "写入 tenant.yaml 的 spec.path 与 licensed_packs"
+      ],
+      "commands": [
+        "cp -r integration/tenants/_template integration/tenants/{tenant}",
+        "vim integration/tenants/{tenant}/tenant.yaml"
+      ],
+      "files": ["integration/tenants/{tenant}/tenant.yaml"],
+      "artifacts": ["tenant.yaml 中 path + licensed_packs"],
+      "api": []
+    },
+    "G-CONNECT": {
+      "title": "系统连通",
+      "roles": ["integrator", "customer_it"],
+      "mode": "hybrid",
+      "automated": true,
+      "forbidden": "Git 中提交明文密钥",
+      "do": [
+        "在 system_relations/ 创建 draft 关系文件",
+        "在 Vault 配置 secrets_ref（不进 Git）",
+        "私网 ERP：部署 Edge Agent 并填写 edge_agent_id",
+        "运行连通测试并保存报告"
+      ],
+      "commands": [
+        "cp integration/tenants/_template/system_relations/erp-example.yaml integration/tenants/{tenant}/system_relations/erp-{vendor}.yaml",
+        "factoryos guide --step G-CONNECT --tenant {tenant}",
+        "curl -s -X POST \"$API/v1/integration/connect/test\" -H \"X-Tenant-Id: {tenant}\" -d @payload.json"
+      ],
+      "files": [
+        "integration/tenants/{tenant}/system_relations/*.yaml"
+      ],
+      "artifacts": ["连通报告", "Audit integration.connect_ok"],
+      "api": ["POST /v1/integration/connect/test"]
+    },
+    "G-DISCOVER": {
+      "title": "动词发现",
+      "roles": ["integrator"],
+      "mode": "hybrid",
+      "automated": true,
+      "forbidden": "vendor 私有动词进入 CMV",
+      "do": [
+        "上传厂商 OpenAPI 或选择 catalog Blueprint",
+        "运行 discover 与 blueprint validate",
+        "输出 CMV 候选清单供 map 使用"
+      ],
+      "commands": [
+        "curl -s -X POST \"$API/v1/integration/discover\" -H \"X-Tenant-Id: {tenant}\" -F file=@vendor-openapi.yaml",
+        "curl -s -X POST \"$API/v1/integration/blueprint/validate\" -d @integration/catalog/erp/{vendor}/blueprint.yaml"
+      ],
+      "files": ["integration/catalog/{system}/{vendor}/blueprint.yaml"],
+      "artifacts": ["CMV 候选表", "Blueprint validate 报告"],
+      "api": [
+        "POST /v1/integration/discover",
+        "POST /v1/integration/blueprint/validate"
+      ]
+    },
+    "G-MAP": {
+      "title": "字段映射",
+      "roles": ["integrator"],
+      "mode": "hybrid",
+      "automated": false,
+      "forbidden": "未确认即采用 AI mapping 建议",
+      "do": [
+        "Studio /map 或编辑 mapping_overrides",
+        "跑 contract test 样例",
+        "差异写入 overrides.yaml"
+      ],
+      "commands": [
+        "vim integration/tenants/{tenant}/system_relations/erp-{vendor}.yaml",
+        "pytest tests/contract/test_conn_{vendor}.py"
+      ],
+      "files": [
+        "integration/tenants/{tenant}/system_relations/*.yaml",
+        "integration/catalog/**/mapping.yaml"
+      ],
+      "artifacts": ["mapping_overrides", "contract test 通过"],
+      "api": ["PUT /v1/integration/mappings/{packId}"]
+    },
+    "G-BRONZE-REVIEW": {
+      "title": "Blueprint 人审",
+      "roles": ["integrator", "platform"],
+      "mode": "human",
+      "automated": false,
+      "forbidden": "自动 promote Bronze → Silver",
+      "do": [
+        "Review integration/catalog/ PR",
+        "contract tests 全绿",
+        "确认仅 CMV 动词、无 vendor 私有动词",
+        "merge 并更新认证分级"
+      ],
+      "commands": [
+        "pytest tests/contract/ -k {vendor}",
+        "git add integration/catalog/ && git commit -m \"feat(conn): {vendor} blueprint silver\""
+      ],
+      "files": ["integration/catalog/{system}/{vendor}/"],
+      "artifacts": ["merged Blueprint", "certification: silver"],
+      "api": []
+    },
+    "G-GRAPH-DRAFT": {
+      "title": "Graph 工作坊",
+      "roles": ["integrator", "business_owner"],
+      "mode": "human",
+      "automated": false,
+      "forbidden": "Agent 自动认定业务链路",
+      "do": [
+        "选定试点链路（如报工）",
+        "导入行业模板或 AI 生成 Draft",
+        "1～3 场 workshop，记录差异清单",
+        "Draft 存入 integration/packs/ 或 Graph API"
+      ],
+      "commands": [],
+      "files": ["文档/业务图谱/报工模板-草稿.json", "integration/packs/"],
+      "artifacts": ["Graph Draft JSON", "《差异清单》"],
+      "api": []
+    },
+    "G-FREEZE": {
+      "title": "Graph 冻结",
+      "roles": ["business_owner", "integrator"],
+      "mode": "human",
+      "automated": false,
+      "forbidden": "任何脚本/Agent 自动 freeze（ADR-002 R-09）",
+      "do": [
+        "04 §2.3 Checklist 全部勾选",
+        "业务负责人签字",
+        "submit → freeze，存档 checksum",
+        "绑定 RuleSet 版本"
+      ],
+      "commands": [
+        "curl -X POST \"$API/v1/graphs/{graph_id}/versions/{version}/submit\"",
+        "curl -X POST \"$API/v1/graphs/{graph_id}/versions/{version}/freeze\""
+      ],
+      "files": [],
+      "artifacts": ["frozen Graph", "checksum", "Audit graph.frozen"],
+      "api": [
+        "POST /v1/graphs/{id}/versions/{version}/submit",
+        "POST /v1/graphs/{id}/versions/{version}/freeze"
+      ]
+    },
+    "G-RULE-BIND": {
+      "title": "规则与 DSL 绑定",
+      "roles": ["integrator"],
+      "mode": "hybrid",
+      "automated": false,
+      "do": [
+        "加载 cap-report-l2 Rule 模板",
+        "绑定 Graph allowed_dsl",
+        "Override 仅改阈值",
+        "rulesets evaluate 冒烟"
+      ],
+      "commands": [
+        "curl -X POST \"$API/v1/rulesets/{id}/evaluate\" -d @evaluate.json"
+      ],
+      "files": ["integration/tenants/{tenant}/overrides.yaml"],
+      "artifacts": ["active RuleSet"],
+      "api": ["POST /v1/rulesets/{id}/evaluate"]
+    },
+    "G-PROVE": {
+      "title": "Shadow 验证",
+      "roles": ["integrator"],
+      "mode": "hybrid",
+      "automated": false,
+      "forbidden": "shadow_mode=false 未经 G-WRITE-APPROVE",
+      "do": [
+        "确认 tenant.shadow_mode=true",
+        "跑 Harness + contract test",
+        "POST prove/run",
+        "对账 K-01 每日 ≥14 天，drift 须归零或可解释"
+      ],
+      "commands": [
+        "curl -X POST \"$API/v1/integration/prove/run\" -H \"X-Tenant-Id: {tenant}\"",
+        "curl -X POST \"$API/v1/reconciliation/run\" -H \"X-Tenant-Id: {tenant}\""
+      ],
+      "files": ["integration/tenants/{tenant}/tenant.yaml"],
+      "artifacts": ["Prove 报告", "对账日报"],
+      "api": [
+        "POST /v1/integration/prove/run",
+        "POST /v1/reconciliation/run"
+      ]
+    },
+    "G-WRITE-APPROVE": {
+      "title": "批准生产写",
+      "roles": ["admin", "business_owner"],
+      "mode": "human",
+      "automated": false,
+      "forbidden": "无 Audit 签字即 shadow_mode=false",
+      "do": [
+        "审 Prove 报告与对账",
+        "业务负责人书面/电子签",
+        "系统写入 Audit integration.write_approved",
+        "再设置 shadow_mode=false"
+      ],
+      "commands": [
+        "curl -X POST \"$API/v1/integration/approve-write\" -H \"X-Tenant-Id: {tenant}\" -d '{\"signer\":\"...\"}'",
+        "curl -X PUT \"$API/v1/tenants/{tenant}/settings\" -d '{\"shadow_mode\":false}'"
+      ],
+      "files": ["integration/tenants/{tenant}/tenant.yaml"],
+      "artifacts": ["开写批准书", "Audit integration.write_approved"],
+      "api": [
+        "PUT /v1/tenants/{id}/settings"
+      ]
+    },
+    "G-UAT": {
+      "title": "试点 UAT",
+      "roles": ["business_owner", "operator"],
+      "mode": "human",
+      "automated": false,
+      "do": [
+        "试点产线真实报工场景",
+        "工人/主管签字 UAT",
+        "记录例外与回滚演练"
+      ],
+      "commands": [],
+      "files": [],
+      "artifacts": ["UAT 签字记录"],
+      "api": []
+    },
+    "G-EXPORT": {
+      "title": "D1/D2 结案导出",
+      "roles": ["integrator"],
+      "mode": "hybrid",
+      "automated": true,
+      "do": [
+        "POST packages/export",
+        "Git tag tenant-{id}-d1-v1",
+        "归档 integration/tenants/{tenant}/"
+      ],
+      "commands": [
+        "curl -X POST \"$API/v1/packages/export\" -H \"X-Tenant-Id: {tenant}\" -o impl-package-{tenant}.json",
+        "git tag tenant-{tenant}-d1-v1"
+      ],
+      "files": ["integration/tenants/{tenant}/"],
+      "artifacts": ["Implementation Package", "配置枢纽快照"],
+      "api": ["POST /v1/packages/export"]
+    },
+    "G-IMPORT": {
+      "title": "第二家导入（S1）",
+      "roles": ["integrator"],
+      "mode": "hybrid",
+      "automated": true,
+      "do": [
+        "复制 _template 或从标杆 tenant 复制目录",
+        "POST packages/import",
+        "更新 system_relations 凭证与 base_url",
+        "仍须 Prove 与开写批准"
+      ],
+      "commands": [
+        "cp -r integration/tenants/_template integration/tenants/{tenant}",
+        "curl -X POST \"$API/v1/packages/import\" -H \"X-Tenant-Id: {tenant}\" -d @impl-package.json"
+      ],
+      "files": ["integration/tenants/{tenant}/"],
+      "artifacts": ["import 报告"],
+      "api": ["POST /v1/packages/import"]
+    },
+    "G-HANDOVER": {
+      "title": "运维移交",
+      "roles": ["ops", "customer_it"],
+      "mode": "human",
+      "automated": false,
+      "do": [
+        "04 Step 7 运维移交清单",
+        "交接告警联系人与 SLA",
+        "确认运维 Runbook 可达"
+      ],
+      "commands": [],
+      "files": ["文档/规格说明/运维Runbook.md"],
+      "artifacts": ["《运维移交清单》签字"],
+      "api": []
+    },
+    "G-D2-PACK": {
+      "title": "D2 Pack 化评审",
+      "roles": ["platform", "integrator"],
+      "mode": "human",
+      "automated": false,
+      "do": [
+        "评估是否 override-scope 可满足",
+        "否则登记新 Pack 于追溯矩阵",
+        "确认 ≥70% Pack 化",
+        "再走 G-FREEZE"
+      ],
+      "commands": [],
+      "files": ["文档/架构/能力-模块包-模块追溯矩阵.md"],
+      "artifacts": ["D2 书面范围", "新 Pack ID"],
+      "api": []
+    },
+    "G-DRIFT": {
+      "title": "对账漂移处置",
+      "roles": ["ops", "integrator"],
+      "mode": "human",
+      "automated": false,
+      "do": [
+        "立即 shadow_mode=true 冻结新写",
+        "导出 ReconciliationReport + ExecutionRecord",
+        "分类：Mapping / Legacy 延迟 / 重复写",
+        "修复后 Shadow 试跑 → Prove → 解除冻结"
+      ],
+      "commands": [
+        "curl -X PUT \"$API/v1/tenants/{tenant}/settings\" -d '{\"shadow_mode\":true}'"
+      ],
+      "files": ["文档/规格说明/运维Runbook.md"],
+      "artifacts": ["Audit reconciliation.resolved"],
+      "api": ["POST /v1/reconciliation/run"]
+    }
+  }
+}

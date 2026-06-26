@@ -13,11 +13,12 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OS_CORE = ROOT / "src" / "os_core"
+OS_CORE = ROOT / "src" / "server" / "os_core"
 INTEGRATION = ROOT / "src" / "integration"
 
 ALLOWED: dict[str, set[str]] = {
-    "shared_contracts": set(),
+    "shared_contracts": {"platform_registry"},
+    "platform_registry": {"shared_contracts"},
     "audit_service": {"shared_contracts"},
     "graph_service": {"shared_contracts", "audit_service"},
     "rule_engine": {"shared_contracts", "audit_service"},
@@ -28,7 +29,7 @@ ALLOWED: dict[str, set[str]] = {
         "rule_engine",
         "graph_service",
     },
-    "connector_sdk": {"shared_contracts"},
+    "connector_sdk": {"shared_contracts", "platform_registry"},
     "agent_orchestrator": {"shared_contracts"},
     "license_service": {"shared_contracts"},
     "mcp_gateway": {"shared_contracts", "agent_orchestrator"},

@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-
 from tests.integration.w3_helpers import (
   bootstrap_frozen_graph,
   sample_graph_body,

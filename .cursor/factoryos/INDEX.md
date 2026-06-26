@@ -7,7 +7,7 @@
 ```text
 0. 产品宪法（UI-FIRST · 配置平面主路径 = 管理台）
 1. ADR 红线（REDLINES.md）
-2. contracts/（OpenAPI · Schema · AC）
+2. Contract Registry（DB）+ `contracts/` export 镜像
 3. .cursor/factoryos/（SH-步步流 v2）
 4. docs/（厚文档 · 可选外置）
 5. docs-baseline/（docs 认知基线 · 漂移检测，非执行真源）

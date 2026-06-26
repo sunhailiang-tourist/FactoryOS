@@ -9,13 +9,13 @@
 | 路径 | 变更 | plan | 落位 | 备注 |
 |------|------|------|------|------|
 | `alembic/versions/002_audit_execution.py` | 新增 | W2 S1 | ✅ | audit + execution 表 |
-| `src/os_core/audit_service/` | 新增 | W2 S1–2 | ✅ | append-only |
-| `src/os_core/execution_service/` | 新增 | W2 S3–4 | ✅ | execute · evidence |
-| `src/os_core/connector_sdk/mock_legacy.py` | 新增 | W2 S3 | ✅ | E-06/E-07 |
-| `src/apps/api/deps.py` | 新增 | W2 S2 | ✅ | DB 会话 |
-| `src/apps/api/routes/audit.py` | 新增 | W2 S2 | ✅ | E-03 |
-| `src/apps/api/routes/execute.py` | 新增 | W2 S2/4 | ✅ | POST execute |
-| `src/apps/api/routes/executions.py` | 新增 | W2 S4 | ✅ | E-09 evidence |
+| `src/server/os_core/audit_service/` | 新增 | W2 S1–2 | ✅ | append-only |
+| `src/server/os_core/execution_service/` | 新增 | W2 S3–4 | ✅ | execute · evidence |
+| `src/server/os_core/connector_sdk/mock_legacy.py` | 新增 | W2 S3 | ✅ | E-06/E-07 |
+| `src/server/api/deps.py` | 新增 | W2 S2 | ✅ | DB 会话 |
+| `src/server/api/modules/*/controllers/audit.py` | 新增 | W2 S2 | ✅ | E-03 |
+| `src/server/api/modules/*/controllers/execute.py` | 新增 | W2 S2/4 | ✅ | POST execute |
+| `src/server/api/modules/*/controllers/executions.py` | 新增 | W2 S4 | ✅ | E-09 evidence |
 | `src/tests/integration/test_audit_e03.py` 等 | 新增 | Test | ✅ | W2 AC |
 
 ## 2. 新增功能正确性（W2 AC 全量）
@@ -52,7 +52,7 @@ uv run python scripts/gate_cli.py pr
 
 | 维度 | 结论 | 说明 |
 |------|------|------|
-| 模块边界 | **通过** | apps/api 薄路由 · 业务 os_core |
+| 模块边界 | **通过** | server/api 薄路由 · 业务 os_core |
 | 写路径 | **通过** | 唯一 execute 入口 · dry_run simulated |
 | audit | **通过** | append-only |
 | 注释 | **通过** | 中文四要素齐全 |
@@ -157,10 +157,10 @@ W2 为新增 HTTP 路由与内核 API；W1 存量 `/health` · `/v1/connectors/{
 | 文件 | 接口/AC | 说明 |
 |------|---------|------|
 | `audit_service/store.py` | E-03 内核 | append · list |
-| `apps/api/routes/audit.py` | GET `/v1/audit/events` | E-03 HTTP |
+| `server/api/modules/*/controllers/audit.py` | GET `/v1/audit/events` | E-03 HTTP |
 | `execution_service/service.py` | E-06/E-07/E-09 | execute · assemble_evidence |
-| `apps/api/routes/execute.py` | POST `/v1/execute` | E-03 端到端 |
-| `apps/api/routes/executions.py` | GET `.../evidence` | E-09 |
+| `server/api/modules/*/controllers/execute.py` | POST `/v1/execute` | E-03 端到端 |
+| `server/api/modules/*/controllers/executions.py` | GET `.../evidence` | E-09 |
 | `connector_sdk/mock_legacy.py` | E-06/E-07 | Legacy 写计数 |
 | `alembic/versions/002_*.py` | workflow | migration |
 | `tests/integration/test_audit_e03.py` | E-03 | |

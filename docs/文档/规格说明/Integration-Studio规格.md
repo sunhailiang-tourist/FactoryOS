@@ -4,7 +4,7 @@
 |------|--------|
 | 范围 | GIP 实施 UI/API（P1 MVP） |
 | 决策 | ADR-004 · ADR-006 · [17-GIP](../../准备/2026-06-16/17-集成平台化战略(GIP).md) |
-| 应用 | `apps/web-admin`（`/studio/*`，P1）；Y2 可拆 `apps/integration-studio/` 独立构建 |
+| 应用 | `src/apps/web-admin`（`/studio/*`，P1）；Y2 可拆 `apps/integration-studio/` 独立构建 |
 | 人工 Gate | [人工决策 Playbook](./人工决策Playbook.md) · [配置枢纽与关系模型](../架构/配置枢纽与关系模型.md) |
 
 ## 1. 职责
@@ -23,6 +23,17 @@
 | 4 | **prove** | Shadow 开关；Contract Test；对账样例 | `POST /v1/integration/prove/run` | 开写批准书 |
 | 5 | **freeze** | Graph 工作坊提交/冻结 | `POST /v1/graphs/{id}/versions/{version}/submit` · `.../freeze` | frozen Graph |
 | 6 | **export** | Implementation Package | `POST /v1/packages/export` | Package JSON |
+
+## 2.1 Platform Registry（ADR-008 · 配置真源）
+
+| 能力 | API | 说明 |
+|------|-----|------|
+| 读 Pack/Tenant/Contract | `GET /v1/registry/*` | Studio 列表与详情 |
+| AI/人提案 | `POST /v1/registry/change-requests` | **pending**，不直接改库 |
+| 人审批准 | `POST .../approve` | 写入 `pack_registry` / `system_relations` |
+| 人审拒绝 | `POST .../reject` | R-09：AI 不得自动 publish |
+
+`contracts/openapi` 与 `server/api/data/studio_flows.json` 为 export/辅助；**运行时真源 = PostgreSQL Registry**。
 
 ## 3. Prove 步硬规则
 

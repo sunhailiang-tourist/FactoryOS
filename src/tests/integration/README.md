@@ -22,7 +22,7 @@ uv run pytest src/tests/integration/ -v
 | 改了 | 必做 |
 |------|------|
 | `alembic/versions/` | 更新或新增本目录用例；`-k S-*` 须绿 |
-| `apps/api/routes/` · `connector_sdk/` | 更新 C-* 用例 |
+| `server/api/modules/*/controllers/` · `connector_sdk/` | 更新 C-* 用例 |
 | 新 AC 集成场景 | test-plan 落盘 · 命名 `test_<域>_<ac_id>` 或 `pytest -k` |
 
 ## 不负责什么

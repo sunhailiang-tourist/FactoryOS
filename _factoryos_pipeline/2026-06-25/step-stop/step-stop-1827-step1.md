@@ -12,8 +12,8 @@ Step 1 — Alembic 002 + audit_service append-only 内核
 | 路径 | 变更 |
 |------|------|
 | `alembic/versions/002_audit_execution.py` | 新增 audit_events · execution_records |
-| `src/os_core/audit_service/__init__.py` | 包入口 |
-| `src/os_core/audit_service/store.py` | append_audit_event · list_audit_events |
+| `src/server/os_core/audit_service/__init__.py` | 包入口 |
+| `src/server/os_core/audit_service/store.py` | append_audit_event · list_audit_events |
 
 ## 3. AC / 接口
 

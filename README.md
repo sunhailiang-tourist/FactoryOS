@@ -29,7 +29,7 @@ Overlay on ERP/MES · 双极：终端多模态 + 内核 Graph/Rule/Revert 门禁
 
 | Agent | 口令 | 写什么 | 禁止 |
 |-------|------|--------|------|
-| **Dev** | `【Dev模式启动】` + 目标 | `src/os_core` · `apps` · `integration` | 不宣称已测过 |
+| **Dev** | `【Dev模式启动】` + 目标 | `src/server/os_core` · `src/server/api` · `src/integration` export | 不宣称已测过 |
 | **Test** | `【Test模式启动】` · `【Test·Step N 验收】` · `【Test·终轮回归】` | `src/tests/**` + test 落盘 | 改业务代码 |
 | **Verify** | `【Verify回合】Step N`（Test 之后 · **新对话**） | `verify/` 审阅 | 写实现 |
 
@@ -44,10 +44,10 @@ Overlay on ERP/MES · 双极：终端多模态 + 内核 Graph/Rule/Revert 门禁
 | **2** | 启动 | Step0 过关 | 对话 | `可以继续` | Agent 更新 `workflow_state` → `PLANNING` |
 | **3** | 规划 | 写 plan | 对话 | （等 Agent 落盘） | 产出 `_factoryos_pipeline/<日期>/plan/`（同时 gate 会强制写结论到 `dev/`） |
 | **4** | 规划 | 确认规划 | 对话 | `确认规划` | Agent 更新 state → `CAN_TEST` |
-| **5** | 规划 | 规划门禁 | 终端 | `./scripts/gate plan` | plan 与 `contracts/` 一致才绿 |
+| **5** | 规划 | 规划门禁 | 终端 | `./scripts/gate plan` | plan 与 published contract_set / export 一致才绿 |
 | **6** | 测试 | 写 failing tests | 对话 | **Test 对话** · `【Test模式启动】` + plan 路径 | Test **只**写 `src/tests/**`，不改业务码 |
 | **7** | 测试 | test-plan 门禁 | 终端 | `./scripts/gate test` | test-plan 与 plan 对齐；并强制输出 `test/HH-MM_gate-test_*.md`（pytest 结论在 step/pr） |
-| **8** | 编码 | 开始本 Step | 对话 | `可以开始` | **仅当前 Step**；Hooks 才放行写 `src/os_core` 等 |
+| **8** | 编码 | 开始本 Step | 对话 | `可以开始` | **仅当前 Step**；Hooks 才放行写 `src/server/os_core` 等 |
 | **9** | 编码 | 编码中自检 | 终端 | `./scripts/harness --tier auto` | 编码中随时跑；pre-commit 自动检 |
 | **10** | 编码 | 停机落盘 | 对话 | （Agent 写 step-stop） | 落盘 `_factoryos_pipeline/…/step-stop/` |
 | **11** | 验收 | **单步 Test** | 对话 | **Test 新对话** · `【Test·Step N 验收】` | git diff 本步 · 业务+落位 · `test-*-stepN-regression.md` |
@@ -82,7 +82,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 脚本依次执行：`uv sync --frozen --extra dev` → `docs_baseline refresh` → `gate pr`（含 deptry）→ `pre-commit install`（钩子走 `.venv`）。
 
 然后：**Cursor 打开仓库根** → Settings → Hooks 见 `protect-paths` → **重启 Cursor**。  
-未说 `可以开始` 时写 `src/os_core/*.py` 应被拦截。
+未说 `可以开始` 时写 `src/server/os_core/*.py` 应被拦截。
 
 编码期新依赖只用 `uv add <pkg>` / `uv add --dev <pkg>`（**禁止** `pip install`）；`pyproject.toml` 与 `uv.lock` 同 commit。其余由 pre-commit / `gate pr` 机械检查。
 
@@ -106,14 +106,15 @@ curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 ## 代码布局
 
 ```text
-src/               代码根（见 src/README.md）
-src/os_core/       内核九模块
-src/apps/          api · web-admin · h5 · edge-agent
-src/integration/   Pack · tenants
-src/tests/         AC / 契约测试
-contracts/         OpenAPI · Schema · 验收
-scripts/           gate · harness · docs_baseline
-.cursor/           factoryos 工作流 · docs-baseline · hooks
+src/server/os_core/   内核 + platform_registry（ADR-008 · import: os_core.*）
+src/server/api/       Control Plane HTTP（import: server.api.*）
+src/server/db/        Alembic migrations
+src/apps/             web-admin · h5-worker
+src/integration/      export/fixture 镜像（非编辑真源）
+src/tests/            AC / 契约 / integration 测试
+contracts/            export 镜像（CI · gate 对账）
+scripts/              gate · harness · docs_baseline
+.cursor/              factoryos 工作流 · docs-baseline · hooks
 _factoryos_pipeline/  运行时落盘
 ```
 

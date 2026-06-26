@@ -32,6 +32,10 @@ CHECKS: dict[str, tuple[str, str]] = {
     "openapi": ("check_openapi_schema_refs.py", "OpenAPI schema refs"),
     "cmv": ("check_cmv_sync.py", "CMV sync"),
     "import": ("check_import_boundaries.py", "Import boundaries"),
+    "kernel_registry": ("check_kernel_registry.py", "os_core kernel registry"),
+    "router_registry": ("check_router_registry.py", "api router registry"),
+    "integration_registry": ("check_integration_registry.py", "integration GIP registry"),
+    "legacy_paths": ("check_legacy_paths.py", "legacy path cleanup"),
     "redundancy": ("check_code_redundancy.py", "Code redundancy"),
 }
 
@@ -39,9 +43,9 @@ TIER_ORDER = ("contracts", "boundaries", "step", "full")
 
 TIER_CHECKS: dict[str, list[str]] = {
     "contracts": ["openapi", "cmv"],
-    "boundaries": ["openapi", "cmv", "import"],
-    "step": ["openapi", "cmv", "import", "redundancy"],
-    "full": ["openapi", "cmv", "import", "redundancy"],
+    "boundaries": ["openapi", "cmv", "import", "kernel_registry", "router_registry", "integration_registry"],
+    "step": ["openapi", "cmv", "import", "kernel_registry", "router_registry", "integration_registry", "legacy_paths", "redundancy"],
+    "full": ["openapi", "cmv", "import", "kernel_registry", "router_registry", "integration_registry", "legacy_paths", "redundancy"],
 }
 
 TIER_LABEL: dict[str, str] = {
@@ -97,10 +101,10 @@ def tier_from_paths(paths: list[str]) -> str:
         norm = p.replace("\\", "/")
         if norm.startswith("contracts/"):
             tier = _max_tier(tier, "contracts")
-        if norm.startswith("src/os_core/") or norm.startswith("src/integration/"):
+        if norm.startswith("src/server/os_core/") or norm.startswith("src/integration/"):
             tier = _max_tier(tier, "boundaries")
         if norm.endswith(".py") and (
-            norm.startswith("src/os_core/") or norm.startswith("src/apps/")
+            norm.startswith("src/server/os_core/") or norm.startswith("src/server/api/")
         ):
             tier = _max_tier(tier, "step")
     return tier

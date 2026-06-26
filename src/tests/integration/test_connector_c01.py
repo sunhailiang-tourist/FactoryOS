@@ -1,7 +1,7 @@
 """W1 Step4：Connector mock healthCheck（C-01）。
 
 业务：GET /v1/connectors/{packId}/health 返回 status=ok；mock 不含业务规则。
-上游：connector_sdk · apps/api routes
+上游：connector_sdk · server.api.modules
 下游：gate step --step 4 -k 'C-01'
 """
 from __future__ import annotations
@@ -18,9 +18,9 @@ DEFAULT_TENANT_ID = "default"
 @pytest.fixture
 def api_client() -> TestClient:
   """FastAPI 同步测试客户端（W1 Step4 路由挂载后可用）。"""
-  main = importlib.import_module("apps.api.main")
+  main = importlib.import_module("server.api.main")
   create_app = getattr(main, "create_app", None)
-  assert create_app is not None, "apps.api.main 缺少 create_app"
+  assert create_app is not None, "server.api.main 缺少 create_app"
   return TestClient(create_app())
 
 

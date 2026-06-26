@@ -1,4 +1,4 @@
-# apps/web-admin · PC 管理端
+# src/apps/web-admin · PC 管理端
 
 ## 是什么
 
@@ -8,7 +8,7 @@
 
 - Graph 版本与 freeze 操作 UI
 - 租户集成状态、Shadow 监控
-- 调用 `apps/api` REST
+- 调用 `server/api` REST
 
 ## 不负责什么
 
@@ -18,7 +18,7 @@
 ## 上下游
 
 - **上游**：管理员浏览器
-- **下游**：`apps/api` `/v1/*`
+- **下游**：`server/api` `/v1/*`
 
 ## 本地开发
 

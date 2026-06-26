@@ -13,7 +13,7 @@
 
 | 模块 | 公开符号 / HTTP |
 |------|-----------------|
-| `apps/api` | OpenAPI **v1.1.1** 全部 `/v1/*` 路由 |
+| `src/server/api` | OpenAPI **v1.1.1** 全部 `/v1/*` 路由 |
 | `connector_sdk` | `ConnectorRegistry.register()`, `BlueprintRuntime`（Runtime GA 后） |
 | `shared_contracts` | 错误码 enum、Pack ID 常量 |
 

@@ -18,5 +18,5 @@
 - [ ] `./scripts/gate pr` 本地通过
 - [ ] plan 路径与 AC ID 已写入本 PR 描述（CI 强制）
 - [ ] 业务 `.py` 变更含 `src/tests/` 更新
-- [ ] 无 Test Agent 越权改动 `src/os_core` / `src/apps` 业务
+- [ ] 无 Test Agent 越权改动 `src/server/os_core` / `src/server/api` 业务
 - [ ] 若改 `docs/` Tier-A：`./scripts/docs_baseline refresh` + `workflow-check`

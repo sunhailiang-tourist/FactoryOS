@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run ruff + pyright on src/ (stdlib launcher).
+"""Run ruff + pyright on server/ + src/tests (stdlib launcher).
 
 Usage:
   python scripts/check_static_quality.py
@@ -15,15 +15,16 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
+LINT_TARGETS = ["src/server", "src/tests"]
 
 
-def has_python_sources() -> bool:
-    for p in SRC.rglob("*.py"):
-        if p.name != "__init__.py" or p.read_text(encoding="utf-8").strip():
-            if p.stat().st_size > 0 and p.read_text(encoding="utf-8").strip():
-                return True
-    return any(SRC.rglob("*.py"))
+def _collect_py_files() -> list[Path]:
+    out: list[Path] = []
+    for rel in LINT_TARGETS:
+        base = ROOT / rel
+        if base.is_dir():
+            out.extend(base.rglob("*.py"))
+    return out
 
 
 def run_module(module: str, args: list[str], allow_missing: bool) -> int | None:
@@ -52,19 +53,14 @@ def main() -> int:
     p.add_argument("--allow-missing", action="store_true", help="skip if tools not installed")
     args = p.parse_args()
 
-    if not SRC.is_dir():
-        print("No src/ — skip static quality")
-        return 0
-
-    py_files = list(SRC.rglob("*.py"))
-    if not py_files:
-        print("No Python files under src/ — skip")
+    if not _collect_py_files():
+        print("No Python files under server/ or src/tests — skip")
         return 0
 
     failed = False
     for module, margs, label in [
-        ("ruff", ["check", "src"], "ruff"),
-        *([] if args.ruff_only else [("pyright", ["src"], "pyright")]),
+        ("ruff", ["check", *LINT_TARGETS], "ruff"),
+        *([] if args.ruff_only else [("pyright", LINT_TARGETS, "pyright")]),
     ]:
         print(f"\n── {label}")
         code = run_module(module, margs, args.allow_missing)

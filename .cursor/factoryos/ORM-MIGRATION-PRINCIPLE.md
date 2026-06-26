@@ -17,7 +17,7 @@
 
 | 层 | 真源 | 用途 |
 |----|------|------|
-| **运行库结构** | `src/os_core/**/models` + `alembic/versions/` | 表 · 字段 · 关系 · 索引 · 约束 |
+| **运行库结构** | `src/server/os_core/**/models` + `src/server/db/migrations/versions/` | 表 · 字段 · Registry（ADR-008） |
 | **对外契约** | `contracts/schemas` · OpenAPI | API/跨语言/验收断言 |
 | **厚文档** | `docs/` · ADR | 背景与裁定；**不**手写 DDL 真源 |
 
@@ -78,7 +78,7 @@ ADR-007 §15 · AC-BASE-001 **S-01～S-04**：
 | S-03 | 空表 `tenant_quotas` · `outbox_events` |
 | S-04 | Repository 层 tenant filter（代码门禁，非 DDL） |
 
-W1 交付物：`alembic/` 脚手架 + 上述 revisions + `alembic upgrade head` 可绿。
+W1+ 交付物：`src/server/db/migrations/` + revisions + `alembic upgrade head` 可绿。
 
 ### 4.3 上线后演进（稳字当头）
 
@@ -132,7 +132,7 @@ Alembic `--autogenerate` **只作草稿**，提交前必须人工检查：
 
 - 生产 / CI / `gate pr` 使用 `Base.metadata.create_all()`
 - 手工改 prod/staging DDL 而不回写 Alembic revision
-- Model 与 `alembic/versions` 不同 commit 且无说明
+- Model 与 `src/server/db/migrations/versions` 不同 commit 且无说明
 - 仅用 `contracts/schemas` 描述表结构却不落 ORM（运行库无真源）
 
 ---

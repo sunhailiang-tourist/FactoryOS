@@ -4,7 +4,7 @@
 |------|--------|
 | 范围 | GIP 实施 UI/API（P1 MVP） |
 | 决策 | ADR-004 · ADR-006 · [17-GIP](../../准备/2026-06-16/17-集成平台化战略(GIP).md) |
-| 应用 | `apps/web-admin`（`/studio/*`，P1）；Y2 可拆 `apps/integration-studio/` 独立构建 |
+| 应用 | `src/apps/web-admin`（`/studio/*`，P1）；Y2 可拆 `apps/integration-studio/` 独立构建 |
 | 人工 Gate | [人工决策 Playbook](./人工决策Playbook.md) · [配置枢纽与关系模型](../架构/配置枢纽与关系模型.md) |
 
 ## 1. 职责

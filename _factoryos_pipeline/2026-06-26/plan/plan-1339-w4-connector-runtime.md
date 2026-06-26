@@ -63,12 +63,12 @@
 
 | 模块 | 路径 | 变更 |
 |------|------|------|
-| connector_sdk | `src/os_core/connector_sdk/runtime/` | **新增** loader · execute_op · revert_op |
-| connector_sdk | `src/os_core/connector_sdk/registry.py` | **新增** catalog 加载 |
+| connector_sdk | `src/server/os_core/connector_sdk/runtime/` | **新增** loader · execute_op · revert_op |
+| connector_sdk | `src/server/os_core/connector_sdk/registry.py` | **新增** catalog 加载 |
 | catalog | `src/integration/catalog/conn-mock.yaml` | **扩展** ConnectorBlueprint + GOVERNED_WRITE op |
-| execution | `src/os_core/execution_service/service.py` | L2 走 runtime · snapshot 字段 · revert |
-| execution | `src/os_core/execution_service/store.py` | before/after snapshot 持久化（若 schema 需 migration） |
-| API | `src/apps/api/routes/execute.py` | **新增/扩展** revert 路由 |
+| execution | `src/server/os_core/execution_service/service.py` | L2 走 runtime · snapshot 字段 · revert |
+| execution | `src/server/os_core/execution_service/store.py` | before/after snapshot 持久化（若 schema 需 migration） |
+| API | `src/server/api/modules/*/controllers/execute.py` | **新增/扩展** revert 路由 |
 | 测试 | `src/tests/integration/test_connector_b*.py` · `test_execution_e02*.py` | 新增 |
 
 ---

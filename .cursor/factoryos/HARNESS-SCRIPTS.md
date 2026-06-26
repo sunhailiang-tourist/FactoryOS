@@ -16,7 +16,7 @@
 | tier | 层级 | 检查 |
 |------|------|------|
 | `contracts` | L0 | openapi refs · cmv sync |
-| `boundaries` | L1 | + import boundaries |
+| `boundaries` | L1 | + import boundaries · kernel/router/integration registry · legacy paths |
 | `step` / `full` | L2 | + code redundancy |
 | `auto` | 推断 | git diff → 上表最高层；无 diff → `full` |
 
@@ -40,7 +40,7 @@ L3 终轮：`gate delivery` = workflow + contract + **integration** 全量 pytes
 | 若 git diff 含… | tier |
 |-----------------|------|
 | `contracts/` | `contracts` |
-| `src/os_core/` · `src/integration/` | `boundaries` |
-| `src/os_core/` · `src/apps/` 业务 `.py` | `step` |
+| `src/server/os_core/` · `src/server/api/` · `src/integration/` | `boundaries` |
+| 上述 + 业务 `.py` 大面积改动 | `step` / `full` |
 
 **停机须 `gate step`**（内含 harness full + pytest + Test/Verify 落盘）；**commit 前须 `gate delivery`**。

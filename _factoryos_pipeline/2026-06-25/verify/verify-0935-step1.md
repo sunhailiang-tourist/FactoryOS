@@ -21,7 +21,7 @@
 | # | 项 | 结果 | 证据 |
 |---|-----|------|------|
 | 1 | 未超 plan 范围 | **Pass** | 交付：`002_audit_execution` migration · `append_audit_event` · `list_audit_events`；无 HTTP。`execution_records` 表为 plan §5 预埋（E-07 预备），非 Step1 业务逻辑。 |
-| 2 | 写路径 / R-01–R-11 | **Pass** | 仅 audit INSERT + SELECT；无 Legacy 写、无 apps/api 业务。import_boundaries 绿。 |
+| 2 | 写路径 / R-01–R-11 | **Pass** | 仅 audit INSERT + SELECT；无 Legacy 写、无 server/api 业务。import_boundaries 绿。 |
 | 3 | AC 断言可测 | **Pass** | workflow **5 passed**；Step1 内核 **2 passed**（migration 表 + append/query）。E-03 HTTP 仍红属 Step2，符合 Test 报告预期。 |
 | 4 | 无重复逻辑迹象 | **Pass** | 复用 `shared_contracts.AuditEvent`/`Actor`；store 单一持久化入口；redundancy check 绿。 |
 | 5 | 注释四要素 | **Pass** | `store.py` 文件头 + 函数 docstring + `Field` 经 Pydantic 模型；`audit_service/README.md` 已存在。 |

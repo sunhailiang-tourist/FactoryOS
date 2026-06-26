@@ -9,7 +9,7 @@
 ## 1. 只读输入（Verify Agent 已阅读）
 
 - [x] plan Step 4 段落（§6 Step 4）
-- [x] `git diff` 本 Step 改动（`connector_sdk/` · `apps/api/routes/` · `main.py` · `conn-mock.yaml`）
+- [x] `git diff` 本 Step 改动（`connector_sdk/` · `server/api/modules/*/controllers/` · `main.py` · `conn-mock.yaml`）
 - [x] step-stop 十项自检
 - [x] OpenAPI `/v1/connectors/{packId}/health` 参数与响应字段
 
@@ -18,7 +18,7 @@
 | # | 项 | 结果 | 证据 |
 |---|-----|------|------|
 | 1 | 未超 plan 范围 | **Pass**（附注） | 核心交付：mock `check_connector_health` · 薄路由 · catalog 占位 · router 挂载，与 step-stop §2 一致。附注：plan 另列 `integration/tenants/_template/` 本 Step 未改动；工作区另有 `rules/` 删除等 **非 Step 4** 变更，交付/PR 时应拆分。 |
-| 2 | 写路径 / R-01–R-11 | **Pass** | mock 无 Legacy 写、无业务规则；`apps/api` 仅委托 `connector_sdk`；import_boundaries 绿。 |
+| 2 | 写路径 / R-01–R-11 | **Pass** | mock 无 Legacy 写、无业务规则；`server/api` 仅委托 `connector_sdk`；import_boundaries 绿。 |
 | 3 | AC 断言可测 | **Pass** | `test_C01_connector_health_returns_ok`：200 · `status=ok` · `pack_id` 回显；gate `-k 'C-01'`：**1 passed**。 |
 | 4 | 无重复逻辑迹象 | **Pass** | 健康检查逻辑仅在 `connector_sdk.health`；路由 `model_dump()` 转发；redundancy check 绿。 |
 | 5 | 注释四要素 | **Pass** | `health.py` · `connectors.py` · `main.py` 文件头 + 函数 docstring；`connector_sdk/README.md` 已存在。 |

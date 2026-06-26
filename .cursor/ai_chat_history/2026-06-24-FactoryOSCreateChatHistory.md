@@ -325,7 +325,7 @@ _factoryos_pipeline/  运行时落盘
 
 | Agent | 口令 | 写 | 禁 |
 |-------|------|-----|-----|
-| Dev | `【Dev模式启动】` | `src/os_core` apps integration | 不宣称已测 |
+| Dev | `【Dev模式启动】` | `src/server/os_core` · `src/server/api` · integration | 不宣称已测 |
 | Test | `【Test模式启动】` | 仅 `src/tests/**` | 不改业务码 |
 | Verify | `【Verify回合】Step N` 新对话 | `verify/` | 不写实现 |
 
@@ -528,7 +528,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env  
 | W1 业务实现 | 未开始 | 需 SH-步步流首轮：Dev启动 → plan → Test → 可以开始 |
 | Gate 0 全量 AC | pending | 52 P0；CI `gate0-ac-full` 仍注释 |
 | Integration Studio UI | 未建 | UI-FIRST 主路径；可与 W1 并行（PRE-DEV-CHAIN 建议） |
-| `src/os_core` 业务代码 | ~0% | 仅 `__init__.py` |
+| `src/server/os_core` 业务代码 | ~0% | 仅 `__init__.py` |
 | Commitizen | 未强制 | U224 讨论；可选 |
 | docs/ 外迁 | 未执行 | B 策略已防依赖 |
 

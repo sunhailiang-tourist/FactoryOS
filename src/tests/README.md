@@ -18,7 +18,7 @@
 ## 上下游
 
 - **上游**：CI `.github/workflows/ci.yml`
-- **下游**：被测模块 `os_core/*`、`apps/api`
+- **下游**：被测模块 `os_core/*`、`server/api`
 
 ## 目录规划（W1 起）
 

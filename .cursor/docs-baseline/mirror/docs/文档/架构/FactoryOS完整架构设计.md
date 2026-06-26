@@ -24,7 +24,7 @@ ADR-000～007  >  本文  >  16/17  >  规格说明  >  OpenAPI + 15 Schema
 | 公开 API | [os_core-public-api](./os_core-public-api.md) |
 | 一致性台账 | [18-基座文档一致性矩阵](../../准备/2026-06-16/18-基座文档一致性矩阵.md) |
 
-**实施主入口**：Integration Studio（`apps/web-admin`）— 见 [INTEGRATION-CHAIN](../../.cursor/factoryos/INTEGRATION-CHAIN.md)  
+**实施主入口**：Integration Studio（`src/apps/web-admin`）— 见 [INTEGRATION-CHAIN](../../.cursor/factoryos/INTEGRATION-CHAIN.md)  
 **平台研发调试**：`./scripts/factoryos guide`（非实施主路径）
 
 ---
@@ -33,9 +33,9 @@ ADR-000～007  >  本文  >  16/17  >  规格说明  >  OpenAPI + 15 Schema
 
 FactoryOS 是制造业 **AI 执行平台 Overlay**：在客户 ERP/MES 之上，用 **冻结 Graph + Rule + 唯一写路径 + Audit/Revert** 实现「敢写库、可追责、可回滚」；用 **Harness + 多模态** 实现工人愿意用。
 
-**工程形态**：单 Git 仓库 · **Modular Monolith** · 单 deployable `apps/api` · 客户差异 **不进内核代码**。
+**工程形态**：单 Git 仓库 · **Modular Monolith** · 单 deployable `src/server/api`（import: `server.api`）· 客户差异 **Registry DB 化**（ADR-008）。
 
-**扩展形态**：GIP 配置枢纽 + Pack 飞轮 + **Integration Studio**（界面 + AI）实施主路径。
+**实施主入口**：Integration Studio（`src/apps/web-admin`）— 见 [INTEGRATION-CHAIN](../../.cursor/factoryos/INTEGRATION-CHAIN.md)
 
 ---
 
@@ -45,7 +45,7 @@ FactoryOS 是制造业 **AI 执行平台 Overlay**：在客户 ERP/MES 之上，
 |---|------|------|
 | P1 | **写路径唯一** | Agent/MCP → DSL → Rule → Execution → Connector → Legacy |
 | P2 | **内核少改** | `os_core/` tag `core-v1.0.0` 后集成期不改 major |
-| P3 | **差异配置化** | `integration/` + Override；禁止 `if tenant_id` 内核分支 |
+| P3 | **差异配置化** | Platform Registry + Override；禁止 `if tenant_id` 内核分支 |
 | P4 | **见名知意** | 目录/包/Pack ID 从名称读出职责 |
 | P5 | **契约先行** | OpenAPI v1.1.1 + 15 JSON Schema + CMV |
 | P6 | **人机分治** | 机器跑自动化；freeze/开写等人审走 Playbook |
@@ -65,15 +65,14 @@ FactoryOS 是制造业 **AI 执行平台 Overlay**：在客户 ERP/MES 之上，
 └────────────────────────────────┬─────────────────────────────────────────┘
                                  │ 约束
 ┌────────────────────────────────▼─────────────────────────────────────────┐
-│  Runtime Plane · 执行引擎（os_core + apps/api）                             │
+│  Runtime Plane · 执行引擎（src/server/os_core + src/server/api）                             │
 │  L0 graph/rule/execution/audit │ L1 connector/mcp │ L2 agent/license      │
 │  单进程 Modular Monolith · Uvicorn · PostgreSQL · Redis(预留) · OSS          │
 └────────────────────────────────┬─────────────────────────────────────────┘
                                  │ 加载 / activate
 ┌────────────────────────────────▼─────────────────────────────────────────┐
-│  Config Plane · 配置枢纽（变更快，GitOps）                                   │
-│  integration/catalog · tenants/*/system_relations · packs · overrides      │
-│  → connector_instances · tenant License · shadow_mode                     │
+│  Config Plane · Platform Registry（PostgreSQL · Studio publish）                       │
+│  contract_* · pack_registry · system_relations · connector_instances · snapshots      │
 └────────────────────────────────┬─────────────────────────────────────────┘
                                  │ HTTPS / Edge WSS
 ┌────────────────────────────────▼─────────────────────────────────────────┐
@@ -94,43 +93,54 @@ FactoryOS 是制造业 **AI 执行平台 Overlay**：在客户 ERP/MES 之上，
 
 ```text
 FactoryOS/                              # 单 Git · uv workspace
-├── os_core/                            # 内核（低频 · tag 冻结）
-│   ├── shared_contracts/
-│   ├── graph_service/
-│   ├── rule_engine/
-│   ├── execution_service/              # ★ 唯一写 Legacy
-│   ├── audit_service/
-│   ├── connector_sdk/                  # Blueprint Runtime + Registry
-│   ├── agent_orchestrator/             # 唯一允许 LLM
-│   ├── license_service/
-│   └── mcp_gateway/
-├── apps/
-│   ├── api/                            # ★ 唯一生产 deployable
-│   ├── web-admin/                      # Phase 1 后半
-│   └── h5-worker/
-├── integration/                        # ★ 配置枢纽（高频）
-│   ├── catalog/                        # Layer A Definition
-│   ├── packs/
-│   ├── tenants/{id}/                   # Layer B/C + tenant.yaml
-│   └── tools/
-│       ├── connector-agent/
-│       └── guide/flows.json            # factoryos guide 真源
-├── 文档/                               # 契约与 ADR
-├── tests/                              # AC-BASE-001 等
+├── src/
+│   ├── server/
+│   │   ├── api/                        # ★ 唯一生产 deployable（import: server.api）
+│   │   │   ├── main.py                 # 薄入口
+│   │   │   ├── application/            # 工厂 + 组装
+│   │   │   ├── router/v1/registry.py   # HTTP 路由第一站
+│   │   │   ├── config/                 # settings · middleware · status_code
+│   │   │   └── modules/<domain>/       # controllers · schemas · routers.py
+│   │   ├── os_core/                    # 内核（import: os_core.* · registry.py）
+│   │   │   ├── shared_contracts/
+│   │   │   ├── platform_registry/      # ADR-008 DB 真源
+│   │   │   ├── graph_service/
+│   │   │   ├── rule_engine/
+│   │   │   ├── execution_service/      # ★ 唯一写 Legacy
+│   │   │   ├── audit_service/
+│   │   │   ├── connector_sdk/
+│   │   │   ├── agent_orchestrator/     # 唯一允许 LLM
+│   │   │   ├── license_service/
+│   │   │   └── mcp_gateway/
+│   │   ├── db/migrations/              # Alembic
+│   │   └── edge-agent/                 # 私网 PoC
+│   ├── apps/
+│   │   ├── web-admin/                  # Phase 1 后半 · Studio
+│   │   └── h5-worker/                  # 钉钉 H5 壳
+│   ├── integration/                    # ★ 配置枢纽（高频 · registry.py）
+│   │   ├── catalog/
+│   │   ├── packs/
+│   │   ├── tenants/{id}/
+│   │   └── tools/
+│   │       ├── connector-agent/
+│   │       └── guide/flows.json
+│   └── tests/                          # AC-BASE-001 等
+├── docs/文档/                          # ADR · 规格 · 架构图
+├── contracts/                          # OpenAPI · Schema export
 ├── scripts/
-│   ├── factoryos                       # ★ 接入/扩展引导 CLI
-│   ├── check_import_boundaries.py
-│   ├── check_cmv_sync.py
-│   └── check_openapi_schema_refs.py
+│   ├── factoryos
+│   ├── check_harness.py
+│   ├── check_*_registry.py
+│   └── check_legacy_paths.py
 └── pyproject.toml
 ```
 
 ### 4.1 边界矩阵（谁可以 import 谁）
 
-| 从 → 到 | os_core 私有 | os_core 公开 api | integration | apps/api |
+| 从 → 到 | os_core 私有 | os_core 公开 api | integration | server/api |
 |---------|-------------|------------------|-------------|----------|
 | **integration/** | ❌ | ✅ 仅 connector_sdk·shared_contracts | ✅ | ❌ |
-| **apps/api** | ✅ 各模块 api.py | ✅ | ❌ 不经由代码 | — |
+| **server/api** | ✅ 各模块 api.py | ✅ | ❌ 不经由代码 | — |
 | **os_core 模块间** | ❌ 跨私有 | ✅ 见膨胀期守则 §2 | ❌ | ❌ |
 
 详表：[os_core-public-api](./os_core-public-api.md) · [膨胀期架构守则](./膨胀期架构守则.md)
@@ -140,7 +150,7 @@ FactoryOS/                              # 单 Git · uv workspace
 | 迁出单元 | 产物 | 代码改动 |
 |----------|------|----------|
 | 租户实施 | `integration/tenants/{id}/` + Package JSON | S1：**无** |
-| 前端 | `apps/web-admin` 独立仓 + OpenAPI codegen | 可选 Phase 1 后半 |
+| 前端 | `src/apps/web-admin` 独立仓 + OpenAPI codegen | 可选 Phase 1 后半 |
 | 内核 | 私有 PyPI 包 / 独立仓 | Gate 0' + 多团队时 |
 | L0 四模块 | **不拆**（ADR-007） | — |
 
@@ -151,9 +161,9 @@ FactoryOS/                              # 单 Git · uv workspace
 ```mermaid
 flowchart TB
     subgraph L3["L3 Harness · 体验入口"]
-        H5["apps/h5-worker"]
-        WEB["apps/web-admin / Studio"]
-        APIH["apps/api perception/harness"]
+        H5["src/apps/h5-worker"]
+        WEB["src/apps/web-admin / Studio"]
+        APIH["server/api perception/harness"]
     end
 
     subgraph L2["L2 Skills · 唯一 LLM 区"]
@@ -174,7 +184,7 @@ flowchart TB
         A["audit_service"]
     end
 
-  H5 & WEB & APIH --> API["apps/api"]
+  H5 & WEB & APIH --> API["server/api"]
   API --> AGENT & LIC & MCP & G & R & E & A
   AGENT -->|DSL Plan| R
   R -->|授权| E
@@ -281,7 +291,7 @@ D2 定制 ≥70% Pack 化（ADR-003）
          │                     │                     │
          └─────────────────────┴─────────────────────┘
                                │
-                         apps/api OpenAPI
+                         server/api OpenAPI
                                │
                          Audit 全链路留痕
 ```
@@ -295,7 +305,7 @@ D2 定制 ≥70% Pack 化（ADR-003）
 | 开写 | ❌ | admin + 业务双签 |
 | Bronze→Silver | ❌ | platform 人审 |
 
-实施入口：**Integration Studio**（`apps/web-admin`）  
+实施入口：**Integration Studio**（`src/apps/web-admin`）  
 平台调试：`./scripts/factoryos guide` · `./scripts/factoryos guide map onboard`
 
 ---
@@ -322,7 +332,7 @@ D2 定制 ≥70% Pack 化（ADR-003）
 ### 11.1 Y1 单厂 / 单 Cell（Baseline）
 
 ```text
-SLB → Nginx → Uvicorn×N (apps/api) → RDS PG16
+SLB → Nginx → Uvicorn×N (server/api) → RDS PG16
                               ├→ Redis/Tair（预留）
                               ├→ OSS
                               └→ Edge Agent（私网 ERP，出站 WSS）
@@ -474,7 +484,7 @@ license_service
 mcp_gateway → agent 公开面
 ```
 
-## 附录 B · OpenAPI 域划分（apps/api）
+## 附录 B · OpenAPI 域划分（server/api）
 
 | 域前缀 | 责任模块 |
 |--------|----------|

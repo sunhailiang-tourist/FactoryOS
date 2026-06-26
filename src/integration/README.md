@@ -5,7 +5,7 @@
 本目录为 **集成团队主战场**（平台研发视角）。Core 1.0 冻结（`core-v1.0.0`）后，Pack 与 Connector 扩展仍在此演进。
 
 > **对外实施主路径** = Integration Studio（管理台 UI），见 [UI-FIRST-CONFIG-PRINCIPLE](../../.cursor/factoryos/UI-FIRST-CONFIG-PRINCIPLE.md)。  
-> 本目录 YAML **不是** 客户日常配置真源；运行时配置落 PostgreSQL，仓库文件为 export/import 快照与契约测试 fixture。
+> **运行时真源** = PostgreSQL Registry（`pack_registry` · `system_relations` · ADR-008）；本目录 YAML 为 **export/import 镜像** 与 **pytest fixture**。
 
 ## 目录约定（与 `16` §2 一致）
 
@@ -29,7 +29,7 @@ integration/
 
 | 路径 | 用途 | 谁读 |
 |------|------|------|
-| **`integration/catalog/`** | **运行时** Blueprint + mapping + contract tests | Pack Loader / Blueprint Runtime |
+| **`integration/catalog/`** | **export 镜像** Blueprint（bootstrap → `pack_registry`） | Pack Loader / contract tests |
 | **`文档/连接器/catalog/`** | **文档侧**认证样例、Silver 分级参考 YAML | 规格、Studio discover、人工评审 |
 | **`文档/连接器/{system}/`** | 厂商调研、request/response **样例 JSON** | Connector-Agent、Contract Test 编写 |
 

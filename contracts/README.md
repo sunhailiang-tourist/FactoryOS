@@ -1,6 +1,9 @@
-# contracts · 机器契约真源（B 策略）
+# contracts · export 镜像（ADR-008 废止编辑真源）
 
-本目录为 **CI / pytest / Agent 契约** 唯一机器可读真源；日常编码不依赖 `docs/`。
+> **状态**：Export / CI 镜像 · **非**运行时日常编辑真源  
+> **真源**：[ADR-008](../docs/文档/架构/架构决策记录-008-配置与契约平面DB化.md) · PostgreSQL `contract_*` Registry + Studio publish
+
+本目录保留 **export/import 快照** 与 **gate/contract pytest 对账镜像**；日常契约变更经 Studio publish 写入 Registry，再 export 回本目录（CI 可选）。
 
 | 路径 | 内容 |
 |------|------|
@@ -13,23 +16,23 @@
 ## 门禁
 
 ```bash
-./scripts/harness --tier contracts    # L0
-./scripts/gate plan                   # 确认规划（含 L0）
-./scripts/gate pr                     # CI 同款全量
+./scripts/harness --tier contracts    # L0（对 published contract_set + export 镜像）
+./scripts/gate plan
+./scripts/gate pr
 ```
 
 ## 变更纪律
 
 | 改了 | 必做 |
 |------|------|
-| `openapi/` · `schemas/` | `harness --tier contracts` + contract pytest |
+| Registry publish 后 export | `harness --tier contracts` + contract pytest |
 | `acceptance/` | 更新 `src/tests/ac/` · AC-P0-INDEX |
-| 与 `docs/文档/数据结构` 对齐 | **只改本目录**；`docs_baseline contracts-crosscheck` |
+| 与 `docs/文档/数据结构` 对齐 | Registry artifact 格式 · docs_baseline crosscheck |
 
 ## 认知策略
 
 - 工作流：[.cursor/factoryos/INDEX.md](../.cursor/factoryos/INDEX.md)
-- docs 漂移：[.cursor/docs-baseline/BASELINE.md](../.cursor/docs-baseline/BASELINE.md)
-- 开发前链路：[PRE-DEV-CHAIN.md](../.cursor/factoryos/PRE-DEV-CHAIN.md)
+- UI-FIRST：[UI-FIRST-CONFIG-PRINCIPLE.md](../.cursor/factoryos/UI-FIRST-CONFIG-PRINCIPLE.md)
+- ADR-008：配置与契约平面 DB 化
 
-厚 ADR 仍在 `docs/`（可选外迁）；**改契约只改本目录**。
+**禁止**：将本目录作为实施顾问日常编辑入口。

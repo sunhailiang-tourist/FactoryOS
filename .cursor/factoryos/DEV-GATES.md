@@ -39,7 +39,7 @@
 Step N — <名>（流程节点：xxx）
   AC ID：G-01, E-03, …
   接口：METHOD /v1/...（新增/修改）
-  模块路径：os_core/... 或 apps/api/...
+  模块路径：src/server/os_core/... 或 src/server/api/...
   Harness 验收盘：`./scripts/gate step --step N -k '<AC-ID>'`（停机；编码中按改动面见 HARNESS-SCRIPTS.md）
   风险：幂等/越权/shadow/…
   验收标准：（可测一句话）
@@ -83,8 +83,8 @@ Step N — <名>（流程节点：xxx）
 | 层级 | 何时 | 脚本 |
 |------|------|------|
 | L0 契约 | Step 0-B · `确认规划` · 动 `contracts/` | `./scripts/harness --tier contracts` |
-| L1 边界 | 动 `src/os_core` · `src/integration` | `./scripts/harness --tier boundaries` |
-| L2 冗余 | 动 `src/os_core` · `src/apps` 业务 `.py` | `./scripts/harness --tier step` |
+| L1 边界 | 动 `src/server/os_core` · `src/integration` | `./scripts/harness --tier boundaries` |
+| L2 冗余 | 动 `src/server/os_core` · `src/server/api` 业务 `.py` | `./scripts/harness --tier step` |
 | L3 行为 | 每 Step 停机 | `./scripts/gate step --step N -k '<AC-ID>'`（含 verify + static） |
 
 详表：[HARNESS-SCRIPTS.md](./HARNESS-SCRIPTS.md) · 脚本目录：[scripts/README.md](../../scripts/README.md)
@@ -111,7 +111,7 @@ Verify 细则：[VERIFY-GATES.md](./VERIFY-GATES.md) · Test 细则：[TEST-GATE
 
 ## 架构落位（新目录/模块前）
 
-≤10 行：业务域 · 依赖方向证据 · 为何不漂移。新 `os_core/*` 或 `apps/*` 目录 → 先 README → 等你确认再继续。
+≤10 行：业务域 · 依赖方向证据 · 为何不漂移。新 `os_core/*` 或 `src/apps/*` 目录 → 先 README → 等你确认再继续。
 
 ---
 

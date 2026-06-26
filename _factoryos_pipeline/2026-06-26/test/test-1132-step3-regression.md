@@ -8,8 +8,8 @@
 
 | 路径 | 变更 | plan 预期落位 | 实际落位 | 结论 |
 |------|------|---------------|----------|------|
-| `src/os_core/rule_engine/` | 新增 | evaluate + CRUD | ✅ | PASS |
-| `src/apps/api/routes/rulesets.py` | 新增 | 薄 HTTP | ✅ | PASS |
+| `src/server/os_core/rule_engine/` | 新增 | evaluate + CRUD | ✅ | PASS |
+| `src/server/api/modules/*/controllers/rulesets.py` | 新增 | 薄 HTTP | ✅ | PASS |
 | `src/tests/integration/test_rule_w3.py` | 新增 | R-01～R-05 | ✅ | PASS |
 
 ## 2. 本 Step 硬性验收计划（执行记录）

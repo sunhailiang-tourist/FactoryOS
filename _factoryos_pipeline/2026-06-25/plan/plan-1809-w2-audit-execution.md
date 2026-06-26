@@ -43,7 +43,7 @@
 
 | 主题 | 本迭代 | 负向/静态 |
 |------|--------|-----------|
-| 写经 execution_service | execute 唯一入口 | import 矩阵 · apps/api 无写规则 |
+| 写经 execution_service | execute 唯一入口 | import 矩阵 · server/api 无写规则 |
 | audit append-only | 仅 insert + 查询 | 无 PATCH/DELETE |
 | Shadow/dry_run | status=simulated，Legacy 不变 | E-06 |
 | Agent 禁直写 | 不涉及 agent 写 | E-08 pending |
@@ -71,7 +71,7 @@
 | audit | `os_core/audit_service/` | store · public API |
 | execution | `os_core/execution_service/` | execute · idempotency · dry_run · evidence |
 | connector | `os_core/connector_sdk/` | mock write 适配（dry_run 跳过） |
-| API | `apps/api/routes/audit.py` · `executions.py` | 薄路由 |
+| API | `server/api/modules/*/controllers/audit.py` · `executions.py` | 薄路由 |
 | 测试 | `src/tests/integration/` · `contract/` | E-03/06/07/09 |
 
 ---
@@ -95,7 +95,7 @@
 |----|------|
 | AC ID | E-03 |
 | 接口 | GET `/v1/audit/events` |
-| 模块路径 | `apps/api/routes/audit.py` |
+| 模块路径 | `server/api/modules/*/controllers/audit.py` |
 | Harness 验收盘 | `./scripts/gate step --step 2 -k 'E-03'` |
 | 风险 | tenant_id 隔离 |
 | 验收标准 | 执行后查 audit 有 append-only 记录 |
@@ -117,7 +117,7 @@
 |----|------|
 | AC ID | E-09 · E-03 端到端 |
 | 接口 | POST `/v1/execute` · GET executions/evidence |
-| 模块路径 | `apps/api/routes/executions.py` · `main.py` 注册 |
+| 模块路径 | `server/api/modules/*/controllers/executions.py` · `main.py` 注册 |
 | Harness 验收盘 | `./scripts/gate step --step 4 -k 'E-09'` |
 | 风险 | ExecuteRequest 与 OpenAPI 一致 |
 | 验收标准 | evidence JSON 过 ExecutionEvidence schema |
@@ -139,4 +139,4 @@
 
 ## 8. 编码纪律
 
-同 W1 plan §1.1：`apps/api` 薄路由 · 中文注释 · 新目录 README · 无 tenant 分支
+同 W1 plan §1.1：`server/api` 薄路由 · 中文注释 · 新目录 README · 无 tenant 分支

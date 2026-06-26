@@ -32,7 +32,7 @@ Gate 1–4 / 合并模式 / 快速路径见 `DEV-GATES.md`。模板：`templates
 1. 确认 Test 已写/更新 **failing tests**（对应用例 AC ID）
 2. 你 `可以开始` 后 **仅本 Step** 实现
 3. 10 项自检 + 中文注释（`编码绝对门禁.mdc`）
-4. `apps/api` 薄路由；业务只在 `os_core`；唯一写 Legacy 经 `execution_service`
+4. `src/server/api` 薄路由；业务只在 `os_core`；唯一写 Legacy 经 `execution_service`
 5. **git diff** 复核 Step 1…N-1
 6. 停机落盘：`templates/step-stop-template.md` → `step-stop/`
 7. **Test 新会话**：`【Test·Step N 验收】` → `test/test-<HHmm>-stepN-regression.md`（见 `TEST-GATES.md`）

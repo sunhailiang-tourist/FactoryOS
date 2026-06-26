@@ -86,7 +86,7 @@ flowchart TD
 | （初始） | `STEP0` | pipeline · contracts · scripts · .cursor · docs |
 | `可以继续`（Step0 后） | `PLANNING` | + plan/ |
 | `确认规划` | `CAN_TEST` + plan.ok | + test/ · src/tests/ |
-| `可以开始` | `CAN_CODE` | + src/os_core · apps · integration 业务码 |
+| `可以开始` | `CAN_CODE` | + src/server/os_core · src/server/api · integration export |
 | Step 验收 `可以继续` | 下一 Step | 保持 CAN_CODE |
 | 全部 Step 完成 | `DELIVERY` | summary · 终轮 Test |
 | `可以提交` | `DELIVERY` | git commit · push · PR（须 gate delivery 绿） |
@@ -158,8 +158,8 @@ _factoryos_pipeline/
 | `contracts/schemas` | 同上 | Pydantic `shared_contracts`（W1+） |
 | `contracts/cmv` | `check_cmv_sync` | DSL 规格 · execution 测试 |
 | `contracts/acceptance` | AC registry · pytest `-k` | `.cursor/factoryos/AC-P0-INDEX.md` |
-| `src/os_core/**` | `harness --tier boundaries` 或 `auto` | MODULE-MAP · import 矩阵 |
-| `src/apps/**` 业务 | `harness --tier step` | apps README · API 契约 |
+| `src/server/os_core/**` | `harness --tier boundaries` 或 `auto` | MODULE-MAP · import 矩阵 |
+| `src/server/api/**` 业务 | `harness --tier step` | src/server/api README · API 契约 |
 | `src/integration/**` | boundaries + pack contract tests | `integration/catalog/` |
 | `src/tests/**` | `pytest` · `gate test/step` | test-plan 落盘 |
 | `.cursor/factoryos/**` | 人工审 · 无自动 gate | INDEX · README 链 |
@@ -168,7 +168,7 @@ _factoryos_pipeline/
 | `docs/` Tier-C | `contracts-crosscheck` 若改了文件 | **只改 contracts/** 为真源 |
 | `scripts/` 新门禁 | 注册 `check_harness.py` + `ci.yml` + README | HARNESS-SCRIPTS.md |
 | `pyproject.toml` 依赖 | 同 commit 提交 `uv.lock` · `gate pr`（deptry） | pre-commit `uv lock --check` · 见 README §激活 |
-| `src/os_core/**/models` · `alembic/` | `alembic check` · `upgrade head`（W1 起） | [ORM-MIGRATION-PRINCIPLE](./ORM-MIGRATION-PRINCIPLE.md) · ADR-007 S-01～S-04 |
+| `src/server/os_core/**/models` · `src/server/db/migrations/` | `alembic check` · `upgrade head` | [ORM-MIGRATION-PRINCIPLE](./ORM-MIGRATION-PRINCIPLE.md) · ADR-008 Registry |
 | `workflow_state` 关键词后 | Agent 必须更新 state 文件 | hooks 依赖 |
 
 映射详表：`.cursor/docs-baseline/policy/WORKFLOW_MAP.json`

@@ -8,12 +8,12 @@
 
 | 路径 | 变更 | plan 预期落位 | 实际落位 | 结论 |
 |------|------|---------------|----------|------|
-| `src/os_core/connector_sdk/registry.py` | 新增 | Step1 registry | ✅ | PASS |
-| `src/os_core/connector_sdk/runtime/` | 骨架 | Step1 包骨架 | ✅ 仅 `__init__` + README | PASS |
+| `src/server/os_core/connector_sdk/registry.py` | 新增 | Step1 registry | ✅ | PASS |
+| `src/server/os_core/connector_sdk/runtime/` | 骨架 | Step1 包骨架 | ✅ 仅 `__init__` + README | PASS |
 | `src/integration/catalog/conn-mock.yaml` | 扩展 | ConnectorBlueprint | ✅ GOVERNED_WRITE + revert | PASS |
-| `src/os_core/shared_contracts/errors.py` | 增码 | BLUEPRINT_INVALID 等 | ✅ | PASS |
-| `src/os_core/connector_sdk/__init__.py` | 导出 | registry 公开面 | ✅ | PASS |
-| `src/os_core/connector_sdk/runtime/execute.py` | — | Step2 | ❌ 未实现 | 符合分步 |
+| `src/server/os_core/shared_contracts/errors.py` | 增码 | BLUEPRINT_INVALID 等 | ✅ | PASS |
+| `src/server/os_core/connector_sdk/__init__.py` | 导出 | registry 公开面 | ✅ | PASS |
+| `src/server/os_core/connector_sdk/runtime/execute.py` | — | Step2 | ❌ 未实现 | 符合分步 |
 
 **超 plan 说明**：`validate_blueprint`（B-04 内核校验）在 Step1 一并落地；无 `execute_op` / HTTP revert，未抢 Step2–4 范围。
 

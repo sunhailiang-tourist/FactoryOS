@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-BUSINESS_PREFIXES = ("src/os_core/", "src/apps/")
+BUSINESS_PREFIXES = ("src/server/os_core/", "src/server/api/")
 TEST_PREFIX = "src/tests/"
 
 

@@ -12,11 +12,11 @@ Step 1 — Alembic 003 + `graph_service` 内核 CRUD（G-01）
 | 路径 | 变更 |
 |------|------|
 | `alembic/versions/003_graphs_rulesets.py` | 新增 `business_graphs` · `rulesets` 表 |
-| `src/os_core/graph_service/__init__.py` | 包入口 |
-| `src/os_core/graph_service/store.py` | Graph ORM · CRUD |
-| `src/os_core/graph_service/service.py` | draft 创建 · 版本查询 |
-| `src/os_core/graph_service/checksum.py` | sha256 校验和 |
-| `src/os_core/graph_service/README.md` | 模块说明 |
+| `src/server/os_core/graph_service/__init__.py` | 包入口 |
+| `src/server/os_core/graph_service/store.py` | Graph ORM · CRUD |
+| `src/server/os_core/graph_service/service.py` | draft 创建 · 版本查询 |
+| `src/server/os_core/graph_service/checksum.py` | sha256 校验和 |
+| `src/server/os_core/graph_service/README.md` | 模块说明 |
 | `src/tests/integration/w3_helpers.py` | W3 测试夹具 |
 | `src/tests/integration/test_graph_w3.py` | G-01 用例（Step1 范围） |
 

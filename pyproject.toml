@@ -41,14 +41,14 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/os_core"]
+packages = ["src/server/os_core"]
 
 [tool.hatch.build.targets.sdist]
-only-include = ["src/os_core", "pyproject.toml", "README.md"]
+only-include = ["src/server/os_core", "pyproject.toml", "README.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["src/tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "src/server"]
 asyncio_mode = "auto"
 markers = [
     "ac: AC-BASE-001 acceptance case (by id)",
@@ -62,7 +62,7 @@ filterwarnings = ["ignore::DeprecationWarning"]
 [tool.ruff]
 target-version = "py312"
 line-length = 100
-src = ["src"]
+src = ["src/server", "src/tests", "src/apps"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
@@ -71,6 +71,6 @@ select = ["E", "F", "I", "UP"]
 pythonVersion = "3.12"
 venvPath = "."
 venv = ".venv"
-include = ["src/os_core", "src/apps", "src/tests"]
-extraPaths = ["scripts"]
+include = ["src/server/os_core", "src/server/api", "src/tests"]
+extraPaths = ["scripts", "src", "src/server"]
 typeCheckingMode = "basic"

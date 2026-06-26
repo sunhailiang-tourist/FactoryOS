@@ -9,7 +9,7 @@
 
 ── ruff
 [1m[91mUP017 [0m[[1m[96m*[0m] [1mUse `datetime.UTC` alias[0m
-  [1m[94m-->[0m src/os_core/audit_service/store.py:57:38
+  [1m[94m-->[0m src/server/os_core/audit_service/store.py:57:38
    [1m[94m|[0m
 [1m[94m55 |[0m   """
 [1m[94m56 |[0m   event_id = uuid4()

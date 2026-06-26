@@ -11,13 +11,13 @@ Step 2 — GET /v1/audit/events · POST /v1/execute（产生 audit）
 
 | 路径 | 变更 |
 |------|------|
-| `src/apps/api/deps.py` | DB 会话 + alembic upgrade |
-| `src/apps/api/routes/audit.py` | GET /v1/audit/events |
-| `src/apps/api/routes/execute.py` | POST /v1/execute |
-| `src/os_core/execution_service/` | execute 内核（E-03 依赖） |
-| `src/os_core/connector_sdk/mock_legacy.py` | mock 写计数 |
-| `src/os_core/shared_contracts/models/execution.py` | ExecuteRequest |
-| `src/apps/api/main.py` | 注册 audit/execute 路由 |
+| `src/server/api/deps.py` | DB 会话 + alembic upgrade |
+| `src/server/api/modules/*/controllers/audit.py` | GET /v1/audit/events |
+| `src/server/api/modules/*/controllers/execute.py` | POST /v1/execute |
+| `src/server/os_core/execution_service/` | execute 内核（E-03 依赖） |
+| `src/server/os_core/connector_sdk/mock_legacy.py` | mock 写计数 |
+| `src/server/os_core/shared_contracts/models/execution.py` | ExecuteRequest |
+| `src/server/api/main.py` | 注册 audit/execute 路由 |
 
 ## 3. AC / 接口
 

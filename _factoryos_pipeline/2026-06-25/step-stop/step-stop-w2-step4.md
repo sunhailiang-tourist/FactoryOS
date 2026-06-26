@@ -11,13 +11,13 @@ W2 Step 4 — `GET /v1/executions/{execId}/evidence` · ExecutionEvidence 组装
 
 | 路径 | 变更 |
 |------|------|
-| `src/os_core/execution_service/store.py` | `find_by_exec_id` |
-| `src/os_core/execution_service/service.py` | `assemble_evidence` |
-| `src/os_core/execution_service/__init__.py` | 导出 `assemble_evidence` |
-| `src/apps/api/routes/executions.py` | **新增** evidence 薄路由 |
-| `src/apps/api/main.py` | 注册 executions router |
-| `src/os_core/execution_service/README.md` | E-09 验收盘 |
-| `src/apps/api/routes/README.md` | 路由表 |
+| `src/server/os_core/execution_service/store.py` | `find_by_exec_id` |
+| `src/server/os_core/execution_service/service.py` | `assemble_evidence` |
+| `src/server/os_core/execution_service/__init__.py` | 导出 `assemble_evidence` |
+| `src/server/api/modules/*/controllers/executions.py` | **新增** evidence 薄路由 |
+| `src/server/api/main.py` | 注册 executions router |
+| `src/server/os_core/execution_service/README.md` | E-09 验收盘 |
+| `src/server/api/modules/*/controllers/README.md` | 路由表 |
 
 ## 3. AC
 
@@ -30,7 +30,7 @@ W2 Step 4 — `GET /v1/executions/{execId}/evidence` · ExecutionEvidence 组装
 | 项 | 结果 |
 |----|------|
 | 未超 plan | Pass — 仅 evidence 路由 + os_core 组装 |
-| apps/api 薄路由 | Pass |
+| server/api 薄路由 | Pass |
 | 业务在 os_core | Pass |
 | 中文注释 | Pass |
 | import 边界 | Pass |

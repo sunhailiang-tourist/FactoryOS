@@ -15,7 +15,7 @@
 |----|------|
 | **本轮落点** | W1 工程骨架：`shared_contracts` · Alembic **S-01～S-04** · `connector_sdk` mock · `integration/tenants/_template` 校验；**不含** Graph/Rule/Execution 业务闭环（W2–W3） |
 | **写路径** | 本轮无 Legacy 写；仅预埋表 + 契约模型 + mock health；ADR-002 执行红线（`REDLINES.md`）为设计约束，Step 4 前不触达 execution |
-| **apps/api** | Step 1 仅 app 工厂 + `/health`；OpenAPI 域路由 W2+ 按模块递增 |
+| **server/api** | Step 1 仅 app 工厂 + `/health`；OpenAPI 域路由 W2+ 按模块递增 |
 | **integration** | 禁 import os_core 私有 API；本轮 YAML/catalog 契约校验 + 模板完善 |
 | **0-DB** | 仓库 **无 Alembic 目录**；本地 PG **未绑定** → Schema 以 `contracts/schemas` + Step 3 迁移为准 |
 | **Gate 0 关系** | 52 P0 仍 pending；W1 目标 AC 子集：**S-01～S-04** · **C-01**（mock health）· contract/static 绿 |
@@ -43,7 +43,7 @@
 
 | 维度 | 要求 |
 |------|------|
-| **架构合理性** | Modular Monolith；`apps/api` 薄路由；业务只在 `os_core`；integration 仅 OpenAPI + connector_sdk 公开面 |
+| **架构合理性** | Modular Monolith；`server/api` 薄路由；业务只在 `os_core`；integration 仅 OpenAPI + connector_sdk 公开面 |
 | **灵活性** | 客户差异不进内核（无 `if tenant_id`）；规模预埋（S-*）用接口抽象（TenantRegistry · OutboxPort），S1 可换实现 |
 | **可约定性** | 类型/错误码/API 以 `contracts/` 为准；Pydantic 与 JSON Schema 字段一一对应 |
 | **中文注释** | 每 `.py` 文件头 + 函数 docstring + 字段四要素（见 `编码绝对门禁.mdc`） |
@@ -102,12 +102,12 @@
 |------|------|------|
 | 依赖 | `pyproject.toml` · `uv.lock` | + FastAPI · SQLAlchemy 2 async · Alembic · asyncpg |
 | 迁移 | `alembic/` · `alembic.ini` | 新建；版本链 S-01～S-04 |
-| 契约 | `src/os_core/shared_contracts/` | Pydantic · errors · schema_loader |
-| 连接器 | `src/os_core/connector_sdk/` | mock connector + registry 占位 |
-| API | `src/apps/api/` | app 工厂 · health · DI 占位 |
+| 契约 | `src/server/os_core/shared_contracts/` | Pydantic · errors · schema_loader |
+| 连接器 | `src/server/os_core/connector_sdk/` | mock connector + registry 占位 |
+| API | `src/server/api/` | app 工厂 · health · DI 占位 |
 | 集成 | `integration/tenants/_template/` | YAML 字段与 SystemRelation schema 对齐 |
 | 测试 | `src/tests/contract/` · `src/tests/integration/` | S-* · C-01 · schema 校验 |
-| ORM | `src/os_core/shared_contracts/` 或 `apps/api/db/` | tenant/outbox 表模型（与 Schema 字段一致） |
+| ORM | `src/server/os_core/shared_contracts/` 或 `server/api/db/` | tenant/outbox 表模型（与 Schema 字段一致） |
 
 ---
 
@@ -119,7 +119,7 @@
 |----|------|
 | AC ID | workflow（import_boundaries） |
 | 接口 | `GET /health` |
-| 模块路径 | `pyproject.toml` · `src/apps/api/main.py` · `src/apps/api/README.md` 更新 |
+| 模块路径 | `pyproject.toml` · `src/server/api/main.py` · `src/server/api/README.md` 更新 |
 | Harness 验收盘 | `./scripts/gate step --step 1 -k 'workflow'` |
 | 风险 | 依赖封版须同 commit 提交 `uv.lock`；勿提前写 os_core 业务规则 |
 | 验收标准 | `uv sync` 绿 · import_boundaries 绿 · pytest workflow 绿 |
@@ -134,7 +134,7 @@
 |----|------|
 | AC ID | contract（Schema 对齐）；为 D-01/E-* 预备类型 |
 | 接口 | 无新 HTTP |
-| 模块路径 | `src/os_core/shared_contracts/models/` · `errors.py` · `schema_loader.py` |
+| 模块路径 | `src/server/os_core/shared_contracts/models/` · `errors.py` · `schema_loader.py` |
 | Harness 验收盘 | `./scripts/gate step --step 2 -k 'contract'` |
 | 风险 | Schema 字段与 JSON 不一致 → 以 `contracts/schemas` 为准 |
 | 验收标准 | contract pytest 扩展通过 · `./scripts/harness --tier contracts` 绿 |
@@ -149,7 +149,7 @@
 |----|------|
 | AC ID | S-01, S-02, S-03, S-04 |
 | 接口 | 无（仅 DB + 内部 Registry） |
-| 模块路径 | `alembic/versions/` · `src/os_core/shared_contracts/` 或 `apps/api/db/` · TenantRegistry · OutboxPort |
+| 模块路径 | `alembic/versions/` · `src/server/os_core/shared_contracts/` 或 `server/api/db/` · TenantRegistry · OutboxPort |
 | Harness 验收盘 | `./scripts/gate step --step 3 -k 'S-01'` |
 | 风险 | 无 PG 时 integration test 用 testcontainer/SQLite 策略须在 Test plan 写明 |
 | 验收标准 | `alembic upgrade head` 后表存在 · seed tenant · get_cell 返回 cell-default · outbox 可 insert |
@@ -164,7 +164,7 @@
 |----|------|
 | AC ID | C-01 |
 | 接口 | `GET /v1/connectors/{packId}/health` |
-| 模块路径 | `src/os_core/connector_sdk/` · `src/apps/api/routes/connectors.py` · `integration/catalog/` mock · `integration/tenants/_template/` |
+| 模块路径 | `src/server/os_core/connector_sdk/` · `src/server/api/modules/*/controllers/connectors.py` · `integration/catalog/` mock · `integration/tenants/_template/` |
 | Harness 验收盘 | `./scripts/gate step --step 4 -k 'C-01'` |
 | 风险 | connector 不得含业务规则；write 方法 W4 才实现 |
 | 验收标准 | C-01 pytest 绿 · boundaries harness 绿 · 52 pending 其余仍红 |
@@ -213,7 +213,7 @@ flowchart LR
 ## 9. 架构落位（≤10 行）
 
 - **业务域**：Platform-L0 工程底座；无工厂业务 Graph
-- **依赖方向**：`apps/api` → `os_core/*` 公开面；`integration/` 仅 HTTP + connector_sdk 公开面
+- **依赖方向**：`server/api` → `os_core/*` 公开面；`integration/` 仅 HTTP + connector_sdk 公开面
 - **为何不漂移**：W1 只做 schemas+迁移+mock；execution 唯一写路径留 W2–W3，避免 premature Legacy 写
 
 ---

@@ -20,7 +20,7 @@ def main() -> None:
         path = str(tool_input.get("path") or tool_input.get("file_path") or "")
 
     norm = path.replace("\\", "/")
-    if norm.startswith(("src/os_core/", "src/apps/", "src/integration/")) and norm.endswith(".py"):
+    if norm.startswith(("src/server/os_core/", "src/server/api/", "src/integration/")) and norm.endswith(".py"):
         ctx = (
             "【Harness】已编辑业务 .py → 建议运行："
             "./scripts/harness --tier auto"

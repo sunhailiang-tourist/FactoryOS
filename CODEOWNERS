@@ -5,13 +5,15 @@
 *                       @factoryos-platform
 
 # 内核（低频 · 全量 AC）
-/src/os_core/            @factoryos-core
+/src/server/os_core/       @factoryos-core
 
-# 应用入口
-/src/apps/api/           @factoryos-core @factoryos-api
+# HTTP API（唯一 deployable）
+/src/server/api/           @factoryos-core @factoryos-api
+
+# 应用壳
 /src/apps/web-admin/     @factoryos-frontend
 /src/apps/h5-worker/     @factoryos-frontend
-/src/apps/edge-agent/    @factoryos-core @factoryos-integration
+/src/server/edge-agent/  @factoryos-core @factoryos-integration
 
 # 配置枢纽（高频 · contract tests）
 /src/integration/        @factoryos-integration

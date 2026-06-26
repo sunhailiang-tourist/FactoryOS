@@ -5,9 +5,9 @@ import importlib
 
 import pytest
 from fastapi.testclient import TestClient
+from tests.integration.w3_helpers import bootstrap_frozen_graph, sample_graph_body
 
 from os_core.connector_sdk import mock_legacy
-from tests.integration.w3_helpers import bootstrap_frozen_graph, sample_graph_body
 
 
 @pytest.mark.integration
@@ -135,7 +135,7 @@ def test_G08_execute_on_deprecated_graph_rejected(case: str, api_client: TestCli
   )
   graph_mod = importlib.import_module("os_core.graph_service")
   deprecate = getattr(graph_mod, "deprecate_graph_version")
-  from apps.api.deps import get_db_session
+  from server.api.config.dependencies.db import get_db_session
 
   session = next(get_db_session())
   try:

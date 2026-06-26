@@ -157,7 +157,7 @@ def system_architecture() -> None:
   <rect x="80" y="1010" width="1680" height="72" rx="8" fill="#eafaf1" stroke="#1e8449"/>
   <text x="96" y="1036" class="bt">图例</text>
   <text x="96" y="1056" class="sm">红=入口 L3 · 橙=体验 L2 · 绿=信任内核 L0 · 蓝=连接 L1 · 虚线红框=客户账本 L0</text>
-  <text x="96" y="1072" class="sm">紫框=扩展与商业机制 · 实线箭头写路径必经 execution · Modular Monolith 单 apps/api deployable</text>
+  <text x="96" y="1072" class="sm">紫框=扩展与商业机制 · 实线箭头写路径必经 execution · Modular Monolith 单 server/api deployable</text>
 
   <text x="{w//2}" y="1120" text-anchor="middle" class="t2">详见 文档/架构/系统架构图说明.md · 16-OS核心基座 · 2026-06-16</text>
 </svg>'''
@@ -178,25 +178,25 @@ def technical_architecture() -> None:
   <rect x="40" y="92" width="1720" height="26" rx="8" fill="#922b21"/>
   <text x="56" y="110" class="zt">前端（Phase 1 后半 · React 18 + TypeScript + Vite）</text>
   <rect x="56" y="126" width="380" height="44" rx="6" fill="#fff" stroke="#c0392b"/>
-  <text x="68" y="146" class="bt">apps/web-admin</text>
+  <text x="68" y="146" class="bt">src/apps/web-admin</text>
   <text x="68" y="162" class="sm">PC 管理 · Graph freeze · Studio /studio/*</text>
   <rect x="452" y="126" width="380" height="44" rx="6" fill="#fff" stroke="#c0392b"/>
-  <text x="464" y="146" class="bt">apps/h5-worker</text>
+  <text x="464" y="146" class="bt">src/apps/h5-worker</text>
   <text x="464" y="162" class="sm">钉钉/企微 H5 壳 · Harness 确认门</text>
   <rect x="848" y="126" width="380" height="44" rx="6" fill="#fff5f5" stroke="#e74c3c" stroke-dasharray="4"/>
   <text x="860" y="146" class="bt">感知多模态</text>
   <text x="860" y="162" class="sm">语音/图片/扫码 → OSS 短期存储</text>
-  <text x="1260" y="154" class="sm">HTTPS → apps/api（OpenAPI v1.1.1）</text>
+  <text x="1260" y="154" class="sm">HTTPS → server/api（OpenAPI v1.1.1）</text>
 
   <!-- api -->
   <rect x="40" y="196" width="1720" height="56" rx="8" fill="#d5e8d4" stroke="#82b366" stroke-width="2"/>
-  <text x="56" y="222" class="bt">apps/api — FastAPI + Uvicorn · 唯一生产 deployable · HTTP 适配层（无业务规则）</text>
+  <text x="56" y="222" class="bt">server/api — FastAPI + Uvicorn · 唯一生产 deployable · HTTP 适配层（无业务规则）</text>
   <text x="56" y="240" class="hi">structlog JSON · OTel spans · tenant_id 上下文 · pyright/mypy 严格</text>
 
   <!-- os_core L0 -->
   <rect x="40" y="268" width="1200" height="200" rx="8" fill="#d5f5e3" stroke="#1e8449" stroke-width="2"/>
   <rect x="40" y="268" width="1200" height="26" rx="8" fill="#1e8449"/>
-  <text x="56" y="286" class="zt">os_core/ L0 信任内核（零 LLM）</text>
+  <text x="56" y="286" class="zt">src/server/os_core/ L0 信任内核（零 LLM · import: os_core.*）</text>
   <rect x="56" y="302" width="270" height="72" rx="6" fill="#fff" stroke="#27ae60"/>
   <text x="68" y="322" class="bt">graph_service</text>
   <text x="68" y="340" class="sm">SQLAlchemy async · Graph 版本</text>
@@ -221,7 +221,7 @@ def technical_architecture() -> None:
   <!-- L2 AI -->
   <rect x="40" y="484" width="780" height="120" rx="8" fill="#fdebd0" stroke="#d68910" stroke-width="3"/>
   <rect x="40" y="484" width="780" height="26" rx="8" fill="#d35400"/>
-  <text x="56" y="502" class="zt">os_core/ L2 体验层 — 唯一允许 LLM 的区域</text>
+  <text x="56" y="502" class="zt">src/server/os_core/ L2 体验层 — 唯一允许 LLM 的区域</text>
   <rect x="56" y="518" width="360" height="76" rx="6" fill="#fff" stroke="#d68910"/>
   <text x="68" y="538" class="bt">agent_orchestrator</text>
   <text x="68" y="556" class="sm">LangGraph StateGraph · LiteLLM 路由</text>
@@ -234,7 +234,7 @@ def technical_architecture() -> None:
   <!-- L1 -->
   <rect x="840" y="484" width="920" height="120" rx="8" fill="#d6eaf8" stroke="#2874a6" stroke-width="2"/>
   <rect x="840" y="484" width="920" height="26" rx="8" fill="#1a5276"/>
-  <text x="856" y="502" class="zt">os_core/ L1 连接层 GIP（零 LLM）</text>
+  <text x="856" y="502" class="zt">src/server/os_core/ L1 连接层 GIP（零 LLM）</text>
   <rect x="856" y="518" width="420" height="76" rx="6" fill="#fff" stroke="#2874a6"/>
   <text x="868" y="538" class="bt">connector_sdk</text>
   <text x="868" y="556" class="sm">httpx async · Registry · Blueprint Runtime</text>
@@ -398,7 +398,7 @@ def core_module_architecture() -> None:
 
   <!-- api -->
   <rect x="600" y="88" width="600" height="52" rx="8" fill="#d5e8d4" stroke="#82b366" stroke-width="2"/>
-  <text x="{w//2}" y="120" text-anchor="middle" class="bt">apps/api — FastAPI HTTP 适配（路由/依赖注入/OpenAPI · 无业务规则）</text>
+  <text x="{w//2}" y="120" text-anchor="middle" class="bt">src/server/api — FastAPI HTTP 适配（router/registry · modules · 无业务规则）</text>
 
   <!-- L3/L2 entry -->
   <rect x="80" y="160" width="520" height="64" rx="8" fill="#fadbd8" stroke="#c0392b"/>
@@ -495,7 +495,7 @@ def core_module_architecture() -> None:
   <text x="96" y="1070" class="sm">execution ← connector_sdk公开面 + rule公开面 + graph公开面</text>
   <text x="96" y="1090" class="sm">agent ← shared_contracts_contracts only（禁止 execution 内部写路径）</text>
   <text x="96" y="1110" class="sm">mcp_gateway ← shared_contracts + agent公开面 · connector ← shared_contracts_contracts only</text>
-  <text x="96" y="1130" class="sm">跨模块仅通过 api.py/public/ 暴露 · apps/api 无业务规则 · integration/ 仅 Registry+BlueprintRuntime</text>
+  <text x="96" y="1130" class="sm">跨模块仅通过 api.py/public/ 暴露 · server/api 无业务规则 · integration/ 仅 Registry+BlueprintRuntime</text>
   <text x="96" y="1150" class="sm">禁止 extract L0 四模块为独立写服务 · connector_worker 不得持有写 Legacy 权限（ADR-007）</text>
   <text x="96" y="1170" class="hi">W1 预留 DomainEvent/outbox stub · S1 Redis Streams · 同进程函数调用 Core 1.0</text>
 

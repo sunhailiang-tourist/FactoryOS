@@ -32,7 +32,7 @@ uv run pytest src/tests/integration/ -q
 
 | 维度 | 检查 | 结论 |
 |------|------|------|
-| 分层 | apps/api 薄路由；业务在 os_core | |
+| 分层 | server/api 薄 controller；业务在 os_core | |
 | 写路径 | 唯一写 Legacy 经 execution_service | |
 | 红线 | R-01–R-11 本步不涉及项已排除 | |
 | 注释 | 文件头 + 函数/字段四要素 | |

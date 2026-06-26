@@ -14,8 +14,8 @@
 | `connector_sdk/mock_legacy.py` | entity store · restore | 2/4 | ✅ | |
 | `execution_service/service.py` | L2 runtime · revert | 3/4 | ✅ | E-02/E-04 |
 | `execution_service/store.py` | snapshot 持久化 · status 更新 | 3/4 | ✅ | |
-| `apps/api/routes/execute.py` | POST revert | 4 | ✅ | E-04/E-05 |
-| `apps/api/routes/executions.py` | GET execution | 4 | ✅ | |
+| `server/api/modules/*/controllers/execute.py` | POST revert | 4 | ✅ | E-04/E-05 |
+| `server/api/modules/*/controllers/executions.py` | GET execution | 4 | ✅ | |
 | `shared_contracts/errors.py` | BLUEPRINT_INVALID 等 | 1 | ✅ | |
 | `src/tests/integration/test_*_w4.py` · `test_execution_e02_e04_e05.py` | 测试 | Test | ✅ | |
 
@@ -129,8 +129,8 @@ uv run pytest src/tests/contract src/tests/workflow src/tests/integration -m 'no
 | `connector_sdk/runtime/execute.py` | runtime op | B-02 · B-03 |
 | `connector_sdk/runtime/entity.py` | entity get/update | C-02～C-04 |
 | `execution_service/service.py` | execute · revert | E-02 · E-04 · E-05 |
-| `apps/api/routes/execute.py` | POST execute · POST revert | E-02 · E-04 |
-| `apps/api/routes/executions.py` | GET execution · evidence | E-09 |
+| `server/api/modules/*/controllers/execute.py` | POST execute · POST revert | E-02 · E-04 |
+| `server/api/modules/*/controllers/executions.py` | GET execution · evidence | E-09 |
 
 ## 7. 结论
 

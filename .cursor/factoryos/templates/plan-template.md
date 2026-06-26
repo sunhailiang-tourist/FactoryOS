@@ -1,7 +1,7 @@
 # 预开发说明：<标题>
 
 - **日期**：YYYY-MM-DD
-- **对照契约**：`contracts/openapi/` · `contracts/acceptance/`
+- **对照契约**：Contract Registry（published）+ `contracts/openapi/` export · `contracts/acceptance/`
 
 ## 1. 迭代目标
 

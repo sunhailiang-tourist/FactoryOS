@@ -32,6 +32,7 @@ tags:
   - name: Perception
   - name: Agent
   - name: Harness
+  - name: Registry
   - name: System
 
 paths:
@@ -924,6 +925,198 @@ paths:
         '403': { description: Denied }
         '409': { description: Graph not frozen }
 
+  /v1/registry/health:
+    get:
+      summary: Registry 就绪探针
+      operationId: registryHealth
+      tags: [Registry]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistryHealth'
+
+  /v1/registry/contract-set/active:
+    get:
+      summary: 当前环境 published contract_set
+      operationId: getActiveContractSet
+      tags: [Registry]
+      parameters:
+        - name: environment
+          in: query
+          schema: { type: string, default: prod }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractSetActive'
+        '404': { description: Not found }
+
+  /v1/registry/packs:
+    get:
+      summary: Pack Registry 列表
+      operationId: listRegistryPacks
+      tags: [Registry]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PackRegistrySummary'
+
+  /v1/registry/packs/{packId}:
+    get:
+      summary: Pack Blueprint
+      operationId: getRegistryPack
+      tags: [Registry]
+      parameters:
+        - name: packId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Blueprint JSON }
+        '404': { description: Not found }
+
+  /v1/registry/tenants/{tenantId}/profile:
+    get:
+      summary: 租户 profile
+      operationId: getRegistryTenantProfile
+      tags: [Registry]
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Tenant profile }
+        '404': { description: Not found }
+
+  /v1/registry/tenants/{tenantId}/relations:
+    get:
+      summary: 租户 system_relations
+      operationId: listRegistryTenantRelations
+      tags: [Registry]
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: object }
+
+  /v1/registry/change-requests:
+    get:
+      summary: 列出变更请求
+      operationId: listRegistryChangeRequests
+      tags: [Registry]
+      parameters:
+        - name: tenant_id
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { type: string, enum: [pending, approved, rejected] }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConfigChangeRequest'
+    post:
+      summary: 提交变更提案（pending）
+      operationId: createRegistryChangeRequest
+      tags: [Registry]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigChangeRequestCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigChangeRequest'
+
+  /v1/registry/change-requests/{requestId}:
+    get:
+      summary: 变更请求详情
+      operationId: getRegistryChangeRequest
+      tags: [Registry]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigChangeRequest'
+        '404': { description: Not found }
+
+  /v1/registry/change-requests/{requestId}/approve:
+    post:
+      summary: 人审批准并应用
+      operationId: approveRegistryChangeRequest
+      tags: [Registry]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeRequestDecision'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigChangeRequest'
+        '409': { description: Conflict }
+
+  /v1/registry/change-requests/{requestId}/reject:
+    post:
+      summary: 人审拒绝
+      operationId: rejectRegistryChangeRequest
+      tags: [Registry]
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeRequestDecision'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigChangeRequest'
+
 components:
   parameters:
     graphId:
@@ -1112,6 +1305,60 @@ components:
         reconciliation:
           $ref: '#/components/schemas/ReconciliationReport'
         write_approved: { type: boolean }
+
+    RegistryHealth:
+      type: object
+      required: [registry_seeded, status]
+      properties:
+        registry_seeded: { type: boolean }
+        active_contract_set: { type: string, nullable: true }
+        status: { type: string, enum: [ok, empty] }
+
+    ContractSetActive:
+      type: object
+      required: [set_id, environment, status]
+      properties:
+        set_id: { type: string }
+        environment: { type: string }
+        status: { type: string }
+
+    PackRegistrySummary:
+      type: object
+      properties:
+        pack_id: { type: string }
+        registry_key: { type: string }
+        certification_level: { type: string }
+        status: { type: string }
+
+    ConfigChangeRequestCreate:
+      type: object
+      required: [kind, proposed_by, proposal_body]
+      properties:
+        tenant_id: { type: string, nullable: true }
+        kind: { type: string, enum: [pack_upsert, system_relation_upsert] }
+        proposed_by: { type: string }
+        proposal_body: { type: object }
+        ai_model_id: { type: string, nullable: true }
+
+    ConfigChangeRequest:
+      type: object
+      required: [request_id, kind, status, proposed_by, proposal_body]
+      properties:
+        request_id: { type: string }
+        tenant_id: { type: string, nullable: true }
+        kind: { type: string }
+        status: { type: string, enum: [pending, approved, rejected] }
+        proposed_by: { type: string }
+        proposal_body: { type: object }
+        ai_model_id: { type: string, nullable: true }
+        created_at: { type: string }
+
+    ChangeRequestDecision:
+      type: object
+      required: [actor_id]
+      properties:
+        actor_id: { type: string }
+        reason: { type: string, nullable: true }
 
     McpJsonRpcRequest:
       type: object

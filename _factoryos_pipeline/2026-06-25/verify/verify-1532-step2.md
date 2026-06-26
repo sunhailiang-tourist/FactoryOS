@@ -9,7 +9,7 @@
 ## 1. 只读输入（Verify Agent 已阅读）
 
 - [x] plan Step 2 段落（§6 Step 2）
-- [x] `git diff` 本 Step 改动（`src/os_core/shared_contracts/**`）
+- [x] `git diff` 本 Step 改动（`src/server/os_core/shared_contracts/**`）
 - [x] step-stop 十项自检
 - [x] `contracts/schemas/` 七份优先 Schema 文件名与 plan 一致
 

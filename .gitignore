@@ -24,3 +24,4 @@ __pycache__/
 
 # pipeline local optional reports
 _factoryos_pipeline/**/report/
+_factoryos_pipeline/

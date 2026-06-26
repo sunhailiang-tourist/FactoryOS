@@ -22,8 +22,8 @@ TENANT_SCALE_COLUMNS = ("cell_id", "placement_tier", "region")
 def _require_alembic(repo_root: Path) -> None:
   alembic_ini = repo_root / "alembic.ini"
   assert alembic_ini.is_file(), "W1 Step3: 缺少 alembic.ini（S-01 前置）"
-  versions = repo_root / "alembic" / "versions"
-  assert versions.is_dir(), "W1 Step3: 缺少 alembic/versions/"
+  versions = repo_root / "src" / "server" / "db" / "migrations" / "versions"
+  assert versions.is_dir(), "W1 Step3: 缺少 src/server/db/migrations/versions/"
 
 
 @pytest.mark.integration
