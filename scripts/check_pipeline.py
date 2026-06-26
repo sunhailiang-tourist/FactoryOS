@@ -25,6 +25,13 @@ PLAN_GATE = PIPELINE / ".gates" / "plan.ok"
 VALID_PHASES = frozenset({"STEP0", "PLANNING", "CAN_TEST", "CAN_CODE", "DELIVERY"})
 
 
+def _plan_gate_errors(*, require_phase_min: str = "CAN_TEST") -> list[str]:
+  sys.path.insert(0, str(ROOT / "scripts"))
+  import plan_gate_lib
+
+  return plan_gate_lib.validate_plan_confirmed(require_phase_min=require_phase_min)
+
+
 def read_state() -> dict[str, str]:
     if not STATE_FILE.is_file():
         return {}
@@ -58,33 +65,20 @@ def check_gate_plan() -> list[str]:
 
 def check_gate_test() -> list[str]:
     errors: list[str] = []
-    if not PLAN_GATE.is_file():
-        errors.append("missing plan.ok — run ./scripts/gate plan after 确认规划")
+    errors.extend(_plan_gate_errors(require_phase_min="CAN_TEST"))
     tests = glob_any("*/test/test-*.md")
     if not tests:
         errors.append("missing test-plan: _factoryos_pipeline/<date>/test/test-*.md")
-    state = read_state()
-    phase = state.get("phase", "STEP0")
-    if phase not in ("CAN_TEST", "CAN_CODE", "DELIVERY"):
-        errors.append(f"phase={phase} — need 确认规划 → CAN_TEST before test-plan")
     return errors
 
 
 def check_gate_step(step: int) -> list[str]:
     errors: list[str] = []
-    pattern = f"*/step-stop/step-stop-*-step{step}.md"
-    stops = glob_any(pattern)
-    if not stops:
-        errors.append(f"missing step-stop for step {step}: {pattern}")
-    test_pattern = f"*/test/test-*-step{step}-regression.md"
-    if not glob_any(test_pattern):
-        errors.append(
-            f"missing Test step regression for step {step}: {test_pattern} "
-            f"(【Test·Step {step} 验收】落盘)"
-        )
-    verify_pattern = f"*/verify/verify-*-step{step}.md"
-    if not glob_any(verify_pattern):
-        errors.append(f"missing verify for step {step}: {verify_pattern}")
+    errors.extend(_plan_gate_errors(require_phase_min="CAN_CODE"))
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import step_chain_lib
+
+    errors.extend(step_chain_lib.validate_step_chain_closed(step, require_pass=True))
     state = read_state()
     if state.get("phase") != "CAN_CODE":
         errors.append("phase must be CAN_CODE for step-stop (用户 可以开始 后)")
@@ -93,6 +87,7 @@ def check_gate_step(step: int) -> list[str]:
 
 def check_gate_delivery() -> list[str]:
     errors: list[str] = []
+    errors.extend(_plan_gate_errors(require_phase_min="CAN_TEST"))
     final_pattern = "*/test/test-*-final-regression.md"
     if not glob_any(final_pattern):
         errors.append(

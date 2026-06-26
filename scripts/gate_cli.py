@@ -98,9 +98,32 @@ def pytest_available() -> bool:
 def write_plan_gate(plan: Path | None) -> None:
     PLAN_GATE.parent.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    plan_line = str(plan) if plan else "latest"
+    if plan is not None:
+        try:
+            plan_line = plan.relative_to(ROOT).as_posix()
+        except ValueError:
+            plan_line = str(plan)
+    else:
+        sys.path.insert(0, str(SCRIPTS))
+        import plan_gate_lib
+
+        state = plan_gate_lib.read_workflow_state()
+        plan_line = state.get("plan", "").strip() or "latest"
     PLAN_GATE.write_text(f"plan={plan_line}\nat={ts}\n", encoding="utf-8")
     print(f"Wrote {PLAN_GATE.relative_to(ROOT)}")
+
+
+def require_plan_confirmed(*, require_phase_min: str, label: str) -> int:
+    sys.path.insert(0, str(SCRIPTS))
+    import plan_gate_lib
+
+    errors = plan_gate_lib.validate_plan_confirmed(require_phase_min=require_phase_min)
+    if errors:
+        print(f"{label} FAILED — 确认规划绝对门禁:", file=sys.stderr)
+        for err in errors:
+            print(f"  {err}", file=sys.stderr)
+        return 1
+    return 0
 
 
 def run_static_quality() -> int:
@@ -139,6 +162,23 @@ def run_contract_workflow_pytest(*, bucket: str, stem: str, exclude_pending: boo
 
 
 def gate_plan(plan: Path | None) -> int:
+    sys.path.insert(0, str(SCRIPTS))
+    import plan_gate_lib
+
+    state = plan_gate_lib.read_workflow_state()
+    if state.get("phase") == "STEP0":
+        print(
+            "绝对门禁：phase=STEP0 — 须用户「可以继续」进入 PLANNING 后再「确认规划」",
+            file=sys.stderr,
+        )
+        return 1
+    plan_path = plan_gate_lib.resolve_plan_path(state)
+    if plan_path is None or not plan_path.is_file():
+        print(
+            "绝对门禁：workflow_state.plan 未填写或文件不存在 — 禁止 gate plan",
+            file=sys.stderr,
+        )
+        return 1
     if run_logged(
         bucket="dev",
         stem="gate-plan_harness-contracts",
@@ -156,14 +196,14 @@ def gate_plan(plan: Path | None) -> int:
         cmd=[sys.executable, str(SCRIPTS / "check_pipeline.py"), "--gate", "plan"],
     ) != 0:
         return 1
-    write_plan_gate(plan)
+    stamped = plan if plan is not None else Path(state.get("plan", ""))
+    write_plan_gate(stamped)
     print("\nGate plan OK (analyze passed · plan.ok stamped)")
     return 0
 
 
 def gate_test() -> int:
-    if not PLAN_GATE.is_file():
-        print("Missing plan.ok — run ./scripts/gate plan first", file=sys.stderr)
+    if require_plan_confirmed(require_phase_min="CAN_TEST", label="Gate test") != 0:
         return 1
     if run_logged(
         bucket="test",
@@ -185,7 +225,25 @@ def gate_verify(step: int, require_pass: bool) -> int:
     return 0
 
 
+def require_step_chain_closed(step: int) -> int:
+    """Step N 须 Dev step-stop → Test 验收 → Verify 通过（联动绝对门禁）。"""
+    sys.path.insert(0, str(SCRIPTS))
+    import step_chain_lib
+
+    errors = step_chain_lib.validate_step_chain_closed(step, require_pass=True)
+    if errors:
+        print("Gate step FAILED — 联动门禁 (Dev→Test→Verify):", file=sys.stderr)
+        for err in errors:
+            print(f"  {err}", file=sys.stderr)
+        return 1
+    return 0
+
+
 def gate_step(pytest_k: str | None, extra: list[str], step: int) -> int:
+    if require_plan_confirmed(require_phase_min="CAN_CODE", label="Gate step") != 0:
+        return 1
+    if require_step_chain_closed(step) != 0:
+        return 1
     cmd = [sys.executable, str(SCRIPTS / "check_harness.py"), "--tier", "full"]
     if pytest_k:
         cmd.extend(["--pytest", pytest_k, *extra])
@@ -241,6 +299,8 @@ def gate_step(pytest_k: str | None, extra: list[str], step: int) -> int:
 
 
 def gate_delivery() -> int:
+    if require_plan_confirmed(require_phase_min="CAN_TEST", label="Gate delivery") != 0:
+        return 1
     if run_logged(
         bucket="test",
         stem="gate-delivery_check-test-final-regression",

@@ -8,6 +8,8 @@
 |------|------|------|------|------|
 | **编码前** | `【Test模式启动】` + plan | `确认规划` 后 · 首个 `可以开始` 前 | `test-<HHmm>-<slug>.md` + failing tests | `gate test` |
 | **每 Step** | `【Test·Step N 验收】` | Dev step-stop 后 · **Verify 之前** | `test-<HHmm>-stepN-regression.md` | `gate step` 校验 |
+
+**联动门禁**：无 Dev `step-stop-*-stepN.md` → Hook 拒绝 Test 落盘 · `check_test_regression.py` 失败（`step_chain_lib` · 当前 plan 目录）。
 | **终轮** | `【Test·终轮回归】` | 全部 Step `可以继续` 后 · **commit 前** | `test-<HHmm>-final-regression.md` | `gate delivery` |
 
 模板：`templates/test-step-regression-template.md` · `templates/test-final-regression-template.md`

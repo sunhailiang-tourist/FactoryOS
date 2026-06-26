@@ -12,13 +12,13 @@
 - Connector 调度（经 `connector_sdk.mock_legacy`）、connector_trace
 - Revert / 对账钩子（W4+）
 
-## W2 验收盘
+## W3 验收盘
 
 ```bash
-pytest src/tests/integration/test_execution_e06_e07.py -k 'E-06'
-./scripts/gate step --step 3 -k 'E-06'
-pytest src/tests/integration/test_execution_e09.py -k 'E-09'
-./scripts/gate step --step 4 -k 'E-09'
+pytest src/tests/integration/test_graph_w3.py -k 'G-01'
+pytest src/tests/integration/test_rule_w3.py -k 'R-01'
+pytest src/tests/integration/test_dsl_w3.py -k 'D-01'
+./scripts/gate step --step 4 -k 'E-01'
 ```
 
 ## 不负责什么

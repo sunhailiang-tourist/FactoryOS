@@ -89,16 +89,32 @@ def api_client():
 
 
 @pytest.fixture
-def sample_execute_request() -> dict:
-    """W2 试跑 ExecuteRequest 样例（dry_run · 无 Rule/Graph 运行时）。"""
+def frozen_graph_env(api_client):
+    """W3：execute 测试前置 frozen graph + allow ruleset（每用例唯一 ID）。"""
+    import uuid
+
+    from tests.integration.w3_helpers import bootstrap_frozen_graph
+
+    suffix = uuid.uuid4().hex[:8]
+    return bootstrap_frozen_graph(
+        api_client,
+        graph_id=f"graph-fixture-{suffix}",
+        ruleset_id=f"ruleset-fixture-{suffix}",
+    )
+
+
+@pytest.fixture
+def sample_execute_request(frozen_graph_env) -> dict:
+    """W2/W3 试跑 ExecuteRequest（须 frozen graph + ruleset）。"""
     return {
         "tenant_id": "default",
-        "graph_id": "graph-d1-generic-template",
-        "graph_version": "v1.0.0",
+        "graph_id": frozen_graph_env["graph_id"],
+        "graph_version": frozen_graph_env["version"],
         "verb": "GOVERNED_WRITE",
         "params": {"entity": "work_order", "action": "mock_update"},
         "dry_run": True,
         "idempotency_key": "test-idem-w2-001",
+        "ruleset_id": frozen_graph_env["ruleset_id"],
         "actor": {"user_id": "test-operator", "role": "operator", "channel": "api"},
     }
 

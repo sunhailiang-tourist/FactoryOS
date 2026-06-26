@@ -5,6 +5,9 @@
 | 路径 | 内容 |
 |------|------|
 | `connectors.py` | `GET /v1/connectors/{pack_id}/health`（AC C-01） |
+| `graphs.py` | `GET/POST/PUT /v1/graphs/*`（G-*） |
+| `rulesets.py` | `/v1/rulesets/*` · evaluate（R-*） |
+| `dsl.py` | `GET /v1/dsl/registry`（D-01） |
 | `audit.py` | `GET /v1/audit/events`（E-03） |
 | `execute.py` | `POST /v1/execute`（E-03/06/07） |
 | `executions.py` | `GET /v1/executions/{execId}/evidence`（E-09） |

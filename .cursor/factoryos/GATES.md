@@ -3,15 +3,35 @@
 | 关键词 | 阶段 | 允许行为 |
 |--------|------|----------|
 | `可以继续` | Step0 / Step 验收 | 进入规划或下一 Step |
-| `确认规划` | 规划关 | plan 落盘后；允许 Test 写 failing test |
-| `可以开始` | 编码关 | **仅当前 Step** 写实现 |
+| `确认规划` | 规划关 | plan 落盘 + **`./scripts/gate plan` 绿（plan.ok）** |
+| `可以开始` | 编码关 | **仅当前 Step** 写实现（须 phase=CAN_CODE） |
 | `风险接受并继续` | 存量风险 / Test·Verify 需改进 | 评估为需改进且你书面接受后 |
 | `测试不通过` | Step 失败 | Dev 回当前 Step 修复，禁止下一步 |
 | `可以提交` | 终轮回归后 | **仅** `gate delivery` 绿 + 终轮 Test 落盘后允许 commit |
 
+## 绝对门禁（机械 · 不可跳过）
+
+写测/写码/`gate step`/`gate delivery` 须：**state.plan 存在** + **plan.ok 一致** + **phase ≥ CAN_TEST**（写码另须 `CAN_CODE`）。
+
+真源：`scripts/plan_gate_lib.py` · `.cursor/hooks/protect-paths.py`
+
+## 联动门禁（Dev → Test → Verify · plan 目录隔离）
+
+Step N 全链闭合后才允许 `gate step` 绿 / `可以继续` / 开 Step N+1 Dev：
+
+```text
+Dev step-stop-*-stepN.md
+  → Test test-*-stepN-regression.md（结论：通过）
+  → Verify verify-*-stepN.md（结论：通过）
+  → gate step --step N
+```
+
+真源：`scripts/step_chain_lib.py` · Hook · `check_test_regression.py` · `check_verify.py` · `check_pipeline.py`
+
 ## 禁止
 
 - 未收到关键词 → 禁止 ApplyPatch、改业务代码/迁移
+- **无「确认规划」+ plan.ok → 禁止一切执行**
 - 无 plan 落盘 → 禁止 Step 1 编码
 - 无 test-plan → 禁止宣称「已测过」
 - 无 **Step N Test 单步验收落盘** → 禁止 Verify / `gate step` / `可以继续`

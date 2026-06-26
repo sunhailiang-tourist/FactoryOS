@@ -59,7 +59,7 @@ Agent **收到用户关键词后必须先改** `_factoryos_pipeline/workflow_sta
 | 用户关键词 | 更新 state | 建议 Gate |
 |------------|------------|-----------|
 | `可以继续`（Step0 后） | `phase: PLANNING` | — |
-| `确认规划` | `phase: CAN_TEST` + 填 `plan:` 路径 | `./scripts/gate plan` |
+| `确认规划` | `phase: CAN_TEST` + 填 `plan:` 路径 | **`./scripts/gate plan`（写 plan.ok · 绝对门禁）** |
 | Test 落 test-plan 后 | `agent: test` · 填 `test_plan:` | `./scripts/gate test` |
 | `可以开始` Step N | `phase: CAN_CODE` · `step: N` · `agent: dev` | — |
 | Step 停机前 | Verify 落盘 + | `./scripts/gate step --step N -k 'G-01'` |

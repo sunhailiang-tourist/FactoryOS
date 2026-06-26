@@ -16,6 +16,8 @@
 
 **禁止在 Test 单步验收之前做 Verify。**
 
+**联动门禁**：无 Test `test-*-stepN-regression.md`（结论通过）→ Hook 拒绝 Verify 落盘 · `check_verify.py` 失败（`step_chain_lib` · 当前 plan 目录）。
+
 ## 结论规则
 
 | 结论 | 处置 |

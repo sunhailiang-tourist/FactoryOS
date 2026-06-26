@@ -12,11 +12,12 @@ from typing import Any
 import pytest
 
 
-def _execute_request(**overrides: Any) -> dict:
+def _execute_request(env: dict[str, str], **overrides: Any) -> dict:
   base = {
     "tenant_id": "default",
-    "graph_id": "graph-d1-generic-template",
-    "graph_version": "v1.0.0",
+    "graph_id": env["graph_id"],
+    "graph_version": env["version"],
+    "ruleset_id": env["ruleset_id"],
     "verb": "GOVERNED_WRITE",
     "params": {"entity": "work_order"},
     "dry_run": True,
@@ -51,11 +52,20 @@ def _mock_legacy_write_count() -> int:
   return getter()
 
 
+@pytest.fixture
+def kernel_w3_env(migrated_db_session):
+  """E-06/E-07 内核测试 W3 门禁前置。"""
+  from tests.integration.w3_helpers import seed_frozen_env_kernel
+
+  return seed_frozen_env_kernel(migrated_db_session)
+
+
 @pytest.mark.integration
 @pytest.mark.parametrize("case", ["dry_run"], ids=["E-06"])
 def test_E06_dry_run_does_not_write_legacy(
   case: str,
   migrated_db_session,
+  kernel_w3_env: dict[str, str],
 ) -> None:
   """E-06：dry_run=true 时 status=simulated 且 Legacy mock 无写入。"""
   execute = _get_execution_service()
@@ -64,7 +74,7 @@ def test_E06_dry_run_does_not_write_legacy(
 
   result = execute(
     session=migrated_db_session,
-    request=_execute_request(dry_run=True, idempotency_key="e06-key-001"),
+    request=_execute_request(kernel_w3_env, dry_run=True, idempotency_key="e06-key-001"),
   )
   migrated_db_session.commit()
 
@@ -78,13 +88,14 @@ def test_E06_dry_run_does_not_write_legacy(
 def test_E07_idempotency_key_no_duplicate_write(
   case: str,
   migrated_db_session,
+  kernel_w3_env: dict[str, str],
 ) -> None:
   """E-07：相同 idempotency_key 重试不重复写 Legacy，返回同一 exec_id。"""
   execute = _get_execution_service()
   _reset_mock_legacy_writes()
 
   key = "e07-idem-key-001"
-  req = _execute_request(dry_run=True, idempotency_key=key)
+  req = _execute_request(kernel_w3_env, dry_run=True, idempotency_key=key)
 
   first = execute(session=migrated_db_session, request=req)
   migrated_db_session.commit()

@@ -10,10 +10,15 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
+from apps.api.error_handlers import platform_error_handler
 from apps.api.routes.audit import router as audit_router
 from apps.api.routes.connectors import router as connectors_router
+from apps.api.routes.dsl import router as dsl_router
 from apps.api.routes.execute import router as execute_router
 from apps.api.routes.executions import router as executions_router
+from apps.api.routes.graphs import router as graphs_router
+from apps.api.routes.rulesets import router as rulesets_router
+from os_core.shared_contracts.exceptions import PlatformError
 
 
 def create_app() -> FastAPI:
@@ -27,11 +32,15 @@ def create_app() -> FastAPI:
   """
   application = FastAPI(
     title="FactoryOS API",
-    version="0.1.0-w1",
+    version="0.1.0-w3",
     description="Manufacturing AI execution platform — Modular Monolith entry",
   )
+  application.add_exception_handler(PlatformError, platform_error_handler)  # type: ignore[arg-type]
 
   application.include_router(connectors_router)
+  application.include_router(graphs_router)
+  application.include_router(rulesets_router)
+  application.include_router(dsl_router)
   application.include_router(audit_router)
   application.include_router(execute_router)
   application.include_router(executions_router)
