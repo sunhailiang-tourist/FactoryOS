@@ -24,16 +24,18 @@
 ## 一、真源分层（改东西前先对号入座）
 
 ```text
-L0 机器契约     contracts/              CI · pytest · OpenAPI · Schema · AC
+L0 机器契约     Contract Registry（DB published）+ contracts/ export 镜像
 L1 工作流执行   .cursor/factoryos/      关键词 · Gate · 模板 · 红线摘要
 L2 Agent 加载   .cursor/rules/*.mdc     alwaysApply / 口令触发
 L3 机械闸门     scripts/ + hooks/       gate · harness · docs_baseline · protect-paths
 L4 运行时证据   _factoryos_pipeline/    plan · test · step-stop · verify · summary
 L5 认知基线     .cursor/docs-baseline/  docs 漂移检测（非执行真源）
 L6 厚文档       docs/                   ADR 长文 · 准备材料（可选外迁）
+L7 配置运行时   PostgreSQL Registry     Pack/Tenant/Contract/Relation（ADR-008 · Studio publish）
 ```
 
-**禁止双改**：契约只改 `contracts/`；`docs/文档/数据结构` 与 `docs/接口` 已 superseded，见 docs-baseline Tier-C。
+**契约变更路径（ADR-008）**：平台研发在 Studio/Registry **publish** → export 同步至 `contracts/` → harness/contract pytest 对账。  
+**禁止双改**：勿将 `docs/文档/数据结构` · `docs/文档/接口` 当作编辑真源（Tier-C superseded 镜像）；勿与 `contracts/` export 并行手改造成 drift。
 
 ---
 
@@ -154,9 +156,7 @@ _factoryos_pipeline/
 
 | 你改了什么 | 必跑 / 必做 | 可能还要更新 |
 |------------|-------------|--------------|
-| `contracts/openapi` | `harness --tier contracts` · contract pytest | plan 模板 AC 表 · `src/tests/contract/` |
-| `contracts/schemas` | 同上 | Pydantic `shared_contracts`（W1+） |
-| `contracts/cmv` | `check_cmv_sync` | DSL 规格 · execution 测试 |
+| `contracts/openapi` · `schemas` · `cmv` | `harness --tier contracts` · contract pytest | **publish 真源在 Registry**；改 export 须与 DB published 同步 |
 | `contracts/acceptance` | AC registry · pytest `-k` | `.cursor/factoryos/AC-P0-INDEX.md` |
 | `src/server/os_core/**` | `harness --tier boundaries` 或 `auto` | MODULE-MAP · import 矩阵 |
 | `src/server/api/**` 业务 | `harness --tier step` | src/server/api README · API 契约 |
@@ -165,7 +165,7 @@ _factoryos_pipeline/
 | `.cursor/factoryos/**` | 人工审 · 无自动 gate | INDEX · README 链 |
 | `docs/` Tier-A（ADR·验收·门禁） | `docs_baseline refresh` · `workflow-check` | `.cursor/factoryos/` 映射项 |
 | `docs/` Tier-B | `docs_baseline refresh`（推荐） | — |
-| `docs/` Tier-C | `contracts-crosscheck` 若改了文件 | **只改 contracts/** 为真源 |
+| `docs/` Tier-C | `contracts-crosscheck` 若改了 export 镜像 | **published 在 Contract Registry**；export 改 `contracts/` 并与 docs 镜像一致 |
 | `scripts/` 新门禁 | 注册 `check_harness.py` + `ci.yml` + README | HARNESS-SCRIPTS.md |
 | `pyproject.toml` 依赖 | 同 commit 提交 `uv.lock` · `gate pr`（deptry） | pre-commit `uv lock --check` · 见 README §激活 |
 | `src/server/os_core/**/models` · `src/server/db/migrations/` | `alembic check` · `upgrade head` | [ORM-MIGRATION-PRINCIPLE](./ORM-MIGRATION-PRINCIPLE.md) · ADR-008 Registry |
@@ -197,7 +197,7 @@ _factoryos_pipeline/
 
 - SH-步步流 L1–L3 + Verify 文档与 gate CLI
 - Cursor hooks failClosed + workflow_state
-- contracts 真源 + 52 P0 pending 红测占位
+- Contract Registry + `contracts/` export + 52 P0 pending 红测占位
 - CI gate pr + PR 追溯 + docs-sync
 - docs-baseline 首版已 refresh
 

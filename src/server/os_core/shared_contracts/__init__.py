@@ -1,8 +1,8 @@
-"""shared_contracts · 全平台契约真源包。
+"""shared_contracts · 全平台契约代码化包。
 
 作用：Pydantic 模型、错误码、JSON Schema 加载。
-业务关联：L0 契约代码化；对齐 contracts/schemas。
-上游：contracts/ 机器真源
+业务关联：L0 契约代码化；对齐 Contract Registry published + contracts/schemas export。
+上游：platform_registry.contract_store（优先）· contracts/ export 镜像（ADR-008）
 下游：os_core 各 service、server/api
 关联文档：src/server/os_core/shared_contracts/README.md
 """

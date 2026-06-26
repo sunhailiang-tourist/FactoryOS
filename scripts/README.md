@@ -54,7 +54,7 @@
 | 文件 | 作用 |
 |------|------|
 | **`factoryos`** | Bash 入口；转调 `factoryos_cli.py` |
-| **`factoryos_cli.py`** | **flows.json 终端渲染器**（`guide`）。供平台研发调试 Gate 状态机、CI 文档生成、离线演练。真源 `src/integration/tools/guide/flows.json`。不依赖 API 运行时。 |
+| **`factoryos_cli.py`** | **flows.json 终端渲染器**（`guide`）。供平台研发调试 Gate 状态机、CI 文档生成、离线演练。**export 镜像** `src/integration/tools/guide/flows.json`（published = Playbook + Studio API · ADR-008）。不依赖 API 运行时。 |
 
 ```bash
 ./scripts/factoryos guide              # 交互选链路（调试）

@@ -262,7 +262,7 @@ SVG = f'''<?xml version="1.0" encoding="UTF-8"?>
   <text x="1446" y="1460" class="bt">集成储备 GIP</text>
   <text x="1446" y="1480" class="sm">Blueprint · Studio 六步 · MCP CMV</text>
   <text x="1446" y="1500" class="hi">15 Schema · CMV v1.1.0 契约</text>
-  <text x="58" y="1544" class="hi">契约真源：OpenAPI v1.1.1 + 15 JSON Schema · Core tag core-v1.0.0 前须 52 P0 全 PASS · integration/ 变更不触发 Core major</text>
+  <text x="58" y="1544" class="hi">契约 published：Contract Registry + export 镜像 · OpenAPI v1.1.1 + 15 Schema · Core tag 前 52 P0 全 PASS · integration/ export 不触发 Core major</text>
 
   <!-- I data -->
   <rect x="40" y="1580" width="840" height="110" rx="8" fill="#fff" stroke="#d6b656" stroke-width="2"/>

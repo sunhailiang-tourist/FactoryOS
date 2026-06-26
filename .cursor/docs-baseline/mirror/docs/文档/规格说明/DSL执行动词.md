@@ -17,7 +17,7 @@ Agent 只能产出已注册动词；Executor 只执行已注册动词。
 
 ## 2. 动词命名（CMV）
 
-- 全大写 + 下划线；**唯一真源**：[CMV注册表.yaml](../数据结构/CMV注册表.yaml)
+- 全大写 + 下划线；**published 真源** = Contract Registry CMV artifact；**export 镜像**：[CMV注册表.yaml](../数据结构/CMV注册表.yaml)（ADR-008）
 - **禁止** vendor 私有动词（ADR-004）
 
 ## 3. 底座内置动词（用于 Phase 1 内核测试）

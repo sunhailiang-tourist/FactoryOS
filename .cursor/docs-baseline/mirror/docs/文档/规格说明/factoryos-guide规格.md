@@ -4,7 +4,7 @@
 > 状态：**Accepted**（过渡 · 平台内部）  
 > **定位变更（UI-First）**：本 CLI **不是** 对外实施主路径；实施/客户接入走 **Integration Studio**（管理台 UI）。见 [UI-FIRST-CONFIG-PRINCIPLE](../../.cursor/factoryos/UI-FIRST-CONFIG-PRINCIPLE.md)。  
 > 用途：平台研发 **调试 flows.json** · CI 文档生成 · 离线演练 · 逃生舱  
-> 真源数据：`integration/tools/guide/flows.json`（与 [人工决策 Playbook](./人工决策Playbook.md) 同步；Studio 共用）  
+> 结构化镜像：`integration/tools/guide/flows.json`（与 [人工决策 Playbook](./人工决策Playbook.md) 同步；Studio 后端模型见 `src/server/api/data/studio_flows.json`）  
 > 实现：`scripts/factoryos` · `scripts/factoryos_cli.py`
 
 ---
@@ -15,7 +15,7 @@
 |------|------|
 | 一眼看懂整条链路（调试） | `factoryos guide map <flow>` 树状总览（👤人审 / 🤖自动 / ⚙协作） |
 | 平台研发逐步对照 | `factoryos guide` 交互选链路 → 每步：做什么、跑什么命令、改哪些文件、产出什么 |
-| flows 与 Playbook 对齐 | 不读 ADR；Playbook 内容结构化进 `flows.json` |
+| flows 与 Playbook 对齐 | Playbook 语义真源 → export 至 `flows.json`（guide 对账） |
 | 验证 onboard flow | `factoryos guide onboard` |
 | 验证 extend flow | `factoryos guide extend` |
 | 与后端解耦 | W1 即可用；`curl` 占位 API 在 Gate 0 后替换为真实调用 |
@@ -64,7 +64,7 @@ alias factoryos="$PWD/scripts/factoryos"
 | `extend-d2` | D2 Pack 化扩展 | 6 |
 | `ops` | 对账漂移等运维 | 2 |
 
-新增链路：**只改** `flows.json` + Playbook，无需改 `os_core`。
+新增链路：**Playbook 语义真源** → 同步 export `flows.json` + `studio_flows.json`；无需改 `os_core`。
 
 ---
 
@@ -86,8 +86,9 @@ alias factoryos="$PWD/scripts/factoryos"
 【执行命令】
   $ cp integration/tenants/_template …
 
-【改哪些文件】
-  · integration/tenants/{tenant}/system_relations/*.yaml
+【改哪些配置】
+  · Studio：租户 system_relations / connect（落 PostgreSQL Registry）
+  · export 镜像（可选）：integration/tenants/{tenant}/system_relations/*.yaml
 
 【API（OpenAPI v1.1.1）】
   · POST /v1/integration/connect/test
@@ -101,13 +102,15 @@ alias factoryos="$PWD/scripts/factoryos"
 ## 5. 与 Playbook / 配置枢纽关系
 
 ```text
-人工决策 Playbook.md     ← 人可读详述、治理红线
-flows.json               ← 机器可读 · guide 渲染源 · Studio 状态机后端
+人工决策 Playbook.md     ← 人可读详述、治理红线（语义真源）
+Studio API + Registry    ← 生产运行时（Gate 状态 · 配置落库 · ADR-008）
+flows.json               ← export 镜像 · guide 调试渲染 · CI 对账
+studio_flows.json        ← Studio 后端 export 辅助
+配置枢纽 system_relations ← export/import 快照；运行时配置落 PostgreSQL Registry
 Integration Studio       ← 对外主路径（Web UI + AI）
-配置枢纽 system_relations ← export/import 快照；运行时配置落 PostgreSQL
 ```
 
-**变更流程**：改 Playbook Gate → 同步 `flows.json` → guide（调试）与 Studio（生产）共用同一状态机。
+**变更流程**：改 Playbook Gate 语义 → Studio/Registry publish → 同步 export（`flows.json` · `studio_flows.json` · `contracts/`）→ harness 对账。
 
 ---
 

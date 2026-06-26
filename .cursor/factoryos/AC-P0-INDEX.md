@@ -1,6 +1,6 @@
 # AC-BASE-001 · 52 P0 索引（Gate 0）
 
-真源全文：`contracts/acceptance/验收用例-BASE-001-平台底座.md`  
+真源全文（export 镜像）：`contracts/acceptance/验收用例-BASE-001-平台底座.md` · **published** = Contract Registry frozen AC set（ADR-008）  
 通过 → tag `core-v1.0.0`
 
 | 段 | ID 范围 | 条数 | 要点 |

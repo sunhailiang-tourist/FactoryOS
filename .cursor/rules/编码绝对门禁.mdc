@@ -5,7 +5,7 @@ alwaysApply: true
 
 # 编码绝对门禁（强制）
 
-**真源**：`.cursor/factoryos/SH-步步流.md` v2 · `.cursor/factoryos/GATES.md` · `contracts/`
+**真源**：`.cursor/factoryos/SH-步步流.md` v2 · `.cursor/factoryos/GATES.md` · Contract Registry + `contracts/` export（ADR-008）
 
 ## 开工禁令
 

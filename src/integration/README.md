@@ -11,7 +11,7 @@
 
 ```text
 integration/
-├── catalog/               # Connector Blueprint YAML（Runtime 加载真源）
+├── catalog/               # Blueprint export 镜像（bootstrap → pack_registry · ADR-008）
 │   └── {system}/{vendor}/ # 例：erp/kingdee-write/blueprint.yaml
 ├── packs/                 # Pack bundle（graph / ruleset / skill / conn 引用）
 ├── tenants/               # per-tenant 配置枢纽（见 配置枢纽与关系模型）

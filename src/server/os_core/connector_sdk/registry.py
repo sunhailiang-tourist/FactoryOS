@@ -1,10 +1,10 @@
 """Connector Blueprint catalog 加载与校验（W4 Step1 · B-01/B-04）。
 
-作用：从 integration/catalog 加载 Pack Blueprint；L2 op 须声明 revert。
+作用：加载 Pack Blueprint（Registry DB 优先 · integration/catalog export 回退）。
 业务关联：B-01 加载 conn-mock · B-04 L2 无 revert → BLUEPRINT_INVALID。
-上游：integration/catalog/*.yaml
+上游：platform_registry.pack_store（published）→ integration/catalog/*.yaml（export/fixture）
 下游：connector_sdk.runtime · execution_service（W4 Step3+）
-关联文档：docs/文档/规格说明/Connector-Blueprint规格.md
+关联文档：docs/文档/规格说明/Connector-Blueprint规格.md · ADR-008
 """
 from __future__ import annotations
 

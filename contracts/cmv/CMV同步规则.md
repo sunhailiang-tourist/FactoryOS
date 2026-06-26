@@ -1,20 +1,22 @@
 # CMV 同步规则
 
 > 版本：v1.0.0 | 日期：2026-06-16  
-> 真源：`CMV注册表.yaml`  
+> **published 真源**：Contract Registry `contract_artifacts`（CMV · ADR-008）  
+> **export 镜像**：`contracts/cmv/CMV注册表.yaml` · 本文件为同步规则说明  
 > 消费方：DSL Registry · Blueprint `spec.ops[].verb` · MCP `tools/list` · OpenAPI `/v1/dsl/registry`
 
-## 1. 单一真源
+## 1. 单一真源（ADR-008）
 
 ```text
-CMV注册表.yaml
-  ├─→ os_core/shared_contracts/cmv_loader.py（W1 codegen 或 runtime load）
+Contract Registry（publish/frozen CMV artifact）
+  ├─→ export → contracts/cmv/CMV注册表.yaml（CI · harness 对账）
+  ├─→ os_core/shared_contracts/cmv_registry.py（runtime load · DB 优先回退 export）
   ├─→ GET /v1/dsl/registry → DSLAction[]（补 params_schema）
   ├─→ MCP tools/list（工具名 = verb）
   └─→ Blueprint 校验（spec.ops[].verb ∈ CMV）
 ```
 
-**禁止**：在代码、Blueprint、MCP 中硬编码未登记动词。
+**禁止**：在 code、Blueprint、MCP 中硬编码未登记动词。
 
 ## 2. 字段映射
 
@@ -51,15 +53,16 @@ python scripts/codegen_cmv_registry.py --check
 
 - `ConnectorBlueprint.spec.ops[].verb` **必须** ∈ CMV
 - L2 op **必须** 声明 `revert` + `reconcile.read_verb`（L0 CMV）
-- 见 [ConnectorBlueprint.schema.json](./ConnectorBlueprint.schema.json)
+- 见 [ConnectorBlueprint.schema.json](../schemas/ConnectorBlueprint.schema.json)
 
-## 5. 新增动词流程
+## 5. 新增动词流程（ADR-008）
 
-1. 更新 `CMV注册表.yaml`  
-2. `python scripts/check_cmv_sync.py`  
-3. 更新 [DSL执行动词.md](../规格说明/DSL执行动词.md)  
-4. 绑定 Capability Pack → [能力追溯矩阵](../架构/能力-模块包-模块追溯矩阵.md)  
-5. ADR 或 Pack 版本说明（L2 新动词）
+1. Contract Registry **publish** CMV artifact  
+2. export 同步至 `CMV注册表.yaml`  
+3. `python scripts/check_cmv_sync.py`  
+4. 更新 [DSL执行动词.md](../../docs/文档/规格说明/DSL执行动词.md)  
+5. 绑定 Capability Pack → [能力追溯矩阵](../../docs/文档/架构/能力-模块包-模块追溯矩阵.md)  
+6. ADR 或 Pack 版本说明（L2 新动词）
 
 ## 6. 版本历史
 

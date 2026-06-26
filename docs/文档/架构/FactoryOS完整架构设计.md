@@ -225,16 +225,18 @@ flowchart TB
 
 ---
 
-## 7. 配置枢纽与数据真源分工
+## 7. 配置枢纽与数据真源分工（ADR-008 · UI-FIRST）
 
-| 关心的事 | 真源 | 不要重复在 |
-|----------|------|------------|
-| 厂商 HTTP 怎么调 | `catalog/blueprint.yaml` | Graph |
-| 租户连哪个 ERP | `tenants/.../system_relations/` | 内核 Python |
-| 业务谁先谁后 | frozen Graph | relation YAML |
-| 厂规阈值 | OverrideDocument | execution 代码 |
-| 运行时绑定 | `connector_instances` 表 | 仅 DB 无 Git |
-| 实施快照 | ImplementationPackage | — |
+| 关心的事 | published 真源 | export / fixture 镜像 |
+|----------|----------------|------------------------|
+| 厂商 HTTP 怎么调 | `pack_registry` Blueprint（Registry DB） | `integration/catalog/` |
+| 租户连哪个 ERP | `system_relations`（Registry DB） | `integration/tenants/` |
+| OpenAPI / Schema / CMV | `contract_sets` + publish（Registry DB） | `contracts/` |
+| 业务谁先谁后 | frozen Graph（业务表） | — |
+| 厂规阈值 | `override_documents`（Registry DB） | tenant overrides export |
+| 运行时绑定 | `connector_instances` 表 | — |
+| 实施快照 | ImplementationPackage export | — |
+| Studio 状态机 | Playbook Gate 语义 + `/v1/integration/*` | `flows.json` · `studio_flows.json` |
 
 **合并优先级**：
 
@@ -281,7 +283,7 @@ D2 定制 ≥70% Pack 化（ADR-003）
 ```text
                     ┌─────────────────────┐
                     │ Integration Studio  │  实施/客户 · 对外主路径
-                    │  flows.json 真源    │
+                    │  API + Registry DB  │
                     └──────────┬──────────┘
                                │
          ┌─────────────────────┼─────────────────────┐
@@ -497,4 +499,4 @@ mcp_gateway → agent 公开面
 | `/v1/harness` · `/v1/perception` | api 路由 + agent |
 | `/v1/mcp` | mcp_gateway |
 
-契约真源：[工厂操作系统-v1.1.yaml](../接口/工厂操作系统-v1.1.yaml)
+契约 export 镜像：[工厂操作系统-v1.1.yaml](../接口/工厂操作系统-v1.1.yaml) · **published 真源** = Contract Registry（ADR-008）

@@ -1,6 +1,6 @@
 # shared_contracts/models · Pydantic 领域模型
 
-本目录为 **`contracts/schemas` 的运行时代码映射**；全平台 DTO 单一 import 路径 `os_core.shared_contracts.models`。
+本目录为 **`contracts/schemas` export 的运行时代码映射**（published 真源 = Contract Registry · ADR-008）；全平台 DTO 单一 import 路径 `os_core.shared_contracts.models`。
 
 | 文件 | 对齐 Schema / 用途 |
 |------|-------------------|
@@ -25,13 +25,13 @@ uv run pytest src/tests/contract/test_shared_contracts.py -q
 
 | 改了 | 必做 |
 |------|------|
-| 字段增删 | **先**改 `contracts/schemas/` · 再改本目录 · contract pytest 绿 |
+| 字段增删 | **先** Contract Registry publish → 同步 `contracts/schemas/` export → 再改本目录 · contract pytest 绿 |
 | 新模型文件 | 更新 `__init__.py` `__all__` · 父级 [shared_contracts/README.md](../README.md) |
 | ORM 实体 | 各 service 自有表模型；字段语义须与本目录 Pydantic 一致 |
 
 ## 不负责什么
 
-- JSON Schema 真源（在 `contracts/schemas/`）
+- JSON Schema **published 真源**（Contract Registry）；**export 镜像**在 `contracts/schemas/`
 - 数据库表定义（在 `alembic/versions/`）
 - 校验规则、Graph/Rule 业务语义
 

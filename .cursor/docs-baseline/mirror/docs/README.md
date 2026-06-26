@@ -8,6 +8,6 @@
 - **docs 认知基线**（漂移检测）→ `.cursor/docs-baseline/`（`./scripts/docs_baseline refresh`）
 - 本目录 → `文档/` ADR 长文 · `准备/` 战略材料
 
-**禁止**在 `docs/` 与 `contracts/` 双改契约。
+**禁止**在 `docs/` 与 `contracts/` 双改契约 export；**published 真源** = Contract Registry（Studio publish · ADR-008）。
 
 `docs/scripts/` 为**历史副本**（已废弃）— 脚本真源仅 `scripts/`。

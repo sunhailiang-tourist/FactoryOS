@@ -2,11 +2,11 @@
 
 ## 是什么
 
-全平台 **Pydantic 模型、JSON Schema 加载、错误码、DomainEvent** 的单一真源包。
+全平台 **Pydantic 模型、JSON Schema 加载、错误码、DomainEvent** 的代码化包（**published 真源** = Contract Registry · ADR-008）。
 
 ## 主要功能
 
-- 对齐 `contracts/schemas/*.schema.json`（实现见 [`models/`](./models/)）
+- 运行时加载：`platform_registry.contract_store`（优先）→ `contracts/schemas/*.schema.json` export 回退
 - 跨模块 DTO、HTTP 请求/响应类型
 - 错误码常量与事件信封（`errors.py` · `schema_loader.py` · `tenant_registry.py` · `outbox.py`）
 

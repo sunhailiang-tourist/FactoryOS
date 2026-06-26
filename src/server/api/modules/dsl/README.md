@@ -25,7 +25,8 @@ curl -s http://127.0.0.1:8000/v1/dsl/registry
 ## 承载业务
 
 - **动词治理**：统一制造语义 · Agent/Studio 下拉 · Execution 校验  
-- **真源**：`contracts/cmv/CMV注册表.yaml` → 代码 `cmv_registry.py`
+- **published 真源**：Contract Registry CMV artifact（ADR-008）  
+- **export 镜像**：`contracts/cmv/CMV注册表.yaml` → 代码 `cmv_registry.py`（DB 优先 · export 回退）
 
 ## 上下游
 

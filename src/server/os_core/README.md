@@ -26,7 +26,7 @@ FactoryOS **L0/L1/L2 引擎域**：Graph、Rule、Execution、Audit、Agent、Co
 | 路径 | 作用 |
 |------|------|
 | `registry.py` | **内核模块第一站** · 10 模块清单 |
-| `shared_contracts/` | Pydantic / Schema 真源 |
+| `shared_contracts/` | Pydantic / Schema 代码包（published = Contract Registry · ADR-008） |
 | `execution_service/` | DSL 执行与写门禁 |
 | 各 `*/README.md` | 子模块说明 |
 

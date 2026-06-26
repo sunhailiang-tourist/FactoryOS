@@ -1,6 +1,8 @@
 # Tenants（配置枢纽 · 项目级）
 
-> 真源：[配置枢纽与关系模型](../文档/架构/配置枢纽与关系模型.md) · [人工决策 Playbook](../文档/规格说明/人工决策Playbook.md)
+> **published 真源**：PostgreSQL Registry（`tenant_profiles` · `system_relations` · ADR-008）+ Studio API  
+> **规格说明**：[配置枢纽与关系模型](../../docs/文档/架构/配置枢纽与关系模型.md) · [人工决策 Playbook](../../docs/文档/规格说明/人工决策Playbook.md)  
+> **本目录**：export/import 镜像与 pytest fixture（**非**日常编辑入口）
 
 每个子目录 = 一个 **tenant**（部署项目单元）。
 

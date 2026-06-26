@@ -4,7 +4,7 @@ Overlay on ERP/MES · 双极：终端多模态 + 内核 Graph/Rule/Revert 门禁
 
 **产品核心不变**；**接入与扩展**：管理台 **Integration Studio**（界面 + AI）为主路径，非 CLI/改仓库。
 
-**拉仓后看本文即可开工。** 工作流真源：`.cursor/factoryos/` · 契约真源：`contracts/` · 厚文档：`docs/`（可选）
+**拉仓后看本文即可开工。** 工作流真源：`.cursor/factoryos/` · 契约 published 真源：**Contract Registry（DB）** + `contracts/` export 镜像（ADR-008） · 厚文档：`docs/`（可选）
 
 | 你是谁 | 从这里开始 |
 |--------|------------|

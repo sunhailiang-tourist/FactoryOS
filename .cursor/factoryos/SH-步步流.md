@@ -8,7 +8,7 @@
 ```text
 步步确认（可以继续/确认规划/可以开始/可以提交）
   + 落盘（plan/test/step-regression/verify/final-regression/summary）
-  + contracts/（OpenAPI · Schema · AC）
+  + Contract Registry published + contracts/ export 对账（OpenAPI · Schema · AC）
   + 每 Step：实现 → Test验收 → Verify → gate step 绿
   + 终轮：Test全量回归 → gate delivery 绿 → 可以提交
   = 步步为营 · 节奏可快 · 次序不乱
@@ -19,7 +19,7 @@
 | 层 | 内容 |
 |----|------|
 | L1 人机轨 | [GATES.md](./GATES.md) 关键词；每 Step 停机；commit 前 `可以提交` |
-| L2 Spec 轨 | `contracts/` + plan AC/红线对账 |
+| L2 Spec 轨 | Contract Registry published + `contracts/` export 对账 + plan AC/红线 |
 | L3 Harness 轨 | `./scripts/gate step` · `./scripts/gate delivery` · [ACTIVATION.md](./ACTIVATION.md) |
 
 ## 三 Agent + 口令

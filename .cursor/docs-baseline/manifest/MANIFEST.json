@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "created_at": "2026-06-26T14:22:59Z",
-  "git_commit": "7a2a07769949a15235e26d2a48ec5e80007c8666",
+  "created_at": "2026-06-26T15:01:45Z",
+  "git_commit": "10abbd309dc6cc8f79bce68ccf0c9eac62e584f6",
   "docs_root": "docs/",
   "baseline_root": ".cursor/docs-baseline/",
   "file_count": 135,
@@ -14,10 +14,10 @@
   "files": [
     {
       "path": "docs/README.md",
-      "sha256": "eeee7248b612eff831387434901f5653105155f733b754eb4484e39832dfaa8c",
+      "sha256": "52ee60a863a03f658c42d9a1ddd47e11ca82086dca46fe03c4c2dd8eddbd28a1",
       "tier": "B",
       "mirrored": true,
-      "size": 752
+      "size": 833
     },
     {
       "path": "docs/准备/2026-06-16/00-今日沟通结论清单.md",
@@ -77,17 +77,17 @@
     },
     {
       "path": "docs/准备/2026-06-16/10-阿里云基础设施定版方案.md",
-      "sha256": "2106199da11e6a7435bd8c529c2f627aeabda0ac60e5cc95a064516ea895dc02",
+      "sha256": "c01d8b6e1503b58f0ce1262abaab07d33cf19d2057eee153c6f457a677291e7b",
       "tier": "B",
       "mirrored": true,
-      "size": 13933
+      "size": 13994
     },
     {
       "path": "docs/准备/2026-06-16/11-内部宣讲PPT大纲.md",
-      "sha256": "cb653067dcaaaf7bb5660f927fc8a470a778dd57220bae9ee03d065626d33975",
+      "sha256": "ce47622d1a81a1f0b37c9e8d54c165fa63e5e39bc6ac7b380a219f34186cd1eb",
       "tier": "B",
       "mirrored": true,
-      "size": 21767
+      "size": 21781
     },
     {
       "path": "docs/准备/2026-06-16/12-软硬件与API成本框架.md",
@@ -112,10 +112,10 @@
     },
     {
       "path": "docs/准备/2026-06-16/15-研发资源与云环境用途清单.md",
-      "sha256": "74104fac25eddc05cee328c693a4fed83ee6cc9b1ee3f5ab6289094df03c40ed",
+      "sha256": "c60a8f38097f99ec8b6c409b8e4bd7b7eccb248faf7e0914d72267f27ebff92c",
       "tier": "B",
       "mirrored": true,
-      "size": 10797
+      "size": 10863
     },
     {
       "path": "docs/准备/2026-06-16/16-OS核心基座架构设计方案.md",
@@ -133,10 +133,10 @@
     },
     {
       "path": "docs/准备/2026-06-16/18-基座文档一致性矩阵.md",
-      "sha256": "f6b04790f5e9a91202cec7596915333f63c57a1fb388ab394a49399935482523",
+      "sha256": "c38b66e1a4bc208a219101c108d3ec8d760ffc34f73422d13d90f633f3c3c0e0",
       "tier": "B",
       "mirrored": true,
-      "size": 14331
+      "size": 14592
     },
     {
       "path": "docs/准备/软件项目计划管理.xlsx",
@@ -189,11 +189,11 @@
     },
     {
       "path": "docs/文档/接口/工厂操作系统-v1.1.yaml",
-      "sha256": "16659dbaa0e80a61c467b428093f01a1329fd0546a822701782f0915e8f25788",
+      "sha256": "6a28f05a59c056b4f91081969a5b6ed3bcf7baf94d197b1630c24cab5a75b20d",
       "tier": "C",
       "mirrored": true,
       "superseded_by": "contracts/openapi/工厂操作系统-v1.1.yaml",
-      "size": 39831
+      "size": 39923
     },
     {
       "path": "docs/文档/数据结构/AuditEvent.schema.json",
@@ -205,19 +205,19 @@
     },
     {
       "path": "docs/文档/数据结构/CMV同步规则.md",
-      "sha256": "fdcf6a3595c6d1e3b5f2dc001821be6f5011b1b1b1381c6c3a9931edcfc4fb12",
+      "sha256": "717a463942c0a459cbd9f1057be6534cc2d11bb55815851f22a25759cc483abd",
       "tier": "C",
       "mirrored": true,
       "superseded_by": "contracts/cmv/CMV同步规则.md",
-      "size": 2057
+      "size": 2413
     },
     {
       "path": "docs/文档/数据结构/CMV注册表.yaml",
-      "sha256": "db1361aa091e93972e7d14ff6323f6229f4ebe250d044112bc21089cfe19c485",
+      "sha256": "177e3f75e6d1ea2efc895ff1e4d6fbe7ada0cc760d75000ae73224f70d17be6f",
       "tier": "C",
       "mirrored": true,
       "superseded_by": "contracts/cmv/CMV注册表.yaml",
-      "size": 4316
+      "size": 4414
     },
     {
       "path": "docs/文档/数据结构/ConnectorBlueprint.schema.json",
@@ -348,10 +348,10 @@
     },
     {
       "path": "docs/文档/架构/FactoryOS完整架构设计.md",
-      "sha256": "5ebd020767b071b1c9557fe11f44b5ebe6b480b54cf26804c9523317615f9c4c",
+      "sha256": "a0768f2402431f5f53b8d2a555f0cbaa18ba1365276d158fdcf990787f1ce422",
       "tier": "B",
       "mirrored": true,
-      "size": 20966
+      "size": 21362
     },
     {
       "path": "docs/文档/架构/os_core-public-api.md",
@@ -418,10 +418,10 @@
     },
     {
       "path": "docs/文档/架构/数据架构图说明.md",
-      "sha256": "5f22064b6f9776aaad0d3183a091efc95a2ef8df64702e102800c5ba662368ad",
+      "sha256": "346df27a7d4b10eb6f62b1944f6d7112d1304b1150adc0986473ac3d798a7e0f",
       "tier": "B",
       "mirrored": true,
-      "size": 6230
+      "size": 6320
     },
     {
       "path": "docs/文档/架构/架构决策记录-000-闸门零决策摘要.md",
@@ -586,17 +586,17 @@
     },
     {
       "path": "docs/文档/架构/配置枢纽与关系模型.md",
-      "sha256": "e798966a9fd2be0931b1bb9f670d2a8cb5f11ff4dc077687e7e4fd5a6e67df2e",
+      "sha256": "3fcdd6dca08427c09afbf5c938eaef3b467432d70150300d9030cbceec588b04",
       "tier": "B",
       "mirrored": true,
-      "size": 15405
+      "size": 15424
     },
     {
       "path": "docs/文档/索引.md",
-      "sha256": "73fef071e6afb2436ba5b1056e008a03312407c672ca910fdc4a06b000fc38b2",
+      "sha256": "87d219010c71ed21f7fb2c47dd041fd51e3be19dcd613f95de7e65d7ca37233f",
       "tier": "B",
       "mirrored": true,
-      "size": 6558
+      "size": 6608
     },
     {
       "path": "docs/文档/规格说明/Connector-Agent规格.md",
@@ -607,17 +607,17 @@
     },
     {
       "path": "docs/文档/规格说明/Connector-Blueprint规格.md",
-      "sha256": "f61acab3c06a988656df41d716a8fdbdc3fcd9b53a04d715bd1e7d78e30ccc1e",
+      "sha256": "f39e5faf3aa84ccc19c79c5c83a4adfa33f483fc59c7f7767169e757dbce91f3",
       "tier": "B",
       "mirrored": true,
-      "size": 4064
+      "size": 4189
     },
     {
       "path": "docs/文档/规格说明/DSL执行动词.md",
-      "sha256": "bd07dc1a2588b55de2cde0a008d308e7a62314c6b51ee12ec798596dea84fc53",
+      "sha256": "38009aa718f84dbad827feadd9963126367dbf09952075c1fcaba32141d2fa9c",
       "tier": "A",
       "mirrored": true,
-      "size": 2824
+      "size": 2894
     },
     {
       "path": "docs/文档/规格说明/Edge-Agent规格.md",
@@ -656,10 +656,10 @@
     },
     {
       "path": "docs/文档/规格说明/factoryos-guide规格.md",
-      "sha256": "2ab4fa63fd0052da9c03f7b904f4edd856d322154e6260ccc1ec09d68476ed86",
+      "sha256": "b355a18f4356576339f3f213a3f46ae614daba20479e9faaf0b0d36cfbbf5b5a",
       "tier": "B",
       "mirrored": true,
-      "size": 5185
+      "size": 5603
     },
     {
       "path": "docs/文档/规格说明/业务图谱.md",

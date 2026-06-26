@@ -14,7 +14,8 @@
 
 ## 2. 文件布局
 
-> **运行时真源**：`integration/catalog/`（与 `16` §2、`integration/README.md` 一致）。  
+> **published 真源**：`pack_registry`（PostgreSQL Registry · ADR-008）+ Studio publish。  
+> **export 镜像**：`integration/catalog/`（bootstrap · CI · fixture；与 `16` §2、`integration/README.md` 一致）。  
 > **文档侧认证样例**：`文档/连接器/catalog/`（Silver 分级参考，非 Runtime 默认加载路径）。
 
 ```text

@@ -1,5 +1,6 @@
 # FactoryOS Canonical Manufacturing Verbs (CMV)
-# 单一真源：DSL Registry · Blueprint spec.ops[].verb · MCP tools/list
+# published 真源：Contract Registry CMV artifact（ADR-008）
+# export 镜像：本文件 + contracts/cmv/CMV注册表.yaml — DSL Registry · Blueprint · MCP tools/list
 # 版本：v1.1.0 | 2026-06-16 | E0-7 params_schema
 
 apiVersion: factoryos.io/v1

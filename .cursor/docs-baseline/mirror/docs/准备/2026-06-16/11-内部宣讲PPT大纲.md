@@ -441,7 +441,7 @@ Cursor/API ≈ 盖房子的工具（写代码、联调 AI）
 ```text
 ① GitLab      代码放哪
 ② Runner+staging  push 后自动测、预发布
-③ Redoc       接口契约对内查阅（Git 为真源，不用 YApi）
+③ Redoc       接口契约对内查阅（Registry published + export，不用 YApi）
 ④ RDS 测试    联调数据
 ```
 

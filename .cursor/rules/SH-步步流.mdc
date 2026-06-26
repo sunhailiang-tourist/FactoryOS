@@ -5,14 +5,14 @@ alwaysApply: true
 
 # SH-步步流 v2.1（FactoryOS 研发总纲）
 
-**真源**：`.cursor/factoryos/INDEX.md` · `contracts/` · `REDLINES.md` · [ACTIVATION.md](../factoryos/ACTIVATION.md)
+**真源**：`.cursor/factoryos/INDEX.md` · Contract Registry + `contracts/` export（ADR-008） · `REDLINES.md` · [ACTIVATION.md](../factoryos/ACTIVATION.md)
 
 ## 三层控制
 
 | 层 | 作用 |
 |----|------|
 | **L1 人机轨** | 关键词闸门；每 Step 停机；commit 前 `可以提交` |
-| **L2 Spec 轨** | `contracts/` + plan 内 AC ID + 红线对账 |
+| **L2 Spec 轨** | Contract Registry published + `contracts/` export 对账 + plan AC ID + 红线 |
 | **L3 Harness 轨** | 每 Step `gate step` · 终轮 `gate delivery` |
 
 ## 关键词（缺一不可 · **确认规划不可跳过**）
