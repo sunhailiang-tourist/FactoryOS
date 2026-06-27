@@ -129,3 +129,5 @@ _factoryos_pipeline/  运行时落盘
 ## 历史文档
 
 `docs/` 含 ADR 与准备材料（可外迁）；**改契约只改 `contracts/`**。
+
+## 待扩展
