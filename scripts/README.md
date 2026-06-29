@@ -25,7 +25,7 @@
 
 | 文件 | 作用 |
 |------|------|
-| **`activate_dev_env.sh`** | **开发环境激活**（README 唯一入口 · frozen sync · gate pr · pre-commit） |
+| **`activate_dev_env.sh`** | **开发环境一键激活**（README 唯一入口 · frozen sync · gate pr · pre-commit · 结构快照门禁验证） |
 | **`gate`** | Bash 入口 → `gate_cli.py` |
 | **`gate_cli.py`** | **Spec×Harness Gate**：`plan` · `test` · `step` · `delivery` · `verify` · `pr` · `gate0` · `analyze` · `docs-sync` |
 | **`pipeline_artifacts.py`** | Gate 强制输出：`_factoryos_pipeline/<date>/{dev,test,verify}/HH-MM_*.md` |
@@ -98,7 +98,11 @@
 | **`check_kernel_registry.py`** | `os_core/registry.py` ↔ 磁盘 10 内核模块 | `src/server/os_core/` | 内核模块漏登记 |
 | **`check_router_registry.py`** | `router/v1/registry.py` ↔ `modules/*/routers.py`；main 禁 include_router | `src/server/api/` | HTTP 面失控 |
 | **`check_integration_registry.py`** | `integration/registry.py` ↔ GIP 挂载 | `src/integration/` | 集成目录漏登记 |
-| **`check_legacy_paths.py`** | 禁止 `src/apps/api` · `src/os_core` · `src/db` 等废止路径复活 | `src/` | 结构回退 |
+| **`check_legacy_paths.py`** | 禁止废止路径复活（读 `repo-structure.yaml`） | `src/` | 结构回退 |
+| **`check_repo_structure.py`** | 快照 ↔ 磁盘 ↔ kernel registry ↔ PATH-SNAPSHOT.md | `contracts/repo-structure.yaml` | 快照漂移 |
+| **`check_structure_change.py`** | **提交门禁**：结构漂移 → 拦截 commit + 修复步骤 | 同上 | 结构变更未同步 |
+| **`audit_path_consistency.py`** | 全库扫描禁止虚假/废止路径引用 | 快照 `scan.roots` | AI 文档误导 |
+| **`gen_path_snapshot.py`** | 从快照生成 `.cursor/factoryos/PATH-SNAPSHOT.md` | 快照 | Agent 读错路径 |
 | **`check_code_redundancy.py`** | `os_core` / `server.api` 跨文件重复函数体 | `src/server/os_core/` · `src/server/api/` | 违反编码绝对门禁 |
 
 ```bash

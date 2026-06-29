@@ -1,0 +1,143 @@
+# FactoryOS 仓库结构快照 · 唯一写源（结构变更必先改此文件）
+# 消费方：check_legacy_paths · audit_path_consistency · check_repo_structure · PATH-SNAPSHOT.md
+# 联动：18-一致性矩阵 D13/D14 · docs/文档/架构/命名约定.md · MODULE-MAP.md
+
+version: 1
+updated: "2026-06-29"
+decision_ref: D14
+
+imports:
+  api: server.api
+  kernel: os_core
+
+layout:
+  canonical_dirs:
+    - src/server/api
+    - src/server/os_core
+    - src/server/db/migrations
+    - src/server/db/migrations/versions
+    - src/server/edge-agent
+    - src/integration
+    - src/tests
+    - src/apps/web-admin
+    - src/apps/h5-worker
+  canonical_files:
+    - alembic.ini
+  forbidden_dirs:
+    - src/apps/api
+    - src/os_core
+    - src/db
+    - src/apps/edge-agent
+    - src/server/api/routes
+    - alembic
+  forbidden_files:
+    - src/server/api/deps.py
+    - src/server/api/error_handlers.py
+
+forbidden_text_refs:
+  - src/apps/api
+  - src/os_core
+  - src/db
+  - src/apps/edge-agent
+  - apps.api
+  - src/server/api/routes
+  - src/server/api/deps.py
+  - src/server/api/error_handlers.py
+  - alembic/versions
+  - alembic/README
+
+forbidden_text_regex:
+  - '(?<![./])alembic/(?!ini)'
+
+allow_line_regex:
+  - 废止|禁止|legacy|LEGACY|check_legacy|protect-paths|audit_path_consistency|check_repo_structure
+  - repo-structure|PATH-SNAPSHOT|不存在|勿引用|勿创建|已移除|历史|归档|ai_chat_history
+  - CreateChatHistory|→|迁移|搬迁|2026-06-2[56]/|summary-|verify-|test-|step-stop
+  - plan-platform|artifacts/|表述|独立.*alembic|无 alembic/ 目录|AUTO-GENERATED|自动生成
+
+kernel:
+  module_count: 10
+  modules:
+    - shared_contracts
+    - graph_service
+    - rule_engine
+    - execution_service
+    - audit_service
+    - agent_orchestrator
+    - connector_sdk
+    - license_service
+    - mcp_gateway
+    - platform_registry
+
+scan:
+  roots:
+    - docs
+    - .cursor
+    - scripts
+    - src
+    - _factoryos_pipeline
+    - contracts
+    - rules
+    - .github
+  skip_path_parts:
+    - .git
+    - __pycache__
+    - .venv
+    - node_modules
+    - ai_chat_history
+    - docs-baseline
+  skip_files:
+    - contracts/repo-structure.yaml
+    - scripts/repo_structure.py
+    - scripts/check_legacy_paths.py
+    - scripts/audit_path_consistency.py
+    - scripts/check_repo_structure.py
+    - scripts/check_structure_change.py
+    - scripts/gen_path_snapshot.py
+    - _factoryos_pipeline/workflow_state.md
+    - .cursor/hooks/protect-paths.py
+    - .cursor/factoryos/PATH-SNAPSHOT.md
+  extra_root_files:
+    - README.md
+    - CODEOWNERS
+    - pyproject.toml
+    - alembic.ini
+  binary_extensions:
+    - .png
+    - .jpg
+    - .jpeg
+    - .gif
+    - .webp
+    - .ico
+    - .pdf
+    - .pyc
+    - .woff
+    - .woff2
+
+historical_files:
+  - docs/准备/2026-06-16/16-OS核心基座架构设计方案.md
+  - docs/准备/2026-06-16/18-基座文档一致性矩阵.md
+
+semantic_scan_prefixes:
+  - .cursor/factoryos/
+  - .cursor/rules/
+  - README.md
+  - scripts/generate_architecture_diagrams.py
+  - docs/文档/架构/核心模块架构图.svg
+  - _factoryos_pipeline/
+
+semantic_forbidden:
+  - pattern: '\b9 个 os_core\b'
+  - pattern: '\b九模块\b'
+
+# git pre-commit：触及下列路径时须同 commit 更新快照
+commit_watch:
+  path_prefixes:
+    - src/server/os_core/
+    - src/server/api/modules/
+    - src/server/
+    - src/apps/
+    - src/integration/
+  require_staged_when_touched:
+    - contracts/repo-structure.yaml
+    - .cursor/factoryos/PATH-SNAPSHOT.md

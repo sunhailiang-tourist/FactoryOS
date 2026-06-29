@@ -101,7 +101,7 @@
 | 模块 | 路径 | 变更 |
 |------|------|------|
 | 依赖 | `pyproject.toml` · `uv.lock` | + FastAPI · SQLAlchemy 2 async · Alembic · asyncpg |
-| 迁移 | `alembic/` · `alembic.ini` | 新建；版本链 S-01～S-04 |
+| 迁移 | `src/server/db/migrations/` · `alembic.ini` | 新建；版本链 S-01～S-04 |
 | 契约 | `src/server/os_core/shared_contracts/` | Pydantic · errors · schema_loader |
 | 连接器 | `src/server/os_core/connector_sdk/` | mock connector + registry 占位 |
 | API | `src/server/api/` | app 工厂 · health · DI 占位 |
@@ -149,7 +149,7 @@
 |----|------|
 | AC ID | S-01, S-02, S-03, S-04 |
 | 接口 | 无（仅 DB + 内部 Registry） |
-| 模块路径 | `alembic/versions/` · `src/server/os_core/shared_contracts/` 或 `server/api/db/` · TenantRegistry · OutboxPort |
+| 模块路径 | `src/server/db/migrations/versions/` · `src/server/os_core/shared_contracts/` 或 `server/api/db/` · TenantRegistry · OutboxPort |
 | Harness 验收盘 | `./scripts/gate step --step 3 -k 'S-01'` |
 | 风险 | 无 PG 时 integration test 用 testcontainer/SQLite 策略须在 Test plan 写明 |
 | 验收标准 | `alembic upgrade head` 后表存在 · seed tenant · get_cell 返回 cell-default · outbox 可 insert |

@@ -11,7 +11,7 @@ Step 1 — Alembic 003 + `graph_service` 内核 CRUD（G-01）
 
 | 路径 | 变更 |
 |------|------|
-| `alembic/versions/003_graphs_rulesets.py` | 新增 `business_graphs` · `rulesets` 表 |
+| `src/server/db/migrations/versions/003_graphs_rulesets.py` | 新增 `business_graphs` · `rulesets` 表 |
 | `src/server/os_core/graph_service/__init__.py` | 包入口 |
 | `src/server/os_core/graph_service/store.py` | Graph ORM · CRUD |
 | `src/server/os_core/graph_service/service.py` | draft 创建 · 版本查询 |

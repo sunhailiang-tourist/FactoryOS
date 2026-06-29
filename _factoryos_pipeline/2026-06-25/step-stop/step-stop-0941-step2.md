@@ -11,7 +11,7 @@ Step 2 — GET /v1/audit/events · POST /v1/execute（产生 audit）
 
 | 路径 | 变更 |
 |------|------|
-| `src/server/api/deps.py` | DB 会话 + alembic upgrade |
+| `src/server/api/config/dependencies/db.py` | DB 会话 + alembic upgrade |
 | `src/server/api/modules/*/controllers/audit.py` | GET /v1/audit/events |
 | `src/server/api/modules/*/controllers/execute.py` | POST /v1/execute |
 | `src/server/os_core/execution_service/` | execute 内核（E-03 依赖） |

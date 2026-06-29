@@ -9,7 +9,7 @@
 ## 1. 只读输入（Verify Agent 已阅读）
 
 - [x] plan Step 3 段落（§6 Step 3）
-- [x] `git diff` 本 Step 改动（`alembic/**` · `tenant_registry.py` · `outbox.py` · `conftest.py` · integration 测试）
+- [x] `git diff` 本 Step 改动（`src/server/db/migrations/**` · `tenant_registry.py` · `outbox.py` · `conftest.py` · integration 测试）
 - [x] step-stop 十项自检
 - [x] ADR-007 表清单与 migration `001_scale_s01_s04.py` 对账
 

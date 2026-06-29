@@ -1,7 +1,7 @@
 """W1 Step3：规模预埋 S-01～S-04（Alembic · TenantRegistry · OutboxPort）。
 
 业务：ADR-007 表结构预埋；S0 单 Cell 默认 tenant；in-process outbox 不依赖 Redis。
-上游：alembic/ · os_core.shared_contracts
+上游：`src/server/db/migrations/` · `alembic.ini` · `os_core.shared_contracts`
 下游：gate step --step 3 -k 'S-01'（子用例 S-02～S-04 同文件）
 """
 from __future__ import annotations

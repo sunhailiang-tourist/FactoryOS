@@ -105,7 +105,9 @@ def is_business_path(path: str) -> bool:
 
 def is_migration_path(path: str) -> bool:
     return (
-        path.startswith("src/server/db/migrations/versions/") or path.startswith("alembic/versions/")
+        # 允许 migrations 目录；拦截已废弃的独立 alembic/versions/ 路径（仓库内不存在）
+        path.startswith("src/server/db/migrations/versions/")
+        or path.startswith("alembic/versions/")
     ) and path.endswith(".py")
 
 

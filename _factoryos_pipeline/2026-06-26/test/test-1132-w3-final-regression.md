@@ -8,7 +8,7 @@
 
 | 模块 | 路径 | plan | 结论 |
 |------|------|------|------|
-| 迁移 | `alembic/versions/003_graphs_rulesets.py` | W3 S1 | PASS |
+| 迁移 | `src/server/db/migrations/versions/003_graphs_rulesets.py` | W3 S1 | PASS |
 | graph | `os_core/graph_service/` | W3 S1–2 | PASS |
 | rule | `os_core/rule_engine/` | W3 S3 | PASS |
 | CMV/DSL | `shared_contracts/cmv_registry.py` | W3 S4 | PASS |

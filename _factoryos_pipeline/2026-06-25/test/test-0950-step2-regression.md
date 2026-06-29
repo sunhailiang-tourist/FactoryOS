@@ -10,7 +10,7 @@
 | 路径 | 变更 | plan Step | 落位 | 结论 |
 |------|------|-----------|------|------|
 | `src/server/api/modules/*/controllers/audit.py` | 新增 | 2 | ✅ 薄路由 | PASS |
-| `src/server/api/deps.py` | 新增 | 2 | ✅ DB 会话 | PASS |
+| `src/server/api/config/dependencies/db.py` | 新增 | 2 | ✅ DB 会话 | PASS |
 | `src/server/api/modules/*/controllers/execute.py` | 新增 | **4**（提前） | ⚠️ 超 Step | 见 §5 |
 | `src/server/os_core/execution_service/` | 新增 | **3**（提前） | ⚠️ 超 Step | 见 §5 |
 | `src/server/os_core/connector_sdk/mock_legacy.py` | 新增 | 3 | ⚠️ 提前 | 见 §5 |

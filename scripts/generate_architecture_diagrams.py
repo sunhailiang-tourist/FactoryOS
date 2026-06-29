@@ -388,7 +388,7 @@ def core_module_architecture() -> None:
   </defs>
   <rect width="{w}" height="{h}" fill="#fafbfc"/>
   <text x="{w//2}" y="42" text-anchor="middle" class="t1">FactoryOS 核心模块系统架构图</text>
-  <text x="{w//2}" y="68" text-anchor="middle" class="t2">9 个 os_core 模块 · 依赖矩阵 · 写路径 · integration 外置 · v1.0 · 膨胀期守则</text>
+  <text x="{w//2}" y="68" text-anchor="middle" class="t2">10 个 os_core 模块（含 platform_registry）· 依赖矩阵 · 写路径 · integration 外置</text>
 
   <!-- api -->
   <rect x="600" y="88" width="600" height="52" rx="8" fill="#d5e8d4" stroke="#82b366" stroke-width="2"/>

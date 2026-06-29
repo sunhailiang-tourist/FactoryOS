@@ -19,12 +19,13 @@ curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 | 1 | uv 引导工具 | 检查 `uv` 在 PATH | 无则先装 uv（上一行） |
 | 2 | 依赖封版 | `uv sync --frozen --extra dev` | — |
 | 3 | docs 基线 | `docs_baseline refresh` | — |
-| 4 | 工作流验收盘 | `gate pr`（含 deptry） | 须绿 |
-| 5 | git 钩子 | `pre-commit` + `pre-push`（`.venv`） | — |
+| 4 | 工作流验收盘 | `gate pr`（harness 11 项 · 含结构快照） | 须绿 |
+| 5 | git 钩子 | `pre-commit`（**结构快照 commit 拦截** · lock · harness）+ `pre-push`（pytest） | — |
+| 5b | 结构门禁自检 | `check_structure_change.py`（激活脚本末尾自动跑） | 须 OK |
 | 6 | Cursor Hooks | — | 仓库根打开 · Settings → `protect-paths` · **重启** |
 | 7 | 可选 rg | — | `brew install ripgrep`（本地复现 CI 密钥 grep） |
 
-**pull 后**依赖有变：再跑 `./scripts/activate_dev_env.sh`（或至少 `uv sync --frozen --extra dev`）。
+**pull 后**依赖有变：再跑 `./scripts/activate_dev_env.sh`（**勿只** `uv sync` — 不会重装 git hooks）。
 
 **新第三方包**（编码期）：`uv add <pkg>` / `uv add --dev <pkg>` — 禁止 `pip install`；`uv.lock` 与 `pyproject.toml` 同 commit。pre-commit 与 `gate pr` 会自动检查 lock / import 声明。
 

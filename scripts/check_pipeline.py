@@ -22,7 +22,10 @@ PIPELINE = ROOT / "_factoryos_pipeline"
 STATE_FILE = PIPELINE / "workflow_state.md"
 PLAN_GATE = PIPELINE / ".gates" / "plan.ok"
 
-VALID_PHASES = frozenset({"STEP0", "PLANNING", "CAN_TEST", "CAN_CODE", "DELIVERY"})
+# 里程碑间隙 idle（W1~W4 绿、下一周 plan 未开）：允许 gate pr / activate 全绿
+VALID_PHASES = frozenset(
+    {"STEP0", "PLANNING", "CAN_TEST", "CAN_CODE", "DELIVERY", "READY_FOR_W5_PLAN"}
+)
 
 
 def _plan_gate_errors(*, require_phase_min: str = "CAN_TEST") -> list[str]:

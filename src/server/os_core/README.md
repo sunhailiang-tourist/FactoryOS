@@ -6,7 +6,7 @@ FactoryOS **L0/L1/L2 引擎域**：Graph、Rule、Execution、Audit、Agent、Co
 
 ## 主要功能
 
-- 9 个 Python 包（见子目录 README）：契约、图、规则、执行、审计、编排、连接器 SDK、授权、MCP
+- 10 个 Python 包（见子目录 README · `registry.py`）：契约、**Registry**、图、规则、执行、审计、编排、连接器 SDK、授权、MCP
 - 唯一 **写 Legacy** 路径：`execution_service`
 - Core v1.0 冻结后变更须 ADR + 全量 AC
 

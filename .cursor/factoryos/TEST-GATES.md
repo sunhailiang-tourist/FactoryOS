@@ -20,7 +20,7 @@
 
 复述覆盖（极简清单即可）：
 
-- 模块：MODULE-MAP 九模块 + 写路径
+- 模块：MODULE-MAP 十内核模块 + 写路径
 - 红线：REDLINES R-01–R-11
 - 契约：`contracts/openapi` + 本轮 AC ID
 - 测试布局：`src/tests/` contract · integration · e2e · ux · harness

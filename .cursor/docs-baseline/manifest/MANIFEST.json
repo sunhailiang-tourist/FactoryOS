@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "created_at": "2026-06-26T15:01:45Z",
-  "git_commit": "10abbd309dc6cc8f79bce68ccf0c9eac62e584f6",
+  "created_at": "2026-06-29T06:49:52Z",
+  "git_commit": "614eabe32b90e1d5a895f08dfda8f8f9e10a6c9f",
   "docs_root": "docs/",
   "baseline_root": ".cursor/docs-baseline/",
   "file_count": 135,
@@ -119,10 +119,10 @@
     },
     {
       "path": "docs/准备/2026-06-16/16-OS核心基座架构设计方案.md",
-      "sha256": "80548354343dedd3785bb30120dce556055755f2002b1ceb72fd61dc74777b99",
+      "sha256": "79b7d6526d924130db995959ffaa5eacee59ff031ba435a7ec77049cf512f786",
       "tier": "B",
       "mirrored": true,
-      "size": 21500
+      "size": 21818
     },
     {
       "path": "docs/准备/2026-06-16/17-集成平台化战略(GIP).md",
@@ -133,10 +133,10 @@
     },
     {
       "path": "docs/准备/2026-06-16/18-基座文档一致性矩阵.md",
-      "sha256": "c38b66e1a4bc208a219101c108d3ec8d760ffc34f73422d13d90f633f3c3c0e0",
+      "sha256": "b9374dc550cec54eceee9db9a8042e8f456a5e23df7214dbe7168943bbefa2cc",
       "tier": "B",
       "mirrored": true,
-      "size": 14592
+      "size": 14840
     },
     {
       "path": "docs/准备/软件项目计划管理.xlsx",
@@ -397,10 +397,10 @@
     },
     {
       "path": "docs/文档/架构/技术架构图说明.md",
-      "sha256": "792cf943a9259b50cf105c72f814ff9d4cde97b4f5260b3280f262e89e59768a",
+      "sha256": "180ed6a702863e058e79e350547f8e905dac138f0485848b8d15a193ce08ef30",
       "tier": "B",
       "mirrored": true,
-      "size": 4950
+      "size": 4993
     },
     {
       "path": "docs/文档/架构/数据架构图.png",
@@ -516,10 +516,10 @@
     },
     {
       "path": "docs/文档/架构/核心模块架构图说明.md",
-      "sha256": "648e4cc3145190dd29ae9cc034dd11093f2f82d81b4e65d319defeeb731e01bd",
+      "sha256": "d44e6503b0a72a0dc007c38c8d20aebc5ad538ecd47bfa5e1c0787ab18b2cb31",
       "tier": "B",
       "mirrored": true,
-      "size": 3724
+      "size": 4008
     },
     {
       "path": "docs/文档/架构/治理规范.md",
@@ -544,10 +544,10 @@
     },
     {
       "path": "docs/文档/架构/系统架构图说明.md",
-      "sha256": "733335945759435c9da10854b8336e4bb68b7a4dfee4caaaab4e53dceb2a9b29",
+      "sha256": "effa4c9f144313e7c026ef27110d81ede09e2569b21f94cd8505885e87e1da88",
       "tier": "B",
       "mirrored": true,
-      "size": 5355
+      "size": 5382
     },
     {
       "path": "docs/文档/架构/索引.md",
@@ -593,10 +593,10 @@
     },
     {
       "path": "docs/文档/索引.md",
-      "sha256": "87d219010c71ed21f7fb2c47dd041fd51e3be19dcd613f95de7e65d7ca37233f",
+      "sha256": "745d15a4c22a62531ac27595c202a2122ac4378c863924ac9cdf7ce2f34ee760",
       "tier": "B",
       "mirrored": true,
-      "size": 6608
+      "size": 6635
     },
     {
       "path": "docs/文档/规格说明/Connector-Agent规格.md",

@@ -32,7 +32,7 @@ uv run pytest src/tests/contract/test_shared_contracts.py -q
 ## 不负责什么
 
 - JSON Schema **published 真源**（Contract Registry）；**export 镜像**在 `contracts/schemas/`
-- 数据库表定义（在 `alembic/versions/`）
+- 数据库表定义（在 `src/server/db/migrations/versions/`）
 - 校验规则、Graph/Rule 业务语义
 
 ## 文档链接

@@ -3,7 +3,7 @@
 作用：执行规模预埋表 revision（S-01～S-04）。
 业务关联：ADR-007 W1 migration；测试可用 SQLite 内存库。
 上游：alembic.ini
-下游：alembic/versions/
+下游：src/server/db/migrations/versions/
 关联文档：docs/文档/架构/架构决策记录-007-百级千级演进策略.md §15
 """
 from __future__ import annotations

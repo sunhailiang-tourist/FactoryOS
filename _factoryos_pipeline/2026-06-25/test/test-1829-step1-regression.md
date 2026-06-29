@@ -8,7 +8,7 @@
 
 | 路径 | 变更 | plan 预期落位 | 实际落位 | 结论 |
 |------|------|---------------|----------|------|
-| `alembic/versions/002_audit_execution.py` | 新增 | Step1 migration | ✅ | PASS |
+| `src/server/db/migrations/versions/002_audit_execution.py` | 新增 | Step1 migration | ✅ | PASS |
 | `src/server/os_core/audit_service/store.py` | 新增 | audit append/query | ✅ | PASS |
 | `src/server/os_core/audit_service/__init__.py` | 新增 | 包入口 | ✅ | PASS |
 

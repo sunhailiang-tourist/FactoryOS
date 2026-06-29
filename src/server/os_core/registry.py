@@ -36,7 +36,7 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     public_api=("os_core.shared_contracts.models", "os_core.shared_contracts.exceptions"),
     depends_on=(),
     forbids="业务逻辑",
-    doc="os_core/shared_contracts/README.md",
+    doc="src/server/os_core/shared_contracts/README.md",
   ),
   KernelModule(
     name="graph_service",
@@ -44,7 +44,7 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     public_api=("os_core.graph_service.service",),
     depends_on=("shared_contracts",),
     forbids="写 Legacy",
-    doc="os_core/graph_service/README.md",
+    doc="src/server/os_core/graph_service/README.md",
   ),
   KernelModule(
     name="rule_engine",
@@ -52,7 +52,7 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     public_api=("os_core.rule_engine.service", "os_core.rule_engine.evaluate"),
     depends_on=("shared_contracts",),
     forbids="写 Legacy",
-    doc="os_core/rule_engine/README.md",
+    doc="src/server/os_core/rule_engine/README.md",
   ),
   KernelModule(
     name="execution_service",
@@ -60,7 +60,7 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     public_api=("os_core.execution_service.service",),
     depends_on=("shared_contracts", "graph_service", "rule_engine", "connector_sdk"),
     forbids="业务 UI",
-    doc="os_core/execution_service/README.md",
+    doc="src/server/os_core/execution_service/README.md",
   ),
   KernelModule(
     name="audit_service",
@@ -68,7 +68,7 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     public_api=("os_core.audit_service.store",),
     depends_on=("shared_contracts",),
     forbids="改历史",
-    doc="os_core/audit_service/README.md",
+    doc="src/server/os_core/audit_service/README.md",
   ),
   KernelModule(
     name="agent_orchestrator",
@@ -76,7 +76,7 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     public_api=(),
     depends_on=("shared_contracts", "execution_service"),
     forbids="写 Legacy、绕过 Rule",
-    doc="os_core/agent_orchestrator/README.md",
+    doc="src/server/os_core/agent_orchestrator/README.md",
   ),
   KernelModule(
     name="connector_sdk",
@@ -84,7 +84,7 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     public_api=("os_core.connector_sdk.health", "os_core.connector_sdk.runtime.execute"),
     depends_on=("shared_contracts", "platform_registry"),
     forbids="业务规则",
-    doc="os_core/connector_sdk/README.md",
+    doc="src/server/os_core/connector_sdk/README.md",
   ),
   KernelModule(
     name="license_service",
@@ -92,7 +92,7 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     public_api=(),
     depends_on=("shared_contracts",),
     forbids="执行 DSL",
-    doc="os_core/license_service/README.md",
+    doc="src/server/os_core/license_service/README.md",
   ),
   KernelModule(
     name="mcp_gateway",
@@ -100,7 +100,7 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     public_api=(),
     depends_on=("shared_contracts", "agent_orchestrator"),
     forbids="直写 Legacy",
-    doc="os_core/mcp_gateway/README.md",
+    doc="src/server/os_core/mcp_gateway/README.md",
   ),
   KernelModule(
     name="platform_registry",
@@ -108,7 +108,7 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     public_api=("os_core.platform_registry.bootstrap", "os_core.platform_registry.session"),
     depends_on=("shared_contracts",),
     forbids="业务规则",
-    doc="os_core/platform_registry/README.md · ADR-008",
+    doc="src/server/os_core/platform_registry/README.md · ADR-008",
     init_hook=_noop_init,
   ),
 )

@@ -11,7 +11,7 @@
 | `execution_service/service.py` | L2 → `execute_op` | Step3 接线 | ✅ | PASS |
 | `execution_service/store.py` | snapshot/legacy_refs 持久化 | Step3 | ✅ 复用 002 列 | PASS |
 | `connector_sdk/mock_legacy.py` | snapshot 增强 | 支撑 E-02 | ✅ | PASS |
-| `alembic/004_*` | — | 若缺列则 migration | ❌ 未新增（002 已有列） | PASS |
+| `src/server/db/migrations/versions/004_*` | — | 若缺列则 migration | ❌ 未新增（002 已有列） | PASS |
 | revert HTTP / `revert.py` | — | Step4 | ❌ 未实现 | 符合分步 |
 
 ## 2. 本 Step 硬性验收计划（执行记录）

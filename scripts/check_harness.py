@@ -36,6 +36,9 @@ CHECKS: dict[str, tuple[str, str]] = {
     "router_registry": ("check_router_registry.py", "api router registry"),
     "integration_registry": ("check_integration_registry.py", "integration GIP registry"),
     "legacy_paths": ("check_legacy_paths.py", "legacy path cleanup"),
+    "repo_structure": ("check_repo_structure.py", "repo-structure snapshot sync"),
+    "structure_change": ("check_structure_change.py", "structure drift gate"),
+    "path_consistency": ("audit_path_consistency.py", "docs path consistency"),
     "redundancy": ("check_code_redundancy.py", "Code redundancy"),
 }
 
@@ -44,8 +47,8 @@ TIER_ORDER = ("contracts", "boundaries", "step", "full")
 TIER_CHECKS: dict[str, list[str]] = {
     "contracts": ["openapi", "cmv"],
     "boundaries": ["openapi", "cmv", "import", "kernel_registry", "router_registry", "integration_registry"],
-    "step": ["openapi", "cmv", "import", "kernel_registry", "router_registry", "integration_registry", "legacy_paths", "redundancy"],
-    "full": ["openapi", "cmv", "import", "kernel_registry", "router_registry", "integration_registry", "legacy_paths", "redundancy"],
+    "step": ["openapi", "cmv", "import", "kernel_registry", "router_registry", "integration_registry", "legacy_paths", "repo_structure", "structure_change", "path_consistency", "redundancy"],
+    "full": ["openapi", "cmv", "import", "kernel_registry", "router_registry", "integration_registry", "legacy_paths", "repo_structure", "structure_change", "path_consistency", "redundancy"],
 }
 
 TIER_LABEL: dict[str, str] = {

@@ -78,7 +78,7 @@
 
 | Gate | 结论 |
 |------|------|
-| A 复盘 | 九模块 · R-01 写路径 · OpenAPI execute/revert · integration 布局 |
+| A 复盘 | 十内核模块 · R-01 写路径 · OpenAPI execute/revert · integration 布局 |
 | B 目的 | **新增** — W4 failing tests 驱动红→绿 |
 | C 协作 | plan 改动：registry · runtime · conn-mock · execution revert · 4 Step |
 | D 质量 | 待 Dev 实现后单步评估 |

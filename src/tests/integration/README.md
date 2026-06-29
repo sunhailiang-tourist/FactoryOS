@@ -21,18 +21,18 @@ uv run pytest src/tests/integration/ -v
 
 | 改了 | 必做 |
 |------|------|
-| `alembic/versions/` | 更新或新增本目录用例；`-k S-*` 须绿 |
-| `server/api/modules/*/controllers/` · `connector_sdk/` | 更新 C-* 用例 |
+| `src/server/db/migrations/versions/` | 更新或新增本目录用例；`-k S-*` 须绿 |
+| `src/server/api/modules/*/controllers/` · `src/server/os_core/connector_sdk/` | 更新 C-* 用例 |
 | 新 AC 集成场景 | test-plan 落盘 · 命名 `test_<域>_<ac_id>` 或 `pytest -k` |
 
 ## 不负责什么
 
 - OpenAPI/Schema 静态契约（见 `tests/contract/`）
 - 红线与门禁脚本（见 `tests/workflow/`）
-- 业务实现（只测行为，实现在 `os_core` / `apps`）
+- 业务实现（只测行为，实现在 `src/server/os_core` / `src/apps`）
 
 ## 文档链接
 
 - [tests/README.md](../README.md)
 - [contracts/acceptance/](../../../contracts/acceptance/)
-- [alembic/README.md](../../../alembic/README.md)
+- [src/server/db/migrations/README.md](../../../server/db/migrations/README.md)

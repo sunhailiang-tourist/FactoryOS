@@ -14,7 +14,7 @@
 | `src/server/api/main.py` | 新增 | 1 | ✅ | app 工厂 + `/health` |
 | `src/server/api/modules/*/controllers/connectors.py` | 新增 | 4 | ✅ | 薄路由，无业务规则 |
 | `src/server/os_core/shared_contracts/` | 新增 | 2–3 | ✅ | Pydantic · TenantRegistry · OutboxPort |
-| `alembic/` · `alembic.ini` | 新增 | 3 | ✅ | `001_scale_s01_s04` |
+| `src/server/db/migrations/` · `alembic.ini` | 新增 | 3 | ✅ | `001_scale_s01_s04` |
 | `src/server/os_core/connector_sdk/health.py` | 新增 | 4 | ✅ | mock C-01，无 write |
 | `src/integration/catalog/conn-mock.yaml` | 新增 | 4 | ✅ | mock Pack 占位 |
 | `src/tests/workflow/` · `contract/` · `integration/` | 新增/改 | Test | ✅ | W1 AC 子集 |
@@ -119,7 +119,7 @@ uv run python scripts/gate_cli.py delivery   # 终轮验收盘（本报告落盘
 | `src/server/api/modules/*/controllers/connectors.py` | `GET /v1/connectors/{packId}/health` | C-01 |
 | `src/server/os_core/connector_sdk/health.py` | C-01 响应体 | mock health 实现 |
 | `src/server/os_core/shared_contracts/models/*.py` | contract | 7 Schema Pydantic |
-| `alembic/versions/001_scale_s01_s04.py` | S-01 | 规模表 migration |
+| `src/server/db/migrations/versions/001_scale_s01_s04.py` | S-01 | 规模表 migration |
 | `src/server/os_core/shared_contracts/tenant_registry.py` | S-03 | get_cell |
 | `src/server/os_core/shared_contracts/outbox.py` | S-04 | OutboxPort.publish |
 | `scripts/check_import_boundaries.py` | workflow | 静态边界 |

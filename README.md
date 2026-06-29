@@ -4,7 +4,17 @@ Overlay on ERP/MES · 双极：终端多模态 + 内核 Graph/Rule/Revert 门禁
 
 **产品核心不变**；**接入与扩展**：管理台 **Integration Studio**（界面 + AI）为主路径，非 CLI/改仓库。
 
-**拉仓后看本文即可开工。** 工作流真源：`.cursor/factoryos/` · 契约 published 真源：**Contract Registry（DB）** + `contracts/` export 镜像（ADR-008） · 厚文档：`docs/`（可选）
+**拉仓后看本文即可开工。**
+
+**Clone 后初始化（唯一命令，勿只 `uv sync`）：**
+
+```bash
+./scripts/activate_dev_env.sh
+```
+
+然后 Cursor 打开**仓库根** → Settings → Hooks → **重启**。详情见 [§激活开发环境](#激活开发环境)。
+
+工作流真源：`.cursor/factoryos/` · 契约 published 真源：**Contract Registry（DB）** + `contracts/` export 镜像（ADR-008） · 厚文档：`docs/`（可选）
 
 | 你是谁 | 从这里开始 |
 |--------|------------|
@@ -67,24 +77,33 @@ Overlay on ERP/MES · 双极：终端多模态 + 内核 Graph/Rule/Revert 门禁
 
 **强制结论输出（推荐你每天只看这里）**：每次跑 `./scripts/gate ...`，都会在 `_factoryos_pipeline/<日期>/{dev,test,verify}/` 自动创建并写入 `HH-MM_*.md`（UTC 时间前缀），作为当天的“计划/结论/验收结论”统一汇总。
 
-### 激活开发环境（每台机器一次）
+### 激活开发环境（每台机器一次 · 唯一入口）
 
-**一条命令**（依赖封版 · gate · pre-commit 已内含；与 [ACTIVATION](.cursor/factoryos/ACTIVATION.md) 一致）：
+**一条命令**即具备：依赖封版 · docs 基线 · 全套 gate · **结构快照 commit 拦截** · pre-commit/pre-push。  
+**不要**只跑 `uv sync`（不会安装 git hooks）。
 
 ```bash
 # 首次若无 uv：
 curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 
-# 激活（首仓 · 新机器 · pull 后依赖有变时重跑）
+# 一键激活（clone 后 · 新机器 · pull 后依赖有变时重跑）
 ./scripts/activate_dev_env.sh
 ```
 
-脚本依次执行：`uv sync --frozen --extra dev` → `docs_baseline refresh` → `gate pr`（含 deptry）→ `pre-commit install`（钩子走 `.venv`）。
+脚本依次：`uv sync --frozen --extra dev` → `docs_baseline refresh` → `gate pr` → `pre-commit install` → 验证 `check_structure_change`。
 
-然后：**Cursor 打开仓库根** → Settings → Hooks 见 `protect-paths` → **重启 Cursor**。  
-未说 `可以开始` 时写 `src/server/os_core/*.py` 应被拦截。
+激活后自动具备：
 
-编码期新依赖只用 `uv add <pkg>` / `uv add --dev <pkg>`（**禁止** `pip install`）；`pyproject.toml` 与 `uv.lock` 同 commit。其余由 pre-commit / `gate pr` 机械检查。
+| 能力 | 触发时机 |
+|------|----------|
+| harness 11 项（含路径/结构快照） | `gate pr` · CI |
+| **结构变更 commit 拦截** + 修复步骤 | 每次 `git commit` |
+| lock / harness / 静态 | `git commit` |
+| contract + workflow pytest | `git push` |
+
+然后：**Cursor 打开仓库根** → Settings → Hooks 见 `protect-paths` → **重启 Cursor**（IDE 写码拦截，与 git 钩子互补）。
+
+编码期新依赖只用 `uv add <pkg>` / `uv add --dev <pkg>`（**禁止** `pip install`）；`pyproject.toml` 与 `uv.lock` 同 commit。
 
 ### 深入阅读
 

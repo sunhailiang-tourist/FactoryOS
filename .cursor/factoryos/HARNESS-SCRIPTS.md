@@ -17,7 +17,7 @@
 |------|------|------|
 | `contracts` | L0 | openapi refs · cmv sync |
 | `boundaries` | L1 | + import boundaries · kernel/router/integration registry · legacy paths |
-| `step` / `full` | L2 | + code redundancy |
+| `step` / `full` | L2 | + repo-structure · **structure commit gate** · path consistency · redundancy |
 | `auto` | 推断 | git diff → 上表最高层；无 diff → `full` |
 
 L3 行为：`gate step` 内含 `--pytest -k '<AC-ID>'` + 单步 Test 落盘 + verify + 静态  

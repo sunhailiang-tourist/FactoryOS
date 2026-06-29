@@ -8,7 +8,7 @@
 
 | 路径 | 变更 | plan 预期落位 | 实际落位 | 结论 |
 |------|------|---------------|----------|------|
-| `alembic/versions/003_graphs_rulesets.py` | 新增 | Step1 migration | ✅ | PASS |
+| `src/server/db/migrations/versions/003_graphs_rulesets.py` | 新增 | Step1 migration | ✅ | PASS |
 | `src/server/os_core/graph_service/` | 新增 | graph CRUD 内核 | ✅ | PASS |
 | `src/tests/integration/w3_helpers.py` | 新增 | 测试夹具 | ✅ | PASS |
 | `src/tests/integration/test_graph_w3.py` | 新增 | G-01 | ✅ | PASS |

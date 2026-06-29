@@ -12,8 +12,8 @@ Step 3 — Alembic 规模预埋（ADR-007 表结构）
 | 路径 | 变更 |
 |------|------|
 | `alembic.ini` | 新建 |
-| `alembic/env.py` | 迁移环境（支持 pytest 注入 connection） |
-| `alembic/versions/001_scale_s01_s04.py` | 四表 + default tenant seed |
+| `src/server/db/migrations/env.py` | 迁移环境（支持 pytest 注入 connection） |
+| `src/server/db/migrations/versions/001_scale_s01_s04.py` | 四表 + default tenant seed |
 | `src/server/os_core/shared_contracts/tenant_registry.py` | TenantRegistry.get_cell |
 | `src/server/os_core/shared_contracts/outbox.py` | OutboxPort.publish |
 | `src/tests/conftest.py` | SQLite shared + connection 注入 upgrade |

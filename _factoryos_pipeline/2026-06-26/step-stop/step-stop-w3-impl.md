@@ -7,7 +7,7 @@
 
 | 模块 | 路径 |
 |------|------|
-| 迁移 | `alembic/versions/003_graphs_rulesets.py` |
+| 迁移 | `src/server/db/migrations/versions/003_graphs_rulesets.py` |
 | graph | `os_core/graph_service/` |
 | rule | `os_core/rule_engine/` |
 | CMV | `shared_contracts/cmv_registry.py` · `exceptions.py` |

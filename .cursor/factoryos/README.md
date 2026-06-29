@@ -17,7 +17,7 @@ Agent 日常协作 **不依赖 docs/**；机器契约见 `contracts/`。
 | [VERIFY-GATES.md](./VERIFY-GATES.md) | Verify 独立审阅 |
 | [HARNESS-SCRIPTS.md](./HARNESS-SCRIPTS.md) | gate / harness 节点 |
 | [REDLINES.md](./REDLINES.md) | R-01–R-11 |
-| [MODULE-MAP.md](./MODULE-MAP.md) | 九模块 |
+| [MODULE-MAP.md](./MODULE-MAP.md) | 十内核模块 |
 | [AC-P0-INDEX.md](./AC-P0-INDEX.md) | 52 P0 |
 | [templates/](./templates/) | 落盘模板 |
 | [../docs-baseline/BASELINE.md](../docs-baseline/BASELINE.md) | docs 认知基线 |

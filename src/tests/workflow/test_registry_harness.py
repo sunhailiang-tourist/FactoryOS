@@ -70,3 +70,36 @@ def test_legacy_paths_harness_green() -> None:
     text=True,
   )
   assert r.returncode == 0, r.stderr or r.stdout
+
+
+@pytest.mark.workflow
+def test_repo_structure_harness_green() -> None:
+  r = subprocess.run(
+    [sys.executable, str(SCRIPTS / "check_repo_structure.py")],
+    cwd=ROOT,
+    capture_output=True,
+    text=True,
+  )
+  assert r.returncode == 0, r.stderr or r.stdout
+
+
+@pytest.mark.workflow
+def test_path_consistency_harness_green() -> None:
+  r = subprocess.run(
+    [sys.executable, str(SCRIPTS / "audit_path_consistency.py")],
+    cwd=ROOT,
+    capture_output=True,
+    text=True,
+  )
+  assert r.returncode == 0, r.stderr or r.stdout
+
+
+@pytest.mark.workflow
+def test_structure_change_gate_green() -> None:
+  r = subprocess.run(
+    [sys.executable, str(SCRIPTS / "check_structure_change.py")],
+    cwd=ROOT,
+    capture_output=True,
+    text=True,
+  )
+  assert r.returncode == 0, r.stderr or r.stdout

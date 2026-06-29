@@ -1,36 +1,33 @@
 #!/usr/bin/env python3
-"""Fail if legacy duplicate paths still exist under src/.
+"""Fail if legacy duplicate paths still exist under src/ (reads contracts/repo-structure.yaml).
 
 Usage:
-  python scripts/check_legacy_paths.py
+  uv run python scripts/check_legacy_paths.py
 
 Exit 0 = clean; 1 = legacy paths found.
 """
 from __future__ import annotations
 
 import sys
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-
-LEGACY_PATHS = (
-  "src/apps/api",
-  "src/os_core",
-  "src/db",
-  "src/apps/edge-agent",
-  "src/server/api/routes",
-  "src/server/api/deps.py",
-  "src/server/api/error_handlers.py",
-)
+from repo_structure import load_snapshot, repo_root
 
 
 def main() -> int:
-  found = [rel for rel in LEGACY_PATHS if (ROOT / rel).exists()]
+  root = repo_root()
+  snap = load_snapshot()
+  found: list[str] = []
+  for rel in snap.forbidden_dirs:
+    if (root / rel).exists():
+      found.append(rel)
+  for rel in snap.forbidden_files:
+    if (root / rel).exists():
+      found.append(rel)
   if found:
     for rel in found:
       print(f"FAIL: legacy path still exists: {rel}", file=sys.stderr)
     return 1
-  print("OK: no legacy paths under src/")
+  print("OK: no legacy paths (snapshot forbidden list clean)")
   return 0
 
 

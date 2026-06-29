@@ -8,6 +8,7 @@
 | 路径 | 内容 |
 |------|------|
 | `openapi/` | FactoryOS Platform API v1.1.1 |
+| `repo-structure.yaml` | **仓库结构快照**（路径真源 · harness 对账） |
 | `schemas/` | 16 份 JSON Schema |
 | `cmv/` | CMV 注册表 + 同步规则 |
 | `acceptance/` | AC-BASE / MVP / UX / B-LITE 验收用例 |
@@ -25,6 +26,7 @@
 
 | 改了 | 必做 |
 |------|------|
+| **`repo-structure.yaml`**（结构变更） | `gen_path_snapshot.py` · `18-一致性矩阵` D 行 · `gate pr` |
 | Registry publish 后 export | `harness --tier contracts` + contract pytest |
 | `acceptance/` | 更新 `src/tests/ac/` · AC-P0-INDEX |
 | 与 `docs/文档/数据结构` 对齐 | Registry artifact 格式 · docs_baseline crosscheck |

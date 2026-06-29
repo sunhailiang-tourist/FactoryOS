@@ -67,7 +67,7 @@
 
 | 模块 | 路径 | 变更 |
 |------|------|------|
-| 迁移 | `alembic/versions/002_audit_execution.py` | audit_events · execution_records 表 |
+| 迁移 | `src/server/db/migrations/versions/002_audit_execution.py` | audit_events · execution_records 表 |
 | audit | `os_core/audit_service/` | store · public API |
 | execution | `os_core/execution_service/` | execute · idempotency · dry_run · evidence |
 | connector | `os_core/connector_sdk/` | mock write 适配（dry_run 跳过） |
@@ -84,7 +84,7 @@
 |----|------|
 | AC ID | workflow |
 | 接口 | （无 HTTP，内核 API） |
-| 模块路径 | `alembic/versions/002_*` · `os_core/audit_service/` |
+| 模块路径 | `src/server/db/migrations/versions/002_*` · `os_core/audit_service/` |
 | Harness 验收盘 | `./scripts/gate step --step 1 -k 'workflow'` |
 | 风险 | 表字段与 `AuditEvent.schema.json` / ExecutionRecord schema 对齐 |
 | 验收标准 | migration upgrade 绿 · audit append + 按 tenant/exec_id 查询 |
