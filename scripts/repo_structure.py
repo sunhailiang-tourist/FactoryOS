@@ -51,7 +51,6 @@ class RepoSnapshot:
   historical_files: tuple[str, ...]
   semantic_scan_prefixes: tuple[str, ...]
   semantic_forbidden: tuple[str, ...]
-  commit_watch_prefixes: tuple[str, ...]
   commit_require_staged: tuple[str, ...]
 
 
@@ -90,13 +89,6 @@ def load_snapshot(path: Path | None = None) -> RepoSnapshot:
       sem_patterns.append(str(item["pattern"]))
 
   commit = raw.get("commit_watch") or {}
-  commit_prefixes = commit.get("path_prefixes") or [
-    "src/server/os_core/",
-    "src/server/api/modules/",
-    "src/server/",
-    "src/apps/",
-    "src/integration/",
-  ]
   commit_required = commit.get("require_staged_when_touched") or [
     "contracts/repo-structure.yaml",
     ".cursor/factoryos/PATH-SNAPSHOT.md",
@@ -125,7 +117,6 @@ def load_snapshot(path: Path | None = None) -> RepoSnapshot:
     historical_files=tuple(str(x) for x in (raw.get("historical_files") or [])),
     semantic_scan_prefixes=tuple(str(x) for x in (raw.get("semantic_scan_prefixes") or [])),
     semantic_forbidden=tuple(sem_patterns),
-    commit_watch_prefixes=tuple(str(x) for x in commit_prefixes),
     commit_require_staged=tuple(str(x) for x in commit_required),
   )
 
@@ -222,14 +213,145 @@ def analyze_structure_drift(snapshot: RepoSnapshot | None = None) -> StructureRe
   return report
 
 
+SNAPSHOT_YAML = "contracts/repo-structure.yaml"
+PATH_SNAPSHOT_MD_REL = ".cursor/factoryos/PATH-SNAPSHOT.md"
+
+
+def dir_prefixes_for_staged_path(path: str) -> tuple[str, ...]:
+  """从暂存路径提取 src/ 下的目录前缀（不含文件名本身）。"""
+  parts = path.split("/")
+  if len(parts) < 2 or parts[0] != "src":
+    return ()
+  last = parts[-1]
+  looks_like_file = "." in last and not last.startswith(".")
+  end = len(parts) if not looks_like_file else len(parts) - 1
+  if end < 2:
+    return ()
+  return tuple("/".join(parts[:i]) for i in range(2, end + 1))
+
+
+def is_allowed_dir_prefix(prefix: str, snapshot: RepoSnapshot) -> bool:
+  """目录前缀是否落在 layout.canonical_dirs 允许的主干树内。"""
+  for canonical in snapshot.canonical_dirs:
+    if prefix == canonical or prefix.startswith(canonical + "/"):
+      return True
+    if canonical.startswith(prefix + "/") or canonical == prefix:
+      return True
+  return False
+
+
+def staged_path_hits_forbidden(path: str, snapshot: RepoSnapshot) -> str | None:
+  """暂存路径是否落在废止目录/文件上。"""
+  for rel in snapshot.forbidden_dirs:
+    if path == rel or path.startswith(rel + "/"):
+      return rel
+  for rel in snapshot.forbidden_files:
+    if path == rel:
+      return rel
+  return None
+
+
+def detect_staged_trunk_structure_changes(
+  staged: list[str],
+  snapshot: RepoSnapshot,
+) -> list[StructureDrift]:
+  """仅当 src 主干目录结构变化时返回漂移项（普通文件改动不返回）。"""
+  drifts: list[StructureDrift] = []
+  seen_anchors: set[str] = set()
+  seen_kernel: set[str] = set()
+  known_kernel = set(snapshot.kernel_modules)
+
+  for path in staged:
+    hit = staged_path_hits_forbidden(path, snapshot)
+    if hit:
+      drifts.append(
+        StructureDrift(
+          "commit_forbidden_path",
+          f"暂存区含废止路径 `{path}`（{hit}）",
+        )
+      )
+
+    if not path.startswith("src/"):
+      continue
+
+    for prefix in dir_prefixes_for_staged_path(path):
+      if prefix in seen_anchors:
+        continue
+      if not is_allowed_dir_prefix(prefix, snapshot):
+        seen_anchors.add(prefix)
+        drifts.append(
+          StructureDrift(
+            "commit_new_trunk_dir",
+            f"新增未登记的主干目录 `{prefix}/`（须写入 layout.canonical_dirs）",
+          )
+        )
+
+    parts = path.split("/")
+    if len(parts) >= 5 and parts[0:3] == ["src", "server", "os_core"]:
+      mod = parts[3]
+      if mod not in known_kernel and mod not in seen_kernel:
+        seen_kernel.add(mod)
+        drifts.append(
+          StructureDrift(
+            "commit_new_kernel_module",
+            f"新增内核模块目录 `src/server/os_core/{mod}/`（须写入 kernel.modules）",
+          )
+        )
+
+  return drifts
+
+
+def analyze_commit_coupling(staged: list[str], snapshot: RepoSnapshot | None = None) -> list[StructureDrift]:
+  """pre-commit：仅当本次 commit 含主干目录结构变更时，要求同步 repo-structure + PATH-SNAPSHOT。"""
+  if not staged:
+    return []
+  snap = snapshot or load_snapshot()
+  has_yaml = SNAPSHOT_YAML in staged
+  has_md = PATH_SNAPSHOT_MD_REL in staged
+
+  structural = detect_staged_trunk_structure_changes(staged, snap)
+  is_structure_commit = bool(structural) or has_yaml
+
+  if not is_structure_commit:
+    return []
+
+  drifts = list(structural)
+
+  if not has_yaml:
+    drifts.append(
+      StructureDrift(
+        "commit_missing_snapshot",
+        f"本次 commit 变更了 src 主干目录结构，须同 commit staged `{SNAPSHOT_YAML}`",
+      )
+    )
+
+  if has_yaml:
+    expected = render_path_snapshot_md(load_snapshot())
+    if not expected.endswith("\n"):
+      expected += "\n"
+    md_path = ROOT / PATH_SNAPSHOT_MD_REL
+    current = md_path.read_text(encoding="utf-8") if md_path.is_file() else ""
+    if current != expected and not has_md:
+      drifts.append(
+        StructureDrift(
+          "commit_missing_path_snapshot",
+          f"已改 `{SNAPSHOT_YAML}` 须运行 gen_path_snapshot 并 staged `{PATH_SNAPSHOT_MD_REL}`",
+        )
+      )
+
+  return drifts
+
+
 def _plain_reason(d: StructureDrift) -> str:
   """把漂移项翻成一句人话。"""
-  if d.kind == "commit_touched_structure":
-    return d.detail.replace("暂存区含新内核路径", "本次 commit 新增了内核目录").replace(
-      "（未在 snapshot.kernel.modules）", "，但结构配置文件里还没登记"
-    )
+  if d.kind == "commit_new_trunk_dir":
+    return d.detail
+  if d.kind == "commit_new_kernel_module":
+    return d.detail
+  if d.kind == "commit_forbidden_path":
+    return d.detail
   if d.kind == "commit_missing_snapshot":
-    return "你改了目录/模块结构，但本次 commit 没有带上 contracts/repo-structure.yaml"
+    return "本次 commit 变更了 src 主干目录，但没有带上 contracts/repo-structure.yaml"
   if d.kind == "commit_missing_path_snapshot":
     return "你改了 contracts/repo-structure.yaml，但没有重新生成 PATH-SNAPSHOT.md 或未加入本次 commit"
   if d.kind == "path_snapshot_stale":
@@ -260,8 +382,7 @@ def format_remediation(report: StructureReport, *, staged: list[str] | None = No
   kinds = {d.kind for d in report.drifts}
   new_modules: list[str] = []
   for d in report.drifts:
-    if d.kind in ("commit_touched_structure", "kernel_on_disk_not_in_snapshot"):
-      # detail 形如 src/server/os_core/foo/ 或 foo
+    if d.kind == "commit_new_kernel_module":
       mod = d.detail.split("src/server/os_core/")[-1].split("/")[0].split("（")[0].strip()
       if mod and mod not in new_modules:
         new_modules.append(mod)
@@ -269,8 +390,8 @@ def format_remediation(report: StructureReport, *, staged: list[str] | None = No
   lines = [
     "",
     "════════════════════════════════════════════════════════════════",
-    "  Git 提交已拦截 · 项目目录结构与配置文件不同步",
-    "  （保护机制：防止「目录改了一半就 commit」，不是代码编译错误）",
+    "  Git 提交已拦截 · src 主干目录结构变更须同步配置文件",
+    "  （仅新增/废止目录时触发；改已有目录里的 .py 文件不会触发）",
     "════════════════════════════════════════════════════════════════",
     "",
     "【原因】",
@@ -283,7 +404,9 @@ def format_remediation(report: StructureReport, *, staged: list[str] | None = No
   need_yaml_edit = bool(
     kinds
     & {
-      "commit_touched_structure",
+      "commit_new_trunk_dir",
+      "commit_new_kernel_module",
+      "commit_forbidden_path",
       "kernel_on_disk_not_in_snapshot",
       "kernel_in_snapshot_missing_on_disk",
       "kernel_count_mismatch",
@@ -337,9 +460,9 @@ def format_remediation(report: StructureReport, *, staged: list[str] | None = No
     "     uv run python scripts/check_structure_change.py",
     "     git commit",
     "",
-    "【常见情况 · 不用改 yaml】",
-    "  只在已有目录里增删 .py 文件（例如改 graph_service/store.py）→ 不应触发本拦截。",
-    "  若仍被拦，请把上面【原因】整段发给维护者（可能是误报）。",
+    "【不会触发本拦截的情况】",
+    "  只改已有目录里的代码/文档（如 graph_service/store.py、server/api/modules/…）→ 直接 commit 即可。",
+    "  全量结构对账仍由 ./scripts/gate pr 在 CI/激活时执行。",
     "",
     "详细规则：.cursor/rules/项目结构变更门禁.mdc",
   ])
@@ -361,9 +484,11 @@ def format_drift_report(report: StructureReport) -> str:
     "registry_parse_error": "registry.py 解析失败",
     "path_snapshot_missing": "PATH-SNAPSHOT.md 缺失",
     "path_snapshot_stale": "PATH-SNAPSHOT.md 过期",
-    "commit_missing_snapshot": "结构变更 commit 未含 repo-structure.yaml",
+    "commit_missing_snapshot": "主干目录变更 commit 未含 repo-structure.yaml",
     "commit_missing_path_snapshot": "已改快照但未 staged PATH-SNAPSHOT.md",
-    "commit_touched_structure": "触及结构路径但未同步快照",
+    "commit_new_trunk_dir": "新增 src 主干目录（未入 canonical_dirs）",
+    "commit_new_kernel_module": "新增 os_core 内核模块目录",
+    "commit_forbidden_path": "暂存区触及废止路径",
   }
   lines = ["检测到："]
   for d in report.drifts:

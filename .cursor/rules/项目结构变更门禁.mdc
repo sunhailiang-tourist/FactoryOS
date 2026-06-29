@@ -19,7 +19,7 @@ alwaysApply: true
 **不触发本门禁**（仍须遵守既有规范）：在 **已存在** 目录内新增文件；plan 已写明且你已 `确认规划` 的路径；`src/server/db/migrations/versions/` 内新增 migration 文件（非新顶层目录）。
 
 **结构变更落盘**：凡废止/新增顶层路径，须 **先** 更新 [`contracts/repo-structure.yaml`](../../contracts/repo-structure.yaml) → `uv run python scripts/gen_path_snapshot.py` → `./scripts/gate pr`。  
-**pre-commit 自动拦截**：`check_structure_change.py --pre-commit` — 结构与快照不符时 **commit 失败** 并打印同步步骤。
+**pre-commit 自动拦截**：`check_structure_change.py --pre-commit` — **仅当** 本次 commit 新增/废止 `src/` 主干目录（或改了 `repo-structure.yaml`）时拦截；**已有目录内增删 .py/.md 不拦**。全量对账见 `./scripts/gate pr`。
 
 ## 门禁 2 · 目录 README（创建后第一步）
 

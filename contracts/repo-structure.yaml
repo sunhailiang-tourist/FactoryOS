@@ -130,14 +130,10 @@ semantic_forbidden:
   - pattern: '\b9 个 os_core\b'
   - pattern: '\b九模块\b'
 
-# git pre-commit：触及下列路径时须同 commit 更新快照
+# git pre-commit：仅当 src 主干目录结构变更时拦截（普通 .py/.md 改动不拦）
+# 触发条件：新增 src 下未登记目录 · 新增 os_core 模块 · 触及废止路径 · 改了本文件
 commit_watch:
-  path_prefixes:
-    - src/server/os_core/
-    - src/server/api/modules/
-    - src/server/
-    - src/apps/
-    - src/integration/
+  mode: trunk_only
   require_staged_when_touched:
     - contracts/repo-structure.yaml
     - .cursor/factoryos/PATH-SNAPSHOT.md
