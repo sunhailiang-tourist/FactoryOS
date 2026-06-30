@@ -2,4 +2,10 @@
 # SH-步步流 Gate 统一入口
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if command -v uv >/dev/null 2>&1 && [[ -d "$ROOT/.venv" ]]; then
+  exec uv run python "$ROOT/scripts/gate_cli.py" "$@"
+fi
+if [[ -x "$ROOT/.venv/bin/python" ]]; then
+  exec "$ROOT/.venv/bin/python" "$ROOT/scripts/gate_cli.py" "$@"
+fi
 exec python3 "$ROOT/scripts/gate_cli.py" "$@"

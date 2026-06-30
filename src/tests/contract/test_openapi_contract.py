@@ -25,6 +25,16 @@ def test_openapi_has_v1_paths(openapi_path: Path) -> None:
   assert "openapi:" in text or "paths:" in text
 
 
+@pytest.mark.contract
+def test_openapi_w5_agent_harness_paths(openapi_path: Path) -> None:
+  """W5 Step4：OpenAPI v1.1 须声明 agent plan · harness confirm 端点。"""
+  text = openapi_path.read_text(encoding="utf-8")
+  assert "/v1/agent/plan:" in text
+  assert "/v1/harness/confirm:" in text
+  assert "DslPlan" in text
+  assert "ExecutionRecord" in text
+
+
 @pytest.mark.workflow
 def test_harness_contracts_tier_green() -> None:
   r = subprocess.run(

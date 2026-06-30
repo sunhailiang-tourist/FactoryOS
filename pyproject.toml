@@ -60,7 +60,10 @@ markers = [
     "workflow: SH-步步流 / harness meta tests",
     "integration: DB / API integration tests (W1 S-* / C-*)",
 ]
-filterwarnings = ["ignore::DeprecationWarning"]
+filterwarnings = [
+  "ignore::DeprecationWarning",
+  "ignore::starlette.exceptions.StarletteDeprecationWarning",
+]
 
 [tool.ruff]
 target-version = "py312"

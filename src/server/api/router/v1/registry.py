@@ -4,13 +4,26 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from fastapi import APIRouter, FastAPI
-from server.api.modules import audit, connectors, dsl, execution, graphs, probes, registry, rulesets
+from server.api.modules import (
+  agent,
+  audit,
+  connectors,
+  dsl,
+  execution,
+  graphs,
+  harness,
+  probes,
+  registry,
+  rulesets,
+)
 
 RouteProvider = Callable[[], list[APIRouter]]
 
 ROUTER_PROVIDERS: tuple[RouteProvider, ...] = (
   probes.get_routers,
   graphs.get_routers,
+  agent.get_routers,
+  harness.get_routers,
   execution.get_routers,
   registry.get_routers,
   connectors.get_routers,

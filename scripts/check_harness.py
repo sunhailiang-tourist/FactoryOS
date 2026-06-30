@@ -28,6 +28,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = Path(__file__).resolve().parent
 
+
+def resolve_python() -> str:
+  """Prefer project .venv so PyYAML / pytest match pyproject.toml."""
+  venv_py = ROOT / ".venv" / "bin" / "python"
+  if venv_py.is_file():
+    return str(venv_py)
+  return sys.executable
+
+
+PYTHON = resolve_python()
+
 CHECKS: dict[str, tuple[str, str]] = {
     "openapi": ("check_openapi_schema_refs.py", "OpenAPI schema refs"),
     "cmv": ("check_cmv_sync.py", "CMV sync"),
@@ -129,12 +140,12 @@ def run_check(key: str) -> int:
     script, label = CHECKS[key]
     path = SCRIPTS / script
     print(f"\n── {label} ({script})")
-    r = subprocess.run([sys.executable, str(path)], cwd=ROOT)
+    r = subprocess.run([PYTHON, str(path)], cwd=ROOT)
     return r.returncode
 
 
 def run_pytest(k: str, extra: list[str]) -> int:
-    cmd = [sys.executable, "-m", "pytest", "-k", k, "-v", *extra]
+    cmd = [PYTHON, "-m", "pytest", "-k", k, "-v", *extra]
     print(f"\n── pytest -k {k!r}")
     r = subprocess.run(cmd, cwd=ROOT)
     return r.returncode
@@ -143,6 +154,8 @@ def run_pytest(k: str, extra: list[str]) -> int:
 def run_harness(tier: str, pytest_k: str | None = None, pytest_extra: list[str] | None = None) -> int:
     resolved = resolve_tier(tier)
     checks = TIER_CHECKS[resolved]
+    if PYTHON != sys.executable:
+        print(f"Harness python: {PYTHON} (project .venv)")
     print(f"FactoryOS Harness · {TIER_LABEL.get(resolved, resolved)} · {len(checks)} check(s)")
     for key in checks:
         if run_check(key) != 0:

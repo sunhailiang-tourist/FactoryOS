@@ -17,6 +17,8 @@
 | **rulesets** | `/v1/rulesets/*` | 规则集 CRUD · evaluate 授权 | [rulesets/README.md](./rulesets/README.md) |
 | **dsl** | `/v1/dsl/registry` | CMV 动词注册表只读 | [dsl/README.md](./dsl/README.md) |
 | **audit** | `/v1/audit/events` | append-only 审计事件查询 | [audit/README.md](./audit/README.md) |
+| **agent** | `/v1/agent/plan` | 意图 → DslPlan（H-01 · 不写 Legacy） | [agent/README.md](./agent/README.md) |
+| **harness** | `/v1/harness/confirm` | Harness 确认门 → Rule → Execute（H-02） | [harness/README.md](./harness/README.md) |
 
 ## 标准目录结构
 
