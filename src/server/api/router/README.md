@@ -13,7 +13,7 @@
 | 文件 | 职责 |
 |------|------|
 | `registry.py` | `register_routers(app)` — 全站唯一 `include_router` 入口 |
-| `v1/registry.py` | `ROUTER_PROVIDERS` — v1 各域 `get_routers()` 清单 |
+| `v1/registry.py` | `API_ROUTER_DOMAINS`（summary/problem/usage）→ `ROUTER_PROVIDERS` |
 | `v1/mount.py` | v1 prefix/tags 策略（当前路径已含 `/v1`，多为 no-op） |
 | `catalog.py` | 路由清单（治理 · harness 扩展） |
 
@@ -22,17 +22,19 @@
 **新增 HTTP 域：**
 
 1. 在 `modules/<域>/` 实现 controller + `routers.py`  
-2. 编辑 `v1/registry.py`：
+2. 编辑 `v1/registry.py`，追加 `ApiRouterDomain(...)`（**须** summary · problem · usage）：
 
 ```python
-ROUTER_PROVIDERS: tuple[RouteProvider, ...] = (
-  probes.get_routers,
-  graphs.get_routers,
-  # ... 新增域.get_routers,
-)
+ApiRouterDomain(
+  name="my_domain",
+  summary="…",
+  problem="…",
+  usage="POST /v1/…",
+  provider=my_domain.get_routers,
+),
 ```
 
-3. 跑 `./scripts/check_router_registry.py`
+3. 跑 `./scripts/check_router_registry.py` · `./scripts/check_registry_annotations.py`
 
 **禁止** 在 `main.py` 或 `application/` 里 `include_router`。
 

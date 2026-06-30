@@ -1,7 +1,7 @@
 """integration GIP 外置注册表 — Pack · Tenant · Catalog 清单。
 
-作用：统一管理 integration/ 子树；与 platform_registry seed 对齐。
-业务关联：ADR-004 GIP · ADR-008 export 镜像。
+作用：统一管理 integration/ 子树；每条须 summary/problem/usage。
+业务关联：ADR-004 GIP · ADR-008 export 镜像 · check_integration_registry。
 关联文档：docs/文档/架构/配置枢纽与关系模型.md
 """
 from __future__ import annotations
@@ -12,20 +12,46 @@ from pathlib import Path
 
 @dataclass(frozen=True, slots=True)
 class IntegrationMount:
-  """integration 子树挂载点。"""
+  """integration 子树挂载点（打开本文件即可见职责与用法）。"""
 
   name: str
   path: str
   summary: str
+  problem: str
+  usage: str
 
 
 ROOT = Path(__file__).resolve().parent
 
 INTEGRATION_MOUNTS: tuple[IntegrationMount, ...] = (
-  IntegrationMount("catalog", "catalog", "连接器类型目录（只读镜像）"),
-  IntegrationMount("packs", "packs", "Graph · Conn · Rule Pack 文件"),
-  IntegrationMount("tenants", "tenants", "租户模板与 export 镜像"),
-  IntegrationMount("tools", "tools", "guide · connector-agent 工具"),
+  IntegrationMount(
+    name="catalog",
+    path="catalog",
+    summary="连接器类型目录（只读镜像）",
+    problem="Pack Blueprint 须与 platform_registry seed 对齐，避免散落 YAML",
+    usage="integration/catalog/*.yaml；bootstrap 导入 · Studio 选 Pack 类型",
+  ),
+  IntegrationMount(
+    name="packs",
+    path="packs",
+    summary="Graph · Conn · Rule Pack 文件",
+    problem="交付物须文件化 export，便于 Git/Studio 导入导出",
+    usage="packs/<tenant>/ 下 graph/rule/conn 包；Package import/export API",
+  ),
+  IntegrationMount(
+    name="tenants",
+    path="tenants",
+    summary="租户模板与 export 镜像",
+    problem="租户 shadow_mode · licensed_packs 须可配置、可审计",
+    usage="tenants/<id>/settings.json；PUT /v1/tenants/{id}/settings（W7+）",
+  ),
+  IntegrationMount(
+    name="tools",
+    path="tools",
+    summary="guide · connector-agent 工具",
+    problem="实施/运维脚本须与 GIP 同仓、版本对齐",
+    usage="tools/guide/flows.json · connector-agent CLI；非 runtime 热路径",
+  ),
 )
 
 

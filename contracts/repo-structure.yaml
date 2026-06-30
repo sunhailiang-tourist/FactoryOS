@@ -58,17 +58,17 @@ allow_line_regex:
 kernel:
   module_count: 11
   modules:
-    - shared_contracts
-    - graph_service
-    - rule_engine
-    - execution_service
-    - audit_service
-    - agent_orchestrator
-    - connector_sdk
-    - license_service
-    - reconciliation_service
-    - mcp_gateway
-    - platform_registry
+    - shared_contracts      # 契约 DTO/错误码 · 全内核共享 · import models/exceptions
+    - graph_service         # Graph freeze/checksum · execute 前 assert_graph_executable
+    - rule_engine           # Rule evaluate · L2 写前 assert_allowed_for_execute
+    - execution_service     # DSL 编排唯一写 Legacy 链 · POST /v1/execute
+    - audit_service         # append-only 审计 · append_audit_event
+    - agent_orchestrator    # Agent→DslPlan · 禁写 Legacy · POST /v1/agent/plan
+    - connector_sdk         # Pack runtime/mock_legacy · ADR-002 写 Legacy 唯一 IO
+    - license_service       # Pack 授权 · execution 前 assert_pack_licensed
+    - reconciliation_service  # 对账 read-back · POST /v1/reconciliation/run
+    - mcp_gateway           # MCP 网关 W7+ · tools/list|call
+    - platform_registry     # ADR-008 契约 DB 真源 · bootstrap seed
 
 scan:
   roots:

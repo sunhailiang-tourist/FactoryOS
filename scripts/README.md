@@ -95,8 +95,9 @@
 | **`check_openapi_schema_refs.py`** | OpenAPI 中 `$ref` 是否指向存在的 JSON Schema | `contracts/openapi/` → `contracts/schemas/` | 接口文档与 Schema 断裂；前端/测试契约不可信 |
 | **`check_cmv_sync.py`** | CMV 动词注册表：命名、L2 补偿器、connector_ops 完整性 | `contracts/cmv/CMV注册表.yaml` | 新 DSL 动词不合规；Revert 链断裂 |
 | **`check_import_boundaries.py`** | `os_core` 十模块依赖矩阵 + `integration/` 禁止 import 私有 API | `src/server/os_core/` · `src/integration/` | 架构分层被破坏 |
-| **`check_kernel_registry.py`** | `os_core/registry.py` ↔ 磁盘 10 内核模块 | `src/server/os_core/` | 内核模块漏登记 |
-| **`check_router_registry.py`** | `router/v1/registry.py` ↔ `modules/*/routers.py`；main 禁 include_router | `src/server/api/` | HTTP 面失控 |
+| **`check_kernel_registry.py`** | `os_core/registry.py` ↔ 磁盘 11 内核模块 | `src/server/os_core/` | 内核模块漏登记 |
+| **`check_router_registry.py`** | `API_ROUTER_DOMAINS` ↔ `modules/*/routers.py`；main 禁 include_router | `src/server/api/` | HTTP 面失控 |
+| **`check_registry_annotations.py`** | 注册表每条须 summary/problem/usage | 见 `registry_annotation_lib.py` | 登记项无说明 |
 | **`check_integration_registry.py`** | `integration/registry.py` ↔ GIP 挂载 | `src/integration/` | 集成目录漏登记 |
 | **`check_legacy_paths.py`** | 禁止废止路径复活（读 `repo-structure.yaml`） | `src/` | 结构回退 |
 | **`check_repo_structure.py`** | 快照 ↔ 磁盘 ↔ kernel registry ↔ PATH-SNAPSHOT.md | `contracts/repo-structure.yaml` | 快照漂移 |

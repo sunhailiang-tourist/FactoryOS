@@ -53,6 +53,39 @@ def test_os_core_registry_lists_kernel_modules() -> None:
 
 
 @pytest.mark.workflow
+def test_registry_annotations_harness_green() -> None:
+  r = subprocess.run(
+    [sys.executable, str(SCRIPTS / "check_registry_annotations.py")],
+    cwd=ROOT,
+    capture_output=True,
+    text=True,
+  )
+  assert r.returncode == 0, r.stderr or r.stdout
+
+
+@pytest.mark.workflow
+def test_api_router_domains_have_usage_metadata() -> None:
+  sys.path.insert(0, str(ROOT / "src" / "server"))
+  from server.api.router.v1.registry import API_ROUTER_DOMAINS
+
+  assert len(API_ROUTER_DOMAINS) == 11
+  for domain in API_ROUTER_DOMAINS:
+    assert len(domain.summary) >= 8
+    assert len(domain.problem) >= 8
+    assert len(domain.usage) >= 8
+
+
+@pytest.mark.workflow
+def test_kernel_modules_have_usage_metadata() -> None:
+  sys.path.insert(0, str(ROOT / "src" / "server"))
+  from os_core.registry import KERNEL_MODULES
+
+  for mod in KERNEL_MODULES:
+    assert len(mod.usage) >= 8, mod.name
+    assert len(mod.problem) >= 8, mod.name
+
+
+@pytest.mark.workflow
 def test_integration_registry_harness_green() -> None:
   r = subprocess.run(
     [sys.executable, str(SCRIPTS / "check_integration_registry.py")],

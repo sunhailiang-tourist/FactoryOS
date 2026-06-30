@@ -4,13 +4,13 @@
 > 真源说明：[ACTIVATION.md](../.cursor/factoryos/ACTIVATION.md)
 
 ```yaml
-phase: DELIVERY
+phase: CAN_CODE
 agent: dev
-step: 4
+step: 0
 plan: _factoryos_pipeline/2026-06-30/plan/plan-1350-w6-reconcile-license.md
 test_plan: _factoryos_pipeline/2026-06-30/test/test-1406-w6-reconcile-license.md
 updated: 2026-06-30
-goal: W6 交付 — gate delivery · gate pr
+goal: 注册表注释门禁 — 全项目补注释 + check_registry_annotations
 ```
 
 ## W6 进度

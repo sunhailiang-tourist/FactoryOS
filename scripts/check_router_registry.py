@@ -18,8 +18,39 @@ V1_REGISTRY = API / "router" / "v1" / "registry.py"
 MAIN = API / "main.py"
 
 
-def _provider_modules(path: Path) -> list[str]:
-  tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+def _const_str(node: ast.expr) -> str | None:
+  if isinstance(node, ast.Constant) and isinstance(node.value, str):
+    return node.value
+  return None
+
+
+def _domain_names_from_api_router_domains(tree: ast.Module) -> list[str] | None:
+  tuple_node: ast.Tuple | None = None
+  for node in tree.body:
+    if isinstance(node, ast.Assign):
+      for target in node.targets:
+        if isinstance(target, ast.Name) and target.id == "API_ROUTER_DOMAINS":
+          if isinstance(node.value, ast.Tuple):
+            tuple_node = node.value
+    elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+      if node.target.id == "API_ROUTER_DOMAINS" and isinstance(node.value, ast.Tuple):
+        tuple_node = node.value
+  if tuple_node is None:
+    return None
+  names: list[str] = []
+  for elt in tuple_node.elts:
+    if not isinstance(elt, ast.Call):
+      continue
+    for kw in elt.keywords:
+      if kw.arg == "name":
+        val = _const_str(kw.value)
+        if val:
+          names.append(val)
+          break
+  return names if names else None
+
+
+def _provider_modules_legacy(tree: ast.Module) -> list[str] | None:
   tuple_node: ast.Tuple | None = None
   for node in tree.body:
     if isinstance(node, ast.Assign):
@@ -31,12 +62,23 @@ def _provider_modules(path: Path) -> list[str]:
       if node.target.id == "ROUTER_PROVIDERS" and isinstance(node.value, ast.Tuple):
         tuple_node = node.value
   if tuple_node is None:
-    raise ValueError(f"ROUTER_PROVIDERS not found in {path}")
+    return None
   mods: list[str] = []
   for elt in tuple_node.elts:
     if isinstance(elt, ast.Attribute) and isinstance(elt.value, ast.Name):
       mods.append(elt.value.id)
-  return mods
+  return mods if mods else None
+
+
+def _provider_modules(path: Path) -> list[str]:
+  tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+  domains = _domain_names_from_api_router_domains(tree)
+  if domains:
+    return domains
+  legacy = _provider_modules_legacy(tree)
+  if legacy:
+    return legacy
+  raise ValueError(f"API_ROUTER_DOMAINS or ROUTER_PROVIDERS not found in {path}")
 
 
 def main() -> int:
@@ -62,7 +104,7 @@ def main() -> int:
     mod_dir = modules_dir / mod
     routers_py = mod_dir / "routers.py"
     if not routers_py.is_file():
-      errors.append(f"modules/{mod}/routers.py missing for ROUTER_PROVIDERS entry")
+      errors.append(f"modules/{mod}/routers.py missing for router domain {mod!r}")
 
   if errors:
     for err in errors:
