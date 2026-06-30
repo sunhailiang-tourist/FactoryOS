@@ -28,10 +28,16 @@ ALLOWED: dict[str, set[str]] = {
         "connector_sdk",
         "rule_engine",
         "graph_service",
+        "license_service",
     },
     "connector_sdk": {"shared_contracts", "platform_registry"},
     "agent_orchestrator": {"shared_contracts"},
     "license_service": {"shared_contracts"},
+    "reconciliation_service": {
+        "shared_contracts",
+        "connector_sdk",
+        "execution_service",
+    },
     "mcp_gateway": {"shared_contracts", "agent_orchestrator"},
 }
 

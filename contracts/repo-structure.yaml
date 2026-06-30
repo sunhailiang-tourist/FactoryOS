@@ -56,7 +56,7 @@ allow_line_regex:
   - plan-platform|artifacts/|表述|独立.*alembic|无 alembic/ 目录|AUTO-GENERATED|自动生成
 
 kernel:
-  module_count: 10
+  module_count: 11
   modules:
     - shared_contracts
     - graph_service
@@ -66,6 +66,7 @@ kernel:
     - agent_orchestrator
     - connector_sdk
     - license_service
+    - reconciliation_service
     - mcp_gateway
     - platform_registry
 

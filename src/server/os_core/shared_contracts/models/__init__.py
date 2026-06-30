@@ -16,6 +16,10 @@ from os_core.shared_contracts.models.execution import (
   ExecutionRecord,
 )
 from os_core.shared_contracts.models.graph import BusinessGraph, GraphStatus
+from os_core.shared_contracts.models.reconciliation import (
+  ReconciliationDrift,
+  ReconciliationReport,
+)
 from os_core.shared_contracts.models.rule import RuleSet, RuleSetStatus
 
 __all__ = [
@@ -30,6 +34,8 @@ __all__ = [
   "ExecutionRecord",
   "GraphStatus",
   "PlanStep",
+  "ReconciliationDrift",
+  "ReconciliationReport",
   "RuleSet",
   "RuleSetStatus",
 ]

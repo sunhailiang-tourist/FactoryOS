@@ -22,6 +22,7 @@ from os_core.execution_service.store import (
   update_execution_status,
 )
 from os_core.graph_service import assert_graph_executable
+from os_core.license_service import assert_pack_licensed
 from os_core.rule_engine import assert_allowed_for_execute
 from os_core.rule_engine.store import find_frozen_ruleset_id
 from os_core.shared_contracts.cmv_registry import require_known_verb
@@ -65,6 +66,21 @@ def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> Execu
     )
     if existing is not None:
       return existing
+
+  try:
+    assert_pack_licensed(tenant_id=req.tenant_id, pack_id=DEFAULT_PACK_ID)
+  except PlatformError as exc:
+    if exc.code == ErrorCode.MODULE_NOT_LICENSED:
+      append_audit_event(
+        session=session,
+        tenant_id=req.tenant_id,
+        event_type=AuditEventType.LICENSE_DENIED,
+        actor=req.actor,
+        pack_id=DEFAULT_PACK_ID,
+        payload={"pack_id": DEFAULT_PACK_ID, "verb": req.verb},
+      )
+      session.commit()
+    raise
 
   verb_meta = require_known_verb(req.verb)
   verb_level = str(verb_meta["level"])

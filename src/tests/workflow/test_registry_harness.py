@@ -40,14 +40,16 @@ def test_main_has_no_include_router() -> None:
 
 
 @pytest.mark.workflow
-def test_os_core_registry_lists_ten_modules() -> None:
+def test_os_core_registry_lists_kernel_modules() -> None:
   sys.path.insert(0, str(ROOT / "src" / "server"))
   from os_core.registry import kernel_module_names
 
   names = kernel_module_names()
   assert "platform_registry" in names
   assert "execution_service" in names
-  assert len(names) == 10
+  assert "license_service" in names
+  assert "reconciliation_service" in names
+  assert len(names) == 11
 
 
 @pytest.mark.workflow

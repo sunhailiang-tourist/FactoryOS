@@ -4,31 +4,34 @@
 > 真源说明：[ACTIVATION.md](../.cursor/factoryos/ACTIVATION.md)
 
 ```yaml
-phase: STEP0
-agent: —
-step: —
-plan: —
-test_plan: —
+phase: DELIVERY
+agent: dev
+step: 4
+plan: _factoryos_pipeline/2026-06-30/plan/plan-1350-w6-reconcile-license.md
+test_plan: _factoryos_pipeline/2026-06-30/test/test-1406-w6-reconcile-license.md
 updated: 2026-06-30
-goal: W5 已交付 · 待 W6 plan（对账 Job stub + License stub）
+goal: W6 交付 — gate delivery · gate pr
 ```
 
-## 上轮交付（W5 · 已闭合）
+## W6 进度
+
+| Step | AC | 状态 |
+|------|-----|------|
+| Step0 + plan | K-01/K-02/T-02 | ✅ **`确认规划`** · `gate plan` OK |
+| Test 编码前 | failing tests | ✅ `test-1406` · `gate test` OK |
+| 1 | workflow | ✅ gate 绿 |
+| 2 | T-02 | ✅ gate 绿 |
+| 3 | K-01 | ✅ gate 绿 |
+| 4 | K-02 | ✅ gate 绿 |
+
+**W6 交付闭合**：`change-summary-1510-w6-reconcile-license.md` → `gate delivery` → `gate pr` → **可以提交**
+
+## 上轮（W5 · 同分支 · 未 merge）
 
 | 项 | 路径 |
 |----|------|
-| plan | `_factoryos_pipeline/2026-06-30/plan/plan-0330-w5-agent-harness.md` |
 | summary | `_factoryos_pipeline/2026-06-30/summary/change-summary-1341-w5-agent-harness.md` |
-| 终轮 Test | `_factoryos_pipeline/2026-06-30/test/test-1330-final-regression.md` |
-| git | `dev_sunhailiang_core_260624` · 已 commit + push |
-
-**W5 AC**：workflow · H-01 · H-02 · H-03 · OpenAPI 对账 — 全绿 · `gate delivery` · `gate pr` OK
-
-## 下一轮（W6 · 未启动）
-
-路线图：[14-一年冲刺路线图](../docs/准备/2026-06-16/14-一年冲刺路线图与并行研发.md) — **对账 Job stub + License stub**
-
-启动口令：**【Dev模式启动】** → Step0 → `可以继续` → plan 落盘 → `确认规划`
+| 分支 | `dev_sunhailiang_core_260624` |
 
 ## 绝对门禁 · 联动门禁
 
@@ -36,6 +39,7 @@ goal: W5 已交付 · 待 W6 plan（对账 Job stub + License stub）
 
 ## 变更日志
 
-- 2026-06-30 W5 交付闭合 · summary 落盘 · `phase: STEP0` 重置（待 W6）
-- 2026-06-30 W5 commit + push · gate delivery/pr 绿
-- 2026-06-30 Test·终轮回归 · `test-1330-final-regression.md`
+- 2026-06-30 Dev·W6 summary · `change-summary-1510-w6-reconcile-license.md` · `phase: DELIVERY`
+- 2026-06-30 Test·Step4 + 终轮 · `test-1501-step4-regression.md` · `test-1501-final-regression.md`
+- 2026-06-30 Dev·Step4 · `step-stop-1455-step4.md` · K-02 pytest 绿
+- 2026-06-30 Test·Step3 · `test-1445-step3-regression.md`

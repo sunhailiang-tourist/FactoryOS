@@ -54,7 +54,7 @@
 - `alembic/README`
 - regex: `(?<![./])alembic/(?!ini)`
 
-## 内核模块（10）
+## 内核模块（11）
 
 1. `shared_contracts` → `src/server/os_core/shared_contracts/`
 2. `graph_service` → `src/server/os_core/graph_service/`
@@ -64,8 +64,9 @@
 6. `agent_orchestrator` → `src/server/os_core/agent_orchestrator/`
 7. `connector_sdk` → `src/server/os_core/connector_sdk/`
 8. `license_service` → `src/server/os_core/license_service/`
-9. `mcp_gateway` → `src/server/os_core/mcp_gateway/`
-10. `platform_registry` → `src/server/os_core/platform_registry/`
+9. `reconciliation_service` → `src/server/os_core/reconciliation_service/`
+10. `mcp_gateway` → `src/server/os_core/mcp_gateway/`
+11. `platform_registry` → `src/server/os_core/platform_registry/`
 
 ## 结构变更纪律
 

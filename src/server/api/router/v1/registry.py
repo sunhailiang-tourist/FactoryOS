@@ -13,6 +13,7 @@ from server.api.modules import (
   graphs,
   harness,
   probes,
+  reconciliation,
   registry,
   rulesets,
 )
@@ -24,6 +25,7 @@ ROUTER_PROVIDERS: tuple[RouteProvider, ...] = (
   graphs.get_routers,
   agent.get_routers,
   harness.get_routers,
+  reconciliation.get_routers,
   execution.get_routers,
   registry.get_routers,
   connectors.get_routers,

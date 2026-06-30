@@ -95,6 +95,14 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     doc="src/server/os_core/license_service/README.md",
   ),
   KernelModule(
+    name="reconciliation_service",
+    summary="对账 Job · ExecutionRecord read-back vs Legacy",
+    public_api=("os_core.reconciliation_service.run_reconciliation",),
+    depends_on=("shared_contracts", "connector_sdk", "execution_service"),
+    forbids="写 Legacy",
+    doc="src/server/os_core/reconciliation_service/README.md",
+  ),
+  KernelModule(
     name="mcp_gateway",
     summary="MCP tools/list、tools/call → DslPlan",
     public_api=(),

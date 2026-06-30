@@ -68,6 +68,55 @@ _SELECT_COLUMNS = """
 """
 
 
+def list_success_legacy_writes(
+  session: Session,
+  *,
+  tenant_id: str,
+  graph_id: str | None = None,
+  since: datetime | None = None,
+) -> list[ExecutionRecord]:
+  """列出可对账的 L2 成功写（非 shadow · 非 dry_run · 有 after_snapshot）。
+
+  功能：reconciliation_service read-back 数据源。
+  业务含义：Shadow-Mode 规格 §2.2 步骤 1。
+  参数 tenant_id：租户过滤
+  参数 graph_id/since：可选缩小范围
+  返回：ExecutionRecord 列表（started_at 升序）
+  """
+  clauses = [
+    "tenant_id = :tenant_id",
+    "status = 'success'",
+    "dry_run = 0",
+    "shadow_mode = 0",
+    "after_snapshot_json IS NOT NULL",
+  ]
+  params: dict[str, str] = {"tenant_id": tenant_id}
+  if graph_id is not None:
+    clauses.append("graph_id = :graph_id")
+    params["graph_id"] = graph_id
+  if since is not None:
+    clauses.append("started_at >= :since")
+    params["since"] = since.isoformat()
+
+  where = " AND ".join(clauses)
+  rows = (
+    session.execute(
+      text(
+        f"""
+        {_SELECT_COLUMNS}
+        FROM execution_records
+        WHERE {where}
+        ORDER BY started_at ASC
+        """
+      ),
+      params,
+    )
+    .mappings()
+    .all()
+  )
+  return [_row_to_record(dict(row)) for row in rows]
+
+
 def find_by_exec_id(session: Session, exec_id: UUID) -> ExecutionRecord | None:
   """按 exec_id 查单条 ExecutionRecord（E-09 evidence 数据源）。"""
   row = (
