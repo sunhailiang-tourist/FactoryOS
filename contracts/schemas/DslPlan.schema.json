@@ -49,7 +49,11 @@
     "created_at": { "type": "string", "format": "date-time" },
     "expires_at": { "type": "string", "format": "date-time" },
     "confirmed_at": { "type": ["string", "null"], "format": "date-time" },
-    "confirmed_by": { "type": ["string", "null"] }
+    "confirmed_by": { "type": ["string", "null"] },
+    "trace_id": {
+      "type": ["string", "null"],
+      "description": "W3C trace_id（来自 MCP params._meta.traceparent · M-03）"
+    }
   },
   "$defs": {
     "PlanStep": {

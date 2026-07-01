@@ -81,3 +81,7 @@ class DslPlan(BaseModel):
   summary: str | None = Field(default=None, description="用户可见摘要")
   confirmed_at: datetime | None = Field(default=None, description="Harness 确认时间")
   confirmed_by: str | None = Field(default=None, description="确认人")
+  trace_id: str | None = Field(
+    default=None,
+    description="W3C trace_id；MCP _meta.traceparent 解析（M-03）",
+  )

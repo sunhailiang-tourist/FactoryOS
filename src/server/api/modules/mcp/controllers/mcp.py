@@ -1,7 +1,7 @@
 """MCP 域 HTTP 路由（OpenAPI POST /mcp/v1/{tenantId}）。
 
 作用：薄路由；委托 mcp_gateway.handle_mcp_json_rpc。
-业务关联：M-01 tools/list · M-02 tools/call。
+业务关联：M-01 tools/list · M-02 tools/call · M-03 audit commit。
 上游：modules/mcp/routers
 下游：os_core.mcp_gateway
 """
@@ -24,5 +24,7 @@ def mcp_json_rpc_http(
   body: dict[str, Any],
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /mcp/v1/{tenantId}（M-01 · M-02）。"""
-  return handle_mcp_json_rpc(session, tenant_id=tenant_id, request=body)
+  """POST /mcp/v1/{tenantId}（M-01 · M-02 · M-03 audit 落库）。"""
+  result = handle_mcp_json_rpc(session, tenant_id=tenant_id, request=body)
+  session.commit()
+  return result

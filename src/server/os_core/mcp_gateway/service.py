@@ -1,9 +1,9 @@
-"""MCP JSON-RPC 网关内核（W7 stub · M-01 · M-02）。
+"""MCP JSON-RPC 网关内核（W7 stub · M-01 · M-02 · W8 M-03）。
 
 作用：tools/list 已授权 CMV · tools/call → DslPlan（不写 Legacy）。
-业务关联：POST /mcp/v1/{tenantId} · MCP-Gateway 规格。
+业务关联：POST /mcp/v1/{tenantId} · MCP-Gateway 规格 · SEP-414 traceparent。
 上游：server.api.modules.mcp 薄路由
-下游：agent_orchestrator · platform_registry · graph_service · rule_engine
+下游：agent_orchestrator · platform_registry · graph_service · rule_engine · audit_service
 关联文档：docs/文档/规格说明/MCP-Gateway规格.md
 """
 from __future__ import annotations
@@ -13,13 +13,17 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from os_core.agent_orchestrator import create_plan
+from os_core.audit_service import append_audit_event
 from os_core.graph_service import assert_graph_executable
 from os_core.platform_registry import pack_store, tenant_config_store
 from os_core.rule_engine.store import find_frozen_ruleset_id
 from os_core.shared_contracts.cmv_registry import require_known_verb
 from os_core.shared_contracts.errors import ErrorCode
 from os_core.shared_contracts.exceptions import PlatformError
+from os_core.shared_contracts.models.audit import AuditEventType
+from os_core.shared_contracts.models.common import Actor, ActorChannel
 from os_core.shared_contracts.models.dsl import DslPlanSource
+from os_core.shared_contracts.trace_context import trace_id_from_mcp_meta
 
 
 def _jsonrpc_result(*, rpc_id: int | str | None, result: Any) -> dict[str, Any]:
@@ -145,6 +149,8 @@ def call_tool(
       http_status=403,
     )
 
+  trace_id = trace_id_from_mcp_meta(params.get("_meta"))
+
   plan = create_plan(
     tenant_id=tenant_id,
     graph_id=graph_id,
@@ -154,7 +160,21 @@ def call_tool(
     allowed_dsl=graph.allowed_dsl or None,
     source=DslPlanSource.MCP,
     verb=tool_name,
+    trace_id=trace_id,
   )
+
+  append_audit_event(
+    session=session,
+    tenant_id=tenant_id,
+    event_type=AuditEventType.MCP_TOOLS_CALL,
+    actor=Actor(user_id="mcp-gateway", role="system:mcp", channel=ActorChannel.MCP),
+    graph_id=graph_id,
+    graph_version=graph_version,
+    plan_id=plan.plan_id,
+    correlation_id=trace_id,
+    payload={"tool_name": tool_name, "trace_id": trace_id},
+  )
+
   return plan.model_dump(mode="json")
 
 

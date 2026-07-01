@@ -56,6 +56,7 @@ def create_plan(
   allowed_dsl: list[str] | None = None,
   source: DslPlanSource = DslPlanSource.AGENT,
   verb: str | None = None,
+  trace_id: str | None = None,
 ) -> DslPlan:
   """产出 DSL 计划（不执行 · 不写 Legacy · 不 import graph/rule 内核）。
 
@@ -67,6 +68,7 @@ def create_plan(
   参数 ruleset_id/allowed_dsl：由 API 层注入（graph_service + rule_engine 查询结果）。
   参数 source：MCP gateway 传 DslPlanSource.MCP。
   参数 verb：tools/call 的 CMV 名；默认 GOVERNED_WRITE。
+  参数 trace_id：MCP SEP-414 解析结果；非 MCP 通道为 None。
   """
   verb_to_use = verb or _VERB_STUB
   require_known_verb(verb_to_use)
@@ -105,6 +107,7 @@ def create_plan(
     expires_at=now + _PLAN_TTL,
     summary=f"Agent plan: {work_order_id} qty {quantity}",
     dry_run=False,
+    trace_id=trace_id,
   )
   save_plan(plan)
   return plan

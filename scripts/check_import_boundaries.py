@@ -133,13 +133,14 @@ IMPORT_BOUNDARY_REGISTRY: tuple[ImportBoundaryEntry, ...] = (
     package="mcp_gateway",
     summary="MCP 网关（W7+）",
     problem="外部工具调用须经 gateway，禁止直写",
-    usage="tools/list · tools/call → agent_orchestrator + graph/rule 门禁",
+    usage="tools/list · tools/call → agent_orchestrator + graph/rule 门禁 · M-03 audit",
     allowed=frozenset({
       "shared_contracts",
       "agent_orchestrator",
       "platform_registry",
       "graph_service",
       "rule_engine",
+      "audit_service",
     }),
   ),
 )
