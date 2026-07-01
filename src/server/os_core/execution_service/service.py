@@ -14,6 +14,7 @@ from uuid import UUID, uuid4
 from sqlalchemy.orm import Session
 
 from os_core.audit_service.store import append_audit_event, list_audit_events
+from os_core.connector_sdk.registry import assert_tenant_connector_configured
 from os_core.connector_sdk.runtime.execute import execute_op
 from os_core.execution_service.store import (
   find_by_exec_id,
@@ -35,6 +36,8 @@ from os_core.shared_contracts.models.execution import (
   ExecutionRecord,
   LegacyRef,
 )
+from os_core.shared_contracts.param_safety import assert_params_safe
+from os_core.tenant_service import resolve_shadow_mode
 
 DEFAULT_PACK_ID = "conn-mock"
 
@@ -58,6 +61,8 @@ def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> Execu
     else ExecuteRequest.model_validate(request)
   )
 
+  assert_params_safe(dict(req.params or {}))
+
   if req.idempotency_key:
     existing = find_by_idempotency(
       session,
@@ -68,7 +73,30 @@ def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> Execu
       return existing
 
   try:
-    assert_pack_licensed(tenant_id=req.tenant_id, pack_id=DEFAULT_PACK_ID)
+    assert_tenant_connector_configured(
+      session,
+      tenant_id=req.tenant_id,
+      pack_id=DEFAULT_PACK_ID,
+    )
+  except PlatformError as exc:
+    if exc.code == ErrorCode.CONNECTOR_NOT_CONFIGURED:
+      append_audit_event(
+        session=session,
+        tenant_id=req.tenant_id,
+        event_type=AuditEventType.EXECUTE_FAILED,
+        actor=req.actor,
+        pack_id=DEFAULT_PACK_ID,
+        payload={
+          "code": ErrorCode.CONNECTOR_NOT_CONFIGURED,
+          "pack_id": DEFAULT_PACK_ID,
+          "verb": req.verb,
+        },
+      )
+      session.commit()
+    raise
+
+  try:
+    assert_pack_licensed(session, tenant_id=req.tenant_id, pack_id=DEFAULT_PACK_ID)
   except PlatformError as exc:
     if exc.code == ErrorCode.MODULE_NOT_LICENSED:
       append_audit_event(
@@ -117,8 +145,10 @@ def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> Execu
   now = datetime.now(UTC)
   exec_id = uuid4()
   dry_run = req.dry_run
-  writes_legacy = verb_level == "L2" and not dry_run
-  status: str = "simulated" if dry_run and verb_level == "L2" else "success"
+  tenant_shadow = resolve_shadow_mode(session, tenant_id=req.tenant_id)
+  effective_shadow = dry_run or tenant_shadow
+  writes_legacy = verb_level == "L2" and not effective_shadow
+  status: str = "simulated" if verb_level == "L2" and effective_shadow else "success"
 
   before_snapshot: dict[str, Any] | None = None
   after_snapshot: dict[str, Any] | None = None
@@ -150,7 +180,7 @@ def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> Execu
     scope_id=req.scope_id,
     ruleset_id=ruleset_id,
     idempotency_key=req.idempotency_key,
-    shadow_mode=dry_run,
+    shadow_mode=effective_shadow,
     params=req.params,
     before_snapshot=before_snapshot,
     after_snapshot=after_snapshot,
@@ -168,14 +198,19 @@ def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> Execu
     exec_id=exec_id,
     graph_id=req.graph_id,
     graph_version=req.graph_version,
-    payload={"verb": req.verb, "dry_run": dry_run, "verb_level": verb_level},
+    payload={
+      "verb": req.verb,
+      "dry_run": dry_run,
+      "tenant_shadow": tenant_shadow,
+      "verb_level": verb_level,
+    },
   )
   append_audit_event(
     session=session,
     tenant_id=req.tenant_id,
     event_type=(
       AuditEventType.EXECUTE_SIMULATED
-      if dry_run and verb_level == "L2"
+      if effective_shadow and verb_level == "L2"
       else AuditEventType.EXECUTE_COMPLETED
     ),
     actor=req.actor,
@@ -188,12 +223,75 @@ def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> Execu
   return record
 
 
+def assert_execution_tenant_access(
+  record: ExecutionRecord,
+  *,
+  caller_tenant_id: str,
+) -> None:
+  """跨 tenant 读 execution 拒绝（N-03）。
+
+  功能：caller tenant 须与记录 tenant_id 一致。
+  业务含义：多厂隔离；GET /v1/executions 与 evidence 共用。
+  """
+  if record.tenant_id != caller_tenant_id:
+    raise PlatformError(
+      ErrorCode.TENANT_FORBIDDEN,
+      f"Cross-tenant access denied for execution {record.exec_id}",
+      http_status=403,
+    )
+
+
+def get_execution_for_tenant(
+  session: Session,
+  exec_id: UUID,
+  *,
+  caller_tenant_id: str,
+) -> ExecutionRecord:
+  """按 tenant 隔离读取 execution（N-03）。"""
+  record = find_by_exec_id(session, exec_id)
+  if record is None:
+    raise PlatformError(
+      ErrorCode.REVERT_NOT_ALLOWED,
+      f"Execution not found: {exec_id}",
+      http_status=404,
+    )
+  assert_execution_tenant_access(record, caller_tenant_id=caller_tenant_id)
+  return record
+
+
 def assemble_evidence(session: Session, exec_id: UUID) -> ExecutionEvidence | None:
   """组装 ExecutionEvidence（E-09 可重建审计包）。"""
   record = find_by_exec_id(session, exec_id)
   if record is None:
     return None
 
+  events = list_audit_events(
+    session=session,
+    tenant_id=record.tenant_id,
+    exec_id=exec_id,
+    limit=500,
+  )
+  return ExecutionEvidence(
+    exec_id=exec_id,
+    tenant_id=record.tenant_id,
+    execution=record,
+    audit_events=events,
+    assembled_at=datetime.now(UTC),
+  )
+
+
+def assemble_evidence_for_tenant(
+  session: Session,
+  exec_id: UUID,
+  *,
+  caller_tenant_id: str,
+) -> ExecutionEvidence:
+  """按 tenant 隔离组装 evidence（N-03 · E-09）。"""
+  record = get_execution_for_tenant(
+    session,
+    exec_id,
+    caller_tenant_id=caller_tenant_id,
+  )
   events = list_audit_events(
     session=session,
     tenant_id=record.tenant_id,

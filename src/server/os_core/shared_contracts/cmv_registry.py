@@ -18,6 +18,8 @@ from os_core.shared_contracts.repo_paths import contracts_dir
 
 _CMV_PATH = contracts_dir() / "cmv" / "CMV注册表.yaml"
 _DRAFT_CHECKSUM = "sha256:" + "0" * 64
+_L0_LEVELS = frozenset({"L0"})
+_L2_LEVELS = frozenset({"L2", "L3"})
 
 
 def clear_cache() -> None:
@@ -89,3 +91,43 @@ def require_known_verb(verb: str) -> dict[str, Any]:
 def draft_graph_checksum() -> str:
   """draft Graph 占位 checksum（对齐 schema 约定）。"""
   return _DRAFT_CHECKSUM
+
+
+def register_dsl_verb(
+  *,
+  verb: str,
+  level: str,
+  compensator: str | None,
+  params_schema: dict[str, Any] | None = None,
+  description: str | None = None,
+  connector_ops: list[dict[str, Any]] | None = None,
+  idempotent: bool = False,
+) -> dict[str, Any]:
+  """校验并登记 CMV 动词（D-04 · L2/L3 须 compensator）。
+
+  功能：注册前结构校验；不直接写 Registry DB（须 change-request 人审落库）。
+  业务含义：拒绝无 compensator 的 L2 动词，对齐 check_cmv_sync 规则。
+  上游：POST /v1/registry/cmv/verbs
+  下游：Studio 提案前置校验
+  """
+  if level in _L2_LEVELS and not compensator and not verb.endswith("_REVERT"):
+    raise PlatformError(
+      ErrorCode.BLUEPRINT_INVALID,
+      f"L2 verb {verb} must declare compensator",
+      http_status=422,
+    )
+  if level in _L0_LEVELS and compensator:
+    raise PlatformError(
+      ErrorCode.BLUEPRINT_INVALID,
+      f"L0 verb {verb} must not have compensator",
+      http_status=422,
+    )
+  return {
+    "verb": verb,
+    "level": level,
+    "description": description,
+    "params_schema": params_schema or {"type": "object"},
+    "compensator": compensator,
+    "connector_ops": connector_ops or [],
+    "idempotent": idempotent,
+  }

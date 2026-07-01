@@ -56,7 +56,7 @@ allow_line_regex:
   - plan-platform|artifacts/|表述|独立.*alembic|无 alembic/ 目录|AUTO-GENERATED|自动生成
 
 kernel:
-  module_count: 11
+  module_count: 13
   modules:
     - shared_contracts      # 契约 DTO/错误码 · 全内核共享 · import models/exceptions
     - graph_service         # Graph freeze/checksum · execute 前 assert_graph_executable
@@ -65,7 +65,9 @@ kernel:
     - audit_service         # append-only 审计 · append_audit_event
     - agent_orchestrator    # Agent→DslPlan · 禁写 Legacy · POST /v1/agent/plan
     - connector_sdk         # Pack runtime/mock_legacy · ADR-002 写 Legacy 唯一 IO
+    - tenant_service        # shadow_mode 真源 · REST/MCP 共用 · GET/PUT tenant settings
     - license_service       # Pack 授权 · execution 前 assert_pack_licensed
+    - package_service       # Implementation Package export/import · P-01～P-03
     - reconciliation_service  # 对账 read-back · POST /v1/reconciliation/run
     - mcp_gateway           # MCP 网关 W7+ · tools/list|call
     - platform_registry     # ADR-008 契约 DB 真源 · bootstrap seed

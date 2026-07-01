@@ -17,9 +17,9 @@ alwaysApply: true
 
 ## 关键词（缺一不可 · **确认规划不可跳过**）
 
-`可以继续` → **`确认规划` + `./scripts/gate plan`（plan.ok）** → `可以开始` → …
+`可以继续` → **`确认规划` + `./scripts/gate plan`（plan.ok）** → Test + **`gate test`（test.ok）** → **`可以开始` + `./scripts/gate start --step N`（code.ok）** → …
 
-**绝对门禁**：无 plan / 无 plan.ok / phase=STEP0|PLANNING → Hook + gate **直接阻断**。
+**绝对门禁（stamp · 不认 Agent 自改 phase）**：无 plan.ok → 禁止写 `src/**`；无 test.ok → 禁止 `gate start`；无 code.ok → 禁止写业务码。`.gates/*` 仅 gate CLI 可写。
 
 **联动门禁**：Step N 须 Dev step-stop → Test 单步验收 → Verify 通过 → `gate step` 绿，方可 `可以继续` / 开 Step N+1（`step_chain_lib` · 按 plan 日期目录隔离）。
 
@@ -51,4 +51,4 @@ plan → test-plan → **每 Step**：可以开始→实现→step-stop→**Test
 
 ## 禁止
 
-跳 Step · **跳过确认规划** · 无 plan.ok 写码/测 · 乱序 · Test 偷改业务
+跳 Step · **跳过确认规划** · Agent 自写 `.gates/*` 或伪造 phase · 无 stamp 写码/测 · 乱序 · Test 偷改业务

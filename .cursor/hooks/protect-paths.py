@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
-"""Cursor preToolUse hook: SH-步步流路径保护（fail closed · 确认规划绝对门禁）。"""
+"""Cursor preToolUse hook: SH-步步流路径保护（fail closed · stamp 绝对门禁）。
+
+真源 stamp（仅 ./scripts/gate 可写）：
+  plan.ok  ← gate plan（用户「确认规划」后）
+  test.ok  ← gate test
+  code.ok  ← gate start（用户「可以开始」后）
+
+Agent 改 workflow_state 升 phase 须与 stamp 一致，否则 deny。
+"""
 from __future__ import annotations
 
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -37,22 +44,8 @@ def _load_plan_gate():
 
 
 def read_state() -> dict[str, str]:
-    if not STATE.is_file():
-        return {}
-    text = STATE.read_text(encoding="utf-8")
-    out: dict[str, str] = {}
-    for key in ("phase", "agent", "step", "plan", "test_plan"):
-        m = re.search(rf"^{key}:\s*(.*)$", text, re.MULTILINE)
-        if m:
-            val = m.group(1).strip()
-            if val:
-                out[key] = val
-    return out
-
-
-def read_state_legacy() -> tuple[str, str]:
-    s = read_state()
-    return s.get("phase", "STEP0"), s.get("agent", "dev")
+    pg = _load_plan_gate()
+    return pg.read_workflow_state()
 
 
 def norm_path(raw: str) -> str:
@@ -64,7 +57,6 @@ def norm_path(raw: str) -> str:
 
 
 def rel_to_repo(path: str) -> str:
-    """绝对/相对路径 → 相对仓库根（Hook 判定用）。"""
     p = Path(path)
     try:
         if p.is_absolute():
@@ -83,10 +75,15 @@ def extract_path(payload: dict) -> str | None:
     return None
 
 
+def extract_tool_input(payload: dict) -> dict:
+    tool_input = payload.get("tool_input") or payload.get("arguments") or {}
+    return tool_input if isinstance(tool_input, dict) else {}
+
+
 def is_always_ok(path: str) -> bool:
     if path in ALWAYS_OK_FILES:
         return True
-    if path.endswith(".md"):
+    if path.endswith(".md") and not path.startswith("_factoryos_pipeline/"):
         return True
     return any(path.startswith(p) for p in ALWAYS_OK_PREFIXES)
 
@@ -105,14 +102,28 @@ def is_business_path(path: str) -> bool:
 
 def is_migration_path(path: str) -> bool:
     return (
-        # 允许 migrations 目录；拦截已废弃的独立 alembic/versions/ 路径（仓库内不存在）
         path.startswith("src/server/db/migrations/versions/")
         or path.startswith("alembic/versions/")
     ) and path.endswith(".py")
 
 
+def is_src_code_path(path: str) -> bool:
+    return path.startswith("src/") and path.endswith((".py", ".sql"))
+
+
+def is_gate_stamp_path(path: str) -> bool:
+    return path.startswith("_factoryos_pipeline/.gates/")
+
+
+def is_workflow_state_path(path: str) -> bool:
+    return path == "_factoryos_pipeline/workflow_state.md"
+
+
+def is_plan_draft_path(path: str) -> bool:
+    return "/plan/plan-" in path and path.endswith(".md")
+
+
 def is_chain_pipeline_artifact(path: str) -> bool:
-    """联动链落盘：不可被 always_ok 跳过。"""
     if not path.startswith("_factoryos_pipeline/"):
         return False
     name = Path(path).name
@@ -126,8 +137,24 @@ def is_chain_pipeline_artifact(path: str) -> bool:
 
 
 def is_pipeline_other(path: str) -> bool:
-    """plan · summary · gate 机械日志等（非联动链）。"""
     return path.startswith("_factoryos_pipeline/")
+
+
+def simulate_file_content(
+    tool: str, path: str, tool_input: dict
+) -> str | None:
+    """模拟 Write/StrReplace 后的文件内容（workflow_state 校验用）。"""
+    full = ROOT / path
+    if tool == "Write":
+        return tool_input.get("contents") or tool_input.get("content")
+    if tool == "StrReplace" and full.is_file():
+        old = tool_input.get("old_string", "")
+        new = tool_input.get("new_string", "")
+        text = full.read_text(encoding="utf-8")
+        if old not in text:
+            return None
+        return text.replace(old, new, 1)
+    return None
 
 
 def deny(user: str, agent: str) -> None:
@@ -140,16 +167,7 @@ def deny(user: str, agent: str) -> None:
     sys.exit(2)
 
 
-def check_plan_absolute(*, require_phase_min: str) -> list[str]:
-    try:
-        pg = _load_plan_gate()
-        return pg.validate_plan_confirmed(require_phase_min=require_phase_min)
-    except Exception as exc:  # noqa: BLE001 — hook fail-closed
-        return [f"绝对门禁：plan 校验异常 — {exc}"]
-
-
 def check_step_chain(*, step: int, mode: str) -> list[str]:
-    """mode: start_dev | test_accept | verify | closed"""
     try:
         sys.path.insert(0, str(SCRIPTS))
         import step_chain_lib
@@ -184,11 +202,52 @@ def main() -> None:
         print(json.dumps({"permission": "allow"}))
         return
 
-    phase, agent = read_state_legacy()
+    pg = _load_plan_gate()
+    tool_input = extract_tool_input(payload)
     state = read_state()
-    current_step = int(state.get("step", "1") or "1")
+    agent = state.get("agent", "dev")
+    try:
+        current_step = int(state.get("step", "1") or "1")
+    except ValueError:
+        current_step = 1
 
-    # --- 联动链落盘（优先于 always_ok）---
+    # --- .gates stamp：仅 gate CLI（shell）可写 ---
+    if is_gate_stamp_path(path):
+        deny(
+            "绝对门禁：_factoryos_pipeline/.gates/* 仅 ./scripts/gate 可写 — "
+            "Agent 禁止伪造 plan.ok / test.ok / code.ok",
+            "Run ./scripts/gate plan|test|start — never Write stamp files.",
+        )
+        return
+
+    # --- workflow_state：升 phase 须 stamp 对齐 ---
+    if is_workflow_state_path(path):
+        if tool == "Delete":
+            deny(
+                "绝对门禁：禁止删除 workflow_state.md",
+                "workflow_state is required.",
+            )
+            return
+        simulated = simulate_file_content(tool, path, tool_input)
+        if simulated is None:
+            deny(
+                "绝对门禁：无法校验 workflow_state 编辑 — fail closed",
+                "Could not simulate workflow_state edit.",
+            )
+            return
+        ws_errors = pg.validate_workflow_state_content(simulated)
+        if ws_errors:
+            deny(ws_errors[0], ws_errors[0])
+            return
+        print(json.dumps({"permission": "allow"}))
+        return
+
+    # --- plan 草稿：PLANNING 阶段允许 ---
+    if is_plan_draft_path(path):
+        print(json.dumps({"permission": "allow"}))
+        return
+
+    # --- 联动链落盘 ---
     if is_chain_pipeline_artifact(path):
         step_num = None
         try:
@@ -200,10 +259,9 @@ def main() -> None:
             pass
 
         if path.startswith("_factoryos_pipeline/") and "step-stop-" in path:
-            # Dev step-stop：须 plan 已确认
-            plan_errors = check_plan_absolute(require_phase_min="CAN_CODE")
-            if plan_errors:
-                deny(plan_errors[0], plan_errors[0])
+            errors = pg.validate_code_stamp(step=step_num or current_step)
+            if errors:
+                deny(errors[0], errors[0])
                 return
             if agent != "dev":
                 deny(
@@ -212,9 +270,9 @@ def main() -> None:
                 )
                 return
         elif step_num is not None and "-regression.md" in path and "final" not in path:
-            plan_errors = check_plan_absolute(require_phase_min="CAN_TEST")
-            if plan_errors:
-                deny(plan_errors[0], plan_errors[0])
+            errors = pg.validate_plan_stamp()
+            if errors:
+                deny(errors[0], errors[0])
                 return
             chain_errors = check_step_chain(step=step_num, mode="test_accept")
             if chain_errors:
@@ -227,9 +285,9 @@ def main() -> None:
                 )
                 return
         elif step_num is not None and "/verify/verify-" in path:
-            plan_errors = check_plan_absolute(require_phase_min="CAN_TEST")
-            if plan_errors:
-                deny(plan_errors[0], plan_errors[0])
+            errors = pg.validate_plan_stamp()
+            if errors:
+                deny(errors[0], errors[0])
                 return
             chain_errors = check_step_chain(step=step_num, mode="verify")
             if chain_errors:
@@ -239,47 +297,48 @@ def main() -> None:
         print(json.dumps({"permission": "allow"}))
         return
 
-    if is_always_ok(path) or is_pipeline_other(path):
+    # --- 其他 pipeline 落盘：须 plan.ok ---
+    if is_pipeline_other(path):
+        errors = pg.validate_plan_stamp()
+        if errors:
+            deny(errors[0], errors[0])
+            return
         print(json.dumps({"permission": "allow"}))
         return
 
-    if agent == "test":
-        rel = path if not path.startswith("/") else rel_to_repo(path)
-        if is_test_path(rel) or rel.startswith("_factoryos_pipeline/"):
-            plan_errors = check_plan_absolute(require_phase_min="CAN_TEST")
-            if plan_errors:
-                deny(plan_errors[0], plan_errors[0])
-                return
-            print(json.dumps({"permission": "allow"}))
-            return
-        deny(
-            f"Test Agent 仅可写 src/tests/** 与 _factoryos_pipeline/（当前试图写 {path}）",
-            "Switch to Dev agent or update workflow_state agent=test only for tests.",
-        )
+    if is_always_ok(path):
+        print(json.dumps({"permission": "allow"}))
         return
 
+    # --- src 测试代码：须 plan.ok（不看 phase）---
+    if is_test_path(path):
+        errors = pg.validate_src_test_write()
+        if errors:
+            deny(errors[0], errors[0])
+            return
+        print(json.dumps({"permission": "allow"}))
+        return
+
+    # --- 业务码 / 迁移：须 plan + test + code.ok ---
     if is_business_path(path) or is_migration_path(path):
-        plan_errors = check_plan_absolute(require_phase_min="CAN_CODE")
-        if plan_errors:
-            deny(plan_errors[0], plan_errors[0])
+        errors = pg.validate_src_business_write(step=current_step)
+        if errors:
+            deny(errors[0], errors[0])
             return
         chain_errors = check_step_chain(step=current_step, mode="start_dev")
         if chain_errors:
             deny(chain_errors[0], chain_errors[0])
             return
-        if phase != "CAN_CODE":
-            deny(
-                f"phase={phase}：未收到「可以开始」前禁止写业务代码（{path}）。"
-                f"须先「确认规划」→ gate plan → 再「可以开始」",
-                f"Blocked {path}. Need 确认规划 + gate plan + 可以开始 → CAN_CODE.",
-            )
-            return
+        print(json.dumps({"permission": "allow"}))
+        return
 
-    if is_test_path(path):
-        plan_errors = check_plan_absolute(require_phase_min="CAN_TEST")
-        if plan_errors:
-            deny(plan_errors[0], plan_errors[0])
-            return
+    if is_src_code_path(path):
+        deny(
+            f"绝对门禁：未分类的 src 代码路径禁止写入 — {path}；"
+            "须先「确认规划」+ gate plan",
+            f"Blocked unclassified src path {path}.",
+        )
+        return
 
     print(json.dumps({"permission": "allow"}))
 

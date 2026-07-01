@@ -61,8 +61,8 @@ Agent **收到用户关键词后必须先改** `_factoryos_pipeline/workflow_sta
 |------------|------------|-----------|
 | `可以继续`（Step0 后） | `phase: PLANNING` | — |
 | `确认规划` | `phase: CAN_TEST` + 填 `plan:` 路径 | **`./scripts/gate plan`（写 plan.ok · 绝对门禁）** |
-| Test 落 test-plan 后 | `agent: test` · 填 `test_plan:` | `./scripts/gate test` |
-| `可以开始` Step N | `phase: CAN_CODE` · `step: N` · `agent: dev` | — |
+| Test 落 test-plan 后 | `agent: test` · 填 `test_plan:` | `./scripts/gate test`（写 test.ok） |
+| `可以开始` Step N | `phase: CAN_CODE` · `step: N` · `agent: dev` | **`./scripts/gate start --step N`（写 code.ok）** |
 | Step 停机前 | Verify 落盘 + | `./scripts/gate step --step N -k 'G-01'` |
 | Step 验收后 | `可以继续` → 下一 Step 前保持 CAN_CODE 或回 PLANNING | 已通过 `gate step`；下一 Step 编码用 `harness --tier auto` |
 | 整体交付 | `phase: DELIVERY` | `./scripts/gate pr` |
@@ -71,7 +71,8 @@ Agent **收到用户关键词后必须先改** `_factoryos_pipeline/workflow_sta
 
 ```bash
 ./scripts/gate plan                    # 确认规划（写 plan.ok）
-./scripts/gate test                    # test-plan 检查
+./scripts/gate test                    # test-plan 检查（写 test.ok）
+./scripts/gate start --step 1          # 可以开始 Step N（写 code.ok）
 ./scripts/gate verify --step 1         # Verify 回合
 ./scripts/gate step --step 1 -k 'G-01' # Step 停机（全量）
 ./scripts/gate pr                      # PR 验收盘

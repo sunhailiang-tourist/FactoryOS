@@ -16,7 +16,7 @@ import yaml
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from os_core.platform_registry import contract_store
+from os_core.platform_registry import contract_store, tenant_config_store
 from os_core.shared_contracts.repo_paths import contracts_dir, integration_dir
 
 
@@ -246,6 +246,159 @@ def _seed_tenants(session: Session) -> None:
         )
 
 
+def _seed_fixture_tenants(session: Session) -> None:
+  """集成测试夹具租户：default（全授权）· tenant-unlicensed-w6（有 Connector 无 License）。"""
+  fixtures: tuple[tuple[str, bool], ...] = (
+    ("default", True),
+    ("tenant-unlicensed-w6", False),
+  )
+  for tenant_id, licensed in fixtures:
+    if tenant_config_store.get_tenant_profile(session, tenant_id=tenant_id) is None:
+      session.execute(
+        text(
+          """
+          INSERT INTO tenant_profiles (
+            tenant_id, display_name, path, shadow_mode, write_approved, profile_json
+          ) VALUES (
+            :tenant_id, :display_name, NULL, 0, 0, NULL
+          )
+          """
+        ),
+        {"tenant_id": tenant_id, "display_name": tenant_id},
+      )
+    relation_id = f"rel-{tenant_id}-conn-mock"
+    existing_rel = session.execute(
+      text(
+        """
+        SELECT 1 FROM system_relations
+        WHERE tenant_id = :tenant_id AND pack_id = 'conn-mock' LIMIT 1
+        """
+      ),
+      {"tenant_id": tenant_id},
+    ).first()
+    if existing_rel is None:
+      session.execute(
+        text(
+          """
+          INSERT INTO system_relations (
+            relation_id, tenant_id, pack_id, environment, path, body, lifecycle
+          ) VALUES (
+            :relation_id, :tenant_id, 'conn-mock', 'test', NULL, :body, 'active'
+          )
+          """
+        ),
+        {
+          "relation_id": relation_id,
+          "tenant_id": tenant_id,
+          "body": "fixture: conn-mock for AC regression",
+        },
+      )
+    session.execute(
+      text(
+        """
+        DELETE FROM tenant_pack_entitlements
+        WHERE tenant_id = :tenant_id AND pack_id = 'conn-mock'
+        """
+      ),
+      {"tenant_id": tenant_id},
+    )
+    if licensed:
+      session.execute(
+        text(
+          """
+          INSERT INTO tenant_pack_entitlements (tenant_id, pack_id, licensed)
+          VALUES (:tenant_id, 'conn-mock', 1)
+          """
+        ),
+        {"tenant_id": tenant_id},
+      )
+
+
+def _seed_fixture_graph(session: Session) -> None:
+  """集成测试夹具：default 租户 frozen graph + ruleset（P-01 export 前置）。"""
+  graph_id = "graph-d1-generic-template"
+  version = "v1.0.0"
+  ruleset_id = "ruleset-w3-default"
+  existing = session.execute(
+    text(
+      """
+      SELECT 1 FROM business_graphs
+      WHERE graph_id = :graph_id AND version = :version LIMIT 1
+      """
+    ),
+    {"graph_id": graph_id, "version": version},
+  ).first()
+  if existing is not None:
+    return
+
+  now = "2026-06-01T00:00:00Z"
+  graph_body = {
+    "id": graph_id,
+    "version": version,
+    "status": "frozen",
+    "checksum": "sha256:bootstrap-fixture-graph-checksum-placeholder00000000",
+    "tenant_id": "default",
+    "nodes": [{"id": "node-start", "type": "start", "label": "Start"}],
+    "edges": [],
+    "allowed_dsl": ["QUERY_ENTITY", "GOVERNED_WRITE"],
+    "metadata": {"created_at": now, "updated_at": now},
+  }
+  session.execute(
+    text(
+      """
+      INSERT INTO business_graphs (
+        graph_id, version, tenant_id, status, checksum, body_json
+      ) VALUES (
+        :graph_id, :version, :tenant_id, :status, :checksum, :body_json
+      )
+      """
+    ),
+    {
+      "graph_id": graph_id,
+      "version": version,
+      "tenant_id": "default",
+      "status": "frozen",
+      "checksum": graph_body["checksum"],
+      "body_json": json.dumps(graph_body, ensure_ascii=False),
+    },
+  )
+  ruleset_body = {
+    "id": ruleset_id,
+    "graph_id": graph_id,
+    "graph_version": version,
+    "status": "frozen",
+    "default_effect": "deny",
+    "rules": [
+      {
+        "id": "rule-allow-operator",
+        "effect": "allow",
+        "subjects": ["role:operator"],
+        "actions": ["QUERY_ENTITY", "GOVERNED_WRITE"],
+        "priority": 10,
+      }
+    ],
+    "metadata": {"created_at": now, "updated_at": now},
+  }
+  session.execute(
+    text(
+      """
+      INSERT INTO rulesets (
+        ruleset_id, graph_id, graph_version, status, body_json
+      ) VALUES (
+        :ruleset_id, :graph_id, :graph_version, :status, :body_json
+      )
+      """
+    ),
+    {
+      "ruleset_id": ruleset_id,
+      "graph_id": graph_id,
+      "graph_version": version,
+      "status": "frozen",
+      "body_json": json.dumps(ruleset_body, ensure_ascii=False),
+    },
+  )
+
+
 def bootstrap_registry(session: Session, *, root: Path | None = None) -> bool:
   """幂等灌入 Registry；已 seed 则跳过。返回本次是否新写入。"""
   _ = root  # 保留参数兼容 conftest；路径由 repo_paths 解析
@@ -255,5 +408,7 @@ def bootstrap_registry(session: Session, *, root: Path | None = None) -> bool:
   _seed_contracts(session)
   _seed_packs(session)
   _seed_tenants(session)
+  _seed_fixture_tenants(session)
+  _seed_fixture_graph(session)
   session.commit()
   return True

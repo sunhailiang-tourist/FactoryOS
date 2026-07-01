@@ -101,6 +101,31 @@ def graph_exists(session: Session, *, graph_id: str, version: str) -> bool:
   return get_graph(session, graph_id=graph_id, version=version) is not None
 
 
+def list_graphs_by_tenant(session: Session, *, tenant_id: str) -> list[BusinessGraph]:
+  """列出租户可见 Graph（含 tenant_id 匹配或 NULL 共享模板）。
+
+  功能：package export 聚合 graphs[]。
+  业务含义：export 须含至少一条 frozen/in_review/draft 图谱。
+  参数 tenant_id：导出来源租户 ID。
+  返回：BusinessGraph 列表（按 graph_id · version 排序）。
+  """
+  rows = (
+    session.execute(
+      text(
+        """
+        SELECT body_json FROM business_graphs
+        WHERE tenant_id = :tenant_id OR tenant_id IS NULL
+        ORDER BY graph_id, version
+        """
+      ),
+      {"tenant_id": tenant_id},
+    )
+    .mappings()
+    .all()
+  )
+  return [_row_to_graph(dict(r)) for r in rows]
+
+
 def has_frozen_ruleset_for_graph(
   session: Session,
   *,

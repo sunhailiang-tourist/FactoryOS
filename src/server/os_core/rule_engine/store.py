@@ -104,6 +104,38 @@ def list_rulesets(
   return [_row_to_ruleset(dict(r)) for r in rows]
 
 
+def list_rulesets_for_graph_ids(
+  session: Session,
+  *,
+  graph_ids: list[str],
+) -> list[RuleSet]:
+  """按 graph_id 列表导出 RuleSet（package export 用）。
+
+  功能：聚合 export 快照 rulesets[]。
+  业务含义：仅含与导出 Graph 绑定的 RuleSet。
+  参数 graph_ids：已导出 Graph 的 id 列表；空则返回空列表。
+  """
+  if not graph_ids:
+    return []
+  placeholders = ", ".join(f":gid_{i}" for i in range(len(graph_ids)))
+  params = {f"gid_{i}": gid for i, gid in enumerate(graph_ids)}
+  rows = (
+    session.execute(
+      text(
+        f"""
+        SELECT body_json FROM rulesets
+        WHERE graph_id IN ({placeholders})
+        ORDER BY ruleset_id
+        """
+      ),
+      params,
+    )
+    .mappings()
+    .all()
+  )
+  return [_row_to_ruleset(dict(r)) for r in rows]
+
+
 def has_frozen_ruleset(
   session: Session,
   *,

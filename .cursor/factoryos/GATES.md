@@ -4,14 +4,23 @@
 |--------|------|----------|
 | `可以继续` | Step0 / Step 验收 | 进入规划或下一 Step |
 | `确认规划` | 规划关 | plan 落盘 + **`./scripts/gate plan` 绿（plan.ok）** |
-| `可以开始` | 编码关 | **仅当前 Step** 写实现（须 phase=CAN_CODE） |
+| `可以开始` | 编码关 | **`./scripts/gate start --step N`（code.ok）** + 仅当前 Step 写实现 |
 | `风险接受并继续` | 存量风险 / Test·Verify 需改进 | 评估为需改进且你书面接受后 |
 | `测试不通过` | Step 失败 | Dev 回当前 Step 修复，禁止下一步 |
 | `可以提交` | 终轮回归后 | **仅** `gate delivery` 绿 + 终轮 Test 落盘后允许 commit |
 
-## 绝对门禁（机械 · 不可跳过）
+## 绝对门禁（机械 · 不可跳过 · 不认 Agent 自改 phase）
 
-写测/写码/`gate step`/`gate delivery` 须：**state.plan 存在** + **plan.ok 一致** + **phase ≥ CAN_TEST**（写码另须 `CAN_CODE`）。
+三重 stamp（**仅 `./scripts/gate` 可写** · Hook 拦截 Agent 伪造）：
+
+| stamp | 写入命令 | 解锁 |
+|-------|----------|------|
+| `plan.ok` | `./scripts/gate plan` | 用户 **`确认规划`** 后 · 写 `src/tests/**` · pipeline 落盘 |
+| `test.ok` | `./scripts/gate test` | Test test-plan 就绪后 |
+| `code.ok` | `./scripts/gate start --step N` | 用户 **`可以开始`** 后 · 写业务码/迁移 |
+
+写测/写码/`gate step` 须：**plan 文件存在** + **stamp 与 workflow_state 一致**。  
+`workflow_state` 升到 `CAN_TEST`/`CAN_CODE` 时 Hook **同样校验 stamp**，禁止 Agent 自报 phase 绕门。
 
 真源：`scripts/plan_gate_lib.py` · `.cursor/hooks/protect-paths.py`
 
@@ -31,7 +40,8 @@ Dev step-stop-*-stepN.md
 ## 禁止
 
 - 未收到关键词 → 禁止 ApplyPatch、改业务代码/迁移
-- **无「确认规划」+ plan.ok → 禁止一切执行**
+- **Agent 禁止写 `.gates/*`** · 无 stamp 禁止写 `src/**` 代码
+- **无「确认规划」+ plan.ok → 禁止一切 src 代码与 pipeline 落盘（plan 草稿除外）**
 - 无 plan 落盘 → 禁止 Step 1 编码
 - 无 test-plan → 禁止宣称「已测过」
 - 无 **Step N Test 单步验收落盘** → 禁止 Verify / `gate step` / `可以继续`

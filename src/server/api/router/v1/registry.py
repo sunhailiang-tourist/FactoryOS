@@ -20,10 +20,14 @@ from server.api.modules import (
   execution,
   graphs,
   harness,
+  integration,
+  mcp,
+  package,
   probes,
   reconciliation,
   registry,
   rulesets,
+  tenant,
 )
 
 RouteProvider = Callable[[], list[APIRouter]]
@@ -89,6 +93,34 @@ API_ROUTER_DOMAINS: tuple[ApiRouterDomain, ...] = (
     problem="契约/配置平面变更须可追溯且不经业务代码散落",
     usage="GET/POST /v1/registry/*；ADR-008 配置枢纽",
     provider=registry.get_routers,
+  ),
+  ApiRouterDomain(
+    name="tenant",
+    summary="租户 Shadow / 设置（REST 与 MCP 共用 tenant_service）",
+    problem="shadow_mode 须租户级可配；execute 与 MCP tools/call 须同一真源",
+    usage="GET/PUT /v1/tenants/{id}/settings；W7 Step5 mcp_gateway 复用内核",
+    provider=tenant.get_routers,
+  ),
+  ApiRouterDomain(
+    name="package",
+    summary="Implementation Package export/import",
+    problem="D1/D2 交付须可移植快照；Studio export 步与 MCP 共用内核",
+    usage="POST /v1/packages/export · POST /v1/packages/import；P-01～P-03",
+    provider=package.get_routers,
+  ),
+  ApiRouterDomain(
+    name="integration",
+    summary="Integration Studio Connect / Discover / Prove",
+    problem="实施向导须 HTTP 暴露连通测试与映射，不经 execute 写 Legacy",
+    usage="POST /v1/integration/connect/test；P-03 Override 验证",
+    provider=integration.get_routers,
+  ),
+  ApiRouterDomain(
+    name="mcp",
+    summary="MCP JSON-RPC Gateway（tools/list · tools/call）",
+    problem="外部 Agent 须经网关发现 CMV 并产出 DslPlan，禁止直写 Legacy",
+    usage="POST /mcp/v1/{tenantId}；M-01 · M-02",
+    provider=mcp.get_routers,
   ),
   ApiRouterDomain(
     name="connectors",

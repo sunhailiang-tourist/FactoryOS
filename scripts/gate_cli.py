@@ -3,7 +3,8 @@
 
 Usage:
   python scripts/gate_cli.py plan [--plan P]     # 确认规划 + 写 plan.ok 闸门
-  python scripts/gate_cli.py test
+  python scripts/gate_cli.py test                # test-plan + 写 test.ok
+  python scripts/gate_cli.py start --step N      # 可以开始 + 写 code.ok
   python scripts/gate_cli.py step [-k AC] [--step N]  # 停机：harness+pytest+静态+verify
   python scripts/gate_cli.py verify --step N
   python scripts/gate_cli.py delivery            # 终轮回归验收盘（commit 前）
@@ -96,21 +97,49 @@ def pytest_available() -> bool:
 
 
 def write_plan_gate(plan: Path | None) -> None:
-    PLAN_GATE.parent.mkdir(parents=True, exist_ok=True)
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    sys.path.insert(0, str(SCRIPTS))
+    import plan_gate_lib
+
     if plan is not None:
         try:
             plan_line = plan.relative_to(ROOT).as_posix()
         except ValueError:
             plan_line = str(plan)
     else:
-        sys.path.insert(0, str(SCRIPTS))
-        import plan_gate_lib
-
         state = plan_gate_lib.read_workflow_state()
         plan_line = state.get("plan", "").strip() or "latest"
-    PLAN_GATE.write_text(f"plan={plan_line}\nat={ts}\n", encoding="utf-8")
+    plan_gate_lib.write_plan_gate_stamp(plan_line)
     print(f"Wrote {PLAN_GATE.relative_to(ROOT)}")
+
+
+def write_test_gate() -> None:
+    sys.path.insert(0, str(SCRIPTS))
+    import plan_gate_lib
+
+    state = plan_gate_lib.read_workflow_state()
+    plan_line = state.get("plan", "").strip()
+    test_line = state.get("test_plan", "").strip()
+    if not plan_line or not test_line:
+        print(
+            "绝对门禁：workflow_state 缺少 plan 或 test_plan — 禁止写 test.ok",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
+    plan_gate_lib.write_test_gate_stamp(plan_rel=plan_line, test_plan_rel=test_line)
+    print(f"Wrote {(PIPELINE / '.gates' / 'test.ok').relative_to(ROOT)}")
+
+
+def write_code_gate(step: int) -> None:
+    sys.path.insert(0, str(SCRIPTS))
+    import plan_gate_lib
+
+    state = plan_gate_lib.read_workflow_state()
+    plan_line = state.get("plan", "").strip()
+    if not plan_line:
+        print("绝对门禁：workflow_state.plan 未填写", file=sys.stderr)
+        raise SystemExit(1)
+    plan_gate_lib.write_code_gate_stamp(plan_rel=plan_line, step=step)
+    print(f"Wrote {(PIPELINE / '.gates' / 'code.ok').relative_to(ROOT)}")
 
 
 def require_plan_confirmed(*, require_phase_min: str, label: str) -> int:
@@ -211,7 +240,34 @@ def gate_test() -> int:
         cmd=[sys.executable, str(SCRIPTS / "check_pipeline.py"), "--gate", "test"],
     ) != 0:
         return 1
-    print("\nGate test OK")
+    write_test_gate()
+    print("\nGate test OK (test.ok stamped)")
+    return 0
+
+
+def gate_start(step: int) -> int:
+    """用户「可以开始」后的机械凭证：写 code.ok。"""
+    sys.path.insert(0, str(SCRIPTS))
+    import plan_gate_lib
+
+    errors = plan_gate_lib.validate_test_stamp()
+    if errors:
+        print("Gate start FAILED — 绝对门禁:", file=sys.stderr)
+        for err in errors:
+            print(f"  {err}", file=sys.stderr)
+        return 1
+    if step < 1:
+        print("Gate start FAILED: --step 须 >= 1", file=sys.stderr)
+        return 1
+    if step > 1:
+        chain_errors = require_step_chain_closed(step - 1)
+        if chain_errors != 0:
+            return chain_errors
+    write_code_gate(step)
+    print(
+        f"\nGate start OK (code.ok stamped for step {step})\n"
+        "下一步：更新 workflow_state → phase=CAN_CODE · agent=dev · step=N"
+    )
     return 0
 
 
@@ -294,7 +350,12 @@ def gate_step(pytest_k: str | None, extra: list[str], step: int) -> int:
         ],
     ) != 0:
         return 1
+    sys.path.insert(0, str(SCRIPTS))
+    import plan_gate_lib
+
+    plan_gate_lib.clear_code_gate_stamp()
     print("\nGate step OK (harness · pytest · static · verify)")
+    print("code.ok 已作废 — 下一 Step 须用户「可以开始」+ ./scripts/gate start")
     return 0
 
 
@@ -410,7 +471,10 @@ def main() -> int:
     sp = sub.add_parser("plan", help="确认规划 + analyze + plan.ok")
     sp.add_argument("--plan", type=Path)
 
-    sub.add_parser("test", help="test-plan 节点")
+    sub.add_parser("test", help="test-plan 节点 + test.ok")
+
+    st = sub.add_parser("start", help="可以开始 Step N + code.ok")
+    st.add_argument("--step", type=int, required=True)
 
     ss = sub.add_parser("step", help="Step 停机全量")
     ss.add_argument("-k", "--pytest", metavar="EXPR")
@@ -436,6 +500,8 @@ def main() -> int:
         return gate_plan(args.plan)
     if args.gate == "test":
         return gate_test()
+    if args.gate == "start":
+        return gate_start(args.step)
     if args.gate == "step":
         return gate_step(getattr(args, "pytest", None), args.pytest_extra, args.step)
     if args.gate == "verify":

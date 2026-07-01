@@ -33,7 +33,7 @@
 | **`check_uv_lock.sh`** | `uv lock --check`（pre-commit · pyproject 变更时） |
 | **`venv_exec.sh`** | pre-commit 统一走 `.venv/bin/python` |
 | **`check_plan_spec.py`** | plan ↔ contracts AC/路径一致性（确认规划门） |
-| **`plan_gate_lib.py`** | **确认规划绝对门禁**：`plan.ok` ↔ `workflow_state.plan`（Hook · gate step/delivery） |
+| **`plan_gate_lib.py`** | **stamp 绝对门禁**：`plan.ok` / `test.ok` / `code.ok` ↔ `workflow_state`（Hook · gate CLI） |
 | **`check_pipeline.py`** | 落盘工件 + `workflow_state` 阶段检查（含 step 单步 Test · delivery 终轮） |
 | **`check_test_regression.py`** | 单步/终轮 Test 落盘与结论门禁 |
 

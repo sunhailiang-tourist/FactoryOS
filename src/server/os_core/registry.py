@@ -103,6 +103,22 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     doc="src/server/os_core/connector_sdk/README.md",
   ),
   KernelModule(
+    name="tenant_service",
+    summary="租户 shadow_mode / settings 真源（REST · MCP 共用）",
+    problem="Shadow 开关须租户级；MCP 与 REST execute 不得各读一套配置",
+    usage=(
+      "tenant_service.resolve_shadow_mode(session, tenant_id=...); "
+      "GET/PUT /v1/tenants/{id}/settings"
+    ),
+    public_api=(
+      "os_core.tenant_service.get_tenant_settings",
+      "os_core.tenant_service.resolve_shadow_mode",
+    ),
+    depends_on=("shared_contracts", "platform_registry"),
+    forbids="写 Legacy",
+    doc="src/server/os_core/tenant_service/README.md",
+  ),
+  KernelModule(
     name="license_service",
     summary="Pack 授权、租户 Override 生效域",
     problem="未订阅 Pack 禁止 L2 写，须 MODULE_NOT_LICENSED + audit",
@@ -111,6 +127,22 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     depends_on=("shared_contracts",),
     forbids="执行 DSL",
     doc="src/server/os_core/license_service/README.md",
+  ),
+  KernelModule(
+    name="package_service",
+    summary="Implementation Package export/import 快照",
+    problem="D1/D2 交付须可移植 Graph+Rule+Connector 包，Studio 与 MCP 共用",
+    usage=(
+      "package_service.export_implementation_package(session, tenant_id=...); "
+      "POST /v1/packages/export"
+    ),
+    public_api=(
+      "os_core.package_service.export_implementation_package",
+      "os_core.package_service.import_implementation_package",
+    ),
+    depends_on=("shared_contracts", "graph_service", "rule_engine", "platform_registry"),
+    forbids="写 Legacy",
+    doc="src/server/os_core/package_service/README.md",
   ),
   KernelModule(
     name="reconciliation_service",
@@ -130,8 +162,14 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
     summary="MCP tools/list、tools/call → DslPlan",
     problem="外部 MCP 工具须网关化，禁止直写 Legacy",
     usage="mcp_gateway 路由（W7+）；tools/list · tools/call",
-    public_api=(),
-    depends_on=("shared_contracts", "agent_orchestrator"),
+    public_api=("os_core.mcp_gateway.handle_mcp_json_rpc",),
+    depends_on=(
+      "shared_contracts",
+      "agent_orchestrator",
+      "platform_registry",
+      "graph_service",
+      "rule_engine",
+    ),
     forbids="直写 Legacy",
     doc="src/server/os_core/mcp_gateway/README.md",
   ),

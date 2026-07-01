@@ -17,7 +17,7 @@
 ## 上下游
 
 - **上游**：MCP 客户端、Integration Studio
-- **下游**：`agent_orchestrator`、`execution_service`（经确认门）
+- **下游**：`agent_orchestrator`、`tenant_service`（shadow）、`execution_service`（经确认门）
 
 ## 相关文档
 

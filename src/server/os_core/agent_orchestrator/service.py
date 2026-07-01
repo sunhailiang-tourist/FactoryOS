@@ -54,6 +54,8 @@ def create_plan(
   intent: str,
   ruleset_id: str | None = None,
   allowed_dsl: list[str] | None = None,
+  source: DslPlanSource = DslPlanSource.AGENT,
+  verb: str | None = None,
 ) -> DslPlan:
   """产出 DSL 计划（不执行 · 不写 Legacy · 不 import graph/rule 内核）。
 
@@ -63,12 +65,15 @@ def create_plan(
   上游：POST /v1/agent/plan 薄路由（Step2）
   下游：plan_store.save_plan
   参数 ruleset_id/allowed_dsl：由 API 层注入（graph_service + rule_engine 查询结果）。
+  参数 source：MCP gateway 传 DslPlanSource.MCP。
+  参数 verb：tools/call 的 CMV 名；默认 GOVERNED_WRITE。
   """
-  require_known_verb(_VERB_STUB)
-  if allowed_dsl is not None and _VERB_STUB not in allowed_dsl:
+  verb_to_use = verb or _VERB_STUB
+  require_known_verb(verb_to_use)
+  if allowed_dsl is not None and verb_to_use not in allowed_dsl:
     raise PlatformError(
       ErrorCode.DSL_NOT_IN_GRAPH,
-      f"Verb {_VERB_STUB} not in graph allowed_dsl",
+      f"Verb {verb_to_use} not in graph allowed_dsl",
       http_status=422,
     )
 
@@ -86,7 +91,7 @@ def create_plan(
     ruleset_id=ruleset_id,
     steps=[
       PlanStep(
-        verb=_VERB_STUB,
+        verb=verb_to_use,
         params={
           "entity": "work_order",
           "work_order_id": work_order_id,
@@ -95,7 +100,7 @@ def create_plan(
         idempotency_key=idempotency_key,
       )
     ],
-    source=DslPlanSource.AGENT,
+    source=source,
     created_at=now,
     expires_at=now + _PLAN_TTL,
     summary=f"Agent plan: {work_order_id} qty {quantity}",

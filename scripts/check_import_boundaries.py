@@ -79,7 +79,15 @@ IMPORT_BOUNDARY_REGISTRY: tuple[ImportBoundaryEntry, ...] = (
       "rule_engine",
       "graph_service",
       "license_service",
+      "tenant_service",
     }),
+  ),
+  ImportBoundaryEntry(
+    package="tenant_service",
+    summary="租户 shadow_mode / settings 真源",
+    problem="REST 与 MCP 须共用 shadow 开关，禁止 execution 直读 tenant DB",
+    usage="resolve_shadow_mode · get/update_tenant_settings；仅 platform_registry",
+    allowed=frozenset({"shared_contracts", "platform_registry"}),
   ),
   ImportBoundaryEntry(
     package="connector_sdk",
@@ -99,8 +107,20 @@ IMPORT_BOUNDARY_REGISTRY: tuple[ImportBoundaryEntry, ...] = (
     package="license_service",
     summary="Pack 授权 stub/真源",
     problem="授权判断须独立，供 execution 前置调用",
-    usage="assert_pack_licensed(tenant_id, pack_id)",
-    allowed=frozenset({"shared_contracts"}),
+    usage="assert_pack_licensed(session, tenant_id, pack_id) · tenant_pack_entitlements",
+    allowed=frozenset({"shared_contracts", "platform_registry"}),
+  ),
+  ImportBoundaryEntry(
+    package="package_service",
+    summary="Implementation Package export/import 快照",
+    problem="交付包须聚合 Graph/Rule/Connector，REST 与 MCP 共用",
+    usage="export_implementation_package(session, tenant_id=...); POST /v1/packages/export",
+    allowed=frozenset({
+      "shared_contracts",
+      "platform_registry",
+      "graph_service",
+      "rule_engine",
+    }),
   ),
   ImportBoundaryEntry(
     package="reconciliation_service",
@@ -113,8 +133,14 @@ IMPORT_BOUNDARY_REGISTRY: tuple[ImportBoundaryEntry, ...] = (
     package="mcp_gateway",
     summary="MCP 网关（W7+）",
     problem="外部工具调用须经 gateway，禁止直写",
-    usage="tools/list · tools/call → agent_orchestrator",
-    allowed=frozenset({"shared_contracts", "agent_orchestrator"}),
+    usage="tools/list · tools/call → agent_orchestrator + graph/rule 门禁",
+    allowed=frozenset({
+      "shared_contracts",
+      "agent_orchestrator",
+      "platform_registry",
+      "graph_service",
+      "rule_engine",
+    }),
   ),
 )
 

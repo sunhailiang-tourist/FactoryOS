@@ -7,6 +7,18 @@
 """
 from __future__ import annotations
 
-from os_core.execution_service.service import assemble_evidence, execute, revert_execution
+from os_core.execution_service.service import (
+  assemble_evidence,
+  assemble_evidence_for_tenant,
+  execute,
+  get_execution_for_tenant,
+  revert_execution,
+)
 
-__all__ = ["assemble_evidence", "execute", "revert_execution"]
+__all__ = [
+  "assemble_evidence",
+  "assemble_evidence_for_tenant",
+  "execute",
+  "get_execution_for_tenant",
+  "revert_execution",
+]

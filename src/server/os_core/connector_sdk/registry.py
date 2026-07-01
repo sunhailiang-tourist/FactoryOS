@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from sqlalchemy.orm import Session
 
 from os_core.shared_contracts.cmv_registry import get_verb_level
 from os_core.shared_contracts.errors import ErrorCode
@@ -114,3 +115,29 @@ def load_blueprint(*, pack_id: str, tenant_id: str) -> dict[str, Any]:
     first = validation["errors"][0]["message"] if validation["errors"] else "invalid blueprint"
     raise PlatformError(ErrorCode.BLUEPRINT_INVALID, first, http_status=422)
   return blueprint
+
+
+def assert_tenant_connector_configured(
+  session: Session,
+  *,
+  tenant_id: str,
+  pack_id: str,
+) -> None:
+  """租户未注册 Connector Pack 时抛出 CONNECTOR_NOT_CONFIGURED（403 · T-03）。
+
+  功能：execute 前门禁；先于 license 校验。
+  业务含义：ConnectorRegistry 未绑定 → 禁止 silent no-op。
+  """
+  from os_core.platform_registry import tenant_config_store
+
+  if tenant_config_store.has_system_relation_for_pack(
+    session,
+    tenant_id=tenant_id,
+    pack_id=pack_id,
+  ):
+    return
+  raise PlatformError(
+    ErrorCode.CONNECTOR_NOT_CONFIGURED,
+    f"Connector pack {pack_id} not configured for tenant {tenant_id}",
+    http_status=403,
+  )

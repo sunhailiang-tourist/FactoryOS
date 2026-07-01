@@ -27,6 +27,21 @@ def get_pack_body_text(session: Session, *, pack_id: str) -> str | None:
   return str(row["body"]) if row else None
 
 
+def get_pack_registry_key(session: Session, *, pack_id: str) -> str | None:
+  """pack_registry.registry_key（export connector_configs 用）。"""
+  row = (
+    session.execute(
+      text(
+        "SELECT registry_key FROM pack_registry WHERE pack_id = :pack_id LIMIT 1"
+      ),
+      {"pack_id": pack_id},
+    )
+    .mappings()
+    .first()
+  )
+  return str(row["registry_key"]) if row else None
+
+
 def get_pack_blueprint(session: Session, *, pack_id: str) -> dict[str, Any] | None:
   """解析 Blueprint YAML 为 dict。"""
   body = get_pack_body_text(session, pack_id=pack_id)

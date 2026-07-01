@@ -19,6 +19,11 @@ ACTIVE_AC_IDS = frozenset({
   "D-01", "D-02", "D-03",
   "H-01", "H-02", "H-03",
   "K-01", "K-02", "T-02",
+  "T-01", "T-03",
+  "P-01", "P-02", "P-03",
+  "M-01", "M-02",
+  "D-04", "E-08",
+  "N-01", "N-02", "N-03", "N-04",
 })
 PENDING_AC_IDS = [ac_id for ac_id in AC_IDS if ac_id not in ACTIVE_AC_IDS]
 
