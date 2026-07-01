@@ -5,12 +5,12 @@
 
 ```yaml
 phase: DELIVERY
-agent: test
+agent: dev
 step: 2
 plan: _factoryos_pipeline/2026-07-02/plan/plan-1000-w8-gate0-m03-trace.md
 test_plan: _factoryos_pipeline/2026-07-02/test/test-1333-w8-gate0-m03-trace.md
 updated: 2026-07-02
-goal: W8 Gate 0 Test 终轮通过 · gate delivery OK · 待 gate pr · 可以提交
+goal: W8 Gate 0 交付 · gate delivery/pr 绿 · 可以 commit · tag core-v1.0.0（人工）
 ```
 
 ## W8 进度
@@ -22,7 +22,7 @@ goal: W8 Gate 0 Test 终轮通过 · gate delivery OK · 待 gate pr · 可以�
 | 1 | M-03 | ✅ gate step 绿 · Verify OK |
 | 2 | Gate 0 交付 | ✅ **Test 通过** · `test-1422-step2-regression.md` · `test-1422-final-regression.md` · gate delivery OK |
 
-**W8 交付**：`change-summary-1500-w8-gate0-m03-trace.md` → `gate pr` → tag **`core-v1.0.0`**（人工）
+**W8 交付**：`test-1711-w1-w8-full-regression-reverify.md` · **116 pytest 绿** · gate pr OK
 
 ## 绝对门禁 · 联动门禁（Dev→Test→Verify）
 
@@ -37,6 +37,9 @@ goal: W8 Gate 0 Test 终轮通过 · gate delivery OK · 待 gate pr · 可以�
 
 ## 变更日志
 
+- 2026-07-02 Dev·phase 恢复 DELIVERY · W8 Gate 0 交付门禁
+- 2026-07-02 Test·W1～W8 复验（治理改动后）· `test-1711-w1-w8-full-regression-reverify.md` · 116 passed · gate pr OK
+- 2026-07-02 Test·W1～W8 全量复盘 · `test-1656-w1-w8-full-regression.md` · 109 passed · gate delivery/pr OK
 - 2026-07-02 Test·Step2 · Gate 0 交付 · `test-1422-step2-regression.md` · `test-1422-final-regression.md` · 109 passed · gate delivery OK
 - 2026-07-02 Dev·Step2 · `step-stop-1510-step2.md` · `change-summary-1500` · DELIVERY
 - 2026-07-02 Dev·Step1 gate step · M-03 绿

@@ -159,9 +159,9 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
   ),
   KernelModule(
     name="mcp_gateway",
-    summary="MCP tools/list、tools/call → DslPlan",
+    summary="MCP tools/list、tools/call → DslPlan · SEP-414 trace",
     problem="外部 MCP 工具须网关化，禁止直写 Legacy",
-    usage="mcp_gateway 路由（W7+）；tools/list · tools/call",
+    usage="mcp_gateway.handle_mcp_json_rpc；tools/list · tools/call · _meta.traceparent（M-03）",
     public_api=("os_core.mcp_gateway.handle_mcp_json_rpc",),
     depends_on=(
       "shared_contracts",
@@ -169,6 +169,7 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
       "platform_registry",
       "graph_service",
       "rule_engine",
+      "audit_service",
     ),
     forbids="直写 Legacy",
     doc="src/server/os_core/mcp_gateway/README.md",

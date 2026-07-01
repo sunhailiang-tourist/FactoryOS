@@ -119,7 +119,7 @@ API_ROUTER_DOMAINS: tuple[ApiRouterDomain, ...] = (
     name="mcp",
     summary="MCP JSON-RPC Gateway（tools/list · tools/call）",
     problem="外部 Agent 须经网关发现 CMV 并产出 DslPlan，禁止直写 Legacy",
-    usage="POST /mcp/v1/{tenantId}；M-01 · M-02",
+    usage="POST /mcp/v1/{tenantId}；M-01 · M-02 · M-03 traceparent",
     provider=mcp.get_routers,
   ),
   ApiRouterDomain(

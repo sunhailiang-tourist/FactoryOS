@@ -9,6 +9,7 @@
 - 运行时加载：`platform_registry.contract_store`（优先）→ `contracts/schemas/*.schema.json` export 回退
 - 跨模块 DTO、HTTP 请求/响应类型
 - 错误码常量与事件信封（`errors.py` · `schema_loader.py` · `tenant_registry.py` · `outbox.py`）
+- W3C Trace Context（`trace_context.py` · MCP M-03）
 
 ## 不负责什么
 

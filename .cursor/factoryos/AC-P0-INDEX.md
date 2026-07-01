@@ -14,7 +14,7 @@
 | Blueprint | B-01～B-04 | 4 | load/mapping/revert |
 | Package | P-01～P-03 | 3 | export/import/override |
 | Trust | T-01～T-03 | 3 | shadow/license/connector |
-| MCP | M-01～M-02 | 2 | tools/list · plan not write |
+| MCP | M-01～M-03 | 3 | tools/list · plan not write · traceparent |
 | Scale | S-01～S-04 | 4 | migration/cell/outbox |
 | Security | N-01～N-04 | 4 | bypass/checksum/tenant |
 
