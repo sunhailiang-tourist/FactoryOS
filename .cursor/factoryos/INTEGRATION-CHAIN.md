@@ -70,9 +70,12 @@ Gate 0 完成 = 内核 API 就绪 → Studio v1 接真数据；**Studio v0 可�
 
 ---
 
-## 六、验收口径（产品）
+## 六、验收口径（产品 · 硬 Gate）
 
-- [ ] 实施顾问 **无需** 打开仓库即可走完 onboard 故事（界面或演示环境）  
-- [ ] 每个人审 Gate 有 UI 动作 + Audit 可查  
-- [ ] 第二家 import 主要在界面完成（D1 后 KPI）  
+**钉死**：D1 与 SaaS 可配置交付以 [STU-001](../../docs/文档/验收/验收用例-STU-001-Studio配置主路径.md) **P0 全绿** 为准（见 UI-FIRST **U6**、Studio 规格 **§0**）。
+
+- [ ] **STU-01** 实施顾问 **无需** 打开仓库即可走完 onboard（Studio 或演示环境）  
+- [ ] **STU-04 / STU-05** 每个人审 Gate 有 UI 动作 + Audit 可查  
+- [ ] **STU-07** 第二家 import **主要在** Studio 完成（D1 后 KPI）  
+- [ ] **STU-08** 交付 Runbook **无**「手改 YAML 上线」步骤  
 - [ ] `guide` 文档明确标注「内部/调试」

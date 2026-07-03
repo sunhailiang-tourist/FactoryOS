@@ -1,4 +1,10 @@
-# src/apps/web-admin · PC 管理端
+# src/apps/web-admin · PC 管理端 / Integration Studio
+
+## 铁律（钉死）
+
+> **新客户接入、扩系统、开写、freeze、Package 导出/导入——全程在本应用 `/studio/*` 完成。**  
+> 禁止以改 Git、手改 `integration/tenants/*.yaml`、`factoryos guide` 作为生产实施路径。  
+> D1 硬 Gate：[STU-001](../../docs/文档/验收/验收用例-STU-001-Studio配置主路径.md) P0 全绿。
 
 ## 是什么
 

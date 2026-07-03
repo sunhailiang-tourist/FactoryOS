@@ -1,6 +1,6 @@
 # 产品宪法 · UI-First 配置平面（硬性规定）
 
-> **版本** v1.0.0 · **状态**：Accepted · **优先级**：高于 guide/CLI/仓库手工配置叙事  
+> **版本** v1.1.0 · **状态**：Accepted · **优先级**：高于 guide/CLI/仓库手工配置叙事  
 > **产品核心不变**：Overlay · Graph/Rule · 唯一写路径 · Audit/Revert · Pack 复制。  
 > **变的是表现形态**：接入/扩展/tenant/Graph/Rule/开写批准 → **管理平台界面 + 内置 AI**。
 
@@ -47,9 +47,20 @@ R-01～R-11、Rule deny、Shadow 14d、Compensator 等由 **内核 + API 权限*
 
 - W1 起 **并行** 交付 Studio 可点击页面（可先 mock API）  
 - **禁止**「等 Gate 0 再做界面」作为默认排期  
-- 沉淀 KPI：**第二家接入比第一家少几步、少几次误操作**  
+- 沉淀 KPI：**第二家接入比第一家少几步、少几次误操作**
 
----
+### U6 · Studio 钉死验收（SaaS 可配置 · D1 硬 Gate）
+
+> 新客户接入 **全程 Studio**；Git/YAML/guide **不得** 作为生产实施路径。验收真源：[STU-001](../../docs/文档/验收/验收用例-STU-001-Studio配置主路径.md) · 规格 [§0 铁律](../../docs/文档/规格说明/Integration-Studio规格.md)。
+
+```text
+D1 结案 = BASE-001 + UX-001 + MVP-001 + STU-001（P0 全绿）
+```
+
+| 未过 STU-001 | 后果 |
+|--------------|------|
+| 可对客户演示内核/API | **不可** 宣称「SaaS 可配置交付」或 D1 结案 |
+| 平台研发可用 Git/fixture 调试 | **不得** 写入客户生产 Registry 真源 |
 
 ## 三、真源链（避免 UI 与 CLI 双轨漂移）
 
