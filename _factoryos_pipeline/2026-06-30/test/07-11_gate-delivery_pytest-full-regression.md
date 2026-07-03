@@ -1,0 +1,111 @@
+# Gate 结论：`gate-delivery_pytest-full-regression`
+
+- 时间(UTC): 2026-06-30T07:11:37Z → 2026-06-30T07:11:54Z
+- exit_code: 0
+- cmd: `/Users/sunhailiang/hasen-project/FactoryOS/.venv/bin/python3 -m pytest src/tests/contract src/tests/workflow src/tests/integration -v --tb=short -m not pending`
+
+## stdout
+```text
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /Users/sunhailiang/hasen-project/FactoryOS/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/sunhailiang/hasen-project/FactoryOS
+configfile: pyproject.toml
+plugins: anyio-4.14.0, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 86 items
+
+src/tests/contract/test_openapi_contract.py::test_openapi_file_exists PASSED [  1%]
+src/tests/contract/test_openapi_contract.py::test_openapi_has_v1_paths PASSED [  2%]
+src/tests/contract/test_openapi_contract.py::test_openapi_w5_agent_harness_paths PASSED [  3%]
+src/tests/contract/test_openapi_contract.py::test_harness_contracts_tier_green PASSED [  4%]
+src/tests/contract/test_openapi_contract.py::test_gate_plan_script_exists PASSED [  5%]
+src/tests/contract/test_shared_contracts.py::test_shared_contract_model_required_fields_match_schema[contract-ExecutionRecord] PASSED [  6%]
+src/tests/contract/test_shared_contracts.py::test_shared_contract_model_required_fields_match_schema[contract-AuditEvent] PASSED [  8%]
+src/tests/contract/test_shared_contracts.py::test_shared_contract_model_required_fields_match_schema[contract-DslPlan] PASSED [  9%]
+src/tests/contract/test_shared_contracts.py::test_shared_contract_model_required_fields_match_schema[contract-BusinessGraph] PASSED [ 10%]
+src/tests/contract/test_shared_contracts.py::test_shared_contract_model_required_fields_match_schema[contract-RuleSet] PASSED [ 11%]
+src/tests/contract/test_shared_contracts.py::test_shared_contract_model_required_fields_match_schema[contract-DomainEvent] PASSED [ 12%]
+src/tests/contract/test_shared_contracts.py::test_shared_contract_model_required_fields_match_schema[contract-ExecutionEvidence] PASSED [ 13%]
+src/tests/workflow/test_api_health.py::test_health_endpoint_returns_200 PASSED [ 15%]
+src/tests/workflow/test_plan_gate_absolute.py::test_plan_gate_lib_validate_detects_missing_plan_ok PASSED [ 16%]
+src/tests/workflow/test_plan_gate_absolute.py::test_check_pipeline_step_enforces_plan_absolute_gate PASSED [ 17%]
+src/tests/workflow/test_plan_gate_absolute.py::test_workflow_state_documents_plan_absolute_gate PASSED [ 18%]
+src/tests/workflow/test_redlines_static.py::test_import_boundaries_script_passes PASSED [ 19%]
+src/tests/workflow/test_redlines_static.py::test_workflow_state_template_exists PASSED [ 20%]
+src/tests/workflow/test_registry_harness.py::test_kernel_registry_harness_green PASSED [ 22%]
+src/tests/workflow/test_registry_harness.py::test_router_registry_harness_green PASSED [ 23%]
+src/tests/workflow/test_registry_harness.py::test_main_has_no_include_router PASSED [ 24%]
+src/tests/workflow/test_registry_harness.py::test_os_core_registry_lists_kernel_modules PASSED [ 25%]
+src/tests/workflow/test_registry_harness.py::test_integration_registry_harness_green PASSED [ 26%]
+src/tests/workflow/test_registry_harness.py::test_legacy_paths_harness_green PASSED [ 27%]
+src/tests/workflow/test_registry_harness.py::test_repo_structure_harness_green PASSED [ 29%]
+src/tests/workflow/test_registry_harness.py::test_path_consistency_harness_green PASSED [ 30%]
+src/tests/workflow/test_registry_harness.py::test_structure_change_gate_green PASSED [ 31%]
+src/tests/workflow/test_step_chain_gate.py::test_step_chain_requires_dev_before_test PASSED [ 32%]
+src/tests/workflow/test_step_chain_gate.py::test_step_chain_closed_needs_all_three_artifacts PASSED [ 33%]
+src/tests/workflow/test_step_chain_gate.py::test_can_start_step2_blocked_without_step1_chain PASSED [ 34%]
+src/tests/workflow/test_step_chain_gate.py::test_check_pipeline_step_uses_plan_scoped_chain PASSED [ 36%]
+src/tests/workflow/test_step_chain_gate.py::test_workflow_state_documents_step_chain_gate PASSED [ 37%]
+src/tests/workflow/test_structure_commit_gate.py::test_staged_paths_ignore_os_core_root_files_via_script PASSED [ 38%]
+src/tests/workflow/test_structure_commit_gate.py::test_structure_check_manual_mode_green PASSED [ 39%]
+src/tests/integration/test_agent_orchestrator_w5_step1.py::test_w5_step1_create_plan_stub_returns_dsl_plan[workflow] PASSED [ 40%]
+src/tests/integration/test_audit_e03.py::test_w2_audit_execution_migration_tables PASSED [ 41%]
+src/tests/integration/test_audit_e03.py::test_E03_audit_events_after_execute[E-03] PASSED [ 43%]
+src/tests/integration/test_audit_e03.py::test_audit_service_append_only_kernel PASSED [ 44%]
+src/tests/integration/test_connector_blueprint_w4.py::test_B01_load_mock_blueprint_lists_governed_write[B-01] PASSED [ 45%]
+src/tests/integration/test_connector_blueprint_w4.py::test_B02_runtime_execute_l2_populates_legacy_refs[B-02] PASSED [ 46%]
+src/tests/integration/test_connector_blueprint_w4.py::test_B03_mapping_error_on_missing_required_field[B-03] PASSED [ 47%]
+src/tests/integration/test_connector_blueprint_w4.py::test_B04_l2_op_without_revert_is_blueprint_invalid[B-04] PASSED [ 48%]
+src/tests/integration/test_connector_c01.py::test_C01_connector_health_returns_ok[C-01] PASSED [ 50%]
+src/tests/integration/test_connector_runtime_w4.py::test_C02_read_entity_returns_snapshot[C-02] PASSED [ 51%]
+src/tests/integration/test_connector_runtime_w4.py::test_C03_write_entity_populates_legacy_refs[C-03] PASSED [ 52%]
+src/tests/integration/test_connector_runtime_w4.py::test_C04_read_back_matches_after_snapshot[C-04] PASSED [ 53%]
+src/tests/integration/test_dsl_w3.py::test_D01_list_dsl_registry[D-01] PASSED [ 54%]
+src/tests/integration/test_dsl_w3.py::test_D02_unknown_verb_rejected[D-02] PASSED [ 55%]
+src/tests/integration/test_dsl_w3.py::test_D03_verb_not_in_graph_allowed_dsl[D-03] PASSED [ 56%]
+src/tests/integration/test_execution_e01.py::test_E01_l0_query_on_frozen_graph[E-01] PASSED [ 58%]
+src/tests/integration/test_execution_e02_e04_e05.py::test_E02_l2_write_success_with_snapshots[E-02] PASSED [ 59%]
+src/tests/integration/test_execution_e02_e04_e05.py::test_E04_revert_restores_legacy[E-04] PASSED [ 60%]
+src/tests/integration/test_execution_e02_e04_e05.py::test_E05_duplicate_revert_returns_409[E-05] PASSED [ 61%]
+src/tests/integration/test_execution_e02_e04_e05.py::test_E09_evidence_includes_snapshots_after_l2_write[E-09] PASSED [ 62%]
+src/tests/integration/test_execution_e06_e07.py::test_E06_dry_run_does_not_write_legacy[E-06] PASSED [ 63%]
+src/tests/integration/test_execution_e06_e07.py::test_E07_idempotency_key_no_duplicate_write[E-07] PASSED [ 65%]
+src/tests/integration/test_execution_e09.py::test_E09_execution_evidence_rebuildable[E-09] PASSED [ 66%]
+src/tests/integration/test_graph_w3.py::test_G01_create_draft_graph[G-01] PASSED [ 67%]
+src/tests/integration/test_graph_w3.py::test_G02_update_draft_graph[G-02] PASSED [ 68%]
+src/tests/integration/test_graph_w3.py::test_G03_execute_l2_on_draft_graph_rejected[G-03] PASSED [ 69%]
+src/tests/integration/test_graph_w3.py::test_G04_submit_to_in_review[G-04] PASSED [ 70%]
+src/tests/integration/test_graph_w3.py::test_G05_freeze_graph_with_frozen_ruleset[G-05] PASSED [ 72%]
+src/tests/integration/test_graph_w3.py::test_G06_frozen_graph_not_editable[G-06] PASSED [ 73%]
+src/tests/integration/test_graph_w3.py::test_G07_clone_new_draft_version[G-07] PASSED [ 74%]
+src/tests/integration/test_graph_w3.py::test_G08_execute_on_deprecated_graph_rejected[G-08] PASSED [ 75%]
+src/tests/integration/test_harness_w5.py::test_H01_agent_plan_returns_dsl_plan_without_legacy_write[H-01] PASSED [ 76%]
+src/tests/integration/test_harness_w5.py::test_H02_harness_confirm_after_plan_executes[H-02] PASSED [ 77%]
+src/tests/integration/test_harness_w5.py::test_H03_harness_full_chain_audit_traceable[H-03] PASSED [ 79%]
+src/tests/integration/test_license_t02_w6.py::test_T02_execute_unlicensed_pack_returns_403_and_audit[T-02] PASSED [ 80%]
+src/tests/integration/test_license_w6_step1.py::test_w6_step1_assert_pack_licensed_allows_known_pack[workflow] PASSED [ 81%]
+src/tests/integration/test_reconciliation_w6.py::test_K01_reconciliation_run_returns_ok[K-01] PASSED [ 82%]
+src/tests/integration/test_reconciliation_w6.py::test_K02_reconciliation_http_detects_drift_after_tamper[K-02] PASSED [ 83%]
+src/tests/integration/test_registry_adr008.py::test_registry_health_after_bootstrap PASSED [ 84%]
+src/tests/integration/test_registry_adr008.py::test_registry_list_packs_includes_conn_mock PASSED [ 86%]
+src/tests/integration/test_registry_adr008.py::test_registry_get_pack_blueprint PASSED [ 87%]
+src/tests/integration/test_registry_changes_adr008.py::test_change_request_pack_upsert_approve_flow PASSED [ 88%]
+src/tests/integration/test_registry_changes_adr008.py::test_change_request_reject PASSED [ 89%]
+src/tests/integration/test_rule_w3.py::test_R01_default_deny_no_matching_rule[R-01] PASSED [ 90%]
+src/tests/integration/test_rule_w3.py::test_R02_allow_rule_passes[R-02] PASSED [ 91%]
+src/tests/integration/test_rule_w3.py::test_R03_deny_priority_over_allow[R-03] PASSED [ 93%]
+src/tests/integration/test_rule_w3.py::test_R04_ruleset_graph_version_mismatch[R-04] PASSED [ 94%]
+src/tests/integration/test_rule_w3.py::test_R05_frozen_ruleset_not_editable[R-05] PASSED [ 95%]
+src/tests/integration/test_scale_s01_s04.py::test_S01_scale_tables_after_migration[S-01] PASSED [ 96%]
+src/tests/integration/test_scale_s01_s04.py::test_S02_default_tenant_seed_values[S-02] PASSED [ 97%]
+src/tests/integration/test_scale_s01_s04.py::test_S03_tenant_registry_get_cell[S-03] PASSED [ 98%]
+src/tests/integration/test_scale_s01_s04.py::test_S04_outbox_port_persists_event[S-04] PASSED [100%]
+
+============================= 86 passed in 16.40s ==============================
+```
+
+## stderr
+```text
+
+```

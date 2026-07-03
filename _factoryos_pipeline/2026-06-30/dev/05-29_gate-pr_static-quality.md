@@ -1,0 +1,22 @@
+# Gate 结论：`gate-pr_static-quality`
+
+- 时间(UTC): 2026-06-30T05:29:07Z → 2026-06-30T05:29:10Z
+- exit_code: 0
+- cmd: `/Users/sunhailiang/hasen-project/FactoryOS/.venv/bin/python3 /Users/sunhailiang/hasen-project/FactoryOS/scripts/check_static_quality.py`
+
+## stdout
+```text
+
+── ruff
+All checks passed!
+
+── pyright
+0 errors, 0 warnings, 0 informations
+
+Static quality OK
+```
+
+## stderr
+```text
+
+```
