@@ -33,7 +33,14 @@ def _now() -> datetime:
 
 
 def create_ruleset(session: Session, ruleset: RuleSet) -> RuleSet:
-  """创建 draft RuleSet。"""
+  """创建 draft RuleSet。
+
+  功能：校验 ID 唯一后写入 rulesets 表。
+  业务含义：R-01 RuleSet 生命周期起点；Studio 自动建 RuleSet 亦走此路径。
+  参数 ruleset：待创建 RuleSet 模型。
+  返回：status=draft 的 RuleSet。
+  异常：ID 冲突 409。
+  """
   if get_ruleset(session, ruleset.id) is not None:
     raise PlatformError(
       ErrorCode.RULE_DENIED,
@@ -48,7 +55,13 @@ def create_ruleset(session: Session, ruleset: RuleSet) -> RuleSet:
 
 
 def get_ruleset_by_id(session: Session, ruleset_id: str) -> RuleSet | None:
-  """GET /v1/rulesets/{id}。"""
+  """按 ID 读取 RuleSet。
+
+  功能：委托 rule_engine.store.get_ruleset。
+  业务含义：HTTP GET 与 execution 前置查询共用。
+  参数 ruleset_id：RuleSet 主键。
+  返回：RuleSet 或 None。
+  """
   return get_ruleset(session, ruleset_id)
 
 
@@ -58,7 +71,13 @@ def list_rulesets_for_tenant(
   tenant_id: str,
   graph_id: str | None = None,
 ) -> list[RuleSet]:
-  """GET /v1/rulesets 列表。"""
+  """列出 RuleSet（可按 graph 过滤）。
+
+  功能：委托 list_rulesets。
+  业务含义：Studio/管理端枚举 Graph 绑定 RuleSet。
+  参数 graph_id：可选过滤键。
+  返回：RuleSet 列表。
+  """
   _ = tenant_id
   return list_rulesets(session, graph_id=graph_id)
 
@@ -69,7 +88,14 @@ def update_ruleset_draft(
   ruleset_id: str,
   body: RuleSet,
 ) -> RuleSet:
-  """更新 draft RuleSet；frozen 409（R-05）。"""
+  """更新 draft RuleSet；frozen 不可改（R-05）。
+
+  功能：合并 body 并保留 created_at。
+  业务含义：顾问编辑授权规则；frozen 后只读。
+  参数 ruleset_id · body：目标 ID 与更新内容。
+  返回：更新后 RuleSet。
+  异常：不存在 404 · frozen 409。
+  """
   existing = get_ruleset(session, ruleset_id)
   if existing is None:
     raise PlatformError(ErrorCode.RULE_DENIED, f"RuleSet {ruleset_id} not found", http_status=404)
@@ -96,7 +122,14 @@ def freeze_ruleset(
   ruleset_id: str,
   frozen_by: str = "system",
 ) -> RuleSet:
-  """draft → frozen（R-05 负向：已 frozen 再 PUT 在 update 拦截）。"""
+  """draft → frozen 并写审计（R-05）。
+
+  功能：状态迁移 draft→frozen，记录 RULESET_FROZEN 审计。
+  业务含义：Graph freeze 前置；execution 仅认 frozen RuleSet。
+  参数 ruleset_id · frozen_by：目标 RuleSet 与操作者。
+  返回：frozen RuleSet。
+  异常：非 draft 409。
+  """
   ruleset = get_ruleset(session, ruleset_id)
   if ruleset is None:
     raise PlatformError(ErrorCode.RULE_DENIED, f"RuleSet {ruleset_id} not found", http_status=404)
@@ -134,6 +167,9 @@ def ensure_studio_ruleset_for_graph(
 
   功能：按 graph.allowed_dsl 生成 allow integrator/operator 的 draft RuleSet。
   业务含义：顾问零仓库 freeze 前置；graph_service 仅校验 frozen RuleSet 存在。
+  上游：graphs freeze_graph_http API 编排。
+  下游：create_ruleset · freeze_ruleset · audit_service。
+  参数 graph：待绑定 BusinessGraph；frozen_by 默认 studio。
   """
   if has_frozen_ruleset(session, graph_id=graph.id, graph_version=graph.version):
     return
@@ -175,9 +211,13 @@ def evaluate(
   verb: str,
   actor: Actor,
 ) -> dict[str, str | None]:
-  """POST evaluate + execution 内嵌调用（R-01～R-03 · R-04）。
+  """Rule 授权判定（R-01～R-04）。
 
-  graph_id/version 须与 RuleSet 绑定一致，否则 422。
+  功能：加载 RuleSet 并调用 evaluate_ruleset。
+  业务含义：L2 写前默认 deny；ALLOW 方可进入 execution。
+  参数 ruleset_id · graph_id/version · verb · actor：判定上下文。
+  返回：effect 与 matched_rule_id。
+  异常：RuleSet 不存在 404 · graph 版本不一致 422。
   """
   ruleset = get_ruleset(session, ruleset_id)
   if ruleset is None:
@@ -201,7 +241,14 @@ def assert_allowed_for_execute(
   verb: str,
   actor: Actor,
 ) -> dict[str, str | None]:
-  """execution 门禁：deny → 403 RULE_DENIED。"""
+  """execution 门禁：deny 时抛 RULE_DENIED。
+
+  功能：包装 evaluate，非 ALLOW 则 403。
+  业务含义：execution_service 写库前最后一道 Rule 闸。
+  参数：同 evaluate。
+  返回：ALLOW 时 evaluate 结果。
+  异常：deny → PlatformError 403。
+  """
   result = evaluate(
     session,
     ruleset_id=ruleset_id,

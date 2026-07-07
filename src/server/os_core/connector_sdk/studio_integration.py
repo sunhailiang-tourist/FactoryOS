@@ -158,6 +158,8 @@ def validate_blueprint_payload(blueprint: dict[str, Any]) -> dict[str, Any]:
 
   功能：复用 connector_sdk.registry.validate_blueprint。
   业务含义：Studio Discover/CI 校验 CMV · L2 revert 声明。
+  参数 blueprint：ConnectorBlueprint JSON。
+  返回：valid 与 errors 列表。
   """
   result = validate_blueprint(blueprint)
   return {
@@ -223,6 +225,9 @@ def save_pack_mappings(
 
   功能：映射写入 tenant profile_json.pack_mappings；禁止明文 secret。
   业务含义：STU-11 凭证仅存 secrets_ref · 响应不回显明文。
+  参数 tenant_id · pack_id · mappings · secrets_ref：落库键与映射树。
+  返回：脱敏后的 mappings 与 secrets_ref。
+  异常：明文 secret 或缺 secrets_ref → 422。
   """
   if _mappings_contain_plaintext_secret(mappings):
     raise PlatformError(
@@ -271,6 +276,7 @@ def run_prove(
   功能：校验 Pack 已注册并返回 Prove 报告（mock · 无 Legacy 真写）。
   业务含义：STU-03 Shadow 前置；approve_write=false 时不开生产写。
   参数 approve_write：是否在本步申请 write_approved（默认 false）。
+  返回：contract_tests · reconciliation · shadow_mode 报告。
   """
   _ = approved_by
   tenant_config_store.assert_pack_configured_for_tenant(

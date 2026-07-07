@@ -18,7 +18,13 @@ from os_core.shared_contracts.exceptions import PlatformError
 
 
 def get_tenant_profile(session: Session, *, tenant_id: str) -> dict[str, Any] | None:
-  """tenant_profiles 单行。"""
+  """读取 tenant_profiles 单行。
+
+  功能：按 tenant_id 查询租户配置真源。
+  业务含义：Registry profile · Studio Prove shadow_mode · pack_mappings 载体。
+  参数 tenant_id：多厂隔离键。
+  返回：行 dict 或 None（未开通）。
+  """
   row = (
     session.execute(
       text(
@@ -36,7 +42,13 @@ def get_tenant_profile(session: Session, *, tenant_id: str) -> dict[str, Any] | 
 
 
 def list_system_relations(session: Session, *, tenant_id: str) -> list[dict[str, Any]]:
-  """租户 system_relations 列表。"""
+  """列出租户 system_relations。
+
+  功能：查询 Connector Pack 与租户绑定关系。
+  业务含义：Studio Connect/Registry 读真源 · T-03 配置门禁输入。
+  参数 tenant_id：租户 ID。
+  返回：relation 行列表（body 为原始文本）。
+  """
   rows = session.execute(
     text(
       """
@@ -59,6 +71,8 @@ def is_pack_entitled(
 
   功能：license_service 真源（W7 Step2）。
   业务含义：有 Connector 绑定但未购 Pack → MODULE_NOT_LICENSED。
+  参数 tenant_id · pack_id：授权键。
+  返回：True 表示已授权。
   """
   row = session.execute(
     text(
@@ -83,6 +97,8 @@ def has_system_relation_for_pack(
 
   功能：T-03 CONNECTOR_NOT_CONFIGURED 真源。
   业务含义：无 relation → 403，禁止 silent no-op。
+  参数 tenant_id · pack_id：绑定键。
+  返回：True 表示已配置。
   """
   row = session.execute(
     text(
@@ -98,7 +114,12 @@ def has_system_relation_for_pack(
 
 
 def get_connector_overrides(session: Session, *, tenant_id: str) -> dict[str, Any]:
-  """profile_json.connector_overrides（P-03 Override 差量）。"""
+  """读取 profile_json.connector_overrides（P-03 Override 差量）。
+
+  功能：解析 tenant_profiles.profile_json 中的 Pack 级覆盖。
+  业务含义：Connect 步 base_url 等差量配置，不写死仓库。
+  返回：pack_id → override dict；无配置时 {}。
+  """
   profile = get_tenant_profile(session, tenant_id=tenant_id)
   if profile is None:
     return {}
@@ -122,7 +143,12 @@ def ensure_system_relation(
   pack_id: str,
   registry_key: str | None = None,
 ) -> None:
-  """幂等创建 system_relations 行（P-02 import）。"""
+  """幂等创建 system_relations 行（P-02 import）。
+
+  功能：无则 INSERT，有则跳过。
+  业务含义：Path 模板开通 · Studio Connect 落库共用写入路径。
+  参数 registry_key：可选 path 模板或 studio 注册来源标记。
+  """
   if has_system_relation_for_pack(session, tenant_id=tenant_id, pack_id=pack_id):
     return
   relation_id = f"rel-{tenant_id}-{pack_id}"[:128]
@@ -152,7 +178,12 @@ def ensure_pack_entitlement(
   tenant_id: str,
   pack_id: str,
 ) -> None:
-  """幂等授权 tenant_pack_entitlements（P-02 import）。"""
+  """幂等授权 tenant_pack_entitlements（P-02 import）。
+
+  功能：DELETE+INSERT 保证 licensed=1。
+  业务含义：Pack 绑定后须同步授权，否则 execution 报 MODULE_NOT_LICENSED。
+  参数 tenant_id · pack_id：授权键。
+  """
   session.execute(
     text(
       """
@@ -174,7 +205,12 @@ def ensure_pack_entitlement(
 
 
 def list_licensed_pack_ids(session: Session, *, tenant_id: str) -> list[str]:
-  """tenant_pack_entitlements 已授权 Pack ID 列表（M-01 tools/list）。"""
+  """tenant_pack_entitlements 已授权 Pack ID 列表（M-01 tools/list）。
+
+  功能：按 tenant_id 列出 licensed=1 的 pack_id。
+  业务含义：Agent/MCP 工具枚举可用 Connector Pack。
+  返回：排序后的 pack_id 字符串列表。
+  """
   rows = session.execute(
     text(
       """
@@ -277,6 +313,8 @@ def save_pack_mapping_config(
 
   功能：按 pack_id 存储映射与 secrets_ref。
   业务含义：STU-11 凭证引用落库 · 禁止明文 secret 字段。
+  参数 mappings · secrets_ref：映射树与 Vault 引用。
+  返回：落库后的 stored dict。
   """
   existing = get_tenant_profile(session, tenant_id=tenant_id)
   profile_data: dict[str, Any] = {}
@@ -330,6 +368,7 @@ def assert_pack_configured_for_tenant(
 
   功能：存在任意 system_relations 行即视为已配置。
   业务含义：T-03 CONNECTOR_NOT_CONFIGURED 门禁。
+  异常：未配置时 PlatformError 403。
   """
   if has_system_relation_for_pack(session, tenant_id=tenant_id, pack_id=pack_id):
     return

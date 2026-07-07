@@ -1,9 +1,9 @@
 """Tenant 域 HTTP 路由（OpenAPI /v1/tenants/{tenantId}/settings）。
 
 作用：薄路由；业务在 os_core.tenant_service（MCP Step5 复用同一内核）。
-业务关联：T-01 shadow_mode。
+业务关联：T-01 shadow_mode · STU-04 Prove 写批准审计编排。
 上游：modules/tenant/routers
-下游：os_core.tenant_service
+下游：os_core.tenant_service · audit_service
 """
 from __future__ import annotations
 
@@ -54,7 +54,13 @@ def get_tenant_settings_http(
   tenant_id: str,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """GET /v1/tenants/{tenantId}/settings。"""
+  """GET /v1/tenants/{tenantId}/settings。
+
+  功能：薄路由读取租户 Shadow/Override 配置。
+  业务含义：T-01 租户级 shadow_mode 查询。
+  上游：OpenAPI GET · get_db_session。
+  下游：tenant_service.get_tenant_settings。
+  """
   settings = get_tenant_settings(session, tenant_id=tenant_id)
   return _response_payload(settings)
 
@@ -65,7 +71,13 @@ def put_tenant_settings_http(
   body: TenantSettingsBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """PUT /v1/tenants/{tenantId}/settings（含 shadow_mode · STU-04 audit 编排）。"""
+  """PUT /v1/tenants/{tenantId}/settings（含 shadow_mode · STU-04 audit 编排）。
+
+  功能：更新 Shadow/Override；write_approved=true 时写 INTEGRATION_WRITE_APPROVED 审计。
+  业务含义：Studio Prove 步批准生产写须可追溯。
+  上游：TenantSettingsBody · get_db_session。
+  下游：tenant_service · audit_service.append_audit_event。
+  """
   settings = update_tenant_settings(
     session,
     tenant_id=tenant_id,

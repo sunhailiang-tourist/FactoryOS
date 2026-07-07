@@ -29,7 +29,13 @@ def _load_wizard_steps() -> dict[str, Any]:
 
 @router.get("/v1/studio/flows")
 def get_studio_flows_http(request: Request) -> dict[str, Any]:
-  """GET /v1/studio/flows — Studio 六步导航（STU-09 integrator 200）。"""
+  """GET /v1/studio/flows — Studio 六步导航（STU-09 integrator 200）。
+
+  功能：返回六步向导 JSON 并附带当前 actor_role。
+  业务含义：web-admin /studio/* 拉取步骤定义与 RBAC 上下文。
+  上游：AuthMiddleware 注入 request.state.actor_role。
+  下游：data/studio_wizard_steps.json。
+  """
   payload = _load_wizard_steps()
   role = getattr(request.state, "actor_role", None)
   return {

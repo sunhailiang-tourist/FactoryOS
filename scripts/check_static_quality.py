@@ -73,6 +73,22 @@ def main() -> int:
     if failed:
         print("\nStatic quality FAILED", file=sys.stderr)
         return 1
+
+    print("\n── python_comments (gate)")
+    r = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "check_python_comments.py"), "--gate"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if r.stdout:
+        print(r.stdout, end="")
+    if r.stderr:
+        print(r.stderr, end="", file=sys.stderr)
+    if r.returncode != 0:
+        print("\nStatic quality FAILED (python comments)", file=sys.stderr)
+        return 1
+
     print("\nStatic quality OK")
     return 0
 

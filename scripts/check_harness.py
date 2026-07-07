@@ -54,6 +54,7 @@ CHECKS: dict[str, tuple[str, str]] = {
     "directory_readmes": ("check_directory_readmes.py", "directory README manifest"),
     "path_consistency": ("audit_path_consistency.py", "docs path consistency"),
     "redundancy": ("check_code_redundancy.py", "Code redundancy"),
+    "python_comments": ("check_python_comments.py", "Python Chinese comments"),
     "devkit_profiles": ("check_devkit_profiles.py", "DevKit app profiles (web-admin · h5-worker)"),
 }
 
@@ -62,8 +63,8 @@ TIER_ORDER = ("contracts", "boundaries", "step", "full")
 TIER_CHECKS: dict[str, list[str]] = {
     "contracts": ["openapi", "cmv", "error_registry"],
     "boundaries": ["openapi", "cmv", "error_registry", "import", "kernel_registry", "router_registry", "integration_registry", "registry_annotations"],
-    "step": ["openapi", "cmv", "error_registry", "import", "kernel_registry", "router_registry", "integration_registry", "registry_annotations", "legacy_paths", "repo_structure", "structure_change", "directory_readmes", "path_consistency", "redundancy", "devkit_profiles"],
-    "full": ["openapi", "cmv", "error_registry", "import", "kernel_registry", "router_registry", "integration_registry", "registry_annotations", "legacy_paths", "repo_structure", "structure_change", "directory_readmes", "path_consistency", "redundancy", "devkit_profiles"],
+    "step": ["openapi", "cmv", "error_registry", "import", "kernel_registry", "router_registry", "integration_registry", "registry_annotations", "legacy_paths", "repo_structure", "structure_change", "directory_readmes", "path_consistency", "redundancy", "python_comments", "devkit_profiles"],
+    "full": ["openapi", "cmv", "error_registry", "import", "kernel_registry", "router_registry", "integration_registry", "registry_annotations", "legacy_paths", "repo_structure", "structure_change", "directory_readmes", "path_consistency", "redundancy", "python_comments", "devkit_profiles"],
 }
 
 TIER_LABEL: dict[str, str] = {
@@ -146,7 +147,10 @@ def run_check(key: str) -> int:
     script, label = CHECKS[key]
     path = SCRIPTS / script
     print(f"\n── {label} ({script})")
-    r = subprocess.run([PYTHON, str(path)], cwd=ROOT)
+    cmd = [PYTHON, str(path)]
+    if key == "python_comments":
+        cmd.append("--gate")
+    r = subprocess.run(cmd, cwd=ROOT)
     return r.returncode
 
 

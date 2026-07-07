@@ -85,7 +85,7 @@
 |------|------|--------|
 | `contracts` | L0 | openapi refs · cmv sync |
 | `boundaries` | L1 | + import boundaries · kernel/router/integration registry · legacy paths |
-| `step` / `full` | L2 | + code redundancy |
+| `step` / `full` | L2 | + code redundancy · **python comments** |
 | `auto` | 推断 | 按 git diff 选上表最高层；无 diff → `full` |
 
 四门均为 **stdlib only**，无第三方依赖。也可单独跑子脚本（调试时）：
@@ -106,12 +106,15 @@
 | **`audit_path_consistency.py`** | 全库扫描禁止虚假/废止路径引用 | 快照 `scan.roots` | AI 文档误导 |
 | **`gen_path_snapshot.py`** | 从快照生成 `.cursor/factoryos/PATH-SNAPSHOT.md` | 快照 | Agent 读错路径 |
 | **`check_code_redundancy.py`** | `os_core` / `server.api` 跨文件重复函数体 | `src/server/os_core/` · `src/server/api/` | 违反编码绝对门禁 |
+| **`check_python_comments.py`** | server 中文注释：文件头四标签 + 公开函数业务 doc | `contracts/python_comment_enforced_paths.txt` + git 改动 `.py` | 注释遗漏；编码绝对门禁 §3 |
+| **`check_static_quality.py`** | ruff + pyright + `check_python_comments --gate` | `src/server` · `src/tests` | 静态/注释未达标 |
 
 ```bash
 python scripts/check_import_boundaries.py   # 单独调试
 python scripts/check_cmv_sync.py
 python scripts/check_openapi_schema_refs.py
 python scripts/check_code_redundancy.py
+python scripts/check_python_comments.py --gate
 ```
 
 GitHub Actions：`.github/workflows/ci.yml` 跑 `check_harness.py --tier full` + tenants 密钥 grep。
@@ -169,7 +172,7 @@ python scripts/generate_internal_deck.py   # 可选
 | `contracts/openapi` · `contracts/schemas` | `check_openapi_schema_refs` |
 | `contracts/cmv` · 新 DSL 动词 | `check_cmv_sync` |
 | `src/server/os_core/**` · `src/integration/**` | `check_import_boundaries` |
-| `src/server/os_core/**` · `src/server/api/**` 业务逻辑 | `check_code_redundancy` |
+| `src/server/os_core/**` · `src/server/api/**` 业务逻辑 | `check_code_redundancy` · `check_python_comments --gate`（改动或强制路径） |
 
 ### 结论
 

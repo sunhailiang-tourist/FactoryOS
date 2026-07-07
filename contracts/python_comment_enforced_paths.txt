@@ -1,0 +1,13 @@
+# Python 中文注释强制路径（gate --gate 始终全量校验）
+# 一行一路径（相对仓库根）；# 开头为注释
+# 阶段 1a STU-API 核心切片 — 链路未闭合前不得降级
+
+src/server/os_core/connector_sdk/studio_integration.py
+src/server/os_core/platform_registry/path_template_store.py
+src/server/os_core/platform_registry/tenant_config_store.py
+src/server/os_core/rule_engine/service.py
+src/server/api/modules/integration/controllers/integration.py
+src/server/api/modules/registry/controllers/registry.py
+src/server/api/modules/tenant/controllers/tenant.py
+src/server/api/modules/graphs/controllers/graphs.py
+src/server/api/modules/studio/controllers/studio.py

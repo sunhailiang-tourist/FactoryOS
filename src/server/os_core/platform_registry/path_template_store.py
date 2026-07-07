@@ -63,7 +63,13 @@ def list_path_templates() -> list[dict[str, Any]]:
 
 
 def get_path_template(template_id: str) -> dict[str, Any] | None:
-  """按 template_id 加载 PathTemplate 文档。"""
+  """按 template_id 加载 PathTemplate 文档。
+
+  功能：读取 catalog/path-templates/{id}.yaml。
+  业务含义：provision_tenant 校验模板存在与 metadata 一致。
+  参数 template_id：path-a | path-b | path-c。
+  返回：完整 YAML dict 或 None。
+  """
   doc = _load_template_file(_PATH_TEMPLATES_DIR / f"{template_id}.yaml")
   if doc is None:
     return None
@@ -147,6 +153,8 @@ def get_tenant_summary(session: Session, *, tenant_id: str) -> dict[str, Any]:
 
   功能：返回 OpenAPI 友好字段（非 profile 原始行）。
   业务含义：Studio onboard 后查询开通结果。
+  参数 tenant_id：租户 ID。
+  返回：OpenAPI 友好摘要 dict。
   """
   profile = tenant_config_store.get_tenant_profile(session, tenant_id=tenant_id)
   if profile is None:

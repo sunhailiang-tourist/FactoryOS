@@ -93,7 +93,12 @@ def connect_test_http(
   body: ConnectTestBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/integration/connect/test（P-03 · Studio Step 1）。"""
+  """POST /v1/integration/connect/test（P-03 · Studio Step 1）。
+
+  功能：薄路由委托 connect_test 内核。
+  业务含义：Studio Connect 步验证 Pack 可达与 Override 生效。
+  下游：connector_sdk.connect_test.run_connect_test。
+  """
   return run_connect_test(
     session,
     tenant_id=body.tenant_id,
@@ -106,7 +111,12 @@ def connect_register_http(
   body: ConnectRegisterBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/integration/connect/register（STU-02 · Registry API 落库）。"""
+  """POST /v1/integration/connect/register（STU-02 · Registry API 落库）。
+
+  功能：Studio Connect 注册 Pack 到 system_relations。
+  业务含义：区别于 bootstrap fixture 的 API 落库真路径。
+  下游：studio_integration.register_studio_connect。
+  """
   result = register_studio_connect(
     session,
     tenant_id=body.tenant_id,
@@ -121,7 +131,12 @@ def discover_http(
   body: DiscoverBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/integration/discover（STU-02 · CMV 候选发现）。"""
+  """POST /v1/integration/discover（STU-02 · CMV 候选发现）。
+
+  功能：从 Blueprint 推导 CMV verb 候选。
+  业务含义：Studio Discover 步零仓库配置入口。
+  下游：studio_integration.run_discover。
+  """
   return run_discover(
     session,
     tenant_id=body.tenant_id,
@@ -136,7 +151,12 @@ def blueprint_validate_http(
   body: BlueprintValidateBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/integration/blueprint/validate（Blueprint 结构校验）。"""
+  """POST /v1/integration/blueprint/validate（Blueprint 结构校验）。
+
+  功能：校验 ConnectorBlueprint 结构与 CMV 声明。
+  业务含义：Discover/CI 前置；L2 revert 字段合规。
+  下游：studio_integration.validate_blueprint_payload。
+  """
   payload = body.model_dump(exclude_none=True)
   return validate_blueprint_payload(payload)
 
@@ -147,7 +167,12 @@ def save_mappings_http(
   body: MappingsBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """PUT /v1/integration/mappings/{packId}（STU-11 · secrets_ref）。"""
+  """PUT /v1/integration/mappings/{packId}（STU-11 · secrets_ref）。
+
+  功能：保存字段映射；禁止明文 secret。
+  业务含义：Map 步凭证仅存 secrets_ref。
+  下游：studio_integration.save_pack_mappings。
+  """
   return save_pack_mappings(
     session,
     tenant_id=body.tenant_id,
@@ -162,7 +187,12 @@ def prove_run_http(
   body: ProveRunBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/integration/prove/run（STU-03 · Shadow Prove）。"""
+  """POST /v1/integration/prove/run（STU-03 · Shadow Prove）。
+
+  功能：Contract Test + 对账样例（mock，无 Legacy 真写）。
+  业务含义：Shadow 前置；approve_write 默认 false。
+  下游：studio_integration.run_prove。
+  """
   return run_prove(
     session,
     tenant_id=body.tenant_id,
