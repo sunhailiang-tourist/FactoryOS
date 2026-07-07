@@ -162,8 +162,8 @@
 |----|------|
 | **触发** | tenant 已 provision |
 | **责任** | `integrator` + `customer_it`（凭证） |
-| **步骤** | ① 创建 `integration/tenants/{id}/system_relations/*.yaml`（draft） ② 配置 `secrets_ref`（Vault，不进 Git） ③ 私网 ERP：部署 Edge Agent ④ `POST /v1/integration/connect/test` ⑤ 记录连通报告 |
-| **CLI（W2+）** | `factoryos integration connect --tenant {id} --relation erp-kingdee` |
+| **步骤** | ① **Studio Connect**：创建/选择 tenant、绑定 Path 模板、录入 `secrets_ref`（Vault，Registry 仅存 ref）→ 写入 `system_relations`（**经 API/DB**，非手改 Git YAML）② 私网 ERP：部署 Edge Agent ③ `POST /v1/integration/connect/test` ④ 记录连通报告 |
+| **CLI（仅平台研发调试）** | `factoryos integration connect --tenant {id} --relation erp-kingdee`（**非** D1 主路径，见 UI-FIRST U4） |
 | **产出物** | 连通报告；relation `lifecycle=draft`；Audit `integration.connect_ok` |
 | **下一** | G-DISCOVER |
 
@@ -371,7 +371,7 @@
   → G-WRITE-APPROVE ❌ → G-UAT → G-EXPORT → G-HANDOVER
 
 第二家 S1：
-  G-IMPORT → 改 system_relations 凭证 → G-PROVE → G-WRITE-APPROVE ❌ → G-EXPORT
+  G-IMPORT（Studio import 向导）→ Studio 内改凭证/Override → G-PROVE → G-WRITE-APPROVE ❌ → G-EXPORT
 
 新 ERP 厂商 S2：
   … → G-BRONZE-REVIEW ❌ → … → G-FREEZE ❌ → …

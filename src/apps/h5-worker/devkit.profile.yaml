@@ -1,0 +1,11 @@
+# h5-worker · DevKit Profile
+profile_id: h5-worker
+kind: frontend
+stack: h5-vite
+ac_scope: UX-001
+engineering: ENGINEERING.md
+src_root: src
+checks:
+  - readme_present
+  - engineering_present
+  - file_headers_7_when_src

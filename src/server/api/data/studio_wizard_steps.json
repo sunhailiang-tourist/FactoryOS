@@ -1,0 +1,51 @@
+{
+  "version": "1.0.0",
+  "title": "Integration Studio 六步向导",
+  "steps": [
+    {
+      "id": "connect",
+      "order": 1,
+      "title": "连通",
+      "summary": "凭证 ref、ping、Edge Agent 状态",
+      "api": ["POST /v1/integration/connect/test"]
+    },
+    {
+      "id": "discover",
+      "order": 2,
+      "title": "发现",
+      "summary": "上传 Blueprint；列候选 CMV",
+      "api": ["POST /v1/integration/discover", "POST /v1/integration/blueprint/validate"]
+    },
+    {
+      "id": "map",
+      "order": 3,
+      "title": "映射",
+      "summary": "字段映射编辑",
+      "api": ["PUT /v1/integration/mappings/{packId}"]
+    },
+    {
+      "id": "prove",
+      "order": 4,
+      "title": "验证",
+      "summary": "Shadow · Contract Test · 对账样例",
+      "api": ["POST /v1/integration/prove/run"]
+    },
+    {
+      "id": "freeze",
+      "order": 5,
+      "title": "冻结",
+      "summary": "Graph 工作坊提交/冻结",
+      "api": [
+        "POST /v1/graphs/{id}/versions/{version}/submit",
+        "POST /v1/graphs/{id}/versions/{version}/freeze"
+      ]
+    },
+    {
+      "id": "export",
+      "order": 6,
+      "title": "导出",
+      "summary": "Implementation Package",
+      "api": ["POST /v1/packages/export", "POST /v1/packages/import"]
+    }
+  ]
+}

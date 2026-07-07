@@ -1,0 +1,110 @@
+# 目录 README 登记 · 结构锁死后变更须用户确认 + 同步本文件 + repo-structure.yaml
+# 消费方：scripts/check_directory_readmes.py · web-admin check_harness · gate pr (step tier)
+# 格式参照：contracts/README.md · .cursor/rules/项目结构变更门禁.mdc
+
+version: 1
+updated: "2026-07-07"
+decision_ref: D15
+
+lock_policy: |
+  架构锁死后：新增/废止/挪动登记目录须用户书面确认，
+  并同步 contracts/directory-readmes.yaml · contracts/repo-structure.yaml · PATH-SNAPSHOT.md · gate pr。
+
+required_sections:
+  - "## 是什么"
+  - "## 子路径"
+  - "## 门禁"
+  - "## 变更纪律"
+  - "## 相关文档"
+
+# 以下路径须满足 required_sections 全节；其余登记路径仅要求 README.md 存在且以 # 开头
+strict_paths:
+  - src/apps/web-admin
+  - src/apps/web-admin/devkit
+  - src/apps/web-admin/vendor
+  - src/apps/web-admin/scripts
+  - src/apps/web-admin/public
+  - src/apps/web-admin/.cursor
+  - src/apps/web-admin/e2e
+  - src/apps/web-admin/.storybook
+  - src/apps/web-admin/src
+  - src/apps/web-admin/src/mocks
+  - src/apps/web-admin/src/test
+  - src/apps/h5-worker/devkit
+  - src/apps/h5-worker/scripts
+  - src/server/db
+
+exempt_dir_names:
+  - node_modules
+  - __pycache__
+  - dist
+  - storybook-static
+  - test-results
+  - playwright-report
+  - .playwright-browsers
+  - .git
+  - versions
+  - generated
+  - handlers
+  - openapi
+  - schemas
+  - fixtures
+  - acceptance
+  - cmv
+  - contracts
+  - components
+  - common
+  - query
+  - request
+  - functions
+  - modules
+  - kernel
+  - motion
+
+required_paths:
+  # ── 服务端域 ──
+  - src/server/api
+  - src/server/db
+  - src/server/edge-agent
+  - src/server/os_core
+  # os_core 子模块由 kernel.modules 自动展开（各包根 README）
+
+  # ── web-admin 应用根 ──
+  - src/apps/web-admin
+  - src/apps/web-admin/devkit
+  - src/apps/web-admin/vendor
+  - src/apps/web-admin/scripts
+  - src/apps/web-admin/public
+  - src/apps/web-admin/.cursor
+  - src/apps/web-admin/e2e
+  - src/apps/web-admin/.storybook
+  - src/apps/web-admin/src
+  - src/apps/web-admin/src/api
+  - src/apps/web-admin/src/components
+  - src/apps/web-admin/src/config
+  - src/apps/web-admin/src/layout
+  - src/apps/web-admin/src/mocks
+  - src/apps/web-admin/src/styles/motion
+  - src/apps/web-admin/src/pages
+  - src/apps/web-admin/src/router
+  - src/apps/web-admin/src/i18n
+  - src/apps/web-admin/src/rbac
+  - src/apps/web-admin/src/store
+  - src/apps/web-admin/src/styles
+  - src/apps/web-admin/src/test
+
+  # ── h5-worker（骨架 App）──
+  - src/apps/h5-worker
+  - src/apps/h5-worker/devkit
+  - src/apps/h5-worker/scripts
+
+# 未登记目录扫描：下列根下 depth-1 子目录须在 required_paths 或 exempt_dir_names
+scan_roots:
+  - root: src/apps/web-admin
+    depth: 1
+  - root: src/apps/web-admin/src
+    depth: 1
+  - root: src/apps/h5-worker
+    depth: 1
+  - root: src/server/os_core
+    depth: 1

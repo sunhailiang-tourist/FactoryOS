@@ -1,0 +1,1 @@
+import{j as t}from"./vendor-react-C4FkM5qn.js";import{T as o}from"./vendor-mui-CMRkKnLR.js";function n(){return t.jsxs(t.Fragment,{children:[t.jsx(o,{variant:"h5",gutterBottom:!0,children:"Connect · 连通"}),t.jsx(o,{variant:"body2",color:"text.secondary",children:"route studio.connect · api studio.connect.test · 阶段 1 Step 4 实现"})]})}export{n as default};

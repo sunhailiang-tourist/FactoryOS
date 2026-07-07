@@ -42,6 +42,7 @@ PYTHON = resolve_python()
 CHECKS: dict[str, tuple[str, str]] = {
     "openapi": ("check_openapi_schema_refs.py", "OpenAPI schema refs"),
     "cmv": ("check_cmv_sync.py", "CMV sync"),
+    "error_registry": ("check_error_registry_sync.py", "Error registry SSOT mirrors"),
     "import": ("check_import_boundaries.py", "Import boundaries"),
     "kernel_registry": ("check_kernel_registry.py", "os_core kernel registry"),
     "router_registry": ("check_router_registry.py", "api router registry"),
@@ -50,17 +51,19 @@ CHECKS: dict[str, tuple[str, str]] = {
     "legacy_paths": ("check_legacy_paths.py", "legacy path cleanup"),
     "repo_structure": ("check_repo_structure.py", "repo-structure snapshot sync"),
     "structure_change": ("check_structure_change.py", "structure drift gate"),
+    "directory_readmes": ("check_directory_readmes.py", "directory README manifest"),
     "path_consistency": ("audit_path_consistency.py", "docs path consistency"),
     "redundancy": ("check_code_redundancy.py", "Code redundancy"),
+    "devkit_profiles": ("check_devkit_profiles.py", "DevKit app profiles (web-admin · h5-worker)"),
 }
 
 TIER_ORDER = ("contracts", "boundaries", "step", "full")
 
 TIER_CHECKS: dict[str, list[str]] = {
-    "contracts": ["openapi", "cmv"],
-    "boundaries": ["openapi", "cmv", "import", "kernel_registry", "router_registry", "integration_registry", "registry_annotations"],
-    "step": ["openapi", "cmv", "import", "kernel_registry", "router_registry", "integration_registry", "registry_annotations", "legacy_paths", "repo_structure", "structure_change", "path_consistency", "redundancy"],
-    "full": ["openapi", "cmv", "import", "kernel_registry", "router_registry", "integration_registry", "registry_annotations", "legacy_paths", "repo_structure", "structure_change", "path_consistency", "redundancy"],
+    "contracts": ["openapi", "cmv", "error_registry"],
+    "boundaries": ["openapi", "cmv", "error_registry", "import", "kernel_registry", "router_registry", "integration_registry", "registry_annotations"],
+    "step": ["openapi", "cmv", "error_registry", "import", "kernel_registry", "router_registry", "integration_registry", "registry_annotations", "legacy_paths", "repo_structure", "structure_change", "directory_readmes", "path_consistency", "redundancy", "devkit_profiles"],
+    "full": ["openapi", "cmv", "error_registry", "import", "kernel_registry", "router_registry", "integration_registry", "registry_annotations", "legacy_paths", "repo_structure", "structure_change", "directory_readmes", "path_consistency", "redundancy", "devkit_profiles"],
 }
 
 TIER_LABEL: dict[str, str] = {
@@ -122,6 +125,8 @@ def tier_from_paths(paths: list[str]) -> str:
             norm.startswith("src/server/os_core/") or norm.startswith("src/server/api/")
         ):
             tier = _max_tier(tier, "step")
+        if norm.startswith("src/apps/") and "/devkit/kernel/" not in norm:
+          tier = _max_tier(tier, "step")
     return tier
 
 
@@ -155,6 +160,9 @@ def run_pytest(k: str, extra: list[str]) -> int:
 def run_harness(tier: str, pytest_k: str | None = None, pytest_extra: list[str] | None = None) -> int:
     resolved = resolve_tier(tier)
     checks = TIER_CHECKS[resolved]
+    import os
+
+    os.environ["DEVKIT_HARNESS_TIER"] = resolved
     if PYTHON != sys.executable:
         print(f"Harness python: {PYTHON} (project .venv)")
     print(f"FactoryOS Harness · {TIER_LABEL.get(resolved, resolved)} · {len(checks)} check(s)")

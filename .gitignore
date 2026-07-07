@@ -25,3 +25,12 @@ __pycache__/
 # pipeline local optional reports
 _factoryos_pipeline/**/report/
 _factoryos_pipeline/
+
+# Frontend apps（Playwright 浏览器本地安装 · 禁止入库）
+**/.playwright-browsers/
+**/playwright-report/
+**/test-results/
+**/node_modules/
+**/dist/
+**/storybook-static/
+

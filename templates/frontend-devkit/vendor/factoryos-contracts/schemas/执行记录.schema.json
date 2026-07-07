@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/ExecutionRecord/v0.2.0",
+  "title": "ExecutionRecord",
+  "description": "单次 DSL 执行记录，Revert 锚点。v0.2 增 scope_id、idempotency_key、shadow、connector_trace。",
+  "type": "object",
+  "required": [
+    "exec_id",
+    "tenant_id",
+    "verb",
+    "status",
+    "graph_id",
+    "graph_version",
+    "actor",
+    "started_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "exec_id": { "type": "string", "format": "uuid" },
+    "tenant_id": { "type": "string" },
+    "scope_id": {
+      "type": ["string", "null"],
+      "description": "line/equipment/workstation；Override Scope 对齐"
+    },
+    "verb": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "running", "success", "failed", "reverted", "revert_failed", "simulated"]
+    },
+    "graph_id": { "type": "string" },
+    "graph_version": { "type": "string" },
+    "ruleset_id": { "type": "string" },
+    "idempotency_key": {
+      "type": ["string", "null"],
+      "description": "L2 写必填；同 key 不重复写 Legacy"
+    },
+    "shadow_mode": {
+      "type": "boolean",
+      "default": false,
+      "description": "tenant.shadow_mode 或单次 dry_run 时为 true"
+    },
+    "actor": {
+      "type": "object",
+      "required": ["user_id", "role"],
+      "properties": {
+        "user_id": { "type": "string" },
+        "role": { "type": "string" },
+        "channel": { "type": "string", "enum": ["web", "h5", "api", "system", "mcp"] }
+      }
+    },
+    "params": { "type": "object" },
+    "before_snapshot": { "type": ["object", "null"] },
+    "after_snapshot": { "type": ["object", "null"] },
+    "legacy_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["system", "ref_type", "ref_id"],
+        "properties": {
+          "system": { "type": "string" },
+          "ref_type": { "type": "string" },
+          "ref_id": { "type": "string" }
+        }
+      }
+    },
+    "connector_trace": {
+      "type": "array",
+      "description": "每次 Connector 调用一条",
+      "items": {
+        "type": "object",
+        "required": ["pack_id", "verb", "latency_ms", "outcome"],
+        "properties": {
+          "pack_id": { "type": "string" },
+          "system": { "type": "string" },
+          "verb": { "type": "string" },
+          "latency_ms": { "type": "integer" },
+          "outcome": {
+            "type": "string",
+            "enum": ["success", "timeout", "legacy_4xx", "legacy_5xx", "mapping_error", "circuit_open"]
+          },
+          "error_code": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "compensator_verb": { "type": ["string", "null"] },
+    "revert_of": { "type": ["string", "null"], "format": "uuid" },
+    "error": {
+      "type": ["object", "null"],
+      "properties": {
+        "code": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    },
+    "started_at": { "type": "string", "format": "date-time" },
+    "finished_at": { "type": ["string", "null"], "format": "date-time" },
+    "dry_run": { "type": "boolean", "default": false }
+  }
+}

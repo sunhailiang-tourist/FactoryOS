@@ -1,0 +1,2 @@
+# web-admin scripts/ 最小 Python 依赖（standalone 自给）
+pyyaml>=6.0

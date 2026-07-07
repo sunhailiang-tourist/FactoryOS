@@ -1,0 +1,1 @@
+import{j as t}from"./vendor-react-C4FkM5qn.js";import{T as r}from"./vendor-mui-CMRkKnLR.js";function a(){return t.jsxs(t.Fragment,{children:[t.jsx(r,{variant:"h5",gutterBottom:!0,children:"Export · 导出"}),t.jsx(r,{variant:"body2",color:"text.secondary",children:"route studio.export · 阶段 1 Step 4 实现"})]})}export{a as default};

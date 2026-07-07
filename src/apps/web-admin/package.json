@@ -1,0 +1,73 @@
+{
+  "name": "@factoryos/web-admin",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "create:module": "node scripts/create-module.mjs",
+    "codegen:api": "bash scripts/py.sh scripts/run_codegen_api.py",
+    "codegen:registry:check": "bash scripts/py.sh scripts/check_error_registry_sync.py",
+    "codegen:check": "bash scripts/py.sh scripts/check_codegen_fresh.py",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "size:check": "bash scripts/py.sh scripts/check_bundle_size.py",
+    "storybook": "STORYBOOK_DISABLE_TELEMETRY=1 storybook dev -p 6006 --disable-telemetry",
+    "storybook:build": "STORYBOOK_DISABLE_TELEMETRY=1 storybook build --disable-telemetry --quiet",
+    "test:w11": "bash scripts/py.sh scripts/check_standalone_ready.py && bash scripts/simulate_standalone_activate.sh",
+    "check": "pnpm codegen:check && tsc -b && eslint . && vitest run && pnpm build && pnpm size:check && pnpm e2e && pnpm storybook:build"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@hookform/resolvers": "^3.10.0",
+    "@mui/icons-material": "^6.1.9",
+    "@mui/material": "^6.1.9",
+    "@tanstack/react-query": "^5.101.2",
+    "animate.css": "^4.1.1",
+    "echarts": "^6.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.54.2",
+    "react-router-dom": "^6.28.0",
+    "zod": "^3.24.1",
+    "zustand": "^5.0.2",
+    "i18next": "^24.2.3",
+    "react-i18next": "^15.4.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@playwright/test": "^1.49.1",
+    "@storybook/react": "^8.4.7",
+    "@storybook/react-vite": "^8.4.7",
+    "@tailwindcss/vite": "^4.3.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jsdom": "^28.0.3",
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.14.0",
+    "jsdom": "^29.1.1",
+    "msw": "^2.14.6",
+    "openapi-typescript": "^7.13.0",
+    "storybook": "^8.4.7",
+    "tailwindcss": "^4.3.2",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.18.2",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+---
+description: web-admin 托管边界 — 编辑 src/apps/web-admin 时强制加载独立门禁（指向 App 内 .cursor）
+alwaysApply: true
+---
+
+# FactoryOS 内 web-admin 托管声明
+
+当本轮任务涉及 **`src/apps/web-admin/**`** 或用户明确 web-admin 前端时：
+
+1. **强制遵守** `src/apps/web-admin/.cursor/rules/WEB-00-独立边界绝对门禁.mdc`
+2. **强制遵守** `src/apps/web-admin/.cursor/rules/WEB-01-架构版图锁死门禁.mdc`
+3. **工作流**用 `【WebDev模式启动】` / `【WebTest模式启动】`，**不用** FactoryOS `【Dev模式启动】` 写 web-admin 业务
+4. **落盘** `_web_pipeline/`（非 `_factoryos_pipeline/`）
+5. 越权/结构变更 → 停机 → 用户 `确认越权` / `确认结构变更`
+
+web-admin 验收盘：`src/apps/web-admin/scripts/activate.sh`（非 pytest · 非后端 gate）。

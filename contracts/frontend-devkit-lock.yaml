@@ -1,0 +1,97 @@
+# frontend-devkit 架构版本锁 · 金样 web-admin ↔ 模板 parity 真源
+# 消费方：scripts/devkit/check_frontend_template_parity.py · sync_frontend_template.py · gate pr
+# 变更纪律：结构/治理/技术策略改动须用户书面确认 → 改金样 → sync → bump version
+
+lock_id: frontend-devkit
+version: "2.0.0-s5"
+locked_at: "2026-07-07"
+decision_ref: D16-frontend-devkit-lock
+golden_source: src/apps/web-admin
+template_path: templates/frontend-devkit
+scaffold_entry: ./scripts/scaffold_frontend_app.sh
+
+architecture:
+  engineering_doc: ENGINEERING.md
+  engineering_revision: "1.4+s5"
+  architecture_doc: ARCHITECTURE.md
+  architecture_revision: "1.8+s5"
+  devkit_profile: devkit.profile.yaml
+  ac_scope_default: WEB-PROFILE
+
+# 一级 sector（锁死 · 增删须用户确认）
+sectors:
+  - api
+  - components
+  - config
+  - i18n
+  - layout
+  - mocks
+  - pages
+  - rbac
+  - router
+  - store
+  - styles
+  - test
+
+# 工具轨（与 codegen:api 分离）
+tool_tracks:
+  openapi_codegen: scripts/run_codegen_api.py
+  form_generate: scripts/form/
+  harness: scripts/check_harness.py
+  activate: scripts/activate.sh
+  create_module: scripts/create-module.mjs
+
+# DevKit harness checks（与 devkit.profile.yaml 对齐）
+harness_checks:
+  - registry_contracts_sync
+  - file_headers_7
+  - pages_no_fetch
+  - query_layer_boundary
+  - openapi_codegen_fresh
+  - glob_registry
+  - package_check_script
+  - e2e_playwright
+  - bundle_size_limit
+  - storybook_config
+  - forms_primitives
+  - standalone_ready
+  - error_registry_mirror
+  - directory_readme
+  - resource_chain_sync
+  - perf_first_paint_shell
+  - i18n_registry_sync
+  - rbac_route_permissions
+  - web_admin_independence
+  - architecture_lock_sync
+
+# 业务流追踪链（module-id 注册制 · 锁死语义）
+business_chain:
+  - router/modules/{module-id}/registry.ts
+  - pages/{module-id}/contracts/README.md
+  - pages/{module-id}/*.lazy.tsx
+  - i18n/modules/{module-id}/
+  - rbac/modules/{domain}/registry.ts
+  - api/functions/{module-id}/
+  - api/query/hooks/
+  - mocks/handlers/{module-id}.ts
+
+change_policy: |
+  1. 禁止在未获用户书面确认的情况下修改：sectors 列表、business_chain、harness_checks、四层 API 边界。
+  2. 允许在无结构变更时：pages/{module-id} 业务实现、OpenAPI 增量、i18n 文案。
+  3. 金样演进 SOP：web-admin 验收盘绿 → sync_frontend_template.py → check_frontend_template_parity.py → bump 本文件 version → gate pr。
+  4. 新建 App 只读模板；不得手改 templates/ 绕过金样（除 TEMPLATE.md · template.manifest.yaml）。
+
+parity_required_paths:
+  - devkit.profile.yaml
+  - ENGINEERING.md
+  - ARCHITECTURE.md
+  - scripts/check_harness.py
+  - scripts/activate.sh
+  - scripts/form/contracts/README.md
+  - src/i18n/contracts/README.md
+  - src/rbac/contracts/README.md
+  - src/bootstrap.tsx
+  - src/router/registry.ts
+  - package.json
+  - vite.config.ts
+  - eslint.config.js

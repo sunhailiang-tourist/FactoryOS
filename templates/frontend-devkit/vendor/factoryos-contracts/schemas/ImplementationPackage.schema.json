@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/ImplementationPackage/v1.0.0",
+  "title": "ImplementationPackage",
+  "description": "D1/D2 实施包 export/import 快照（AC-BASE-001 P-01～P-03）。",
+  "type": "object",
+  "required": ["package_id", "tenant_id", "version", "exported_at", "graphs", "rulesets"],
+  "additionalProperties": false,
+  "properties": {
+    "package_id": { "type": "string", "format": "uuid" },
+    "tenant_id": { "type": "string" },
+    "source_tenant_id": { "type": ["string", "null"], "description": "import 时记录来源" },
+    "version": { "type": "string", "pattern": "^v\\d+\\.\\d+\\.\\d+$" },
+    "delivery": { "type": "string", "enum": ["D1", "D2"] },
+    "path": { "type": "string", "enum": ["A", "B", "C"], "description": "ADR-005 写入路径" },
+    "exported_at": { "type": "string", "format": "date-time" },
+    "exported_by": { "type": "string" },
+    "graphs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "业务图谱.schema.json" }
+    },
+    "rulesets": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "规则集.schema.json" }
+    },
+    "connector_configs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pack_id", "registry_key"],
+        "properties": {
+          "pack_id": { "type": "string" },
+          "registry_key": { "type": "string" },
+          "blueprint_ref": { "type": "string" },
+          "secrets_ref": { "type": "string" },
+          "config": { "type": "object", "additionalProperties": true }
+        },
+        "additionalProperties": false
+      }
+    },
+    "skill_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["skill_pack_id", "agent_module_id"],
+        "properties": {
+          "skill_pack_id": { "type": "string" },
+          "agent_module_id": { "type": "string" },
+          "graph_id": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "licensed_packs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "export 时 tenant 已购 Pack ID 列表"
+    },
+    "overrides": {
+      "type": "array",
+      "items": { "$ref": "OverrideDocument.schema.json" }
+    },
+    "checksum": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  }
+}

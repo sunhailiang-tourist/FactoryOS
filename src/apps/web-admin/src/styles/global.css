@@ -1,0 +1,53 @@
+/**
+ * 全局样式入口：Tailwind utilities + Token + animate.css 子集。
+ * 不含 Tailwind preflight，避免与 MUI CssBaseline 冲突。
+ */
+
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "./tokens.css";
+
+@import "animate.css/source/_base.css";
+@import "animate.css/source/fading_entrances/fadeIn.css";
+@import "animate.css/source/fading_entrances/fadeInUp.css";
+@import "animate.css/source/attention_seekers/pulse.css";
+
+@theme {
+  --color-fos-primary: var(--fos-color-primary);
+  --color-fos-primary-light: var(--fos-color-primary-light);
+  --color-fos-bg: var(--fos-color-bg-default);
+  --color-fos-paper: var(--fos-color-bg-paper);
+  --color-fos-text: var(--fos-color-text-primary);
+  --color-fos-text-muted: var(--fos-color-text-secondary);
+  --color-fos-border: var(--fos-color-border);
+  --color-fos-success: var(--fos-color-success);
+  --color-fos-warning: var(--fos-color-warning);
+  --color-fos-error: var(--fos-color-error);
+  --font-fos: var(--fos-font-family);
+  --spacing-fos: var(--fos-spacing-unit);
+  --radius-fos-md: var(--fos-radius-md);
+  --shadow-fos-sm: var(--fos-shadow-sm);
+}
+
+.fos-studio-outlet {
+  min-height: 40vh;
+}
+
+@supports (view-transition-name: root) {
+  .fos-studio-outlet {
+    view-transition-name: fos-studio-main;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate__animated {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .fos-studio-outlet {
+    view-transition-name: none;
+  }
+}

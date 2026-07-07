@@ -10,13 +10,15 @@ from __future__ import annotations
 from typing import Any
 
 import yaml
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 from server.api.config.dependencies.db import get_db_session
 from sqlalchemy.orm import Session
 
 from os_core.platform_registry import contract_store, pack_store, tenant_config_store
 from os_core.shared_contracts.cmv_registry import register_dsl_verb
+from os_core.shared_contracts.errors import ErrorCode
+from os_core.shared_contracts.exceptions import PlatformError
 
 router = APIRouter(tags=["Registry"])
 
@@ -51,7 +53,11 @@ def get_active_contract_set(
   """当前环境绑定的 published contract_set。"""
   set_id = contract_store.get_active_set_id(session, environment=environment)
   if not set_id:
-    raise HTTPException(status_code=404, detail="No active contract set")
+    raise PlatformError(
+      ErrorCode.REG_NO_ACTIVE_CONTRACT,
+      "No active contract set",
+      http_status=404,
+    )
   return {"set_id": set_id, "environment": environment, "status": "published"}
 
 
@@ -76,7 +82,11 @@ def get_pack(pack_id: str, session: Session = Depends(get_db_session)) -> dict[s
   """单 Pack Blueprint（解析后 JSON）。"""
   blueprint = pack_store.get_pack_blueprint(session, pack_id=pack_id)
   if blueprint is None:
-    raise HTTPException(status_code=404, detail=f"Pack not found: {pack_id}")
+    raise PlatformError(
+      ErrorCode.REG_PACK_NOT_FOUND,
+      f"Pack not found: {pack_id}",
+      http_status=404,
+    )
   return blueprint
 
 
@@ -88,7 +98,11 @@ def get_tenant_profile(
   """tenant_profiles 单行。"""
   profile = tenant_config_store.get_tenant_profile(session, tenant_id=tenant_id)
   if profile is None:
-    raise HTTPException(status_code=404, detail=f"Tenant not found: {tenant_id}")
+    raise PlatformError(
+      ErrorCode.REG_TENANT_NOT_FOUND,
+      f"Tenant not found: {tenant_id}",
+      http_status=404,
+    )
   return profile
 
 

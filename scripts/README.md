@@ -102,6 +102,7 @@
 | **`check_legacy_paths.py`** | 禁止废止路径复活（读 `repo-structure.yaml`） | `src/` | 结构回退 |
 | **`check_repo_structure.py`** | 快照 ↔ 磁盘 ↔ kernel registry ↔ PATH-SNAPSHOT.md | `contracts/repo-structure.yaml` | 快照漂移 |
 | **`check_structure_change.py`** | **提交门禁**：结构漂移 → 拦截 commit + 修复步骤 | 同上 | 结构变更未同步 |
+| **`check_directory_readmes.py`** | 登记目录须有 README · 未登记 depth-1 目录拦截 | `contracts/directory-readmes.yaml` | 新文件夹无说明文档 |
 | **`audit_path_consistency.py`** | 全库扫描禁止虚假/废止路径引用 | 快照 `scan.roots` | AI 文档误导 |
 | **`gen_path_snapshot.py`** | 从快照生成 `.cursor/factoryos/PATH-SNAPSHOT.md` | 快照 | Agent 读错路径 |
 | **`check_code_redundancy.py`** | `os_core` / `server.api` 跨文件重复函数体 | `src/server/os_core/` · `src/server/api/` | 违反编码绝对门禁 |

@@ -1,0 +1,67 @@
+---
+description: WEB-01 架构版图锁死门禁 — sector/技术栈/结构变更须用户确认（可迁出）
+alwaysApply: true
+---
+
+# WEB-01 · 架构版图锁死门禁（绝对 · 不可自动生成）
+
+> **真源**：`contracts/WEB-ARCHITECTURE-LOCK.yaml` v2.0.0-s5 · `ARCHITECTURE.md` v1.8+s5 · `ENGINEERING.md` v1.4+s5
+
+## 锁死范围
+
+### 12 sector（不可增删改名）
+
+`api` · `components` · `config` · `i18n` · `layout` · `mocks` · `pages` · `rbac` · `router` · `store` · `styles` · `test`
+
+### 技术版图（当前阶段）
+
+| 项 | 锁定值 |
+|----|--------|
+| 框架 | React + Vite + MUI |
+| i18n | zh-CN + en-US · `useT` · namespace=module-id |
+| RBAC | 路由级 `permissions` |
+| SSR | **禁止** |
+| plugins | P2 延后 · 禁止自动引入 |
+| form 轨 | `scripts/form/` S7 占位 · 禁止改轨到 `codegen/form` |
+| 测试 | Vitest · Playwright · Storybook |
+| API | 四层 generated→request→functions→query |
+
+### 注册制语义（不可改）
+
+`module-id` 追踪链：`router` → `pages/contracts` → `i18n` → `rbac` → `api/query` → `mocks`
+
+## 须拦截并停机的情形
+
+- 新增/删除 `src/` 一级目录
+- 改 `package.json` scripts 链（`check` 步骤）
+- 改 `devkit.profile.yaml` checks 列表
+- 改 ESLint 层界规则
+- 引入新框架（Next/Nuxt/Redux 等）
+- bump `frontend-devkit-lock` / sync 模板
+- 改 `create-module.mjs` 生成结构
+
+**一律输出**：
+
+```text
+⛔ WEB 架构锁拦截
+变更类型：<结构/技术版图/治理>
+须用户发送：「确认结构变更」+ 书面说明
+未收到前：禁止落盘 · 禁止生成新目录 · 禁止改 lock
+```
+
+## 允许（无需结构确认）
+
+- `pages/{module-id}/` 业务实现
+- `i18n/modules/{id}/` 文案
+- `api/functions/{id}/*.fn.ts` 端点实现
+- `pnpm create:module` 在**现有** sector 内扩模块
+- OpenAPI 镜像增量（`codegen:api`）
+
+## 强制校验
+
+```bash
+python scripts/check_boundary_lock.py
+python scripts/check_harness.py
+```
+
+`WEB_STRICT_BOUNDARY=1` 时含 git staged 越权检测。

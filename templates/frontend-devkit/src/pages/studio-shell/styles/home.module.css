@@ -1,0 +1,22 @@
+.pageShell {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--fos-spacing-unit) * 2);
+  max-width: 960px;
+}
+
+.heroTitle {
+  letter-spacing: -0.02em;
+}
+
+.stepBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--fos-radius-md);
+  background: var(--fos-color-bg-paper);
+  border: 1px solid var(--fos-color-border);
+  box-shadow: var(--fos-shadow-sm);
+  font-size: 0.875rem;
+  color: var(--fos-color-text-secondary);
+}

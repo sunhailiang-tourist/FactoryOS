@@ -1,0 +1,445 @@
+# FactoryOS 业务错误码注册表 · 唯一真源（SSOT）
+# 镜像：errors.py（mirror_python）· web-admin/error-codes.ts（mirror_typescript）
+# 门禁：./scripts/check_error_registry_sync.py · 对齐：./scripts/sync_error_registry.py --apply（须人工确认后）
+# 规约：docs/文档/规格说明/状态码与错误约定.md
+
+version: 1
+updated: "2026-07-06"
+decision_ref: error-registry-v1
+
+governance:
+  ssot: contracts/error-registry.yaml
+  sync_policy: human_confirm_before_apply
+  mirrors:
+    python_enum:
+      path: src/server/os_core/shared_contracts/errors.py
+      field: mirror_python
+      includes: [ErrorCode, ERROR_MESSAGE_ZH, default_message]
+    typescript:
+      path: src/apps/web-admin/src/api/request/error-codes.ts
+      field: mirror_typescript
+      includes: [ERROR_CODES, ERROR_MESSAGES_ZH, getErrorMessageZh]
+  on_drift: |
+    gate 失败并输出 ADD / DELETE / CHANGE；
+    禁止 Agent 擅自 --apply；须负责人确认后再执行一致性策略。
+
+codes:
+  # ── 内核 / 执行（platform · source B）──
+  - code: GRAPH_NOT_FROZEN
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 409
+    source: B
+    domain: platform
+    message_zh: Graph 未冻结或状态不允许该操作
+    retry: manual
+    ac: [BASE-001]
+
+  - code: RULE_DENIED
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 403
+    source: B
+    domain: platform
+    message_zh: 规则拒绝或 RuleSet 状态不允许
+    retry: manual
+    ac: [BASE-001]
+
+  - code: DSL_UNKNOWN
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 400
+    source: B
+    domain: platform
+    message_zh: DSL 动词未注册或参数非法
+    retry: none
+    ac: [BASE-001]
+
+  - code: DSL_NOT_IN_GRAPH
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 403
+    source: B
+    domain: platform
+    message_zh: Graph 白名单不含该 DSL
+    retry: manual
+    ac: [BASE-001]
+
+  - code: MODULE_NOT_LICENSED
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 403
+    source: B
+    domain: platform
+    message_zh: 模块或 Pack 未授权
+    retry: manual
+    ac: [BASE-001]
+
+  - code: TENANT_FORBIDDEN
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 403
+    source: B
+    domain: platform
+    message_zh: 租户隔离拒绝
+    retry: none
+    ac: [BASE-001]
+
+  - code: IDEMPOTENCY_CONFLICT
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 409
+    source: B
+    domain: platform
+    message_zh: 幂等键冲突，重复提交
+    retry: manual
+    ac: [BASE-001]
+
+  - code: REVERT_NOT_ALLOWED
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 409
+    source: B
+    domain: platform
+    message_zh: 不允许回滚（含 simulated/dry_run）
+    retry: manual
+    ac: [BASE-001]
+
+  - code: BLUEPRINT_INVALID
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 422
+    source: B
+    domain: platform
+    message_zh: Blueprint 结构或 L2 声明无效
+    retry: manual
+    ac: [BASE-001]
+
+  - code: MAPPING_ERROR
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 422
+    source: B
+    domain: platform
+    message_zh: 字段映射或参数校验失败
+    retry: manual
+    ac: [BASE-001]
+    studio_steps: [map]
+
+  - code: CONNECTOR_NOT_CONFIGURED
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 403
+    source: B
+    domain: platform
+    message_zh: Connector 或 Pack 未注册或未配置
+    retry: manual
+    ac: [BASE-001]
+
+  # ── 鉴权（auth · source A）──
+  - code: AUTH_STUDIO_FORBIDDEN
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 403
+    source: A
+    domain: auth
+    message_zh: Studio 访问被拒绝：当前角色无权限
+    retry: none
+    ac: [STU-001]
+
+  - code: AUTH_ACTOR_MISSING
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 401
+    source: A
+    domain: auth
+    message_zh: 缺少有效身份头
+    retry: none
+    enabled_from: stage_2
+
+  # ── 校验（validation · source A）──
+  - code: VAL_SCHEMA_FAILED
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 422
+    source: A
+    domain: validation
+    message_zh: 请求体验证失败
+    retry: none
+
+  - code: VAL_BAD_REQUEST
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 400
+    source: A
+    domain: validation
+    message_zh: 请求无法解析或参数类型错误
+    retry: none
+
+  # ── Registry / Studio 配置（registry · source B）──
+  - code: REG_CHANGE_NOT_FOUND
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 404
+    source: B
+    domain: registry
+    message_zh: 变更请求不存在
+    retry: none
+
+  - code: REG_CHANGE_REJECTED
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 409
+    source: B
+    domain: registry
+    message_zh: 变更请求已被拒绝或状态冲突
+    retry: manual
+
+  - code: REG_UNSUPPORTED_KIND
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 422
+    source: B
+    domain: registry
+    message_zh: 不支持的 Registry 变更类型
+    retry: none
+
+  - code: REG_PACK_NOT_FOUND
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 404
+    source: B
+    domain: registry
+    message_zh: Pack 不存在
+    retry: none
+
+  - code: REG_TENANT_NOT_FOUND
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 404
+    source: B
+    domain: registry
+    message_zh: Tenant 不存在
+    retry: none
+
+  - code: REG_NO_ACTIVE_CONTRACT
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 404
+    source: B
+    domain: registry
+    message_zh: 无生效 Contract Set
+    retry: manual
+
+  - code: REG_RESOURCE_NOT_FOUND
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 404
+    source: B
+    domain: registry
+    message_zh: Registry 资源不存在
+    retry: none
+
+  # ── Integration 六步（integration · source B · reserved）──
+  - code: INT_CONNECT_FAILED
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 422
+    source: B
+    domain: integration
+    message_zh: ERP 连通测试失败
+    retry: manual
+    studio_steps: [connect]
+
+  - code: INT_DISCOVER_FAILED
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 422
+    source: B
+    domain: integration
+    message_zh: Discover 或 Blueprint 拉取失败
+    retry: manual
+    studio_steps: [discover]
+
+  - code: INT_SHADOW_REQUIRED
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 403
+    source: B
+    domain: integration
+    message_zh: Shadow 未通过，禁止生产写
+    retry: manual
+    studio_steps: [prove]
+
+  - code: INT_WRITE_NOT_APPROVED
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 403
+    source: B
+    domain: integration
+    message_zh: 开写未双签批准
+    retry: manual
+    studio_steps: [prove]
+
+  - code: INT_PROVE_FAILED
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 422
+    source: B
+    domain: integration
+    message_zh: Shadow Prove 未通过
+    retry: manual
+    studio_steps: [prove]
+
+  - code: INT_PACKAGE_EXPORT_FAILED
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 422
+    source: B
+    domain: integration
+    message_zh: Package 导出失败
+    retry: manual
+    studio_steps: [export]
+
+  - code: INT_PACKAGE_IMPORT_FAILED
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 422
+    source: B
+    domain: integration
+    message_zh: Package 导入失败
+    retry: manual
+    studio_steps: [import]
+
+  # ── Pack / Override（platform · reserved）──
+  - code: OVERRIDE_FORBIDDEN
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 403
+    source: B
+    domain: platform
+    message_zh: Override 目标禁止修改
+    retry: none
+
+  - code: PACK_VERSION_MISMATCH
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 409
+    source: B
+    domain: platform
+    message_zh: Pack 依赖版本不满足
+    retry: manual
+
+  # ── 执行 / Legacy（execution · reserved）──
+  - code: CONNECTOR_ERROR
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 502
+    source: C
+    domain: execution
+    message_zh: Legacy 调用失败（未分类）
+    retry: backoff
+
+  - code: EDGE_OFFLINE
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 503
+    source: C
+    domain: execution
+    message_zh: Edge Agent 离线
+    retry: backoff
+
+  # ── 第三方转义（external · source C · reserved）──
+  - code: EXT_ERP_TIMEOUT
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 504
+    source: C
+    domain: external
+    message_zh: ERP 请求超时
+    retry: backoff
+
+  - code: EXT_ERP_CLIENT_ERROR
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 502
+    source: C
+    domain: external
+    message_zh: ERP 返回 4xx
+    retry: none
+
+  - code: EXT_ERP_SERVER_ERROR
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 502
+    source: C
+    domain: external
+    message_zh: ERP 返回 5xx
+    retry: backoff
+
+  - code: EXT_CIRCUIT_OPEN
+    status: reserved
+    mirror_python: false
+    mirror_typescript: false
+    http_default: 503
+    source: C
+    domain: external
+    message_zh: 熔断器打开
+    retry: backoff
+
+  # ── 系统兜底（system · source B）──
+  - code: INTERNAL_ERROR
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 500
+    source: B
+    domain: system
+    message_zh: 服务器内部错误
+    retry: backoff
+
+  - code: UNKNOWN_ERROR
+    status: active
+    mirror_python: true
+    mirror_typescript: true
+    http_default: 500
+    source: B
+    domain: system
+    message_zh: 未知错误
+    retry: backoff

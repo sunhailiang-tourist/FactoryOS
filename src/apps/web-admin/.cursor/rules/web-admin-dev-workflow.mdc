@@ -1,0 +1,48 @@
+---
+description: WebDev 工作流 — 用户发送【WebDev模式启动】时加载 · 独立步步流
+alwaysApply: false
+---
+
+# web-admin Dev 工作流 v1（独立 · 可迁出）
+
+> 细则：`.cursor/factoryos/WEB-STEP0.md` · `WEB-DEV-GATES.md` · `WEB-REDLINES.md`  
+> 绝对门禁：`WEB-00` · `WEB-01`（始终生效）
+
+## 激活
+
+`【WebDev模式启动】` + 本轮目标/module-id/AC。不足则 ≤3 行追问。
+
+## 防误执行
+
+未 `可以开始` 前：**禁止** 改 `src/**` 业务。仅 Step0 · 规划 · plan 落盘（`确认规划` 后）。
+
+**越权/结构**：触达即停机 → 同步用户 → 等 `确认越权` / `确认结构变更`。
+
+## Step 0 → `可以继续`
+
+见 `WEB-STEP0.md`：0-A 路径 · 0-B 契约/AC · 0-C 托管边界。
+
+## 规划 → `确认规划`
+
+落盘：`_web_pipeline/<date>/plan/plan-<HHmm>-<slug>.md`  
+模板：`.cursor/templates/plan-template.md`  
+必填：WEB-PROFILE AC · 红线 · 数据流 · Step 列表 · boundary/结构声明。
+
+## 每 Step N
+
+1. Test 已写 failing tests
+2. 用户 `可以开始` → **仅本 Step** · **仅 web-admin 内**
+3. 10 项自检（WEB-DEV-GATES.md）
+4. step-stop 落盘
+5. 用户开 Test 会话 `【WebTest·Step N 验收】`
+6. 用户开 Verify 会话 `【WebVerify回合】Step N`
+7. `check_boundary_lock` + `check_harness` 绿
+8. 用户 `可以继续`
+
+## 交付
+
+summary → Test 终轮 → `pnpm check` / `activate.sh` 绿 → 用户 `可以提交` 后才提 commit。
+
+## 禁止
+
+用 FactoryOS gate/pytest · 写后端 · 改 templates/lock · 跳 Step · 超 plan

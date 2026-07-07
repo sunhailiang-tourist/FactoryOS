@@ -7,7 +7,7 @@
 """
 from __future__ import annotations
 
-from os_core.shared_contracts.errors import ErrorCode
+from os_core.shared_contracts.errors import ErrorCode, default_message
 
 
 class PlatformError(Exception):
@@ -20,11 +20,12 @@ class PlatformError(Exception):
   def __init__(
     self,
     code: ErrorCode,
-    message: str,
+    message: str | None = None,
     *,
     http_status: int = 400,
   ) -> None:
-    super().__init__(message)
+    msg = default_message(code) if message is None else message
+    super().__init__(msg)
     self.code = code
-    self.message = message
+    self.message = msg
     self.http_status = http_status

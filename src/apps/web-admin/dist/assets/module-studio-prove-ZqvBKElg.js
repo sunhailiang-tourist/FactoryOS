@@ -1,0 +1,1 @@
+import{j as r}from"./vendor-react-C4FkM5qn.js";import{T as t}from"./vendor-mui-CMRkKnLR.js";function a(){return r.jsxs(r.Fragment,{children:[r.jsx(t,{variant:"h5",gutterBottom:!0,children:"Prove · 验证"}),r.jsx(t,{variant:"body2",color:"text.secondary",children:"route studio.prove · 阶段 1 Step 4 实现"})]})}export{a as default};

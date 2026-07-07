@@ -54,3 +54,15 @@ def test_shared_contract_model_required_fields_match_schema(
     f"{model_attr}: model required {sorted(actual_required)} "
     f"!= schema required {sorted(expected_required)}"
   )
+
+
+@pytest.mark.contract
+def test_error_code_default_message_zh_mirror() -> None:
+  """ErrorCode 须带 SSOT message_zh 默认中文（code · 中文 一眼懂）。"""
+  errors = importlib.import_module("os_core.shared_contracts.errors")
+  assert errors.default_message(errors.ErrorCode.AUTH_STUDIO_FORBIDDEN) == (
+    "Studio 访问被拒绝：当前角色无权限"
+  )
+  forbidden = errors.ErrorCode.AUTH_STUDIO_FORBIDDEN
+  assert "AUTH_STUDIO_FORBIDDEN" in errors.format_error_label(forbidden)
+  assert len(errors.ERROR_MESSAGE_ZH) == len(set(errors.ErrorCode))

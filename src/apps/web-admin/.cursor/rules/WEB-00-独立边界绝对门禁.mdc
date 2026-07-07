@@ -1,0 +1,55 @@
+---
+description: WEB-00 独立边界绝对门禁 — web-admin 托管 FactoryOS 时禁止越权融合（可迁出）
+alwaysApply: true
+---
+
+# WEB-00 · 独立边界绝对门禁（绝对 · 不可自动绕过）
+
+> **真源**：`contracts/WEB-ARCHITECTURE-LOCK.yaml` · `scripts/check_boundary_lock.py`  
+> **定位**：web-admin = **Frontend Autonomous Domain**；在 FactoryOS 内托管 AI 开发，**绝不**与后端架构深度融合。
+
+## 托管 ≠ 捆绑
+
+| 是 | 否 |
+|----|-----|
+| 在 monorepo 内 `src/apps/web-admin/` 开发 | **禁止**把业务写进服务端内核（`os_core` 域）或废止 apps/api 路径 |
+| 只读消费 `contracts/openapi` 镜像 | 改 FactoryOS `contracts/` 锁文件 / `repo-structure.yaml` |
+| `./scripts/activate.sh` 验收盘 | 用 FactoryOS `pytest` / STU AC 阻塞 WEB-PROFILE |
+| WEB-PROFILE harness（18+2 checks） | 混用 FactoryOS `gate step` 后端 AC |
+
+## 越权写路径（未经用户确认 · 强制停机）
+
+```text
+禁止写入（越权）：server 内核 · 废止 apps/api · server/** · tests/**
+templates/frontend-devkit/**  contracts/frontend-devkit-lock.yaml
+devkit.manifest.yaml  .cursor/factoryos/**  FactoryOS 步步流后端规则
+```
+
+**检测到越权意图或 diff 触及上述路径** → 立即输出：
+
+```text
+⛔ WEB 独立边界拦截
+原因：<具体路径/行为>
+须用户发送：「确认越权」+ 说明范围
+未收到前：禁止写码 · 禁止 commit · 禁止 sync 模板
+```
+
+## 禁止 import / 架构融合
+
+- 禁止 `src/**` 引用 `os_core`、FactoryOS 后端 Python 模块
+- 禁止把 web-admin 路由/状态/register 注册进 FactoryOS server
+- 禁止为 web-admin 新增对 FactoryOS Python 运行时的**硬依赖**（activate 须仍可 standalone）
+
+## 允许只读
+
+`contracts/openapi/` · `vendor/` · `scripts/devkit/frontend_contract_lib.py`（umbrella 调度）
+
+## Agent 自检（每轮写码前）
+
+1. 本轮改动是否**仅**在 `src/apps/web-admin/`（或迁出后 App 根）？
+2. 是否试图改 FactoryOS 全局契约/模板/后端？
+3. 若是 → **停机同步用户**，等 `确认越权`
+
+## 迁出说明
+
+复制整个 `src/apps/web-admin/.cursor/` → 新仓库 `.cursor/` 即可；本规则**不依赖** FactoryOS 后端。

@@ -1,0 +1,35 @@
+---
+description: WebTest 工作流 — 用户发送【WebTest模式启动】时加载 · 只写测试
+alwaysApply: false
+---
+
+# web-admin Test 工作流 v1（独立 · 可迁出）
+
+> 细则：`.cursor/factoryos/WEB-TEST-GATES.md` · `WEB-REDLINES.md` R-WEB-09
+
+## 激活
+
+- `【WebTest模式启动】` — 对齐 plan，写 **failing** Vitest/RTL/E2E
+- `【WebTest·Step N 验收】` — Step 回归报告
+- `【WebTest·终轮回归】` — 终轮报告
+
+## 可写
+
+`*.test.ts(x)` · `e2e/**` · `*.stories.tsx` · `_web_pipeline/**/test/**`
+
+## 禁止
+
+改 `pages/**/*.lazy.tsx` 业务 · 改 registry/store/router · 写 FactoryOS 路径 · pytest
+
+## 验收命令
+
+```bash
+pnpm vitest run
+pnpm e2e
+python scripts/check_boundary_lock.py
+python scripts/check_harness.py
+```
+
+## 测试不通过
+
+用户 `测试不通过` → 交还 Dev；禁止下一 Step。

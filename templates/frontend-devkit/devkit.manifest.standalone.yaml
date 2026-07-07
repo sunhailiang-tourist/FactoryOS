@@ -1,0 +1,14 @@
+# web-admin · Standalone DevKit（迁出 FactoryOS 后使用本文件为根 devkit.manifest.yaml）
+devkit_version: "1.0.0"
+mode: standalone
+project_id: web-admin
+profile: web-admin
+ac_scope: WEB-PROFILE
+tier: step
+harness: scripts/check_harness.py
+activate: scripts/activate.sh
+contracts:
+  source: git_submodule
+  path: vendor/factoryos-contracts
+  pin: core-v1.0.0
+  sync_script: vendor/factoryos-contracts/scripts/sync_error_registry.py

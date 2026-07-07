@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FactoryOS · Integration Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+    />
+    <style>
+      :root {
+        --fos-boot-bg: #f4f6f8;
+        --fos-boot-sidebar: #ffffff;
+        --fos-boot-primary: #1565c0;
+        --fos-boot-muted: #5c6b7a;
+      }
+      html, body { margin: 0; min-height: 100%; background: var(--fos-boot-bg); }
+      #fos-boot-shell {
+        display: flex;
+        min-height: 100vh;
+        font-family: Roboto, system-ui, sans-serif;
+      }
+      #fos-boot-shell .fos-boot-sidebar {
+        width: 280px;
+        background: var(--fos-boot-sidebar);
+        border-right: 1px solid #e0e6ed;
+        padding: 16px;
+        box-sizing: border-box;
+      }
+      #fos-boot-shell .fos-boot-title {
+        height: 20px;
+        width: 70%;
+        border-radius: 4px;
+        background: linear-gradient(90deg, #e8edf2 25%, #f5f7fa 50%, #e8edf2 75%);
+        background-size: 200% 100%;
+        animation: fos-shimmer 1.2s ease-in-out infinite;
+        margin-bottom: 12px;
+      }
+      #fos-boot-shell .fos-boot-line {
+        height: 12px;
+        border-radius: 4px;
+        margin: 10px 0;
+        background: linear-gradient(90deg, #e8edf2 25%, #f5f7fa 50%, #e8edf2 75%);
+        background-size: 200% 100%;
+        animation: fos-shimmer 1.2s ease-in-out infinite;
+      }
+      #fos-boot-shell .fos-boot-main {
+        flex: 1;
+        padding: 24px;
+      }
+      #fos-boot-shell .fos-boot-card {
+        max-width: 720px;
+        height: 160px;
+        border-radius: 8px;
+        border: 1px solid #e0e6ed;
+        background: #fff;
+      }
+      #fos-boot-shell .fos-boot-brand {
+        font-size: 13px;
+        color: var(--fos-boot-muted);
+        margin-bottom: 16px;
+      }
+      @keyframes fos-shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+      @media (max-width: 900px) {
+        #fos-boot-shell .fos-boot-sidebar { width: 0; padding: 0; overflow: hidden; }
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-Bg-TsaId.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-react-C4FkM5qn.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-mui-CMRkKnLR.js">
+    <link rel="modulepreload" crossorigin href="/assets/api-studio-shell-Bb4cYgRh.js">
+    <link rel="modulepreload" crossorigin href="/assets/module-studio-shell-e9522jEe.js">
+    <link rel="stylesheet" crossorigin href="/assets/module-studio-shell-i8KKXFOU.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-BjoLObRn.css">
+  </head>
+  <body>
+    <div id="root">
+      <div id="fos-boot-shell" aria-hidden="true">
+        <aside class="fos-boot-sidebar">
+          <div class="fos-boot-brand">FactoryOS</div>
+          <div class="fos-boot-title"></div>
+          <div class="fos-boot-line" style="width:90%"></div>
+          <div class="fos-boot-line" style="width:80%"></div>
+          <div class="fos-boot-line" style="width:85%"></div>
+          <div class="fos-boot-line" style="width:75%"></div>
+        </aside>
+        <main class="fos-boot-main">
+          <div class="fos-boot-card"></div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

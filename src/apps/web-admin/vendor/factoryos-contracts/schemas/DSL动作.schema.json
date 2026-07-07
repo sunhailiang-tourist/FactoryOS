@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/DSLAction/v0.1.0",
+  "title": "DSLAction",
+  "description": "DSL 动词注册表条目",
+  "type": "object",
+  "required": ["verb", "level", "params_schema", "compensator"],
+  "additionalProperties": false,
+  "properties": {
+    "verb": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$",
+      "description": "如 QUERY_ENTITY, GOVERNED_WRITE"
+    },
+    "level": { "type": "string", "enum": ["L0", "L1", "L2", "L3"] },
+    "description": { "type": "string" },
+    "params_schema": {
+      "type": "object",
+      "description": "JSON Schema for params object"
+    },
+    "compensator": {
+      "oneOf": [
+        { "type": "null", "description": "L0 只读无 compensator" },
+        { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$", "description": "Revert 动词名" }
+      ]
+    },
+    "connector_ops": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["system", "operation"],
+        "properties": {
+          "system": {
+            "type": "string",
+            "enum": ["mes", "erp", "wms", "oa", "crm", "csm", "aps", "plm", "qms", "mock"]
+          },
+          "operation": { "type": "string" }
+        }
+      }
+    },
+    "idempotent": { "type": "boolean", "default": false }
+  }
+}

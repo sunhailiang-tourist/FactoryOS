@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/AuditEvent/v1.0.0",
+  "title": "AuditEvent",
+  "description": "append-only 审计事件；禁止 UPDATE/DELETE。",
+  "type": "object",
+  "required": ["event_id", "tenant_id", "event_type", "actor", "occurred_at"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id": { "type": "string", "format": "uuid" },
+    "tenant_id": { "type": "string" },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "graph.created",
+        "graph.submitted",
+        "graph.frozen",
+        "ruleset.frozen",
+        "execute.started",
+        "execute.completed",
+        "execute.failed",
+        "execute.simulated",
+        "execute.reverted",
+        "reconcile.completed",
+        "reconcile.drift_detected",
+        "rule.denied",
+        "license.denied",
+        "integration.connect_tested",
+        "integration.write_approved",
+        "integration.prove_completed",
+        "package.exported",
+        "package.imported",
+        "mcp.tools_list",
+        "mcp.tools_call",
+        "harness.confirmed",
+        "harness.rejected",
+        "tenant.settings_updated"
+      ]
+    },
+    "actor": {
+      "type": "object",
+      "required": ["user_id", "role"],
+      "properties": {
+        "user_id": { "type": "string" },
+        "role": { "type": "string" },
+        "channel": { "type": "string", "enum": ["web", "h5", "api", "system", "mcp"] }
+      },
+      "additionalProperties": false
+    },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "exec_id": { "type": ["string", "null"], "format": "uuid" },
+    "graph_id": { "type": ["string", "null"] },
+    "graph_version": { "type": ["string", "null"] },
+    "pack_id": { "type": ["string", "null"] },
+    "plan_id": { "type": ["string", "null"], "format": "uuid" },
+    "payload": {
+      "type": "object",
+      "description": "事件上下文；禁止含凭证明文",
+      "additionalProperties": true
+    },
+    "correlation_id": { "type": ["string", "null"] }
+  }
+}

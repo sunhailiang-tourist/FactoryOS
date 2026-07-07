@@ -100,6 +100,12 @@ scan:
     - _factoryos_pipeline/workflow_state.md
     - .cursor/hooks/protect-paths.py
     - .cursor/factoryos/PATH-SNAPSHOT.md
+    # DevKit standalone 内核快照（与上同构 · 列举废止路径属文档真源）
+    - src/apps/web-admin/devkit/kernel/factoryos/PATH-SNAPSHOT.md
+    - src/apps/h5-worker/devkit/kernel/factoryos/PATH-SNAPSHOT.md
+    # web-admin 独立边界锁（列举废止路径属策略真源 · 非误导引用）
+    - src/apps/web-admin/contracts/WEB-ARCHITECTURE-LOCK.yaml
+    - src/apps/web-admin/.cursor/rules/WEB-00-独立边界绝对门禁.mdc
   extra_root_files:
     - README.md
     - CODEOWNERS

@@ -8,7 +8,7 @@
 """
 from __future__ import annotations
 
-from os_core.shared_contracts.errors import ErrorCode
+from os_core.shared_contracts.errors import ErrorCode, default_message, format_error_label
 from os_core.shared_contracts.models import (
   AuditEvent,
   BusinessGraph,
@@ -26,6 +26,8 @@ __all__ = [
   "DomainEvent",
   "DslPlan",
   "ErrorCode",
+  "default_message",
+  "format_error_label",
   "ExecutionEvidence",
   "ExecutionRecord",
   "RuleSet",

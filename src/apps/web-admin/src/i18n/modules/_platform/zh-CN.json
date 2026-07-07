@@ -1,0 +1,10 @@
+{
+  "appTitle": "FactoryOS · Integration Studio",
+  "studioTitle": "Integration Studio",
+  "studioSubtitle": "新客户接入 · 六步向导（零仓库主路径）",
+  "studioNavAria": "Studio 六步",
+  "studioNavOverview": "概览",
+  "openNav": "打开导航",
+  "rbacDenied": "Studio 访问被拒绝（角色：{{role}}）",
+  "rbacRouteDenied": "无权访问该页面（缺少权限：{{permissions}}）"
+}

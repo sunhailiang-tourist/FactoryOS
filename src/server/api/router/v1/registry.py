@@ -27,6 +27,7 @@ from server.api.modules import (
   reconciliation,
   registry,
   rulesets,
+  studio,
   tenant,
 )
 
@@ -114,6 +115,13 @@ API_ROUTER_DOMAINS: tuple[ApiRouterDomain, ...] = (
     problem="实施向导须 HTTP 暴露连通测试与映射，不经 execute 写 Legacy",
     usage="POST /v1/integration/connect/test；P-03 Override 验证",
     provider=integration.get_routers,
+  ),
+  ApiRouterDomain(
+    name="studio",
+    summary="Integration Studio 六步导航与 RBAC 入口",
+    problem="web-admin 须拉取 connect→export 步骤；operator 禁止访问 Studio",
+    usage="GET /v1/studio/flows；STU-09 integrator 200 · operator 403",
+    provider=studio.get_routers,
   ),
   ApiRouterDomain(
     name="mcp",

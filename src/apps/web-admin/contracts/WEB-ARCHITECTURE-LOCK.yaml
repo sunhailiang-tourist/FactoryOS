@@ -1,0 +1,110 @@
+# web-admin 架构版图锁 · 机器可读真源（随项目迁出 · 不依赖 FactoryOS 运行时）
+# 消费方：scripts/check_boundary_lock.py · scripts/check_harness.py · .cursor/rules/
+# 变更纪律：任何增删改须用户发送「确认结构变更」后人工 bump version
+
+lock_id: web-admin-architecture
+version: "2.0.0-s5"
+locked_at: "2026-07-07"
+decision_ref: D-WEB-INDEPENDENCE-LOCK
+profile: WEB-PROFILE
+engineering_revision: "v1.4.0"
+architecture_revision: "v1.8.0+s5"
+
+# 一级 sector（锁死 · 增删须「确认结构变更」）
+sectors:
+  - api
+  - components
+  - config
+  - i18n
+  - layout
+  - mocks
+  - pages
+  - rbac
+  - router
+  - store
+  - styles
+  - test
+
+# 工具轨（锁死 · 改名/删须用户确认）
+tool_tracks:
+  - scripts/activate.sh
+  - scripts/check_harness.py
+  - scripts/check_boundary_lock.py
+  - scripts/create-module.mjs
+  - scripts/form/
+  - scripts/run_codegen_api.py
+
+# 业务追踪链语义（锁死）
+business_chain:
+  - router/modules/{module-id}/registry.ts
+  - pages/{module-id}/contracts/README.md
+  - pages/{module-id}/*.lazy.tsx
+  - i18n/modules/{module-id}/
+  - rbac/modules/{domain}/registry.ts
+  - api/functions/{module-id}/
+  - api/query/hooks/
+  - mocks/handlers/{module-id}.ts
+
+# 技术版图锁（当前阶段禁止自动变更）
+tech_stack_frozen:
+  framework: react-vite-mui
+  i18n: i18next-react-i18next
+  locales: [zh-CN, en-US]
+  rbac_scope: route-level
+  ssr: false
+  plugins_track: deferred-p2
+  form_track: scripts/form-deferred-s7
+  test_stack: [vitest, playwright, storybook]
+  api_layers: [generated, request, functions, query]
+
+# 托管模式：在 FactoryOS monorepo 内 AI 开发时的独立边界
+hosting:
+  mode: factoryos-umbrella-hosted
+  app_root: src/apps/web-admin
+  autonomy: frontend-autonomous-domain
+  ac_scope: WEB-PROFILE
+  verify_command: ./scripts/activate.sh
+
+# 越权写路径（Agent/脚本未经「确认越权」禁止触碰）
+forbidden_write_outside_app:
+  - src/os_core/
+  - src/apps/api/
+  - src/server/
+  - src/tests/
+  - templates/frontend-devkit/
+  - contracts/frontend-devkit-lock.yaml
+  - contracts/repo-structure.yaml
+  - devkit.manifest.yaml
+  - .cursor/factoryos/
+  - .cursor/rules/SH-步步流.mdc
+  - .cursor/rules/factoryos-dev-workflow.mdc
+  - .cursor/rules/factoryos-test-workflow.mdc
+  - .cursor/rules/编码绝对门禁.mdc
+
+# 允许只读消费（不得写）
+allowed_read_only_umbrella:
+  - contracts/openapi/
+  - contracts/schemas/
+  - scripts/devkit/frontend_contract_lib.py
+  - vendor/
+
+# 禁止 import 模式（防与 FactoryOS 后端融合）
+forbidden_import_patterns:
+  - "@/os_core"
+  - "src/os_core"
+  - "src.apps.api"
+  - "from os_core"
+  - "import os_core"
+
+# 用户解锁关键词（L1 人机轨）
+unlock_keywords:
+  structure_change: 确认结构变更
+  cross_boundary: 确认越权
+  risk_override: 风险接受并继续
+
+change_policy: |
+  1. web-admin 是 Frontend Autonomous Domain；验收盘仅 ./scripts/activate.sh。
+  2. 禁止用 FactoryOS STU/pytest/gate 阻塞或定义 WEB-PROFILE 业务。
+  3. 结构/sector/技术版图变更 → 停机 → 等用户「确认结构变更」→ 人工改本文件 version。
+  4. 跨 app 写 FactoryOS 路径 → 停机 → 等用户「确认越权」。
+  5. 迁出时复制 .cursor/ 与 contracts/WEB-ARCHITECTURE-LOCK.yaml 即可独立运行 AI 工作流。

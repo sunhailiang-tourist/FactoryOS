@@ -70,12 +70,13 @@ def test_api_router_domains_have_usage_metadata() -> None:
   sys.path.insert(0, str(ROOT / "src" / "server"))
   from server.api.router.v1.registry import API_ROUTER_DOMAINS
 
-  assert len(API_ROUTER_DOMAINS) == 15
+  assert len(API_ROUTER_DOMAINS) == 16
   names = {d.name for d in API_ROUTER_DOMAINS}
   assert "tenant" in names
   assert "package" in names
   assert "integration" in names
   assert "mcp" in names
+  assert "studio" in names
   for domain in API_ROUTER_DOMAINS:
     assert len(domain.summary) >= 8
     assert len(domain.problem) >= 8

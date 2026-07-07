@@ -6,6 +6,7 @@
 
 ```text
 0. 产品宪法（UI-FIRST · 配置平面主路径 = 管理台）
+0b. 执行策略（锁死 · 平台先行三阶段）
 1. ADR 红线（REDLINES.md）
 2. Contract Registry（DB）+ `contracts/` export 镜像
 3. .cursor/factoryos/（SH-步步流 v2）
@@ -17,6 +18,8 @@
 
 | 文档 | 用途 |
 |------|------|
+| [PLATFORM-FIRST-EXECUTION-STRATEGY.md](./PLATFORM-FIRST-EXECUTION-STRATEGY.md) | **锁死** Gate 0 后三阶段：平台→终端→项目 |
+| [WEB-PROFILE plan](../../_factoryos_pipeline/2026-07-06/plan/plan-web-admin-profile-autonomy.md) | **web-admin 前端自治**（与 STU 无依赖） |
 | [UI-FIRST-CONFIG-PRINCIPLE.md](./UI-FIRST-CONFIG-PRINCIPLE.md) | **对外主路径 = 管理台 UI**；CLI/文档/仓库 = 内部或逃生舱 |
 | [INTEGRATION-CHAIN.md](./INTEGRATION-CHAIN.md) | 接入/扩展 · Gate 上屏 · flows 与 Studio |
 
@@ -35,6 +38,7 @@
 | [ORM-MIGRATION-PRINCIPLE.md](./ORM-MIGRATION-PRINCIPLE.md) | **ORM 即设计 · Alembic 即部署**（开发快 · 迁移稳） |
 | [docs-baseline](../docs-baseline/BASELINE.md) | **docs 认知基线**（漂移检测 → 工作流同步） |
 | [ACTIVATION.md](./ACTIVATION.md) | **完全激活清单**（Hooks · uv · pre-commit） |
+| [DEVKIT.md](./DEVKIT.md) | **可拔插 DevKit**（web-admin / h5-worker · umbrella / standalone） |
 | [templates/](./templates/) | plan · test · test-step-regression · test-final-regression · step-stop · verify · bug · summary |
 | [scripts/README.md](../../scripts/README.md) | 脚本目录（新人入口） |
 

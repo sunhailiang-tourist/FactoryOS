@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/DomainEvent/v1.0.0",
+  "title": "DomainEvent",
+  "description": "Core 1.0 同进程事件信封。W1 handler 接口预留；Y2+ 可换 Outbox/队列而不改 payload。",
+  "type": "object",
+  "required": ["event_id", "event_type", "occurred_at", "tenant_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id": { "type": "string", "format": "uuid" },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "graph.frozen",
+        "execution.completed",
+        "execution.reverted"
+      ]
+    },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "tenant_id": { "type": "string" },
+    "trace_id": { "type": ["string", "null"] },
+    "payload": {
+      "type": "object",
+      "description": "event_type 特定字段；见 oneOf"
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "event_type": { "const": "graph.frozen" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "required": ["graph_id", "version", "checksum"],
+            "additionalProperties": false,
+            "properties": {
+              "graph_id": { "type": "string" },
+              "version": { "type": "string" },
+              "checksum": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "execution.completed" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "required": ["exec_id", "verb", "status"],
+            "additionalProperties": false,
+            "properties": {
+              "exec_id": { "type": "string", "format": "uuid" },
+              "verb": { "type": "string" },
+              "status": { "type": "string", "enum": ["success", "failed", "simulated"] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "execution.reverted" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "required": ["exec_id", "revert_exec_id"],
+            "additionalProperties": false,
+            "properties": {
+              "exec_id": { "type": "string", "format": "uuid" },
+              "revert_exec_id": { "type": "string", "format": "uuid" }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

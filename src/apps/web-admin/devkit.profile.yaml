@@ -1,0 +1,29 @@
+# web-admin · DevKit Profile
+profile_id: web-admin
+kind: frontend
+stack: react-vite-mui
+ac_scope: WEB-PROFILE
+engineering: ENGINEERING.md
+architecture: ARCHITECTURE.md
+src_root: src
+checks:
+  - registry_contracts_sync
+  - file_headers_7
+  - pages_no_fetch
+  - query_layer_boundary
+  - openapi_codegen_fresh
+  - glob_registry
+  - package_check_script
+  - e2e_playwright
+  - bundle_size_limit
+  - storybook_config
+  - forms_primitives
+  - standalone_ready
+  - error_registry_mirror
+  - directory_readme
+  - resource_chain_sync
+  - perf_first_paint_shell
+  - i18n_registry_sync
+  - rbac_route_permissions
+  - architecture_lock_sync
+  - web_admin_independence

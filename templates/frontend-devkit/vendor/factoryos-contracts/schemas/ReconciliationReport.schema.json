@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/ReconciliationReport/v1.0.0",
+  "title": "ReconciliationReport",
+  "description": "对账 Job 结果（Shadow-Mode §2；AC-BASE-001 K-01/K-02）。",
+  "type": "object",
+  "required": ["run_id", "tenant_id", "started_at", "finished_at", "status", "drifts"],
+  "additionalProperties": false,
+  "properties": {
+    "run_id": { "type": "string", "format": "uuid" },
+    "tenant_id": { "type": "string" },
+    "scope": { "type": "string", "enum": ["daily", "ad_hoc"] },
+    "graph_id": { "type": ["string", "null"] },
+    "since": { "type": ["string", "null"], "format": "date-time" },
+    "started_at": { "type": "string", "format": "date-time" },
+    "finished_at": { "type": "string", "format": "date-time" },
+    "status": { "type": "string", "enum": ["ok", "drift_detected", "failed"] },
+    "records_checked": { "type": "integer", "minimum": 0 },
+    "records_skipped_shadow": { "type": "integer", "minimum": 0 },
+    "path": { "type": "string", "enum": ["A", "B", "C"] },
+    "drifts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ReconciliationDrift" }
+    },
+    "error": {
+      "type": ["object", "null"],
+      "properties": {
+        "code": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "ReconciliationDrift": {
+      "type": "object",
+      "required": ["exec_id", "field", "expected", "actual"],
+      "additionalProperties": false,
+      "properties": {
+        "exec_id": { "type": "string", "format": "uuid" },
+        "legacy_ref": { "type": "string" },
+        "system": { "type": "string" },
+        "field": { "type": "string" },
+        "expected": {},
+        "actual": {},
+        "severity": { "type": "string", "enum": ["warning", "critical"], "default": "critical" },
+        "explainable": { "type": "boolean", "default": false }
+      }
+    }
+  }
+}

@@ -9,12 +9,14 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 from server.api.config.dependencies.db import get_db_session
 from sqlalchemy.orm import Session
 
 from os_core.platform_registry import change_request_store
+from os_core.shared_contracts.errors import ErrorCode
+from os_core.shared_contracts.exceptions import PlatformError
 
 router = APIRouter(tags=["Registry"])
 
@@ -43,7 +45,11 @@ def create_change_request(
 ) -> dict[str, Any]:
   """提交变更提案（pending，不直接改 Registry）。"""
   if body.kind not in ("pack_upsert", "system_relation_upsert"):
-    raise HTTPException(status_code=422, detail=f"Unsupported kind: {body.kind}")
+    raise PlatformError(
+      ErrorCode.REG_UNSUPPORTED_KIND,
+      f"Unsupported kind: {body.kind}",
+      http_status=422,
+    )
   try:
     return change_request_store.create_change_request(
       session,
@@ -54,7 +60,11 @@ def create_change_request(
       ai_model_id=body.ai_model_id,
     )
   except Exception as exc:  # noqa: BLE001 — HTTP 映射
-    raise HTTPException(status_code=422, detail=str(exc)) from exc
+    raise PlatformError(
+      ErrorCode.VAL_SCHEMA_FAILED,
+      str(exc),
+      http_status=422,
+    ) from exc
 
 
 @router.get("/v1/registry/change-requests")
@@ -79,7 +89,11 @@ def get_change_request(
   """单条变更请求。"""
   row = change_request_store.get_change_request(session, request_id=request_id)
   if row is None:
-    raise HTTPException(status_code=404, detail="Change request not found")
+    raise PlatformError(
+      ErrorCode.REG_CHANGE_NOT_FOUND,
+      "Change request not found",
+      http_status=404,
+    )
   return row
 
 
@@ -97,7 +111,11 @@ def approve_change_request(
       approved_by=body.actor_id,
     )
   except ValueError as exc:
-    raise HTTPException(status_code=409, detail=str(exc)) from exc
+    raise PlatformError(
+      ErrorCode.REG_CHANGE_REJECTED,
+      str(exc),
+      http_status=409,
+    ) from exc
 
 
 @router.post("/v1/registry/change-requests/{request_id}/reject")
@@ -115,4 +133,8 @@ def reject_change_request(
       reason=body.reason,
     )
   except ValueError as exc:
-    raise HTTPException(status_code=409, detail=str(exc)) from exc
+    raise PlatformError(
+      ErrorCode.REG_CHANGE_REJECTED,
+      str(exc),
+      http_status=409,
+    ) from exc

@@ -1,0 +1,9 @@
+# h5-worker · Standalone DevKit
+devkit_version: "1.0.0"
+mode: standalone
+project_id: h5-worker
+profile: h5-worker
+ac_scope: UX-001
+tier: step
+harness: scripts/check_harness.py
+activate: scripts/activate.sh

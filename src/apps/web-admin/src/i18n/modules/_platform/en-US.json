@@ -1,0 +1,10 @@
+{
+  "appTitle": "FactoryOS · Integration Studio",
+  "studioTitle": "Integration Studio",
+  "studioSubtitle": "New customer onboarding · six-step wizard",
+  "studioNavAria": "Studio steps",
+  "studioNavOverview": "Overview",
+  "openNav": "Open navigation",
+  "rbacDenied": "Studio access denied (role: {{role}})",
+  "rbacRouteDenied": "You cannot open this page (missing: {{permissions}})"
+}

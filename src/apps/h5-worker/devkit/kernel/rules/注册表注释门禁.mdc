@@ -1,0 +1,54 @@
+---
+description: 注册表注释门禁——集中登记处须 summary/problem/usage；check_registry_annotations 机械校验
+alwaysApply: true
+---
+
+# 注册表注释门禁（强制）
+
+**真源**：`.cursor/factoryos/MODULE-MAP.md` · `scripts/registry_annotation_lib.py`
+
+## 什么是「注册表」
+
+凡 **集中登记** 模块/路由/挂载/import 白名单/中间件栈的文件，打开即应读懂每项职责：
+
+| 文件 | 变量 | 登记内容 |
+|------|------|----------|
+| `src/server/os_core/registry.py` | `KERNEL_MODULES` | 内核 11 模块 |
+| `src/server/api/router/v1/registry.py` | `API_ROUTER_DOMAINS` | HTTP 域 |
+| `src/integration/registry.py` | `INTEGRATION_MOUNTS` | GIP 挂载 |
+| `scripts/check_import_boundaries.py` | `IMPORT_BOUNDARY_REGISTRY` | import 白名单 |
+| `src/server/api/config/middleware/registry.py` | `MIDDLEWARE_STACK` | 中间件栈 |
+| `contracts/repo-structure.yaml` | `kernel.modules` | 结构快照（行尾 `#`） |
+
+## 新增登记项（强制四字段）
+
+使用 **dataclass 构造器**，每条必须包含：
+
+1. **summary** — 是什么（一句话）
+2. **problem** — 解决什么问题
+3. **usage** — 怎么用（入口/API/import 示例）
+4. **name** 或 **package** — 标识符
+
+禁止裸 tuple/dict 无说明追加。
+
+YAML 列表项用行尾 `# 职责 · 用法` 注释（≥8 字中文）。
+
+## 验证
+
+```bash
+python scripts/check_registry_annotations.py
+./scripts/check_harness.py --tier boundaries   # 含 registry_annotations
+./scripts/gate pr                              # full tier
+```
+
+## 新增注册表文件
+
+若新建第三处集中登记点 → 须：
+
+1. 写入上表或 `registry_annotation_lib.registry_specs()`
+2. 文件头说明「开发者第一站」
+3. PR 通过 `check_registry_annotations`
+
+## 与编码绝对门禁并存
+
+注册表 **不替代** 各模块目录 `README.md`；二者互补：注册表 = 全局索引，README = 模块深文档。

@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/BusinessGraph/v0.1.0",
+  "title": "BusinessGraph",
+  "description": "FactoryOS 业务图谱。底座阶段使用 draft 模板；frozen 实例在工厂接入后产生。",
+  "type": "object",
+  "required": ["id", "version", "status", "checksum", "nodes", "edges", "metadata"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^graph-[a-z0-9-]+$",
+      "description": "图谱唯一 ID，如 graph-d1-generic-template"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v\\d+\\.\\d+\\.\\d+$",
+      "description": "语义化版本，如 v1.0.0"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "in_review", "frozen", "deprecated"],
+      "description": "仅 frozen 允许绑定 L2 写执行"
+    },
+    "checksum": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "description": "canonical JSON 的 SHA-256；draft 可为 sha256:000...0"
+    },
+    "tenant_id": {
+      "type": ["string", "null"],
+      "description": "null 表示平台级模板；租户实例必填"
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/GraphNode" }
+    },
+    "edges": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/GraphEdge" }
+    },
+    "allowed_dsl": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "本 Graph 允许执行的 DSL 动词子集"
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["created_at", "updated_at"],
+      "properties": {
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "frozen_at": { "type": ["string", "null"], "format": "date-time" },
+        "frozen_by": { "type": ["string", "null"] },
+        "description": { "type": "string" },
+        "pack_id": { "type": ["string", "null"], "description": "来源 Pack，如 graph-d1-generic" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "GraphNode": {
+      "type": "object",
+      "required": ["id", "type", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^node-[a-z0-9-]+$" },
+        "type": {
+          "type": "string",
+          "enum": ["start", "query", "action", "confirm", "gateway", "end"]
+        },
+        "label": { "type": "string" },
+        "dsl_verbs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "该节点关联的 DSL 动词"
+        },
+        "entity_ref": {
+          "type": "string",
+          "description": "逻辑实体引用，如 WorkOrder；具体映射在 Connector 层"
+        },
+        "config": { "type": "object", "additionalProperties": true }
+      }
+    },
+    "GraphEdge": {
+      "type": "object",
+      "required": ["id", "from", "to"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^edge-[a-z0-9-]+$" },
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "condition": { "type": ["string", "null"], "description": "Rule 表达式或 null" },
+        "label": { "type": "string" }
+      }
+    }
+  }
+}

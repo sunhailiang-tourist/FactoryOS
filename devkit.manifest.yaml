@@ -1,0 +1,23 @@
+# FactoryOS 伞形 DevKit 清单 — 统管 monorepo 内各 App Profile
+# 独立迁出时：各 App 自带 devkit.manifest.yaml（mode: standalone）
+devkit_version: "1.0.0"
+mode: umbrella
+kernel:
+  cursor_factoryos: .cursor/factoryos
+  cursor_rules: .cursor/rules
+  pipeline: _factoryos_pipeline
+  gate: scripts/gate
+  harness: scripts/check_harness.py
+profiles:
+  - id: web-admin
+    rel_path: src/apps/web-admin
+    harness: scripts/check_harness.py
+    activate: scripts/activate.sh
+    tier: step
+    ac_scope: WEB-PROFILE
+  - id: h5-worker
+    rel_path: src/apps/h5-worker
+    harness: scripts/check_harness.py
+    activate: scripts/activate.sh
+    tier: step
+    ac_scope: UX-001

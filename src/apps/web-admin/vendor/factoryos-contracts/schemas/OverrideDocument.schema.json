@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://factoryos.local/schemas/OverrideDocument/v1.0.0",
+  "title": "OverrideDocument",
+  "description": "三级 Override 配置文档；对齐 覆盖配置规格 §3。",
+  "type": "object",
+  "required": [
+    "override_id",
+    "tenant_id",
+    "scope_type",
+    "version",
+    "status",
+    "patches",
+    "metadata",
+    "created_at",
+    "updated_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "override_id": { "type": "string", "pattern": "^ov-[a-z0-9-]+$" },
+    "tenant_id": { "type": "string" },
+    "scope_type": {
+      "type": "string",
+      "enum": ["platform", "tenant", "line", "equipment", "workstation", "connector_instance"]
+    },
+    "scope_id": { "type": ["string", "null"] },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "status": { "type": "string", "enum": ["draft", "active", "archived"] },
+    "patches": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/OverridePatch" }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["created_by"],
+      "properties": {
+        "created_by": { "type": "string" },
+        "approved_by": { "type": ["string", "null"] },
+        "approved_at": { "type": ["string", "null"], "format": "date-time" },
+        "d2_ref": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "OverridePatch": {
+      "type": "object",
+      "required": ["target", "op", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "target": { "$ref": "#/$defs/OverrideTarget" },
+        "op": { "type": "string", "enum": ["merge", "replace", "remove"] },
+        "value": {}
+      }
+    },
+    "OverrideTarget": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind", "path"],
+          "properties": {
+            "kind": { "const": "graph" },
+            "path": { "type": "string", "description": "JSON Pointer" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["kind", "rule_id", "path"],
+          "properties": {
+            "kind": { "const": "rule" },
+            "rule_id": { "type": "string" },
+            "path": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["kind", "action_id", "path"],
+          "properties": {
+            "kind": { "const": "dsl" },
+            "action_id": { "type": "string" },
+            "path": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["kind", "registry_key", "path"],
+          "properties": {
+            "kind": { "const": "connector" },
+            "registry_key": { "type": "string" },
+            "path": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["kind", "module_id", "path"],
+          "properties": {
+            "kind": { "const": "skill" },
+            "module_id": { "type": "string" },
+            "path": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["kind", "key"],
+          "properties": {
+            "kind": { "const": "feature" },
+            "key": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}
