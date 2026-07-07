@@ -6,6 +6,7 @@
 """
 from __future__ import annotations
 
+from collections.abc import Generator
 from pathlib import Path
 
 import pytest
@@ -16,6 +17,21 @@ CONTRACTS = ROOT / "contracts"
 OPENAPI = CONTRACTS / "openapi" / "工厂操作系统-v1.1.yaml"
 
 AC_IDS = load_ac_ids()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _shared_test_database_url() -> Generator[None, None, None]:
+  """会话级共享 SQLite（API TestClient 与 migrated_db_session 同一库）。
+
+  功能：命名内存库 + cache=shared，避免 :memory: 多引擎隔离导致 STU-02 计数失败。
+  业务关联：integration API 写库后 pytest 会话须可见 system_relations 增量。
+  """
+  import os
+
+  url = "sqlite:///file:factoryos_pytest?mode=memory&cache=shared&uri=true"
+  os.environ["TEST_DATABASE_URL"] = url
+  yield
+  os.environ.pop("TEST_DATABASE_URL", None)
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -50,7 +66,7 @@ def migrated_db_session(repo_root: Path):
 
     db_url = os.environ.get(
       "TEST_DATABASE_URL",
-      "sqlite:///:memory:?cache=shared",
+      "sqlite:///file:factoryos_local?mode=memory&cache=shared&uri=true",
     )
     cfg = Config(str(alembic_ini))
     cfg.set_main_option("sqlalchemy.url", db_url)

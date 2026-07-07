@@ -57,6 +57,7 @@ def update_tenant_settings(
   功能：PUT /v1/tenants/{id}/settings。
   业务含义：Studio / API / 未来 MCP admin 工具均经此入口，禁止散落写 DB。
   参数 connector_overrides：P-03 Pack 级 Override（如 base_url）。
+  STU-04：write_approved 置 true 时由 API 层写 Audit integration.write_approved。
   """
   profile = tenant_config_store.upsert_tenant_settings(
     session,
@@ -65,6 +66,7 @@ def update_tenant_settings(
     write_approved=write_approved,
     connector_overrides=connector_overrides,
   )
+
   session.commit()
   return _profile_to_settings(profile)
 

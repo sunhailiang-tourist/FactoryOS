@@ -1,0 +1,12 @@
+# path-c · ERP + 金蝶 mock 组合路径（STU-10 · ADR-005 Path C）
+apiVersion: factoryos.io/v1
+kind: PathTemplate
+metadata:
+  template_id: path-c
+  display_name: Path C — ERP 组合
+spec:
+  path: C
+  description: 多 Pack 组合 · 金蝶 mock + 通用 mock
+  packs:
+    - conn-mock
+    - kingdee-mock

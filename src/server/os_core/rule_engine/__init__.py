@@ -4,6 +4,7 @@ from __future__ import annotations
 from os_core.rule_engine.service import (
   assert_allowed_for_execute,
   create_ruleset,
+  ensure_studio_ruleset_for_graph,
   evaluate,
   freeze_ruleset,
   get_ruleset_by_id,
@@ -14,6 +15,7 @@ from os_core.rule_engine.service import (
 __all__ = [
   "assert_allowed_for_execute",
   "create_ruleset",
+  "ensure_studio_ruleset_for_graph",
   "evaluate",
   "freeze_ruleset",
   "get_ruleset_by_id",

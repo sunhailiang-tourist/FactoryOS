@@ -4,15 +4,15 @@
 > 真源说明：[ACTIVATION.md](../.cursor/factoryos/ACTIVATION.md)
 
 ```yaml
-phase: CAN_CODE
-agent: test
-step: 1
+phase: DELIVERY
+agent: dev
+step: 5
 plan: _factoryos_pipeline/2026-07-03/plan/plan-1356-stage1-platform-stu001.md
 test_plan: _factoryos_pipeline/2026-07-03/test/test-1401-stage1-stu001.md
-updated: 2026-07-03
+updated: 2026-07-07
 execution_strategy: .cursor/factoryos/PLATFORM-FIRST-EXECUTION-STRATEGY.md
-current_stage: 1_platform_polish
-goal: 阶段1 Step1 Test 通过 · 待 Verify → gate step → Step2
+current_stage: 1b_stu_ui
+goal: 阶段1b STU-UI · web-admin Studio 六步真 API 联调 · 完成后方可 UX-001
 ```
 
 ## 执行策略（锁死 · 2026-07-03）
@@ -20,8 +20,9 @@ goal: 阶段1 Step1 Test 通过 · 待 Verify → gate step → Step2
 | 阶段 | 状态 | 硬 Gate |
 |------|------|---------|
 | P0 内核 Gate 0 | ✅ 完成 | BASE-001 52 P0 · 116 pytest |
-| **1 平台打磨** | **→ 当前** | **STU-001 P0** |
-| 2 终端设计 | 待 | UX-001 P0（须阶段 1 绿） |
+| **1a 平台 API** | **✅ 结案** | STU pytest 17/17 · `gate delivery`（API 切片） |
+| **1b 平台 UI** | **→ 当前** | web-admin Studio 六步真 API 联调 |
+| **2 终端设计** | 待（须 1b 绿） | UX-001 · **h5-worker** |
 | 3 哈森项目验证 | 待 | 四 Gate · D1 |
 
 真源：[PLATFORM-FIRST-EXECUTION-STRATEGY.md](../.cursor/factoryos/PLATFORM-FIRST-EXECUTION-STRATEGY.md) · [14-路线图 §〇](../docs/准备/2026-06-16/14-一年冲刺路线图与并行研发.md)
@@ -54,12 +55,13 @@ goal: 阶段1 Step1 Test 通过 · 待 Verify → gate step → Step2
 |------|-----|------|
 | plan | STU-001 | ✅ **`确认规划`** · `gate plan` 绿 |
 | Test | failing tests | ✅ `test-1401` · STU 红 13/17 · `gate test` 绿 |
-| 0 | BASE-001 基线 · core-v1.0.0 tag | ⏳ |
-| 1 | STU-09 | ✅ **Test 通过** · `test-1409-step1-regression.md` · 待 Verify |
-| 2 | STU-02/03/11 | 待 |
-| 3 | STU-10 | 待 |
-| 4 | STU-01/03/04/05 | 待 |
-| 5 | STU-06/07/08 · 全量 | 待 |
+| 0 | BASE-001 基线 · core-v1.0.0 tag | ✅ `core-v1.0.0` 已打 |
+| 1 | STU-09 | ✅ Verify 绿 · `verify-1518` · `gate step 1` 绿 |
+| 2 | STU-02/03/11 | ✅ Verify 绿 · `verify-1656` · `gate step 2` 绿 |
+| 3 | STU-10 | ✅ Verify 绿 · `verify-1717` · `gate step 3` 绿 |
+| 4 | STU-01/03/04/05 | ✅ `gate step 4` 绿 · `verify-1737` |
+| 5 | STU-06/07/08 · 全量 | ✅ **1a** · `gate step 5` · `test-1754-final`（API 切片） |
+| 1b | STU-UI 联调 | **→ 待开** · 须新 plan · **禁止** 直跳 UX-001 |
 
 
 ## WEB-PROFILE 进度（前端自治轨 · **与 STU 无依赖**）
@@ -73,10 +75,28 @@ goal: 阶段1 Step1 Test 通过 · 待 Verify → gate step → Step2
 | v1.7 S1 代码 | W-01～W-05 | ✅ |
 | v1.8 S2 | W-06～W-07 | ✅ `test-1702-web-profile-s2s3-regression.md` · activate 绿 |
 | v1.9 S3 | W-08～W-10 | ✅ 同上 · 待 **WEB-PROFILE Verify** |
-| standalone S | W-11 | 待 |
+| standalone S | W-11 | ✅ 封存 `frontend-devkit 2.0.0-s5` |
 
 ## 变更日志
 
+- 2026-07-07 Test·**终轮回归** · `test-1754-final-regression.md` · 134 passed · **`gate delivery` 绿**
+- 2026-07-07 **主流程同步** · PLATFORM-FIRST v1.1.0 · 阶段 **1a/1b** 双子步 · D16 · `current_stage: 1b_stu_ui`
+- 2026-07-07 **`gate delivery` 绿** · `test-1754-final-regression.md` · 134 pytest · STU 17/17
+- 2026-07-07 **`gate step 5` 绿** · `verify-1751` · STU-06/07/08
+- 2026-07-07 Dev·**Step5 停机** · STU-06/07/08 回归 · 17/17 · 84 integration · `step-stop-1746-step5.md`
+- 2026-07-07 用户 **`可以开始` Step5** · `gate start 5` 绿
+- 2026-07-07 **`gate step 4` 绿** · STU-01/04/05 · `verify-1737`
+- 2026-07-07 Test·**Step4** · `test-1728-step4-regression.md` · AC 3/3 绿 · workflow import 边界需改进
+- 2026-07-07 Dev·**Step4 回修** · import 边界编排上移 · workflow CAN_VERIFY 归一化 · 待 Test 重验
+- 2026-07-07 Dev·**Step4 停机** · STU-01/04/05 · `step-stop-1730-step4.md` · 81 integration 绿
+- 2026-07-07 Test·**Step3** · STU-10 · `test-1712-step3-regression.md` · 4/4 · 存量 78 绿
+- 2026-07-07 Dev·Verify 修复 · ruff I001 `registry.py` import · static OK
+- 2026-07-07 Dev·**Step3 停机** · path 模板 + tenant provision · `step-stop-1710-step3.md`
+- 2026-07-07 用户 **`可以继续`** · Step2 结案 · `gate step 2` 绿 → Step3
+- 2026-07-07 Dev·**方案 A** · K-01/K-02 `since` · integration 存量 74/74 绿
+- 2026-07-07 Test·Step2 · STU-02/03/11 · `test-1644-step2-regression.md` · 4/4 绿 · K-01 存量需改进
+- 2026-07-07 Dev·Step0 通过 · 用户 **`可以继续`** · 待 **`可以开始` Step2**
+- 2026-07-07 Dev·**【Dev模式启动】** · 阶段1 Step2 Step0 · WEB-PROFILE 封存对齐 · 续 STU integration API
 - 2026-07-03 Test·Step1 · STU-09 · `test-1409-step1-regression.md` · 120/120 存量绿
 - 2026-07-06 **前端自治修正** · WEB-PROFILE 独立轨 · STU Step1 勘误为 **仅 server RBAC** · `corrective-frontend-autonomy-2026-07-06.md`
 - 2026-07-03 Dev·**Step1** · Studio API RBAC（web-admin→WEB-PROFILE）· `step-stop-1407-step1.md`

@@ -1,0 +1,34 @@
+# kingdee-mock · STU Step2 discover 金蝶 mock Blueprint（Studio 演示）
+apiVersion: factoryos.io/v1
+kind: ConnectorBlueprint
+metadata:
+  pack_id: kingdee-mock
+  system: erp
+  vendor: kingdee
+  level: L2
+  certification: bronze
+spec:
+  auth:
+    type: api_key
+    secrets_ref: vault://tenant/default/kingdee-mock
+  base_url: http://kingdee-mock.local
+  ops:
+    - verb: QUERY_ENTITY
+      method: GET
+      path: /work_orders/{entity_id}
+      mapping:
+        entity_type: $.params.entity_type
+        entity_id: $.params.entity_id
+    - verb: GOVERNED_WRITE
+      method: POST
+      path: /work_orders/update
+      mapping:
+        entity_type: $.params.entity_type
+        entity_id: $.params.entity_id
+        fields: $.params.fields
+      response:
+        legacy_id: $.legacy_id
+      revert:
+        verb: GOVERNED_WRITE_REVERT
+        method: POST
+        path: /work_orders/revert

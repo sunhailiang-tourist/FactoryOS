@@ -24,7 +24,7 @@ def _database_url() -> str:
   """返回测试/本地 DB URL（与 conftest 默认一致）。"""
   return os.environ.get(
     "TEST_DATABASE_URL",
-    "sqlite:///:memory:?cache=shared",
+    "sqlite:///file:factoryos_local?mode=memory&cache=shared&uri=true",
   )
 
 

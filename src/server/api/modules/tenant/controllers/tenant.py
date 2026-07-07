@@ -14,6 +14,9 @@ from pydantic import BaseModel, ConfigDict, Field
 from server.api.config.dependencies.db import get_db_session
 from sqlalchemy.orm import Session
 
+from os_core.audit_service.store import append_audit_event
+from os_core.shared_contracts.models.audit import AuditEventType
+from os_core.shared_contracts.models.common import Actor, ActorChannel
 from os_core.tenant_service import get_tenant_settings, update_tenant_settings
 
 router = APIRouter(tags=["Tenant"])
@@ -62,7 +65,7 @@ def put_tenant_settings_http(
   body: TenantSettingsBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """PUT /v1/tenants/{tenantId}/settings（含 shadow_mode）。"""
+  """PUT /v1/tenants/{tenantId}/settings（含 shadow_mode · STU-04 audit 编排）。"""
   settings = update_tenant_settings(
     session,
     tenant_id=tenant_id,
@@ -70,4 +73,13 @@ def put_tenant_settings_http(
     write_approved=body.write_approved,
     connector_overrides=body.connector_overrides,
   )
+  if body.write_approved is True and settings.get("write_approved"):
+    append_audit_event(
+      session=session,
+      tenant_id=tenant_id,
+      event_type=AuditEventType.INTEGRATION_WRITE_APPROVED,
+      actor=Actor(user_id="studio-integrator", role="integrator", channel=ActorChannel.API),
+      payload={"write_approved": True, "shadow_mode": bool(settings.get("shadow_mode"))},
+    )
+    session.commit()
   return _response_payload(settings)

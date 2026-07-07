@@ -9,6 +9,7 @@ from __future__ import annotations
 import importlib
 import json
 import uuid
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -39,6 +40,15 @@ def _get_run_reconciliation():
   fn = getattr(module, "run_reconciliation", None)
   assert fn is not None, "缺少 os_core.reconciliation_service.run_reconciliation"
   return fn
+
+
+def _reconcile_since_marker() -> datetime:
+  """对账时间窗起点（会话共享 DB 下仅扫本轮 L2 写）。
+
+  功能：integration 全套件共用 SQLite 时，避免扫历史 execution_records。
+  业务含义：与生产 ad_hoc 对账「自某时刻起」语义一致（Shadow 规格 §2.2）。
+  """
+  return datetime.now(UTC)
 
 
 def _l2_execute_for_reconcile(api_client: TestClient, env: dict[str, str]) -> str:
@@ -78,12 +88,14 @@ def test_K01_reconciliation_run_returns_ok(
   contracts_dir: Path,
 ) -> None:
   """K-01：run_reconciliation → ReconciliationReport status=ok · 无 drift。"""
+  since = _reconcile_since_marker()
   _l2_execute_for_reconcile(api_client, frozen_graph_env)
   run_reconciliation = _get_run_reconciliation()
   report = run_reconciliation(
     migrated_db_session,
     tenant_id="default",
     scope="ad_hoc",
+    since=since,
   )
   migrated_db_session.commit()
 
@@ -110,6 +122,7 @@ def test_K02_reconciliation_http_detects_drift_after_tamper(
   contracts_dir: Path,
 ) -> None:
   """K-02：篡改 mock Legacy 后 POST /v1/reconciliation/run → drift_detected。"""
+  since = _reconcile_since_marker()
   entity_id = _l2_execute_for_reconcile(api_client, frozen_graph_env)
   stored = mock_legacy.get_entity(entity_type="work_order", entity_id=entity_id)
   fields = dict(stored.get("fields") or {})
@@ -124,7 +137,11 @@ def test_K02_reconciliation_http_detects_drift_after_tamper(
 
   resp = api_client.post(
     "/v1/reconciliation/run",
-    json={"tenant_id": "default", "scope": "ad_hoc"},
+    json={
+      "tenant_id": "default",
+      "scope": "ad_hoc",
+      "since": since.isoformat(),
+    },
   )
   assert resp.status_code == 200, resp.text
   body = resp.json()

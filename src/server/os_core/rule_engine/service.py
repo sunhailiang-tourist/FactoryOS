@@ -13,11 +13,18 @@ from sqlalchemy.orm import Session
 
 from os_core.audit_service.store import append_audit_event
 from os_core.rule_engine.evaluate import evaluate_ruleset
-from os_core.rule_engine.store import get_ruleset, insert_ruleset, list_rulesets, update_ruleset
+from os_core.rule_engine.store import (
+  get_ruleset,
+  has_frozen_ruleset,
+  insert_ruleset,
+  list_rulesets,
+  update_ruleset,
+)
 from os_core.shared_contracts.errors import ErrorCode
 from os_core.shared_contracts.exceptions import PlatformError
 from os_core.shared_contracts.models.audit import AuditEventType
 from os_core.shared_contracts.models.common import Actor, ActorChannel
+from os_core.shared_contracts.models.graph import BusinessGraph
 from os_core.shared_contracts.models.rule import RuleEffect, RuleSet, RuleSetStatus
 
 
@@ -115,6 +122,48 @@ def freeze_ruleset(
     payload={"ruleset_id": ruleset.id},
   )
   return frozen
+
+
+def ensure_studio_ruleset_for_graph(
+  session: Session,
+  *,
+  graph: BusinessGraph,
+  frozen_by: str = "studio",
+) -> None:
+  """Studio onboard：无 RuleSet 时自动创建并 freeze（STU-01 六步闭环）。
+
+  功能：按 graph.allowed_dsl 生成 allow integrator/operator 的 draft RuleSet。
+  业务含义：顾问零仓库 freeze 前置；graph_service 仅校验 frozen RuleSet 存在。
+  """
+  if has_frozen_ruleset(session, graph_id=graph.id, graph_version=graph.version):
+    return
+  ruleset_id = f"ruleset-{graph.id}-{graph.version}"[:120]
+  if get_ruleset(session, ruleset_id) is None:
+    now = _now().isoformat().replace("+00:00", "Z")
+    verbs = list(graph.allowed_dsl or ["QUERY_ENTITY", "GOVERNED_WRITE"])
+    ruleset = RuleSet.model_validate(
+      {
+        "id": ruleset_id,
+        "graph_id": graph.id,
+        "graph_version": graph.version,
+        "status": "draft",
+        "default_effect": "deny",
+        "rules": [
+          {
+            "id": "rule-studio-allow",
+            "effect": "allow",
+            "subjects": ["role:operator", "role:integrator"],
+            "actions": verbs,
+            "priority": 10,
+          }
+        ],
+        "metadata": {"created_at": now, "updated_at": now},
+      }
+    )
+    create_ruleset(session, ruleset)
+  ruleset = get_ruleset(session, ruleset_id)
+  if ruleset is not None and ruleset.status != RuleSetStatus.FROZEN:
+    freeze_ruleset(session, ruleset_id=ruleset_id, frozen_by=frozen_by)
 
 
 def evaluate(

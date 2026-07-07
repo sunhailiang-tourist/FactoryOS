@@ -1,0 +1,11 @@
+# path-b · IM + 工单协同路径（STU-10 · ADR-005 Path B）
+apiVersion: factoryos.io/v1
+kind: PathTemplate
+metadata:
+  template_id: path-b
+  display_name: Path B — IM 协同
+spec:
+  path: B
+  description: IM Connector 为主 · 钉钉/企微类接入
+  packs:
+    - conn-mock

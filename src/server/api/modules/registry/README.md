@@ -17,6 +17,9 @@
 | `GET /v1/registry/contract-set/active` | 当前 published contract_set |
 | `GET /v1/registry/packs` | 已发布 Pack 列表 |
 | `GET /v1/registry/packs/{packId}` | Blueprint JSON |
+| `GET /v1/registry/path-templates` | path-a/b/c 模板（STU-10） |
+| `POST /v1/registry/tenants` | 按模板开通租户（STU-10） |
+| `GET /v1/registry/tenants/{tenantId}` | 租户摘要 |
 | `GET /v1/registry/tenants/{tenantId}/profile` | 租户 profile |
 | `GET /v1/registry/tenants/{tenantId}/relations` | system_relations |
 | `GET /v1/registry/health` | seed/contract_set 就绪探针 |

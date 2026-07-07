@@ -13,6 +13,9 @@ from typing import Any
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from os_core.shared_contracts.errors import ErrorCode
+from os_core.shared_contracts.exceptions import PlatformError
+
 
 def get_tenant_profile(session: Session, *, tenant_id: str) -> dict[str, Any] | None:
   """tenant_profiles 单行。"""
@@ -260,3 +263,78 @@ def upsert_tenant_settings(
   updated = get_tenant_profile(session, tenant_id=tenant_id)
   assert updated is not None
   return updated
+
+
+def save_pack_mapping_config(
+  session: Session,
+  *,
+  tenant_id: str,
+  pack_id: str,
+  mappings: dict[str, Any],
+  secrets_ref: str | None = None,
+) -> dict[str, Any]:
+  """Studio Map 步：pack_mappings 写入 profile_json。
+
+  功能：按 pack_id 存储映射与 secrets_ref。
+  业务含义：STU-11 凭证引用落库 · 禁止明文 secret 字段。
+  """
+  existing = get_tenant_profile(session, tenant_id=tenant_id)
+  profile_data: dict[str, Any] = {}
+  if existing and existing.get("profile_json"):
+    try:
+      parsed = json.loads(existing["profile_json"])
+      if isinstance(parsed, dict):
+        profile_data = parsed
+    except (json.JSONDecodeError, TypeError):
+      profile_data = {}
+  pack_mappings = profile_data.setdefault("pack_mappings", {})
+  stored: dict[str, Any] = {"mappings": mappings}
+  if secrets_ref:
+    stored["secrets_ref"] = secrets_ref
+  pack_mappings[pack_id] = stored
+  profile_json_str = json.dumps(profile_data, ensure_ascii=False)
+  if existing is None:
+    session.execute(
+      text(
+        """
+        INSERT INTO tenant_profiles (
+          tenant_id, display_name, path, shadow_mode, write_approved, profile_json
+        ) VALUES (
+          :tenant_id, :display_name, NULL, 0, 0, :profile_json
+        )
+        """
+      ),
+      {
+        "tenant_id": tenant_id,
+        "display_name": tenant_id,
+        "profile_json": profile_json_str,
+      },
+    )
+  else:
+    session.execute(
+      text(
+        "UPDATE tenant_profiles SET profile_json = :profile_json WHERE tenant_id = :tenant_id"
+      ),
+      {"tenant_id": tenant_id, "profile_json": profile_json_str},
+    )
+  return stored
+
+
+def assert_pack_configured_for_tenant(
+  session: Session,
+  *,
+  tenant_id: str,
+  pack_id: str,
+) -> None:
+  """Prove 前置：租户须已注册 Connector Pack。
+
+  功能：存在任意 system_relations 行即视为已配置。
+  业务含义：T-03 CONNECTOR_NOT_CONFIGURED 门禁。
+  """
+  if has_system_relation_for_pack(session, tenant_id=tenant_id, pack_id=pack_id):
+    return
+  raise PlatformError(
+    ErrorCode.CONNECTOR_NOT_CONFIGURED,
+    f"Connector pack {pack_id} not configured for tenant {tenant_id}",
+    http_status=403,
+  )

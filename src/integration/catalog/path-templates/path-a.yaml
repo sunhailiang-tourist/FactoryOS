@@ -1,0 +1,11 @@
+# path-a · ERP 写读主路径（STU-10 · ADR-005 Path A）
+apiVersion: factoryos.io/v1
+kind: PathTemplate
+metadata:
+  template_id: path-a
+  display_name: Path A — ERP 写读
+spec:
+  path: A
+  description: ERP Connector 为主 · 顾问 onboard 默认路径
+  packs:
+    - conn-mock

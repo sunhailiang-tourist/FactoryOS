@@ -21,7 +21,10 @@ from os_core.graph_service import (
   submit_graph_version,
   update_graph_version,
 )
-from os_core.shared_contracts.models.graph import BusinessGraph
+from os_core.rule_engine import ensure_studio_ruleset_for_graph
+from os_core.shared_contracts.errors import ErrorCode
+from os_core.shared_contracts.exceptions import PlatformError
+from os_core.shared_contracts.models.graph import BusinessGraph, GraphStatus
 
 router = APIRouter(tags=["Graph"])
 
@@ -89,8 +92,18 @@ def freeze_graph_http(
   version: str,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST freeze（G-05）。"""
-  graph = freeze_graph_version(session, graph_id=graph_id, version=version)
+  """POST freeze（G-05 · STU-01 Studio 链：submit + RuleSet + freeze 编排）。"""
+  graph = get_graph_version(session, graph_id=graph_id, version=version)
+  if graph is None:
+    raise PlatformError(
+      ErrorCode.GRAPH_NOT_FROZEN,
+      f"Graph {graph_id}@{version} not found",
+      http_status=404,
+    )
+  if graph.status == GraphStatus.DRAFT:
+    graph = submit_graph_version(session, graph_id=graph_id, version=version)
+  ensure_studio_ruleset_for_graph(session, graph=graph)
+  graph = freeze_graph_version(session, graph_id=graph_id, version=version, frozen_by="studio")
   session.commit()
   return graph.model_dump(mode="json", by_alias=True)
 

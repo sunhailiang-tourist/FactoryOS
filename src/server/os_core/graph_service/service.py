@@ -3,7 +3,7 @@
 作用：Graph 版本链唯一写入口；不写 Legacy。
 业务关联：G-01～G-08 · execute 前 frozen 门禁。
 上游：server.api.modules.graphs.controllers
-下游：business_graphs · audit_service · rule_engine.store
+下游：business_graphs · audit_service
 关联文档：contracts/schemas/业务图谱.schema.json
 """
 from __future__ import annotations

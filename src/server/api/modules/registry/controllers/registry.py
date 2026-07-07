@@ -15,7 +15,12 @@ from pydantic import BaseModel, Field
 from server.api.config.dependencies.db import get_db_session
 from sqlalchemy.orm import Session
 
-from os_core.platform_registry import contract_store, pack_store, tenant_config_store
+from os_core.platform_registry import (
+  contract_store,
+  pack_store,
+  path_template_store,
+  tenant_config_store,
+)
 from os_core.shared_contracts.cmv_registry import register_dsl_verb
 from os_core.shared_contracts.errors import ErrorCode
 from os_core.shared_contracts.exceptions import PlatformError
@@ -31,6 +36,43 @@ class CmvVerbRegisterBody(BaseModel):
   compensator: str | None = Field(default=None, description="L2/L3 补偿动词")
   params_schema: dict[str, Any] = Field(default_factory=lambda: {"type": "object"})
   description: str | None = None
+
+
+class TenantProvisionBody(BaseModel):
+  """POST /v1/registry/tenants 请求体（STU-10 onboard）。"""
+
+  tenant_id: str = Field(description="新租户 ID")
+  display_name: str = Field(description="展示名")
+  path_template_id: str = Field(description="path-a | path-b | path-c")
+
+
+@router.get("/v1/registry/path-templates")
+def list_path_templates_http() -> list[dict[str, Any]]:
+  """GET /v1/registry/path-templates — path-a/b/c 标准模板。"""
+  return path_template_store.list_path_templates()
+
+
+@router.post("/v1/registry/tenants", status_code=201)
+def provision_tenant_http(
+  body: TenantProvisionBody,
+  session: Session = Depends(get_db_session),
+) -> dict[str, Any]:
+  """POST /v1/registry/tenants — 按 Path 模板开通租户（STU-10）。"""
+  return path_template_store.provision_tenant(
+    session,
+    tenant_id=body.tenant_id,
+    display_name=body.display_name,
+    path_template_id=body.path_template_id,
+  )
+
+
+@router.get("/v1/registry/tenants/{tenant_id}")
+def get_tenant_summary_http(
+  tenant_id: str,
+  session: Session = Depends(get_db_session),
+) -> dict[str, Any]:
+  """GET /v1/registry/tenants/{tenantId} — 租户摘要（STU-10）。"""
+  return path_template_store.get_tenant_summary(session, tenant_id=tenant_id)
 
 
 @router.post("/v1/registry/cmv/verbs", status_code=201)

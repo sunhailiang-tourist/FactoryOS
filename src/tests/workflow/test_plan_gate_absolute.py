@@ -90,6 +90,7 @@ def test_workflow_state_can_test_blocked_without_plan_ok() -> None:
     text = STATE_FILE.read_text(encoding="utf-8")
     text = text.replace("phase: CAN_TEST", "phase: PLANNING")
     text = text.replace("phase: CAN_CODE", "phase: PLANNING")
+    text = text.replace("phase: CAN_VERIFY", "phase: PLANNING")
     simulated = text.replace("phase: PLANNING", "phase: CAN_TEST", 1)
     errors = plan_gate_lib.validate_workflow_state_content(simulated)
     assert any("plan.ok" in e for e in errors)
