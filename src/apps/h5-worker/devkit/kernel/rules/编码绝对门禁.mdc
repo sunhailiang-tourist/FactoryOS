@@ -18,6 +18,7 @@ alwaysApply: true
 2. **函数**：功能 · 业务含义 · 上游调用方 · 下游被调方 · 参数/返回业务说明。
 3. **字段**：含义 · 业务含义 · 业务关联（Pydantic/SQLAlchemy/TS 类型字段均须）。
 4. 目标：**读代码像读业务流程**，不依赖 ADR 才能懂。
+5. **前端机械门禁**：`scripts/check_harness.py` 校验七标签文件头 + `export function` JSDoc（P0/P2/P3）；真源 `scripts/devkit/comment_gate_ts_lib.py` · `contracts/comment-gate-spec.md`。
 
 ## 代码质量
 

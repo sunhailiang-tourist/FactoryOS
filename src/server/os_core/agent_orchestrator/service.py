@@ -69,7 +69,9 @@ def create_plan(
   参数 source：MCP gateway 传 DslPlanSource.MCP。
   参数 verb：tools/call 的 CMV 名；默认 GOVERNED_WRITE。
   参数 trace_id：MCP SEP-414 解析结果；非 MCP 通道为 None。
+  异常: PlatformError · DSL_NOT_IN_GRAPH 等
   """
+  # 业务：校验动词在图谱允许列表后，从 intent 解析参数并组装单步 DslPlan
   verb_to_use = verb or _VERB_STUB
   require_known_verb(verb_to_use)
   if allowed_dsl is not None and verb_to_use not in allowed_dsl:

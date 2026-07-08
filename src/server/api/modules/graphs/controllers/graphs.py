@@ -58,6 +58,7 @@ def get_graph_http(
   业务含义：Studio 编辑/冻结前加载真源。
   参数 version：默认 v1.0.0。
   下游：graph_service.get_graph_version。
+  异常: PlatformError · GRAPH_NOT_FROZEN 等
   """
   ver = version or "v1.0.0"
   graph = get_graph_version(session, graph_id=graph_id, version=ver)
@@ -120,6 +121,7 @@ def freeze_graph_http(
   业务含义：顾问零仓库完成 Graph+Rule 闭环；编排留在 API 层不污染 os_core 边界。
   上游：freeze_graph_http · get_db_session。
   下游：graph_service · rule_engine.ensure_studio_ruleset_for_graph。
+  异常: PlatformError · GRAPH_NOT_FROZEN 等
   """
   graph = get_graph_version(session, graph_id=graph_id, version=version)
   if graph is None:

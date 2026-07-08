@@ -19,7 +19,7 @@ PIPELINE = ROOT / "_factoryos_pipeline"
 ACCEPTANCE_DIR = ROOT / "contracts" / "acceptance"
 OPENAPI = ROOT / "contracts" / "openapi" / "工厂操作系统-v1.1.yaml"
 
-AC_RE = re.compile(r"\b([A-Z]-\d{2})\b")
+AC_RE = re.compile(r"\b([A-Z][A-Z0-9]*-\d{2})\b")
 HTTP_RE = re.compile(
     r"\b(GET|POST|PUT|PATCH|DELETE)\s+(/v1/[A-Za-z0-9_./{}-]+)",
     re.IGNORECASE,
@@ -52,7 +52,7 @@ def check_plan(path: Path) -> list[str]:
     http_ops = sorted(set(HTTP_RE.findall(text)))
 
     if not ac_ids:
-        errors.append(f"{path}: no AC IDs found (expect G-01, E-03, …)")
+        errors.append(f"{path}: no AC IDs found (expect G-01, STU-01, CMNT-01, …)")
         return errors
 
     acceptance = load_acceptance_text()

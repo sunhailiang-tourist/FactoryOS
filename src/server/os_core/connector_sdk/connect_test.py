@@ -27,6 +27,8 @@ def resolve_pack_base_url(
 
   功能：Override 差量覆盖 catalog 默认 URL。
   业务含义：runtime / connect/test 须与 overrides.yaml 一致。
+  参数 tenant_id/pack_id：租户与 Connector Pack 定位键。
+  返回：合并后的 base_url 字符串。
   """
   blueprint = pack_store.get_pack_blueprint(session, pack_id=pack_id)
   default_url = "http://mock.local"

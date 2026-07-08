@@ -21,7 +21,12 @@ def _row_to_ruleset(row: dict) -> RuleSet:
 
 
 def insert_ruleset(session: Session, ruleset: RuleSet) -> None:
-  """INSERT rulesets。"""
+  """INSERT rulesets。
+
+  功能：将 RuleSet JSON 写入 rulesets 表。
+  业务含义：R-01 create_ruleset 数据面落库。
+  参数 ruleset：待插入 RuleSet 模型。
+  """
   body = ruleset.model_dump(mode="json")
   session.execute(
     text(
@@ -41,7 +46,12 @@ def insert_ruleset(session: Session, ruleset: RuleSet) -> None:
 
 
 def update_ruleset(session: Session, ruleset: RuleSet) -> None:
-  """UPDATE rulesets。"""
+  """UPDATE rulesets。
+
+  功能：按 ruleset_id 更新 graph 绑定与 body_json。
+  业务含义：R-02 编辑 draft 与 R-04 freeze 共用。
+  参数 ruleset：含最新字段的 RuleSet。
+  """
   body = ruleset.model_dump(mode="json")
   session.execute(
     text(
@@ -65,7 +75,13 @@ def update_ruleset(session: Session, ruleset: RuleSet) -> None:
 
 
 def get_ruleset(session: Session, ruleset_id: str) -> RuleSet | None:
-  """按 ID 查 RuleSet。"""
+  """按 ID 查 RuleSet。
+
+  功能：SELECT body_json 并反序列化为 RuleSet。
+  业务含义：service 层读路径唯一 store 入口。
+  参数 ruleset_id：RuleSet 主键。
+  返回：RuleSet 或 None。
+  """
   row = (
     session.execute(
       text("SELECT body_json FROM rulesets WHERE ruleset_id = :id LIMIT 1"),
@@ -85,7 +101,13 @@ def list_rulesets(
   tenant_id: str | None = None,
   graph_id: str | None = None,
 ) -> list[RuleSet]:
-  """列出 RuleSet（可选 graph_id 过滤）。"""
+  """列出 RuleSet（可选 graph_id 过滤）。
+
+  功能：按 graph_id 过滤并排序返回。
+  业务含义：Studio/管理端枚举 Graph 绑定 RuleSet。
+  参数 graph_id：可选过滤键；tenant_id 预留（表未存）。
+  返回：RuleSet 列表。
+  """
   clauses = ["1=1"]
   params: dict[str, object] = {}
   if graph_id is not None:
@@ -142,7 +164,13 @@ def has_frozen_ruleset(
   graph_id: str,
   graph_version: str,
 ) -> bool:
-  """同 graph 版本是否存在 frozen RuleSet。"""
+  """同 graph 版本是否存在 frozen RuleSet。
+
+  功能：委托 find_frozen_ruleset_id 判空。
+  业务含义：graph freeze 与 execute 前置校验。
+  参数 graph_id/graph_version：Graph 定位键。
+  返回：存在 frozen RuleSet 则 True。
+  """
   return find_frozen_ruleset_id(session, graph_id=graph_id, graph_version=graph_version) is not None
 
 
@@ -152,7 +180,13 @@ def find_frozen_ruleset_id(
   graph_id: str,
   graph_version: str,
 ) -> str | None:
-  """返回首个 frozen RuleSet ID（execute 默认 ruleset）。"""
+  """返回首个 frozen RuleSet ID（execute 默认 ruleset）。
+
+  功能：查 rulesets 表首个 frozen 行 ruleset_id。
+  业务含义：execution 默认绑定同版本 frozen RuleSet。
+  参数 graph_id/graph_version：Graph 定位键。
+  返回：ruleset_id 或 None。
+  """
   row = (
     session.execute(
       text(

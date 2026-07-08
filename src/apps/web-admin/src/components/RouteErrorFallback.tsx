@@ -13,7 +13,14 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 
+/**
+ * 功能：RouteErrorFallback 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function RouteErrorFallback() {
+  // 业务：RouteErrorFallback 主体编排（见文件头上下游）
   const error = useRouteError();
   const message = isRouteErrorResponse(error)
     ? `${error.status} ${error.statusText}`

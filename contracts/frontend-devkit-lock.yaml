@@ -3,16 +3,23 @@
 # 变更纪律：结构/治理/技术策略改动须用户书面确认 → 改金样 → sync → bump version
 
 lock_id: frontend-devkit
-version: "2.0.0-s5"
-locked_at: "2026-07-07"
+version: "2.0.0-s6"
+locked_at: "2026-07-08"
 decision_ref: D16-frontend-devkit-lock
 golden_source: src/apps/web-admin
 template_path: templates/frontend-devkit
 scaffold_entry: ./scripts/scaffold_frontend_app.sh
 
+comment_gate:
+  spec: contracts/comment-gate-spec.md
+  check: scripts/check_comments.py
+  fix: scripts/comment_fix.py
+  pre_commit: .pre-commit-config.yaml
+  mode: staged_commit_interactive · push_full
+
 architecture:
   engineering_doc: ENGINEERING.md
-  engineering_revision: "1.4+s5"
+  engineering_revision: "1.4+s6"
   architecture_doc: ARCHITECTURE.md
   architecture_revision: "1.8+s5"
   devkit_profile: devkit.profile.yaml
@@ -40,6 +47,7 @@ tool_tracks:
   harness: scripts/check_harness.py
   activate: scripts/activate.sh
   create_module: scripts/create-module.mjs
+  comment_gate: scripts/check_comments.py
 
 # DevKit harness checks（与 devkit.profile.yaml 对齐）
 harness_checks:
@@ -55,6 +63,7 @@ harness_checks:
   - storybook_config
   - forms_primitives
   - standalone_ready
+  - comment_gate_cmnt_c
   - error_registry_mirror
   - directory_readme
   - resource_chain_sync
@@ -83,10 +92,20 @@ change_policy: |
 
 parity_required_paths:
   - devkit.profile.yaml
+  - devkit.manifest.standalone.yaml
   - ENGINEERING.md
   - ARCHITECTURE.md
   - scripts/check_harness.py
   - scripts/activate.sh
+  - scripts/check_comments.py
+  - scripts/check_comments_commit_hook.py
+  - scripts/comment_fix.py
+  - scripts/comment_fix_lib.py
+  - scripts/comment_gate_git.py
+  - scripts/venv_exec.sh
+  - scripts/requirements.txt
+  - .pre-commit-config.yaml
+  - contracts/comment-gate-spec.md
   - scripts/form/contracts/README.md
   - src/i18n/contracts/README.md
   - src/rbac/contracts/README.md

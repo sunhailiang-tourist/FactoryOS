@@ -18,7 +18,14 @@ export type BarChartProps = {
   className?: string;
 };
 
+/**
+ * 功能：BarChart 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function BarChart({ categories, series, title, height, className }: BarChartProps) {
+  // 业务：BarChart 主体编排（见文件头上下游）
   const option: EChartsOption = {
     title: title ? { text: title, left: "center" } : undefined,
     tooltip: { trigger: "axis" },

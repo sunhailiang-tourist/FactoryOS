@@ -11,6 +11,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type DefaultValues, type FieldValues, type UseFormReturn } from "react-hook-form";
 import type { ZodType } from "zod";
 
+/**
+ * 功能：useAppForm 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function useAppForm<TFieldValues extends FieldValues>(
   schema: ZodType<TFieldValues>,
   defaultValues?: DefaultValues<TFieldValues>,

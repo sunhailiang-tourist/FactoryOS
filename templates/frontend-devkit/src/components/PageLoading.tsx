@@ -15,6 +15,12 @@ type PageLoadingProps = {
   label?: string;
 };
 
+/**
+ * 功能：PageLoading 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function PageLoading({ label = "加载中" }: PageLoadingProps) {
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="40vh" gap={1}>

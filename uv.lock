@@ -248,11 +248,13 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+comment-gate = [
+    { name = "pre-commit" },
+]
 dev = [
     { name = "cairosvg" },
     { name = "deptry" },
     { name = "httpx" },
-    { name = "pre-commit" },
     { name = "pyright" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
@@ -260,6 +262,9 @@ dev = [
 ]
 
 [package.dev-dependencies]
+comment-gate = [
+    { name = "pre-commit" },
+]
 dev = [
     { name = "uvicorn", extra = ["standard"] },
 ]
@@ -272,7 +277,7 @@ requires-dist = [
     { name = "deptry", marker = "extra == 'dev'", specifier = ">=0.23" },
     { name = "fastapi", specifier = ">=0.115,<1" },
     { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.28" },
-    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.0" },
+    { name = "pre-commit", marker = "extra == 'comment-gate'", specifier = ">=4.0" },
     { name = "pydantic", specifier = ">=2.10,<3" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.390" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3" },
@@ -281,9 +286,10 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0,<3" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "comment-gate"]
 
 [package.metadata.requires-dev]
+comment-gate = [{ name = "pre-commit", specifier = ">=4.0" }]
 dev = [{ name = "uvicorn", extras = ["standard"], specifier = ">=0.34,<1" }]
 
 [[package]]

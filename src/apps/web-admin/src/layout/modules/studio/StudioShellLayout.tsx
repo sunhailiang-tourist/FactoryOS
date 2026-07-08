@@ -28,7 +28,14 @@ import { RBAC_DOMAIN } from "@/rbac/modules/studio/registry";
 
 const DRAWER_WIDTH = 280;
 
+/**
+ * 功能：StudioShellLayout 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function StudioShellLayout() {
+  // 业务：StudioShellLayout 主体编排（见文件头上下游）
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [mobileOpen, setMobileOpen] = useState(false);

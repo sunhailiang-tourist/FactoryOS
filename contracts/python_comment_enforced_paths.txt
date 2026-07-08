@@ -3,11 +3,35 @@
 # 阶段 1a STU-API 核心切片 — 链路未闭合前不得降级
 
 src/server/os_core/connector_sdk/studio_integration.py
+src/server/os_core/connector_sdk/connect_test.py
 src/server/os_core/platform_registry/path_template_store.py
 src/server/os_core/platform_registry/tenant_config_store.py
+src/server/os_core/platform_registry/change_request_store.py
 src/server/os_core/rule_engine/service.py
+src/server/os_core/graph_service/service.py
 src/server/api/modules/integration/controllers/integration.py
 src/server/api/modules/registry/controllers/registry.py
 src/server/api/modules/tenant/controllers/tenant.py
 src/server/api/modules/graphs/controllers/graphs.py
 src/server/api/modules/studio/controllers/studio.py
+src/server/os_core/execution_service/service.py
+src/server/api/modules/execution/controllers/execute.py
+src/server/api/modules/rulesets/controllers/rulesets.py
+src/server/api/modules/registry/controllers/registry_changes.py
+src/server/api/modules/agent/controllers/agent.py
+
+# B3 + controllers (Step5)
+src/server/api/application/factory.py
+src/server/api/config/dependencies/db.py
+src/server/api/config/middleware/registry.py
+src/server/api/config/registry.py
+src/server/api/modules/audit/controllers/audit.py
+src/server/api/modules/connectors/controllers/connectors.py
+src/server/api/modules/dsl/controllers/dsl.py
+src/server/api/modules/execution/controllers/executions.py
+src/server/api/modules/harness/controllers/harness.py
+src/server/api/modules/mcp/controllers/mcp.py
+src/server/api/modules/package/controllers/package.py
+src/server/api/modules/probes/controllers/health.py
+src/server/api/modules/reconciliation/controllers/reconciliation.py
+src/server/os_core/registry.py

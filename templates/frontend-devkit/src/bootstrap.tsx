@@ -16,7 +16,14 @@ import { createQueryClient } from "@/api/query/client";
 import { I18nProvider } from "@/i18n/core/provider";
 import { createAppRouter } from "@/router/browser-router";
 
+/**
+ * 功能：Bootstrap 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function Bootstrap() {
+  // 业务：Bootstrap 主体编排（见文件头上下游）
   const [queryClient] = useState(() => createQueryClient());
   const [router] = useState(() => createAppRouter(queryClient));
 

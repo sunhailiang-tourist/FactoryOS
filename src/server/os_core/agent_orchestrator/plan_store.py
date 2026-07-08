@@ -17,15 +17,33 @@ _PLANS: dict[UUID, DslPlan] = {}
 
 
 def save_plan(plan: DslPlan) -> None:
-  """保存计划（未确认前禁止 execution 写 Legacy）。"""
+  """保存 DslPlan 至进程内暂存。
+
+  功能：plan_id → DslPlan 映射写入 _PLANS。
+  业务含义：H-01 plan 阶段；confirm 前禁止 execution 写 Legacy。
+  参数 plan：含 plan_id · verb · graph 绑定的 DSL 计划。
+  上游：agent_orchestrator.create_plan。
+  下游：get_plan · harness confirm（Step3）。
+  """
   _PLANS[plan.plan_id] = plan
 
 
 def get_plan(plan_id: UUID) -> DslPlan | None:
-  """按 plan_id 读取；不存在返回 None。"""
+  """按 plan_id 读取暂存计划。
+
+  功能：查询 _PLANS 字典。
+  业务含义：confirm 步加载 plan 转 ExecuteRequest。
+  参数 plan_id：计划 UUID。
+  返回：DslPlan 或 None。
+  """
   return _PLANS.get(plan_id)
 
 
 def clear_plans() -> None:
-  """测试夹具清空（非生产 API）。"""
+  """清空进程内全部暂存计划。
+
+  功能：_PLANS.clear()。
+  业务含义：pytest fixture teardown；非生产 API。
+  上游：测试 harness。
+  """
   _PLANS.clear()

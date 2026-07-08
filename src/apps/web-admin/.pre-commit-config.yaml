@@ -1,0 +1,17 @@
+# Frontend DevKit · CMNT-C 注释闭环（standalone / 独立 git 根）
+# umbrella 托管时 monorepo 根 pre-commit 亦覆盖 src/apps/<id>/src/
+repos:
+  - repo: local
+    hooks:
+      - id: web-comments-staged
+        name: Web comment gate (staged · interactive CMNT-C)
+        entry: bash scripts/venv_exec.sh scripts/check_comments_commit_hook.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+      - id: web-comments-full
+        name: Web comment gate (full · CMNT-C)
+        entry: bash scripts/venv_exec.sh scripts/check_comments.py --full
+        language: system
+        pass_filenames: false
+        stages: [pre-push]

@@ -34,8 +34,11 @@ class CmvVerbRegisterBody(BaseModel):
   verb: str = Field(description="CMV 动词名，如 GOVERNED_WRITE")
   level: str = Field(description="L0 / L2 / L3")
   compensator: str | None = Field(default=None, description="L2/L3 补偿动词")
-  params_schema: dict[str, Any] = Field(default_factory=lambda: {"type": "object"})
-  description: str | None = None
+  params_schema: dict[str, Any] = Field(
+    default_factory=lambda: {"type": "object"},
+    description="动词参数 JSON Schema",
+  )
+  description: str | None = Field(default=None, description="动词业务说明")
 
 
 class TenantProvisionBody(BaseModel):
@@ -118,6 +121,7 @@ def get_active_contract_set(
   业务含义：Integration 读契约真源就绪探针。
   参数 environment：默认 prod。
   返回：set_id 与 status。
+  异常: PlatformError · REG_NO_ACTIVE_CONTRACT 等
   """
   set_id = contract_store.get_active_set_id(session, environment=environment)
   if not set_id:
@@ -157,6 +161,7 @@ def get_pack(pack_id: str, session: Session = Depends(get_db_session)) -> dict[s
   功能：加载并返回 Pack Blueprint dict。
   业务含义：Discover/Prove 读 Pack 规格真源。
   下游：pack_store.get_pack_blueprint。
+  异常: PlatformError · REG_PACK_NOT_FOUND 等
   """
   blueprint = pack_store.get_pack_blueprint(session, pack_id=pack_id)
   if blueprint is None:
@@ -178,6 +183,7 @@ def get_tenant_profile(
   功能：Registry 读租户 profile 原始行。
   业务含义：Studio/实施查看 Shadow · pack_mappings。
   下游：tenant_config_store.get_tenant_profile。
+  异常: PlatformError · REG_TENANT_NOT_FOUND 等
   """
   profile = tenant_config_store.get_tenant_profile(session, tenant_id=tenant_id)
   if profile is None:

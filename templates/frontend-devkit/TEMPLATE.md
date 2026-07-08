@@ -121,7 +121,7 @@ pnpm install
 | 层 | 机制 |
 |----|------|
 | L0 本地 | `pnpm check`（codegen → tsc → eslint → vitest → build → size → e2e → storybook） |
-| L1 DevKit | `scripts/check_harness.py`（registry · contracts · 7 标签 · 层界 · i18n/rbac） |
+| L1 DevKit | `scripts/check_harness.py`（registry · contracts · 7 标签 · export JSDoc · 层界 · i18n/rbac） |
 | L2 Umbrella | `./scripts/harness` 调度 Profile |
 | 目录 | D15 `directory-readmes.yaml` |
 | 模板 | `check_frontend_template_parity.py` |

@@ -56,3 +56,12 @@ uv run pytest src/tests/integration/ -q
 - 阻断 → Dev 回修 · 禁止 Verify / `gate step` / `可以继续`
 - 需改进 → 列 1–3 条可执行项；你 `风险接受并继续` 后方可进入 Verify
 - 通过 → 进入 **Verify 新会话**
+
+
+## 注释门禁（须满足）
+
+真源：`contracts/comment-gate-spec.md`
+
+- 每个 `.ts/.tsx` 七标签文件头
+- 每个 `export function` 含 JSDoc（功能/业务 + 上游/下游/怎么用）
+- 复杂函数体 `//` 块注释 · `throw` 须写异常

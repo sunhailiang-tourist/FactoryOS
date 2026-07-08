@@ -30,5 +30,10 @@ def compute_graph_checksum(graph: BusinessGraph) -> str:
 
 
 def default_draft_checksum() -> str:
-  """新建 draft Graph 默认 checksum。"""
+  """新建 draft Graph 默认 checksum。
+
+  功能：委托 shared_contracts draft_graph_checksum。
+  业务含义：G-01 创建时占位；freeze 前非内容哈希。
+  返回：draft 占位 checksum 字符串。
+  """
   return draft_graph_checksum()

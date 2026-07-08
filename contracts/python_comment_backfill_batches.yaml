@@ -1,0 +1,104 @@
+# Python 中文注释分批还债清单（真源）
+# 用途：plan CMNT-* · check_python_comments.py --paths · enforced_paths 扩容
+# 规格：docs/文档/架构/编码绝对门禁.md §3（五层：README→文件头→函数→字段→块注释）
+# 更新：2026-07-08
+
+version: "1.0.0"
+scope:
+  roots:
+    - src/server/os_core
+    - src/server/api
+  exclude_parts:
+    - __pycache__
+    - migrations
+baseline:
+  scanned_py_files: 193
+  clean_files: 37
+  violations_mechanical: 647
+  enforced_paths_done: 9
+  note: "机械门禁当前仅文件头四标签 + 公开函数 doc；字段/块注释在 Step5 升级 checker"
+
+batches:
+  - id: B0
+    title: 共享契约与租户内核
+    paths:
+      - src/server/os_core/shared_contracts
+      - src/server/os_core/tenant_service
+    violations: 26
+    files_with_issues: 9
+    total_py: 22
+    readme_required:
+      - src/server/os_core/shared_contracts/README.md
+      - src/server/os_core/tenant_service/README.md
+    gate_exit: "uv run python scripts/check_python_comments.py --paths src/server/os_core/shared_contracts src/server/os_core/tenant_service"
+
+  - id: B1a
+    title: Studio 主链 os_core（1a 已强制 · 本批补余文件）
+    paths:
+      - src/server/os_core/platform_registry
+      - src/server/os_core/connector_sdk
+      - src/server/os_core/rule_engine
+      - src/server/os_core/graph_service
+    violations: 74
+    files_with_issues: 19
+    total_py: 26
+    note: "9 个 enforced_paths 已绿；本批含 change_request_store · mock_legacy 等"
+    gate_exit: "uv run python scripts/check_python_comments.py --paths src/server/os_core/platform_registry src/server/os_core/connector_sdk src/server/os_core/rule_engine src/server/os_core/graph_service"
+
+  - id: B1b
+    title: 其余 os_core 横切模块
+    paths:
+      - src/server/os_core/agent_orchestrator
+      - src/server/os_core/audit_service
+      - src/server/os_core/execution_service
+      - src/server/os_core/license_service
+      - src/server/os_core/mcp_gateway
+      - src/server/os_core/package_service
+      - src/server/os_core/reconciliation_service
+      - src/server/os_core/registry.py
+      - src/server/os_core/__init__.py
+    violations: 29
+    files_with_issues: 9
+    total_py: 18
+    gate_exit: "uv run python scripts/check_python_comments.py --paths src/server/os_core/agent_orchestrator src/server/os_core/audit_service src/server/os_core/execution_service src/server/os_core/license_service src/server/os_core/mcp_gateway src/server/os_core/package_service src/server/os_core/reconciliation_service"
+
+  - id: B2
+    title: API 业务模块（薄路由层）
+    paths:
+      - src/server/api/modules
+    violations: 370
+    files_with_issues: 83
+    total_py: 90
+    gate_exit: "uv run python scripts/check_python_comments.py --paths src/server/api/modules"
+
+  - id: B3
+    title: API 工程底座（config · application · probes）
+    paths:
+      - src/server/api/config
+      - src/server/api/application
+      - src/server/api/main.py
+      - src/server/api/__init__.py
+    violations: 148
+    files_with_issues: 36
+    total_py: 37
+    gate_exit: "uv run python scripts/check_python_comments.py --paths src/server/api/config src/server/api/application"
+
+enforced_paths_expand_after:
+  B0: []
+  B1a:
+    - src/server/os_core/platform_registry/change_request_store.py
+    - src/server/os_core/graph_service/service.py
+    - src/server/os_core/connector_sdk/connect_test.py
+  B1b:
+    - src/server/os_core/execution_service/service.py
+    - src/server/os_core/audit_service/store.py
+  B2: "逐模块 controllers + routers（见 plan §6 Step4 表）"
+  B3: "src/server/api/config/**/*.py"
+
+checker_evolution:
+  - after: B0
+    add: "Pydantic Field description 或行尾 doc 抽检（可选 warn）"
+  - after: B2
+    add: "公开函数含 raise PlatformError 时 doc 须含「异常」或 ErrorCode 名"
+  - after: B3
+    add: "gate pr 改跑全量 src/server（非仅 --gate）"

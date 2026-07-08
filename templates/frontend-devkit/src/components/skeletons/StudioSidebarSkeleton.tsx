@@ -10,7 +10,14 @@
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 
+/**
+ * 功能：StudioSidebarSkeleton 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function StudioSidebarSkeleton() {
+  // 业务：StudioSidebarSkeleton 主体编排（见文件头上下游）
   return (
     <Stack spacing={1.5} sx={{ px: 2, py: 1 }} aria-label="加载侧栏">
       <Skeleton variant="text" width="70%" height={28} />

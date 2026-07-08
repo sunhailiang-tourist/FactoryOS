@@ -12,3 +12,8 @@ contracts:
   path: vendor/factoryos-contracts
   pin: core-v1.0.0
   sync_script: vendor/factoryos-contracts/scripts/sync_error_registry.py
+comment_gate:
+  spec: contracts/comment-gate-spec.md
+  check: scripts/check_comments.py
+  fix: scripts/comment_fix.py
+  pre_commit: .pre-commit-config.yaml

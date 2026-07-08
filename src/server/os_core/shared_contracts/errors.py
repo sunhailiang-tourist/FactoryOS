@@ -70,12 +70,24 @@ ERROR_MESSAGE_ZH: dict[str, str] = {
 
 
 def default_message(code: ErrorCode | str) -> str:
-  """SSOT message_zh 默认中文；抛出 PlatformError 时 message 可 override。"""
+  """返回错误码默认中文文案。
+
+  功能：查 ERROR_MESSAGE_ZH 表。
+  业务含义：API 响应与日志统一中文描述；SSOT 为 error-registry.yaml。
+  参数 code：ErrorCode 或字符串 code。
+  返回：message_zh；未知码回退 UNKNOWN_ERROR。
+  """
   key = code.value if isinstance(code, ErrorCode) else code
   return ERROR_MESSAGE_ZH.get(key, ERROR_MESSAGE_ZH["UNKNOWN_ERROR"])
 
 
 def format_error_label(code: ErrorCode | str) -> str:
-  """开发者可读：英文 code + 中文描述（日志 / 调试一眼懂）。"""
+  """格式化「code · 中文」调试标签。
+
+  功能：拼接英文 code 与 default_message。
+  业务含义：日志与 pytest 断言一眼读懂业务错误。
+  参数 code：ErrorCode 或字符串。
+  返回：如 RULE_DENIED · 规则拒绝…
+  """
   key = code.value if isinstance(code, ErrorCode) else code
   return f"{key} · {default_message(key)}"

@@ -18,7 +18,8 @@
     import type { Permission, PermissionMode } from "@/rbac/core/types";
 
     /** 首期薄封装；二期在页面按钮直接消费，无需改目录。 */
-    export function usePermissions() {
+export function usePermissions() {
+      // 业务：usePermissions 主体编排（见文件头上下游）
       const role = getActorContext().role;
       return {
         role,

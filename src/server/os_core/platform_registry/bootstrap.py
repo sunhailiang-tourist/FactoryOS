@@ -72,6 +72,7 @@ def _insert_artifact(
 
 
 def _seed_contracts(session: Session) -> None:
+  """从 contracts/ 灌入 CMV 注册表与 JSON Schema artifacts。"""
   cmv_path = contracts_dir() / "cmv" / "CMV注册表.yaml"
   if cmv_path.is_file():
     body = cmv_path.read_text(encoding="utf-8")
@@ -316,6 +317,7 @@ def _seed_fixture_tenants(session: Session) -> None:
 
 def _seed_fixture_graph(session: Session) -> None:
   """集成测试夹具：default 租户 frozen graph + ruleset（P-01 export 前置）。"""
+  # 业务：幂等检查后直接 INSERT fixture graph 与配套 frozen ruleset
   graph_id = "graph-d1-generic-template"
   version = "v1.0.0"
   ruleset_id = "ruleset-w3-default"
@@ -400,7 +402,14 @@ def _seed_fixture_graph(session: Session) -> None:
 
 
 def bootstrap_registry(session: Session, *, root: Path | None = None) -> bool:
-  """幂等灌入 Registry；已 seed 则跳过。返回本次是否新写入。"""
+  """幂等灌入 Registry（首次启动或测试 DB）。
+
+  功能：contract_sets · artifacts · packs · tenants · fixture 一次性写入。
+  业务含义：ADR-008 export→DB 迁移期真源初始化。
+  参数 session：已建表的 SQLAlchemy Session。
+  返回：True 表示本次新写入；已 seed 则 False。
+  """
+  # 业务：未 seed 时依次灌入 contract/pack/tenant/fixture 并 commit
   _ = root  # 保留参数兼容 conftest；路径由 repo_paths 解析
   if contract_store.is_seeded(session):
     return False

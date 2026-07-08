@@ -92,7 +92,9 @@ def provision_tenant(
   业务含义：STU-10/ STU-02 Registry 经 API 落库（非手改 tenants/*.yaml）。
   参数 path_template_id：path-a | path-b | path-c
   返回：租户摘要（含 tenant_id · path · packs）
+  异常: PlatformError · VAL_SCHEMA_FAILED 等
   """
+  # 业务：加载 Path 模板后写入 tenant profile 并绑定 Pack 关系
   template = get_path_template(path_template_id)
   if template is None:
     raise PlatformError(
@@ -155,6 +157,7 @@ def get_tenant_summary(session: Session, *, tenant_id: str) -> dict[str, Any]:
   业务含义：Studio onboard 后查询开通结果。
   参数 tenant_id：租户 ID。
   返回：OpenAPI 友好摘要 dict。
+  异常: PlatformError · REG_TENANT_NOT_FOUND 等
   """
   profile = tenant_config_store.get_tenant_profile(session, tenant_id=tenant_id)
   if profile is None:

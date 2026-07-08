@@ -1,10 +1,9 @@
-"""FastAPI 异常 → 统一 JSON（code + message + detail 兼容）。
+"""全局异常处理器。
 
-作用：PlatformError · HTTPException · 422 · 500 唯一出口。
-业务关联：AC 负向断言 · STU-09 AUTH_STUDIO_FORBIDDEN。
-上游：os_core.PlatformError · contracts/error-registry.yaml
-下游：config/registry.register_config
-关联文档：docs/文档/规格说明/状态码与错误约定.md
+作用：PlatformError/HTTPException/ValidationError 统一 JSON 响应。
+业务关联：客户端可解析 error_code · message。
+上游：config/registry add_exception_handler。
+下游：HTTP JSON ProblemDetails。
 """
 from __future__ import annotations
 
@@ -23,7 +22,13 @@ def _trace_id(request: Request) -> str | None:
 
 
 def platform_error_handler(request: Request, exc: PlatformError) -> JSONResponse:
-  """PlatformError → 标准错误体。"""
+  """PlatformError → JSON ProblemDetails。
+
+  功能：映射 error_code 到 HTTP status 并序列化。
+  业务含义：os_core 业务异常统一 HTTP 出口。
+  上游：os_core PlatformError raise。
+  下游：JSONResponse · build_error_payload。
+  """
   return JSONResponse(
     status_code=exc.http_status,
     content=build_error_payload(
@@ -35,7 +40,13 @@ def platform_error_handler(request: Request, exc: PlatformError) -> JSONResponse
 
 
 def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
-  """HTTPException → 尽量保留 code；否则按状态映射。"""
+  """HTTPException → JSON 响应。
+
+  功能：包装 Starlette HTTPException 为标准 JSON。
+  业务含义：FastAPI 内置异常对齐契约。
+  上游：FastAPI route raise HTTPException。
+  下游：JSONResponse。
+  """
   detail = exc.detail
   code = ErrorCode.UNKNOWN_ERROR.value
   message = str(detail)
@@ -69,7 +80,13 @@ def validation_exception_handler(
   request: Request,
   exc: RequestValidationError,
 ) -> JSONResponse:
-  """Pydantic/FastAPI 422 → VAL_SCHEMA_FAILED + details 数组。"""
+  """RequestValidationError → 422 JSON。
+
+  功能：Pydantic 校验失败转 ProblemDetails。
+  业务含义：OpenAPI 请求体验证错误统一格式。
+  上游：FastAPI/Pydantic 校验。
+  下游：422 JSONResponse。
+  """
   return JSONResponse(
     status_code=422,
     content=build_error_payload(
@@ -82,7 +99,13 @@ def validation_exception_handler(
 
 
 def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-  """未捕获异常 → INTERNAL_ERROR（不泄露栈）。"""
+  """未捕获异常 → 500 JSON。
+
+  功能：兜底异常处理并记录日志。
+  业务含义：防止堆栈泄露；返回通用 500。
+  上游：未预期 Exception。
+  下游：500 JSONResponse · logs。
+  """
   _ = exc
   return JSONResponse(
     status_code=500,

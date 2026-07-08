@@ -2,10 +2,10 @@
 # FactoryOS 开发环境激活 — 与根 README §激活开发环境 唯一真源一致
 #
 # 一条命令具备：
-#   · uv.lock 封版依赖（含 pre-commit · pyyaml）
+#   · uv.lock 封版依赖（含 comment-gate · pre-commit · pyyaml）
 #   · docs 认知基线
 #   · gate pr（harness 11 项 · pytest · static · deptry）
-#   · git pre-commit / pre-push（含结构快照 commit 拦截）
+#   · git pre-commit / pre-push（结构快照 · CMNT-C 注释闭环）
 # 不含：uv 本体安装 · Cursor Hooks 重启（需人工一步）
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -18,8 +18,8 @@ if ! command -v uv >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "▶ uv sync --frozen --extra dev"
-uv sync --frozen --extra dev
+echo "▶ uv sync --frozen --extra dev --group dev --group comment-gate"
+uv sync --frozen --extra dev --group dev --group comment-gate
 
 echo "▶ docs_baseline refresh"
 ./scripts/docs_baseline refresh
@@ -27,7 +27,7 @@ echo "▶ docs_baseline refresh"
 echo "▶ gate pr（harness 11 项 · pytest · static · deptry · 结构快照对账）"
 uv run python scripts/gate_cli.py pr
 
-echo "▶ pre-commit install（commit：结构快照 · lock · harness · push：pytest）"
+echo "▶ pre-commit install（commit：结构快照 · CMNT-C 注释 · lock · harness · push：注释全量 · pytest）"
 uv run pre-commit install
 uv run pre-commit install --hook-type pre-push
 
@@ -44,10 +44,13 @@ cat <<'EOF'
   [x] docs 认知基线（.cursor/docs-baseline/）
   [x] gate pr / CI 同款 harness（含路径一致性 · 结构快照）
   [x] git commit 拦截：结构变更须同步 contracts/repo-structure.yaml
-  [x] git push 拦截：contract + workflow pytest
+  [x] git commit 拦截：CMNT-C 注释（staged 校验 · 交互补全骨架）
+  [x] git push 拦截：注释全量 + contract + workflow pytest
 
   真源：contracts/repo-structure.yaml → .cursor/factoryos/PATH-SNAPSHOT.md
+  注释：contracts/comment-gate-spec.md · scripts/check_comments.py
   自检：uv run python scripts/check_structure_change.py
+  注释自检：uv run python scripts/check_comments.py --staged
 
   请再人工完成（仅一次）：
   1. Cursor 打开仓库根 → Settings → Hooks 见 protect-paths → 重启 Cursor

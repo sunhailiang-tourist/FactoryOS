@@ -8,7 +8,7 @@
  * 关联：i18n/registry.ts
  */
 
-    import type { LocaleId } from "@/i18n/core/types";
+import type { LocaleId } from "@/i18n/core/types";
 
     type JsonModule = { default: Record<string, unknown> };
 
@@ -28,7 +28,13 @@
       return bucket;
     }
 
-    export function buildI18nResources(): Record<LocaleId, Record<string, Record<string, unknown>>> {
+/**
+ * 功能：buildI18nResources 导出函数。
+ * 业务含义：见同文件模块文件头。
+ * 上游：见文件头上游。
+ * 下游：见文件头下游。
+ */
+export function buildI18nResources(): Record<LocaleId, Record<string, Record<string, unknown>>> {
       return {
         "zh-CN": collect(zhModules),
         "en-US": collect(enModules),

@@ -15,6 +15,12 @@ export const MOTION_PRESETS = {
 
 export type MotionPreset = keyof typeof MOTION_PRESETS;
 
+/**
+ * 功能：motionClass 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function motionClass(preset: MotionPreset): string {
   return MOTION_PRESETS[preset];
 }

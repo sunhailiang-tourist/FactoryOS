@@ -53,6 +53,7 @@ def append_audit_event(
   参数 event_type：Schema enum 字符串
   返回：对齐 AuditEvent.schema 的 Pydantic 模型
   """
+  # 业务：规范化 actor/event_type 后 INSERT audit_events 单行并返回模型
   event_id = uuid4()
   when = occurred_at or datetime.now(UTC)
   exec_uuid = _parse_exec_id(exec_id)
@@ -136,6 +137,7 @@ def list_audit_events(
   参数 exec_id：可选，过滤单次执行
   返回：AuditEvent 列表
   """
+  # 业务：按 tenant 与可选过滤条件查询 audit_events 并反序列化为 AuditEvent
   exec_uuid = _parse_exec_id(exec_id)
   clauses = ["tenant_id = :tenant_id"]
   params: dict[str, object] = {"tenant_id": tenant_id, "limit": min(limit, 500)}

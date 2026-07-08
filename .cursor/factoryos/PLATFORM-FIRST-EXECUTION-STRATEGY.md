@@ -12,6 +12,7 @@
 Gate 0（os_core）✅
     → 阶段 1：平台打磨 ~80 分（Studio + API + Pack · STU-001）
          ├─ 1a STU-API：后端 + pytest 验收盘          ✅ 2026-07-07
+         ├─ 1a.5 注释债：server 全量中文注释 + 门禁硬化  ✅ 2026-07-08
          └─ 1b STU-UI：web-admin 六步真 API 联调     ← 当前
     → 阶段 2：终端设计 ~80 分（h5-worker · UX-001）   须 1a+1b 绿后
     → 阶段 3：项目验证（哈森 Path A · 四 Gate）         须 阶段2 绿后
@@ -41,6 +42,16 @@ Gate 0（os_core）✅
 | **已交付** | 六步 API · path 模板 · Package export/import · audit 编排 · import 边界合规 |
 | **刻意不含** | web-admin 业务页接真 API · 浏览器内走完 STU-01～07 |
 | **状态** | **结案** · 不等于阶段 1 全结案 · **不等于可开阶段 2** |
+
+#### 阶段 1a.5 · 注释债闭合 — ✅ 2026-07-08
+
+| 项 | 内容 |
+|----|------|
+| **范围** | `src/server/os_core/**` · `src/server/api/**` — **仅注释/README**，零业务逻辑变更 |
+| **目标** | 编码绝对门禁 §3 保质保量 · 全量 `check_python_comments` 0 违规 · `gate pr` 切全量注释扫描 |
+| **验收盘** | CMNT-05～07 · Verify 五问抽检 · pytest 无回归 |
+| **Plan** | `_factoryos_pipeline/2026-07-08/plan/plan-0910-server-comment-debt-closure.md` |
+| **禁止** | 未 CMNT-07 开 1b · 模板化假注释 PR |
 
 #### 阶段 1b · STU-UI（Studio 浏览器联调）— **← 当前**
 

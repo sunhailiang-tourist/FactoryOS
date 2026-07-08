@@ -15,7 +15,14 @@ type FormTextFieldProps<T extends FieldValues> = {
   name: FieldPath<T>;
 } & Omit<TextFieldProps, "name" | "value" | "onChange" | "onBlur" | "ref" | "error" | "helperText">;
 
+/**
+ * 功能：FormTextField 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function FormTextField<T extends FieldValues>({
+  // 业务：FormTextField 主体编排（见文件头上下游）
   control,
   name,
   label,

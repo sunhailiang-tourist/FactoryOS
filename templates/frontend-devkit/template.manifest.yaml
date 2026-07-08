@@ -1,6 +1,6 @@
 # frontend-devkit 模板元数据 — scaffold 时只读，不覆盖
 template_id: frontend-devkit
-template_version: "2.0.0-s5"
+template_version: "2.0.0-s6"
 golden_source: src/apps/web-admin
 devkit_version: "1.0.0"
 lock_file: contracts/frontend-devkit-lock.yaml
@@ -9,10 +9,10 @@ parity:
   profile: web-admin
   ac_scope: WEB-PROFILE
   checks: W-00..W-13
-  engineering: ENGINEERING.md v1.4+s5
+  engineering: ENGINEERING.md v1.4+s6
   architecture: ARCHITECTURE.md v1.8+s5
 description: |
-  与 web-admin 100% 等权的 React+Vite+MUI 前端工程基座模板（S5：i18n · rbac · form 轨）。
+  与 web-admin 100% 等权的 React+Vite+MUI 前端工程基座模板（S6：CMNT-C 注释闭环 · i18n · rbac · form 轨）。
   含 DevKit · AI kernel 快照 · harness 18 checks · vendor 契约镜像 · Studio 示例模块。
 change_policy: |
   结构/治理/技术策略变更须经用户书面确认。

@@ -41,6 +41,7 @@ export class NetworkError extends Error {
 
 /** 从非 2xx JSON 体解析标准错误字段。 */
 export function parseApiErrorBody(data: unknown, httpStatus: number): ApiErrorBody {
+  // 业务：parseApiErrorBody 主体编排（见文件头上下游）
   if (typeof data !== "object" || data === null) {
     return {
       code: ERROR_CODES.UNKNOWN_ERROR,

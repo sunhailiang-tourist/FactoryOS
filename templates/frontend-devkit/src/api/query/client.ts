@@ -11,6 +11,7 @@ import { QueryClient } from "@tanstack/react-query";
 
 /** 应用级 QueryClient（dev 短 stale · prod 可扩展）。 */
 export function createQueryClient(): QueryClient {
+  // 业务：createQueryClient 主体编排（见文件头上下游）
   return new QueryClient({
     defaultOptions: {
       queries: {

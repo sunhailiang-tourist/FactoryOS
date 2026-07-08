@@ -26,6 +26,8 @@ def assert_params_safe(params: dict[str, Any] | None) -> None:
 
   功能：拒绝含 `';` · `--` · DROP TABLE 等模式的字符串值。
   业务含义：ORM 绑定仍须输入层防御；N-04 负向 AC 真源。
+  参数 params：DSL/Connector 参数字典树。
+  异常：命中注入模式 → MAPPING_ERROR 422。
   """
   if not params:
     return

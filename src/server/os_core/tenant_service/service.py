@@ -33,6 +33,9 @@ def get_tenant_settings(session: Session, *, tenant_id: str) -> dict[str, Any]:
 
   功能：GET /v1/tenants/{id}/settings 业务真源。
   业务含义：MCP tools/call 与 REST execute 须读同一 shadow 开关。
+  参数 tenant_id：租户 ID。
+  返回：TenantSettings 子集 dict。
+  异常：租户不存在 TENANT_FORBIDDEN 404。
   """
   profile = tenant_config_store.get_tenant_profile(session, tenant_id=tenant_id)
   if profile is None:
@@ -76,6 +79,8 @@ def resolve_shadow_mode(session: Session, *, tenant_id: str) -> bool:
 
   功能：L2 写前门禁；与 dry_run 合并为 effective_shadow。
   业务含义：MCP tools/call 与 POST /v1/execute 语义一致，均读此函数。
+  参数 tenant_id：租户 ID。
+  返回：shadow_mode 布尔；无 profile 时 False。
   """
   profile = tenant_config_store.get_tenant_profile(session, tenant_id=tenant_id)
   if profile is None:

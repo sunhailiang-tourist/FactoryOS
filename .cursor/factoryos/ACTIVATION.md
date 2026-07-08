@@ -19,10 +19,10 @@ curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 | # | 步骤 | `activate_dev_env.sh` 内 | 你额外做 |
 |---|------|--------------------------|----------|
 | 1 | uv 引导工具 | 检查 `uv` 在 PATH | 无则先装 uv（上一行） |
-| 2 | 依赖封版 | `uv sync --frozen --extra dev` | — |
+| 2 | 依赖封版 | `uv sync --frozen --extra dev --group dev --group comment-gate` | — |
 | 3 | docs 基线 | `docs_baseline refresh` | — |
 | 4 | 工作流验收盘 | `gate pr`（harness 11 项 · 含结构快照） | 须绿 |
-| 5 | git 钩子 | `pre-commit`（**结构快照 commit 拦截** · lock · harness）+ `pre-push`（pytest） | — |
+| 5 | git 钩子 | `pre-commit`（**结构快照** · **CMNT-C 注释 staged 交互** · lock · harness）+ `pre-push`（注释全量 · pytest） | — |
 | 5b | 结构门禁自检 | `check_structure_change.py`（激活脚本末尾自动跑） | 须 OK |
 | 6 | Cursor Hooks | — | 仓库根打开 · Settings → `protect-paths` · **重启** |
 | 7 | 可选 rg | — | `brew install ripgrep`（本地复现 CI 密钥 grep） |

@@ -33,7 +33,14 @@ function resolveMessage(error: unknown): { code?: string; message: string; trace
   return { message: "发生未知错误" };
 }
 
+/**
+ * 功能：ApiErrorBanner 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function ApiErrorBanner({ error, title = "请求失败", onClose }: ApiErrorBannerProps) {
+  // 业务：ApiErrorBanner 主体编排（见文件头上下游）
   const { code, message, traceId } = resolveMessage(error);
 
   return (

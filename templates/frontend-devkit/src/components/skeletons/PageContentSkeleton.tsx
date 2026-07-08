@@ -12,7 +12,14 @@ import CardContent from "@mui/material/CardContent";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 
+/**
+ * 功能：PageContentSkeleton 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function PageContentSkeleton() {
+  // 业务：PageContentSkeleton 主体编排（见文件头上下游）
   return (
     <Card variant="outlined" sx={{ maxWidth: 720 }} aria-label="加载页面内容">
       <CardContent>

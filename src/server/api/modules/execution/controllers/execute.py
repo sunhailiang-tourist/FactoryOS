@@ -25,7 +25,12 @@ def execute_http(
   body: ExecuteRequest,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/execute（L2 真写 / dry_run）。"""
+  """POST /v1/execute（L2 真写 / dry_run）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：Execution 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.execution_service。
+  """
   record = execute(session, body)
   session.commit()
   return record.model_dump(mode="json")
@@ -36,7 +41,12 @@ def revert_execution_http(
   exec_id: UUID,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/execute/{execId}/revert（E-04 · E-05）。"""
+  """POST /v1/execute/{execId}/revert（E-04 · E-05）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：Execution 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.execution_service。
+  """
   record = revert_execution(session, exec_id)
   session.commit()
   return record.model_dump(mode="json")

@@ -13,8 +13,11 @@
 | `run_codegen_api.py` | OpenAPI 类型 codegen（`codegen:api`） |
 | `form/` | 表单生成工具链（`form:generate` · S7） |
 | `sync_error_registry.py` | vendor → error-codes.ts |
-| `py.sh` · `requirements.txt` | 脚本 Python 运行时 |
-| `devkit/` | bootstrap_standalone · frontend_contract_lib |
+| `py.sh` · `requirements.txt` | 脚本 Python 运行时（含 **pre-commit** · CMNT-C） |
+| `devkit/` | bootstrap_standalone · frontend_contract_lib · comment_gate_ts_lib |
+| `check_comments.py` · `comment_fix.py` | **CMNT-C** staged/full 校验与补齐 |
+| `check_comments_commit_hook.py` | commit 交互式注释门禁（pre-commit） |
+| `.pre-commit-config.yaml` | standalone git hooks（迁出后自带） |
 
 ## 门禁
 
@@ -22,6 +25,7 @@
 ./scripts/activate.sh
 pnpm check
 pnpm test:w11
+python scripts/check_comments.py --full   # CMNT-C 全量（与 pre-push 同款）
 ```
 
 ## 变更纪律

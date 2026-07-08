@@ -72,7 +72,23 @@ def _errors() -> list[str]:
         errors.append(f"{path.relative_to(APP_ROOT)} missing file header ({labels})")
       elif missing and "FORBIDDEN_COMMENT_CLOSE" not in missing:
         errors.append(f"{path.relative_to(APP_ROOT)} file header missing: {', '.join(missing)}")
+  _validate_export_function_comments(errors)
   return errors
+
+
+def _validate_export_function_comments(errors: list[str]) -> None:
+  """export function JSDoc（对齐 contracts/comment-gate-spec.md · P0+）。"""
+  if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+  try:
+    from devkit.comment_gate_ts_lib import check_tree
+  except ImportError:
+    errors.append("missing scripts/devkit/comment_gate_ts_lib.py")
+    return
+  prefix = str(APP_ROOT) + "/"
+  for msg in check_tree(APP_ROOT):
+    rel = msg.replace(prefix, "") if msg.startswith(prefix) else msg
+    errors.append(rel)
 
 
 def main() -> int:
@@ -82,7 +98,7 @@ def main() -> int:
     for e in errors:
       print(f"  - {e}", file=sys.stderr)
     return 1
-  print("OK: h5-worker DevKit harness (scaffold · file headers when src present)")
+  print("OK: h5-worker DevKit harness (scaffold · file headers · export JSDoc)")
   return 0
 
 

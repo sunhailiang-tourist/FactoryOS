@@ -79,7 +79,7 @@ Overlay on ERP/MES · 双极：终端多模态 + 内核 Graph/Rule/Revert 门禁
 
 ### 激活开发环境（每台机器一次 · 唯一入口）
 
-**一条命令**即具备：依赖封版 · docs 基线 · 全套 gate · **结构快照 commit 拦截** · pre-commit/pre-push。  
+**一条命令**即具备：依赖封版 · docs 基线 · 全套 gate · **结构快照 commit 拦截** · **CMNT-C 注释闭环** · pre-commit/pre-push。  
 **不要**只跑 `uv sync`（不会安装 git hooks）。
 
 ```bash
@@ -90,7 +90,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 ./scripts/activate_dev_env.sh
 ```
 
-脚本依次：`uv sync --frozen --extra dev` → `docs_baseline refresh` → `gate pr` → `pre-commit install` → 验证 `check_structure_change`。
+脚本依次：`uv sync --frozen --extra dev --group dev --group comment-gate` → `docs_baseline refresh` → `gate pr` → `pre-commit install` → 验证 `check_structure_change`。
 
 激活后自动具备：
 
@@ -98,12 +98,13 @@ curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 |------|----------|
 | harness 11 项（含路径/结构快照） | `gate pr` · CI |
 | **结构变更 commit 拦截** + 修复步骤 | 每次 `git commit` |
+| **CMNT-C 注释**（staged 校验 · 交互补骨架） | 每次 `git commit`（TTY） |
 | lock / harness / 静态 | `git commit` |
-| contract + workflow pytest | `git push` |
+| **注释全量** + contract + workflow pytest | `git push` |
 
 然后：**Cursor 打开仓库根** → Settings → Hooks 见 `protect-paths` → **重启 Cursor**（IDE 写码拦截，与 git 钩子互补）。
 
-编码期新依赖只用 `uv add <pkg>` / `uv add --dev <pkg>`（**禁止** `pip install`）；`pyproject.toml` 与 `uv.lock` 同 commit。
+编码期新依赖只用 `uv add <pkg>` / `uv add --dev <pkg>`（**禁止** `pip install`）；`pyproject.toml` 与 `uv.lock` 同 commit。注释门禁第三方依赖见 `pyproject.toml` 的 `comment-gate` extra / group。
 
 ### 深入阅读
 

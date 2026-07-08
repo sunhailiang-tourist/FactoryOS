@@ -10,6 +10,12 @@
 import Box from "@mui/material/Box";
 import { Outlet } from "react-router-dom";
 
+/**
+ * 功能：RootLayout 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function RootLayout() {
   return (
     <Box minHeight="100vh" bgcolor="background.default">

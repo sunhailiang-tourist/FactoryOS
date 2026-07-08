@@ -36,7 +36,14 @@ def execute_op(
   params: dict[str, Any],
   idempotency_key: str | None = None,
 ) -> dict[str, Any]:
-  """执行 Blueprint op（B-02 · B-03）。"""
+  """执行 Blueprint op（B-02 · B-03）。
+
+  功能：load_blueprint → 找 op → validate_op_params → 分发执行。
+  业务含义：Connector runtime 唯一 op 执行入口。
+  参数 verb/params：CMV verb 与映射参数。
+  返回：op 执行结果 dict（如 legacy_refs）。
+  异常：未实现 verb 501；mapping 缺字段 422。
+  """
   blueprint = load_blueprint(pack_id=pack_id, tenant_id=tenant_id)
   op = _find_op(blueprint, verb)
   validate_op_params(op, params)

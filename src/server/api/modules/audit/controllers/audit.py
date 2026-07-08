@@ -31,9 +31,10 @@ def list_audit_events_http(
   session: Session = Depends(get_db_session),
 ) -> list[dict[str, Any]]:
   """GET /v1/audit/events（E-03）。
-
   功能：按 tenant 查询审计事件列表。
   业务含义：append-only 只读；禁止 UPDATE/DELETE。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.audit_service。
   """
   events = list_audit_events(
     session=session,

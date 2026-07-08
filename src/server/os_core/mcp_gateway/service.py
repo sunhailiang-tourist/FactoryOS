@@ -70,7 +70,14 @@ def _verbs_from_licensed_packs(session: Session, *, tenant_id: str) -> list[str]
 
 
 def list_tools(session: Session, *, tenant_id: str) -> dict[str, Any]:
-  """MCP tools/list：仅 tenant 已授权 CMV 子集。"""
+  """MCP tools/list：仅 tenant 已授权 CMV 子集。
+
+  功能：从已授权 Pack Blueprint 推导 CMV 动词列表。
+  业务含义：M-01 工具发现；未授权动词不可 call。
+  参数 tenant_id：URL 路径租户。
+  返回：{"tools": [{name, description}, ...]}。
+  下游：tenant_config_store · pack_store。
+  """
   tools = [
     {"name": verb, "description": f"Licensed CMV verb {verb}"}
     for verb in _verbs_from_licensed_packs(session, tenant_id=tenant_id)
@@ -84,7 +91,16 @@ def call_tool(
   url_tenant_id: str,
   params: dict[str, Any],
 ) -> dict[str, Any]:
-  """MCP tools/call → DslPlan（不写 Legacy · M-02）。"""
+  """MCP tools/call → DslPlan（不写 Legacy · M-02）。
+
+  功能：校验授权与 Graph 门禁后 create_plan。
+  业务含义：外部 Agent 产出 DslPlan，须经 confirm/execute 才写 Legacy。
+  参数 url_tenant_id：URL 租户；params.name/arguments 为工具调用体。
+  返回：DslPlan JSON dict。
+  异常：DSL_UNKNOWN · TENANT_FORBIDDEN · MODULE_NOT_LICENSED · RULE_DENIED。
+  下游：agent_orchestrator · audit MCP_TOOLS_CALL。
+  """
+  # 业务：校验 tools/call 参数与租户授权后委托 create_plan 产出 DslPlan
   tool_name = str(params.get("name") or "")
   if not tool_name:
     raise PlatformError(

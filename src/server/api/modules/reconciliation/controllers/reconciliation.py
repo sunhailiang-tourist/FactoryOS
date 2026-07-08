@@ -36,7 +36,12 @@ def run_reconciliation_http(
   body: ReconciliationRunBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/reconciliation/run（K-01 ok · K-02 drift_detected）。"""
+  """POST /v1/reconciliation/run（K-01 ok · K-02 drift_detected）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：Reconciliation 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.reconciliation_service。
+  """
   report = run_reconciliation(
     session,
     tenant_id=body.tenant_id,

@@ -1,4 +1,10 @@
-"""config 横切注册唯一入口。"""
+"""config 横切注册唯一入口。
+
+作用：settings · logs · status_code · middleware 统一注册。
+业务关联：register_config 须在 router 之前调用。
+上游：application/assemble。
+下游：config 各子包 · FastAPI exception_handler。
+"""
 from __future__ import annotations
 
 from fastapi import FastAPI, HTTPException
@@ -17,7 +23,13 @@ from os_core.shared_contracts.exceptions import PlatformError
 
 
 def register_config(app: FastAPI) -> None:
-  """注册 settings · logs · status_code · middleware。"""
+  """注册 settings · logs · status_code · middleware。
+
+  功能：横切能力统一挂载到 FastAPI app。
+  业务含义：config 子系统启动真源。
+  上游：assemble(app)。
+  下游：middleware/registry · exception handlers。
+  """
   init_settings()
   logs_configure.init()
   app.add_exception_handler(PlatformError, platform_error_handler)  # type: ignore[arg-type]

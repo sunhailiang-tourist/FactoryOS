@@ -20,9 +20,12 @@ dev = [
     "httpx>=0.28",
     "ruff>=0.9",
     "pyright>=1.1.390",
-    "pre-commit>=4.0",
     "deptry>=0.23",
     "cairosvg>=2.7",
+]
+# CMNT-C 注释闭环：check_comments* / comment_fix* 为 stdlib；git hook 依赖 pre-commit（见 dependency-groups.comment-gate）
+comment-gate = [
+    "pre-commit>=4.0",
 ]
 
 [tool.deptry]
@@ -41,6 +44,10 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "uvicorn[standard]>=0.34,<1",
+]
+# 初始化/激活必装：pre-commit → .pre-commit-config.yaml（CMNT-C staged 交互 · push 全量）
+comment-gate = [
+    "pre-commit>=4.0",
 ]
 
 [tool.hatch.build.targets.wheel]

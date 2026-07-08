@@ -12,7 +12,14 @@ import { Outlet, useLocation } from "react-router-dom";
 import { PageContentSkeleton } from "@/components/skeletons";
 import { MotionContainer } from "@/styles/motion";
 
+/**
+ * 功能：StudioAnimatedOutlet 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function StudioAnimatedOutlet() {
+  // 业务：StudioAnimatedOutlet 主体编排（见文件头上下游）
   const location = useLocation();
   return (
     <MotionContainer

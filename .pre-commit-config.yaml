@@ -15,6 +15,12 @@ repos:
         files: ^(pyproject\.toml|uv\.lock)$
         pass_filenames: false
         stages: [pre-commit]
+      - id: factoryos-comments-staged
+        name: FactoryOS comments (staged · interactive CMNT-C)
+        entry: scripts/venv_exec.sh scripts/check_comments_commit_hook.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
       - id: factoryos-harness-auto
         name: FactoryOS harness (auto)
         entry: scripts/venv_exec.sh scripts/check_harness.py --tier auto
@@ -22,10 +28,16 @@ repos:
         pass_filenames: false
       - id: factoryos-static-quality
         name: FactoryOS ruff + pyright
-        entry: scripts/venv_exec.sh scripts/check_static_quality.py --allow-missing
+        entry: scripts/venv_exec.sh scripts/check_static_quality.py --allow-missing --no-comments
         language: system
         pass_filenames: false
         stages: [pre-commit]
+      - id: factoryos-comments-full
+        name: FactoryOS comments (full · CMNT-C)
+        entry: scripts/venv_exec.sh scripts/check_comments.py --full
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
       - id: factoryos-gate-contract
         name: FactoryOS contract/workflow pytest
         entry: scripts/pytest_contract_workflow.sh

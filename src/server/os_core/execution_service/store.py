@@ -118,7 +118,13 @@ def list_success_legacy_writes(
 
 
 def find_by_exec_id(session: Session, exec_id: UUID) -> ExecutionRecord | None:
-  """按 exec_id 查单条 ExecutionRecord（E-09 evidence 数据源）。"""
+  """按 exec_id 查单条 ExecutionRecord（E-09 evidence 数据源）。
+
+  功能：SELECT execution_records 单行并反序列化。
+  业务含义：evidence 与 revert 读真源。
+  参数 exec_id：执行 UUID。
+  返回：ExecutionRecord 或 None。
+  """
   row = (
     session.execute(
       text(
@@ -145,7 +151,13 @@ def find_by_idempotency(
   tenant_id: str,
   idempotency_key: str,
 ) -> ExecutionRecord | None:
-  """按 tenant + idempotency_key 查已有执行（E-07）。"""
+  """按 tenant + idempotency_key 查已有执行（E-07）。
+
+  功能：幂等键命中则返回已有记录。
+  业务含义：重复 POST /v1/execute 不重复写 Legacy。
+  参数 tenant_id · idempotency_key：幂等键组合。
+  返回：已有 ExecutionRecord 或 None。
+  """
   row = (
     session.execute(
       text(
@@ -167,7 +179,13 @@ def find_by_idempotency(
 
 
 def insert_execution_record(session: Session, record: ExecutionRecord) -> None:
-  """INSERT execution_records（单行）。"""
+  """INSERT execution_records（单行）。
+
+  功能：序列化 actor/params/snapshot 写入 DB。
+  业务含义：execute 成功后持久化真源（Data-L1）。
+  参数 record：完整 ExecutionRecord。
+  上游：execution_service.execute。
+  """
   actor_json = json.dumps(
     record.actor.model_dump(mode="json", exclude_none=True),
     ensure_ascii=False,
@@ -237,7 +255,13 @@ def update_execution_status(
   status: str,
   finished_at: datetime | None = None,
 ) -> None:
-  """更新 execution_records 状态（E-04 revert）。"""
+  """更新 execution_records 状态（E-04 revert）。
+
+  功能：UPDATE status 与 finished_at。
+  业务含义：revert 后将 success → reverted。
+  参数 exec_id · status · finished_at：目标记录与新状态。
+  上游：execution_service.revert_execution。
+  """
   session.execute(
     text(
       """

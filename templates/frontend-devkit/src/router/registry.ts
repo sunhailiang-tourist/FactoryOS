@@ -27,6 +27,12 @@ export const ROUTE_REGISTRY: readonly RouteModuleEntry[] = collectRouteEntries()
   a.moduleId.localeCompare(b.moduleId),
 );
 
+/**
+ * 功能：getRoutesByLayout 导出函数。
+ * 业务含义：见同文件模块文件头。
+ * 上游：见文件头上游。
+ * 下游：见文件头下游。
+ */
 export function getRoutesByLayout(layoutId: string, role?: string): RouteModuleEntry[] {
   const routes = ROUTE_REGISTRY.filter((entry) => entry.layoutId === layoutId);
   if (!role) return routes;

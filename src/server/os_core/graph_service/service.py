@@ -48,6 +48,9 @@ def create_graph(session: Session, graph: BusinessGraph) -> BusinessGraph:
 
   功能：INSERT 新版本行；默认 draft checksum。
   业务含义：新流程版本起点；同 id+version 不可重复。
+  参数 graph：待创建 BusinessGraph 模型。
+  返回：status=draft 的 BusinessGraph。
+  异常：版本已存在 409。
   """
   if graph_exists(session, graph_id=graph.id, version=graph.version):
     raise PlatformError(
@@ -81,7 +84,13 @@ def get_graph_version(
   graph_id: str,
   version: str,
 ) -> BusinessGraph | None:
-  """读取 Graph 版本（GET /v1/graphs）。"""
+  """读取 Graph 版本（GET /v1/graphs）。
+
+  功能：委托 store.get_graph。
+  业务含义：HTTP GET 与 execute 前置查询共用。
+  参数 graph_id/version：Graph 定位键。
+  返回：BusinessGraph 或 None。
+  """
   return get_graph(session, graph_id=graph_id, version=version)
 
 
@@ -92,7 +101,14 @@ def update_graph_version(
   version: str,
   body: BusinessGraph,
 ) -> BusinessGraph:
-  """更新 draft/in_review Graph（G-02）。"""
+  """更新 draft/in_review Graph（G-02）。
+
+  功能：校验可编辑后 UPDATE body_json。
+  业务含义：Studio 编辑图谱内容；frozen/deprecated 拒绝。
+  参数 body：新图谱内容（id/version 以路径为准）。
+  返回：更新后的 BusinessGraph。
+  异常：不存在 404；不可编辑 409。
+  """
   existing = get_graph(session, graph_id=graph_id, version=version)
   if existing is None:
     raise PlatformError(
@@ -127,7 +143,14 @@ def submit_graph_version(
   graph_id: str,
   version: str,
 ) -> BusinessGraph:
-  """draft → in_review（G-04）。"""
+  """draft → in_review（G-04）。
+
+  功能：校验 draft 后 UPDATE status=in_review。
+  业务含义：提交审核；freeze 前置状态。
+  参数 graph_id/version：Graph 定位键。
+  返回：status=in_review 的 BusinessGraph。
+  异常：不存在 404；非 draft 409。
+  """
   graph = get_graph(session, graph_id=graph_id, version=version)
   if graph is None:
     raise PlatformError(
@@ -157,9 +180,13 @@ def freeze_graph_version(
 ) -> BusinessGraph:
   """冻结 Graph（G-05）。
 
-  前置：in_review + 同版本已有 frozen RuleSet。
-  产出：status=frozen · 有效 checksum。
+  功能：校验 in_review + frozen RuleSet 后写入 checksum 并冻结。
+  业务含义：execute L2 写前置；产出不可变图谱版本。
+  参数 frozen_by：冻结操作者标识。
+  返回：status=frozen · 有效 checksum 的 BusinessGraph。
+  异常：前置不满足 409。
   """
+  # 业务：校验 in_review 与 frozen RuleSet 后计算 checksum 并冻结 Graph
   graph = get_graph(session, graph_id=graph_id, version=version)
   if graph is None:
     raise PlatformError(
@@ -206,7 +233,14 @@ def clone_graph_version(
   graph_id: str,
   version: str,
 ) -> BusinessGraph:
-  """clone 出新 draft 版本（G-07）。"""
+  """clone 出新 draft 版本（G-07）。
+
+  功能：复制源版本内容并 bump patch version。
+  业务含义：基于 frozen/in_review 版本迭代新 draft。
+  参数 graph_id/version：源 Graph 定位键。
+  返回：新 draft 版本 BusinessGraph。
+  异常：源不存在 404；目标版本已存在 409。
+  """
   source = get_graph(session, graph_id=graph_id, version=version)
   if source is None:
     raise PlatformError(
@@ -248,7 +282,14 @@ def deprecate_graph_version(
   graph_id: str,
   version: str,
 ) -> BusinessGraph:
-  """标记 frozen → deprecated（G-08 测试用内核 API）。"""
+  """标记 frozen → deprecated（G-08 测试用内核 API）。
+
+  功能：校验 frozen 后 UPDATE status=deprecated。
+  业务含义：下线旧版本；L2 写将被拒绝。
+  参数 graph_id/version：Graph 定位键。
+  返回：status=deprecated 的 BusinessGraph。
+  异常：不存在 404；非 frozen 409。
+  """
   graph = get_graph(session, graph_id=graph_id, version=version)
   if graph is None:
     raise PlatformError(
@@ -279,9 +320,11 @@ def assert_graph_executable(
 ) -> BusinessGraph:
   """execute 前 Graph 门禁（G-03 · G-08 · D-03）。
 
-  L2 写：须 frozen；deprecated 拒绝 L2。
-  L0 读：须 frozen（E-01）。
-  allowed_dsl 白名单校验（D-03）。
+  功能：校验 frozen/deprecated 与 allowed_dsl 白名单。
+  业务含义：L2 写须 frozen；deprecated 拒绝 L2；verb 须在白名单。
+  参数 verb/verb_level：CMV verb 与级别（L0/L2）。
+  返回：通过门禁的 BusinessGraph。
+  异常：不满足条件 409/403。
   """
   graph = get_graph(session, graph_id=graph_id, version=graph_version)
   if graph is None:

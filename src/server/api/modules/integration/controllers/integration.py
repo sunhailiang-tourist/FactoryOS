@@ -61,10 +61,10 @@ class BlueprintValidateBody(BaseModel):
 
   model_config = ConfigDict(extra="allow")
 
-  apiVersion: str | None = None
-  kind: str | None = None
-  metadata: dict[str, Any] | None = None
-  spec: dict[str, Any] | None = None
+  apiVersion: str | None = Field(default=None, description="Blueprint API 版本")
+  kind: str | None = Field(default=None, description="Blueprint 资源类型")
+  metadata: dict[str, Any] | None = Field(default=None, description="Blueprint 元数据")
+  spec: dict[str, Any] | None = Field(default=None, description="Blueprint 规格体")
 
 
 class MappingsBody(BaseModel):

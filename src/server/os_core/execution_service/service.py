@@ -54,7 +54,17 @@ def _runtime_legacy_refs(raw: dict[str, Any]) -> list[LegacyRef]:
 
 
 def execute(session: Session, request: dict[str, Any] | ExecuteRequest) -> ExecutionRecord:
-  """执行 DSL 请求（W3 门禁 + W4 L2 runtime 真写）。"""
+  """执行 DSL 请求（W3 门禁 + W4 L2 runtime 真写）。
+
+  功能：幂等 · 授权 · Graph/Rule 门禁 · L2 写或 Shadow 模拟。
+  业务含义：FactoryOS 唯一写 Legacy 路径（ADR-002）。
+  参数 request：ExecuteRequest 或等价 dict。
+  返回：ExecutionRecord（含 snapshot · legacy_refs）。
+  异常：CONNECTOR_NOT_CONFIGURED · MODULE_NOT_LICENSED · RULE_DENIED 等。
+  上游：POST /v1/execute · agent confirm。
+  下游：execution_records · audit_events · connector_sdk.runtime。
+  """
+  # 业务：幂等查重 → 租户/Pack 门禁 → Rule 评估 → L2 写或 Shadow 模拟并落库
   req = (
     request
     if isinstance(request, ExecuteRequest)
@@ -232,6 +242,8 @@ def assert_execution_tenant_access(
 
   功能：caller tenant 须与记录 tenant_id 一致。
   业务含义：多厂隔离；GET /v1/executions 与 evidence 共用。
+  参数 caller_tenant_id：调用方租户（middleware 注入）。
+  异常：不一致时 TENANT_FORBIDDEN 403。
   """
   if record.tenant_id != caller_tenant_id:
     raise PlatformError(
@@ -247,7 +259,14 @@ def get_execution_for_tenant(
   *,
   caller_tenant_id: str,
 ) -> ExecutionRecord:
-  """按 tenant 隔离读取 execution（N-03）。"""
+  """按 tenant 隔离读取 execution（N-03）。
+
+  功能：find_by_exec_id + assert_execution_tenant_access。
+  业务含义：GET /v1/executions/{id} 真源。
+  参数 exec_id · caller_tenant_id：记录键与调用租户。
+  返回：ExecutionRecord。
+  异常：不存在 404 · 跨租户 403。
+  """
   record = find_by_exec_id(session, exec_id)
   if record is None:
     raise PlatformError(
@@ -260,7 +279,14 @@ def get_execution_for_tenant(
 
 
 def assemble_evidence(session: Session, exec_id: UUID) -> ExecutionEvidence | None:
-  """组装 ExecutionEvidence（E-09 可重建审计包）。"""
+  """组装 ExecutionEvidence（E-09 可重建审计包）。
+
+  功能：合并 execution 记录与同 exec_id 审计事件。
+  业务含义：内部组装；对外须走 assemble_evidence_for_tenant。
+  参数 exec_id：执行 UUID。
+  返回：ExecutionEvidence 或 None（记录不存在）。
+  下游：audit_service.list_audit_events。
+  """
   record = find_by_exec_id(session, exec_id)
   if record is None:
     return None
@@ -286,7 +312,14 @@ def assemble_evidence_for_tenant(
   *,
   caller_tenant_id: str,
 ) -> ExecutionEvidence:
-  """按 tenant 隔离组装 evidence（N-03 · E-09）。"""
+  """按 tenant 隔离组装 evidence（N-03 · E-09）。
+
+  功能：get_execution_for_tenant + list_audit_events。
+  业务含义：GET /v1/executions/{id}/evidence 真源。
+  参数 exec_id · caller_tenant_id：执行键与租户。
+  返回：含 audit_events 的 ExecutionEvidence。
+  异常：同 get_execution_for_tenant。
+  """
   record = get_execution_for_tenant(
     session,
     exec_id,
@@ -312,7 +345,12 @@ def revert_execution(session: Session, exec_id: UUID) -> ExecutionRecord:
 
   功能：恢复 Legacy 至 before_snapshot；原记录 status→reverted。
   业务含义：补偿写路径；重复 revert 或 simulated → 409。
+  参数 exec_id：已成功 L2 写记录。
+  返回：status=reverted 的 ExecutionRecord。
+  异常：REVERT_NOT_ALLOWED 404/409。
+  下游：mock_legacy.restore_entity · audit EXECUTE_REVERTED。
   """
+  # 业务：校验记录可 revert 后恢复 before_snapshot 并标记 status=reverted
   record = find_by_exec_id(session, exec_id)
   if record is None:
     raise PlatformError(

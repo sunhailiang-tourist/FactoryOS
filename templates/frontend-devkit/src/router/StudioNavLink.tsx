@@ -24,7 +24,14 @@ type StudioNavLinkProps = {
   disabled?: boolean;
 };
 
+/**
+ * 功能：StudioNavLink 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function StudioNavLink({
+  // 业务：StudioNavLink 主体编排（见文件头上下游）
   to,
   selected,
   primary,

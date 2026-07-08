@@ -1,10 +1,9 @@
-"""统一错误 JSON 形状。
+"""错误响应体构建。
 
-作用：所有 API 失败响应共用的 body 构造。
-业务关联：contracts/error-registry.yaml · FactoryOSError schema。
-上游：handlers.py · auth middleware
-下游：FastAPI JSONResponse
-关联文档：docs/文档/规格说明/状态码与错误约定.md
+作用：build_error_payload 组装标准错误 JSON。
+业务关联：OpenAPI ErrorResponse 契约。
+上游：status_code/handlers。
+下游：HTTP 响应 body。
 """
 from __future__ import annotations
 
@@ -19,7 +18,13 @@ def build_error_payload(
   trace_id: str | None = None,
   upstream: dict[str, str] | None = None,
 ) -> dict[str, Any]:
-  """构造标准错误体；过渡期双写 detail=message。"""
+  """组装标准错误 JSON 载荷。
+
+  功能：合并 error_code · message · details。
+  业务含义：OpenAPI ErrorResponse 契约真源。
+  上游：status_code/handlers。
+  返回：dict 可 JSON 序列化。
+  """
   body: dict[str, Any] = {
     "code": code,
     "message": message,

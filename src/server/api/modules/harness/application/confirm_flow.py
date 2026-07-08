@@ -37,6 +37,7 @@ def confirm_harness(
   业务含义：未 confirm 不得写 Legacy（R-11）。
   上游：harness HTTP controller
   下游：execution_service.execute
+  异常: PlatformError · GRAPH_NOT_FROZEN 等
   """
   plan = get_plan(plan_id)
   if plan is None:

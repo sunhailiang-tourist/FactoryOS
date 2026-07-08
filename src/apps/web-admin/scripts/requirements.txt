@@ -1,2 +1,3 @@
-# web-admin scripts/ 最小 Python 依赖（standalone 自给）
+# 前端 scripts/ Python 依赖（standalone 自给 · CMNT-C）
 pyyaml>=6.0
+pre-commit>=4.0

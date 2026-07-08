@@ -90,7 +90,12 @@ export function getErrorMessageZh(code: ErrorCodeValue | string): string {
   return ERROR_MESSAGES_ZH[key] ?? ERROR_MESSAGES_ZH.UNKNOWN_ERROR;
 }
 
-/** 日志 / UI 调试：CODE · 中文 */
+/**
+ * 功能：日志 / UI 调试：CODE · 中文
+ * 业务含义：formatErrorLabel 模块对外 API。
+ * 上游：同文件文件头。
+ * 下游：调用方见文件头。
+ */
 export function formatErrorLabel(code: ErrorCodeValue | string): string {
   return `${code} · ${getErrorMessageZh(code)}`;
 }

@@ -1,9 +1,9 @@
-"""鉴权 middleware — Studio RBAC（STU-09）。
+"""Auth 中间件。
 
-作用：解析 X-Actor-Role / X-Actor-User-Id；/v1/studio/* 仅 integrator 等角色可访问。
-业务关联：Integration Studio 规格 §4 · AUTH_STUDIO_FORBIDDEN。
-上游：config/middleware/registry.py · contracts/error-registry.yaml
-下游：request.state.actor_role · Studio 路由
+作用：认证并注入 request.state.actor。
+业务关联：业务 API 鉴权链；探针路径可跳过。
+上游：middleware/registry · Authorization header。
+下游：auth/dependencies · modules controllers。
 """
 from __future__ import annotations
 
@@ -30,6 +30,13 @@ class AuthMiddleware(BaseHTTPMiddleware):
   """解析 actor 头；Studio 路径 RBAC 守门。"""
 
   async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+    """Auth 鉴权与 Studio RBAC（解析 X-Actor-* 头）。
+
+    功能：注入 actor_role/user_id；Studio 路径校验 integrator 等角色。
+    业务含义：STU-09 统一鉴权链；operator 禁止 /v1/studio/*。
+    上游：Authorization · X-Actor-Role · X-Actor-User-Id。
+    下游：call_next · 403 AUTH_STUDIO_FORBIDDEN · auth/dependencies。
+    """
     role = (request.headers.get("X-Actor-Role") or "operator").strip().lower()
     user_id = (request.headers.get("X-Actor-User-Id") or "").strip()
     request.state.actor_role = role

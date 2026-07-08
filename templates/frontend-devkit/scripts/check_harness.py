@@ -495,6 +495,7 @@ def _errors() -> list[str]:
   _validate_rbac_studio(errors, module_ids)
   _validate_sector_contracts(errors)
   _validate_file_headers(errors)
+  _validate_export_function_comments(errors)
   _validate_query_layer_boundary(errors)
   _validate_codegen_fresh(errors)
   _validate_architecture_tooling(errors)
@@ -582,6 +583,21 @@ def _errors() -> list[str]:
 
 
 
+
+def _validate_export_function_comments(errors: list[str]) -> None:
+  """export function JSDoc（对齐 contracts/comment-gate-spec.md · P0+）。"""
+  if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+  try:
+    from devkit.comment_gate_ts_lib import check_tree
+  except ImportError:
+    errors.append("missing scripts/devkit/comment_gate_ts_lib.py")
+    return
+  prefix = str(WEB_ADMIN) + "/"
+  for msg in check_tree(WEB_ADMIN):
+    errors.append(msg.replace(prefix, "") if msg.startswith(prefix) else msg)
+
+
 def _validate_boundary_lock(errors: list[str]) -> None:
   """独立边界 + 架构 sector 锁（WEB-ARCHITECTURE-LOCK.yaml）。"""
   if _boundary is None:
@@ -597,7 +613,7 @@ def main() -> int:
     for err in errors:
       print(f"  - {err}", file=sys.stderr)
     return 1
-  print("OK: web-admin DevKit harness (registry · contracts · file headers · boundaries)")
+  print("OK: web-admin DevKit harness (registry · contracts · file headers · export JSDoc · boundaries)")
   return 0
 
 

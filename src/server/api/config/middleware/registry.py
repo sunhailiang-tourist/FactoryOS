@@ -74,6 +74,12 @@ def _add(app: FastAPI, mw: type[BaseHTTPMiddleware]) -> None:
 
 
 def register(app: FastAPI) -> None:
-  """按 MIDDLEWARE_STACK 顺序注册（见各 entry.usage）。"""
+  """按 MIDDLEWARE_STACK 顺序注册中间件。
+
+  功能：遍历 MIDDLEWARE_STACK 调用 add_middleware。
+  业务含义：请求链 traces→auth→tenant→quota→metrics。
+  上游：register_config。
+  下游：各 config/*/middleware 类。
+  """
   for entry in MIDDLEWARE_STACK:
     _add(app, entry.middleware_cls)

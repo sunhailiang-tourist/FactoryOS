@@ -189,12 +189,24 @@ KERNEL_MODULES: tuple[KernelModule, ...] = (
 
 
 def kernel_module_names() -> tuple[str, ...]:
-  """已登记内核包名（harness / 文档生成）。"""
+  """已登记内核包名（harness / 文档生成）。
+
+  功能：返回 KERNEL_MODULES 包名元组。
+  业务含义：治理与 import 边界检查。
+  上游：KERNEL_MODULES 常量。
+  返回：tuple[str, ...] 包名列表。
+  """
   return tuple(m.name for m in KERNEL_MODULES)
 
 
 def init_kernel() -> None:
-  """按注册表执行各模块 startup hook（S0 多为 no-op）。"""
+  """按注册表执行各模块 startup hook。
+
+  功能：遍历 KERNEL_MODULES 调用 init_hook。
+  业务含义：lifespan startup 内核初始化。
+  上游：config/lifespan hooks。
+  下游：platform_registry.bootstrap 等。
+  """
   for mod in KERNEL_MODULES:
     if mod.init_hook is not None:
       mod.init_hook()

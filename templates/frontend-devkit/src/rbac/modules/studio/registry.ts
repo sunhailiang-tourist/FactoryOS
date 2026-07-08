@@ -8,7 +8,7 @@
  * 关联：rbac/contracts/README.md
  */
 
-    import type { Permission, Role } from "@/rbac/core/types";
+import type { Permission, Role } from "@/rbac/core/types";
 
     export const RBAC_DOMAIN = "studio" as const;
 
@@ -51,6 +51,12 @@
       operator: [],
     };
 
-    export function studioRolesWithAccess(): Role[] {
+/**
+ * 功能：studioRolesWithAccess 导出函数。
+ * 业务含义：见同文件模块文件头。
+ * 上游：见文件头上游。
+ * 下游：见文件头下游。
+ */
+export function studioRolesWithAccess(): Role[] {
       return STUDIO_VIEW_ROLES;
     }

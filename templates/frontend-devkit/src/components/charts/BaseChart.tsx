@@ -18,7 +18,14 @@ export type BaseChartProps = {
   height?: number | string;
 };
 
+/**
+ * 功能：BaseChart 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function BaseChart({ option, className, height = 320 }: BaseChartProps) {
+  // 业务：BaseChart 主体编排（见文件头上下游）
   const containerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<ReturnType<typeof echarts.init> | null>(null);
 

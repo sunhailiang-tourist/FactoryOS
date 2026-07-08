@@ -19,12 +19,22 @@ export function setActorContext(ctx: Partial<ActorContext>): void {
   actorContext = { ...actorContext, ...ctx };
 }
 
-/** 读取当前操作者（layout/guard 与请求头同源）。 */
+/**
+ * 功能：读取当前操作者（layout/guard 与请求头同源）
+ * 业务含义：getActorContext 模块对外 API。
+ * 上游：同文件文件头。
+ * 下游：调用方见文件头。
+ */
 export function getActorContext(): Readonly<ActorContext> {
   return actorContext;
 }
 
-/** 读取默认请求头。 */
+/**
+ * 功能：读取默认请求头
+ * 业务含义：buildDefaultHeaders 模块对外 API。
+ * 上游：同文件文件头。
+ * 下游：调用方见文件头。
+ */
 export function buildDefaultHeaders(extra?: Record<string, string>): Record<string, string> {
   return {
     "Content-Type": "application/json",

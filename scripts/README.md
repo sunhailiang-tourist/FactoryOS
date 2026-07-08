@@ -106,15 +106,19 @@
 | **`audit_path_consistency.py`** | 全库扫描禁止虚假/废止路径引用 | 快照 `scan.roots` | AI 文档误导 |
 | **`gen_path_snapshot.py`** | 从快照生成 `.cursor/factoryos/PATH-SNAPSHOT.md` | 快照 | Agent 读错路径 |
 | **`check_code_redundancy.py`** | `os_core` / `server.api` 跨文件重复函数体 | `src/server/os_core/` · `src/server/api/` | 违反编码绝对门禁 |
-| **`check_python_comments.py`** | server 中文注释：文件头四标签 + 公开函数业务 doc | `contracts/python_comment_enforced_paths.txt` + git 改动 `.py` | 注释遗漏；编码绝对门禁 §3 |
-| **`check_static_quality.py`** | ruff + pyright + `check_python_comments --gate` | `src/server` · `src/tests` | 静态/注释未达标 |
+| **`check_comments.py`** | **统一注释门禁** staged/changed/full（CMNT-C 真源） | pre-commit `--staged` · pre-push/`gate pr` `--full` | 注释遗漏 |
+| **`comment_fix.py`** | staged 自动补注释骨架 | 本地 `--staged --apply` | 提交前补齐 |
+| **`check_python_comments.py`** | 兼容入口（等同 `--full` Python 切片） | harness · 分批 CMNT | 遗留调用 |
+| **`check_static_quality.py`** | ruff + pyright + `check_comments.py --full`（`--no-comments` 供 pre-commit） | `src/server` · `src/tests` | 静态/注释未达标 |
 
 ```bash
 python scripts/check_import_boundaries.py   # 单独调试
 python scripts/check_cmv_sync.py
 python scripts/check_openapi_schema_refs.py
 python scripts/check_code_redundancy.py
-python scripts/check_python_comments.py --gate
+python scripts/check_comments.py --staged   # commit 同款
+python scripts/check_comments.py --full     # PR 同款
+python scripts/comment_fix.py --staged --apply
 ```
 
 GitHub Actions：`.github/workflows/ci.yml` 跑 `check_harness.py --tier full` + tenants 密钥 grep。

@@ -33,7 +33,14 @@ const STEP_MODULE_IDS: Record<string, string> = {
   export: "studio-export",
 };
 
+/**
+ * 功能：StudioShellSidebar 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function StudioShellSidebar() {
+  // 业务：StudioShellSidebar 主体编排（见文件头上下游）
   const location = useLocation();
   const { t } = useT(I18N_PLATFORM_NAMESPACE);
   const role = getActorContext().role;

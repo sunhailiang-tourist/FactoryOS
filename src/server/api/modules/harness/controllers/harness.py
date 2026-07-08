@@ -35,7 +35,12 @@ def harness_confirm_http(
   body: HarnessConfirmBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/harness/confirm（H-02 · confirm→execute）。"""
+  """POST /v1/harness/confirm（H-02 · confirm→execute）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：Harness 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.rule_engine · execution_service。
+  """
   result = confirm_harness(
     session,
     plan_id=body.plan_id,

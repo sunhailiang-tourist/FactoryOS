@@ -111,6 +111,7 @@ def run_discover(
   业务含义：Studio Discover 步；顾问零仓库配置入口。
   参数 sample_paths：Legacy OpenAPI 采样路径（mock 推导 verb）。
   参数 openapi_url：预留远程 OpenAPI 拉取（本 Step mock）。
+  异常: PlatformError · CONNECTOR_NOT_CONFIGURED 等
   """
   _ = tenant_id, openapi_url
   blueprint = pack_store.get_pack_blueprint(session, pack_id=pack_id)
@@ -278,6 +279,7 @@ def run_prove(
   参数 approve_write：是否在本步申请 write_approved（默认 false）。
   返回：contract_tests · reconciliation · shadow_mode 报告。
   """
+  # 业务：校验 Pack 已注册后从 Blueprint 提取 verbs 并组装 Prove 报告
   _ = approved_by
   tenant_config_store.assert_pack_configured_for_tenant(
     session,

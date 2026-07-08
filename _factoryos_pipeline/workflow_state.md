@@ -4,24 +4,28 @@
 > 真源说明：[ACTIVATION.md](../.cursor/factoryos/ACTIVATION.md)
 
 ```yaml
-phase: DELIVERY
+phase: PLANNING
 agent: dev
-step: 5
-plan: _factoryos_pipeline/2026-07-03/plan/plan-1356-stage1-platform-stu001.md
-test_plan: _factoryos_pipeline/2026-07-03/test/test-1401-stage1-stu001.md
-updated: 2026-07-07
+step: 0
+plan: _factoryos_pipeline/2026-07-08/plan/plan-1554-cmnt-c-comment-closed-loop.md
+test_plan: null
+updated: 2026-07-08
 execution_strategy: .cursor/factoryos/PLATFORM-FIRST-EXECUTION-STRATEGY.md
-current_stage: 1b_stu_ui
-goal: 阶段1b STU-UI · web-admin Studio 六步真 API 联调 · 完成后方可 UX-001
+current_stage: cmnt_c_comment_loop
+goal: CMNT-C 注释闭环 v2 · 已落地 · 待用户 可以继续 解锁 1b
+blocked_until: CMNT-C08
+blocked_1b_plan: _factoryos_pipeline/2026-07-08/plan/plan-1524-stu-ui-studio-api-wiring.md
 ```
 
-## 执行策略（锁死 · 2026-07-03）
+## 执行策略（锁死 · 2026-07-08 插入 1a.5）
 
 | 阶段 | 状态 | 硬 Gate |
 |------|------|---------|
 | P0 内核 Gate 0 | ✅ 完成 | BASE-001 52 P0 · 116 pytest |
 | **1a 平台 API** | **✅ 结案** | STU pytest 17/17 · `gate delivery`（API 切片） |
-| **1b 平台 UI** | **→ 当前** | web-admin Studio 六步真 API 联调 |
+| **1a.5 注释债闭合** | **✅ 结案** | CMNT 647→0 · `gate step 5` · 用户 **`可以继续`** |
+| **1b 平台 UI** | **⏸ 暂停** | **CMNT-C08 后** 才开 Studio 联调 · plan-1524 封存 |
+| **CMNT-C 注释闭环** | **→ 当前** | staged 严审 + comment_fix · 待 **`确认规划 CMNT-C`** |
 | **2 终端设计** | 待（须 1b 绿） | UX-001 · **h5-worker** |
 | 3 哈森项目验证 | 待 | 四 Gate · D1 |
 
@@ -61,7 +65,9 @@ goal: 阶段1b STU-UI · web-admin Studio 六步真 API 联调 · 完成后方�
 | 3 | STU-10 | ✅ Verify 绿 · `verify-1717` · `gate step 3` 绿 |
 | 4 | STU-01/03/04/05 | ✅ `gate step 4` 绿 · `verify-1737` |
 | 5 | STU-06/07/08 · 全量 | ✅ **1a** · `gate step 5` · `test-1754-final`（API 切片） |
-| 1b | STU-UI 联调 | **→ 待开** · 须新 plan · **禁止** 直跳 UX-001 |
+| **1a.5** | **CMNT-01～07** | **✅ 结案** · `gate step 5` · 647→0 |
+| **1b** | **STU-UI 联调** | **⏸ 封存** · plan-1524 · **CMNT-C08 后解锁** |
+| **CMNT-C** | **注释闭环 v2** | **✅ 落地** · plan-1554 · 待用户 **`可以继续`** 解锁 1b |
 
 
 ## WEB-PROFILE 进度（前端自治轨 · **与 STU 无依赖**）
@@ -77,8 +83,45 @@ goal: 阶段1b STU-UI · web-admin Studio 六步真 API 联调 · 完成后方�
 | v1.9 S3 | W-08～W-10 | ✅ 同上 · 待 **WEB-PROFILE Verify** |
 | standalone S | W-11 | ✅ 封存 `frontend-devkit 2.0.0-s5` |
 
+## 阶段 1a.5 进度（注释债 · ✅ 结案）
+
+| Step | AC | 状态 |
+|------|-----|------|
+| plan | CMNT-* | ✅ **`确认规划`** · `gate plan` 绿 · `plan.ok` |
+| Test | 回归基线 | ✅ **`【Test模式启动】`** · `test-0910` · STU 17/17 · pytest 135 · 注释 647 基线 |
+| 0 | 基线 647 | ✅ `summary/0910-comment-baseline.md` |
+| 1 | CMNT-01 B0 | ✅ `gate step 1` 绿 · 用户 **`可以继续`** |
+| 2 | CMNT-02 B1a | ✅ `gate step 2` 绿 · 用户 **`可以继续`** |
+| 3 | CMNT-02 B1b | ✅ **`gate step 3` 绿** · 用户 **`可以继续`** |
+| 4 | CMNT-03 B2 | ✅ **`gate step 4` 绿** · 用户 **`可以继续`** |
+| 5 | CMNT-04～07 | ✅ **`gate step 5` 绿** · 用户 **`可以继续`** · **1b 已解锁** |
+
+真源：`contracts/python_comment_backfill_batches.yaml` · 机械门禁已接 `gate step`（`--gate`）；Step5 切全量。
+
 ## 变更日志
 
+- 2026-07-08 用户决策 · **先 CMNT-C 注释闭环，暂停 1b 联调** · plan `plan-1554` · `blocked_until: CMNT-C08` · plan-1524 封存
+
+- 2026-07-08 用户 **`可以继续`** · 1b Step0 完成 · plan `plan-1524` 封存（待 CMNT-C 后确认）
+
+- 2026-07-08 **`gate step 5` 绿** · CMNT-05 · 1a.5 注释债 0 违规
+
+- 2026-07-08 Test·**Step5 终轮** · `test-1038-step5` · `test-1038-final` · 647→0 · 145 pytest
+- 2026-07-08 Dev·**Step5** · CMNT-04/05 · 153→0 · 全量门禁硬化 · `step-stop-1032-step5` · 145 pytest 绿
+- 2026-07-08 **`gate step 4` 绿** · CMNT-03 · 153 债
+- 2026-07-08 Test·**Step4** · CMNT-03 B2 · `test-1020-step4-regression.md` · 153 债 · 143 pytest 0 FAIL
+- 2026-07-08 Dev·**Step4** · CMNT-03 B2 · 370→0 · 523→153 · `step-stop-1015-step4` · 143 pytest 绿
+- 2026-07-08 用户 **`可以继续`** · Step3 结案 → Step4 待开工
+- 2026-07-08 Test·**Step3** · CMNT-02 B1b · `test-1001-step3-regression.md` · 523 债 · 143 pytest 0 FAIL
+- 2026-07-08 Dev·**Step3** · CMNT-02 B1b · 24→0 · 547→523 · `step-stop-1000-step3` · 143 pytest 绿
+- 2026-07-08 Test·**Step2** · CMNT-02 B1a · `test-0951-step2-regression.md` · 547 债 · 141 pytest 0 FAIL
+- 2026-07-08 Dev·**Step2** · B1a 74→0 · 621→547 · `step-stop-0945-step2`
+- 2026-07-08 workflow_state yaml 修复 · Step1 结案 → Step2 待开工
+- 2026-07-08 用户 **`可以继续`** · Step1 结案 → Step2
+- 2026-07-08 Test·**Step1** · CMNT-01 · `test-0927-step1-regression.md` · B0 绿 · 140 pytest · 647→621
+- 2026-07-08 Test·**【Test模式启动】** · `test-0910` · 回归基线 17/17 · 135 pytest · 647 注释债 · `gate test` 绿
+- 2026-07-08 用户 **`可以开始` Step1** · `gate start 1` · Dev·B0 注释 9 文件 · CMNT-01 机械绿 · pytest 140 绿
+- 2026-07-08 **插入 1a.5** · plan `plan-0910-server-comment-debt-closure` · 647 基线 · **1b 阻塞至 CMNT-07**
 - 2026-07-07 Test·**终轮回归** · `test-1754-final-regression.md` · 134 passed · **`gate delivery` 绿**
 - 2026-07-07 **主流程同步** · PLATFORM-FIRST v1.1.0 · 阶段 **1a/1b** 双子步 · D16 · `current_stage: 1b_stu_ui`
 - 2026-07-07 **`gate delivery` 绿** · `test-1754-final-regression.md` · 134 pytest · STU 17/17

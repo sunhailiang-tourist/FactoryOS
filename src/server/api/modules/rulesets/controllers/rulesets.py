@@ -45,7 +45,12 @@ def list_rulesets_http(
   graph_id: str | None = Query(default=None),
   session: Session = Depends(get_db_session),
 ) -> list[dict[str, Any]]:
-  """GET /v1/rulesets。"""
+  """GET /v1/rulesets。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：RuleSets 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.rule_engine。
+  """
   items = list_rulesets_for_tenant(session, tenant_id=tenant_id, graph_id=graph_id)
   return [r.model_dump(mode="json") for r in items]
 
@@ -55,7 +60,12 @@ def create_ruleset_http(
   body: RuleSet,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST 创建 draft RuleSet。"""
+  """POST 创建 draft RuleSet。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：RuleSets 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.rule_engine。
+  """
   ruleset = create_ruleset(session, body)
   session.commit()
   return ruleset.model_dump(mode="json")
@@ -66,7 +76,13 @@ def get_ruleset_http(
   ruleset_id: str,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """GET 单条 RuleSet。"""
+  """GET 单条 RuleSet。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：RuleSets 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.rule_engine。
+  异常: PlatformError · RULE_DENIED 等
+  """
   ruleset = get_ruleset_by_id(session, ruleset_id)
   if ruleset is None:
     from os_core.shared_contracts.errors import ErrorCode
@@ -82,7 +98,12 @@ def update_ruleset_http(
   body: RuleSet,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """PUT 更新 draft（R-05 负向：frozen 409）。"""
+  """PUT 更新 draft（R-05 负向：frozen 409）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：RuleSets 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.rule_engine。
+  """
   ruleset = update_ruleset_draft(session, ruleset_id=ruleset_id, body=body)
   session.commit()
   return ruleset.model_dump(mode="json")
@@ -93,7 +114,12 @@ def freeze_ruleset_http(
   ruleset_id: str,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST freeze RuleSet。"""
+  """POST freeze RuleSet。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：RuleSets 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.rule_engine。
+  """
   ruleset = freeze_ruleset(session, ruleset_id=ruleset_id)
   session.commit()
   return ruleset.model_dump(mode="json")
@@ -105,7 +131,12 @@ def evaluate_rules_http(
   body: RuleEvaluateBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST evaluate（R-01/R-02/R-03）。"""
+  """POST evaluate（R-01/R-02/R-03）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：RuleSets 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.rule_engine。
+  """
   return evaluate(
     session,
     ruleset_id=ruleset_id,

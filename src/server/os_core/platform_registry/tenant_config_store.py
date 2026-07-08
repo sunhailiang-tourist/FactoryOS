@@ -316,6 +316,7 @@ def save_pack_mapping_config(
   参数 mappings · secrets_ref：映射树与 Vault 引用。
   返回：落库后的 stored dict。
   """
+  # 业务：合并 pack_mappings 到 profile_json 后 INSERT 或 UPDATE tenant_profiles
   existing = get_tenant_profile(session, tenant_id=tenant_id)
   profile_data: dict[str, Any] = {}
   if existing and existing.get("profile_json"):

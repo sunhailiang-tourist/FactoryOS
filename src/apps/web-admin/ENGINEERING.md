@@ -95,6 +95,23 @@ pnpm codegen:check    # 变更 OpenAPI 后须 diff 为空
 
 每个 `.ts` / `.tsx`（除 `vite-env.d.ts`）须含 **7 标签**：模块 · 作用 · 怎么用 · 解决 · 上游 · 下游 · 关联。
 
+## 4d. export 函数注释（绝对门禁 · P0+）
+
+真源：`contracts/comment-gate-spec.md` · `scripts/devkit/comment_gate_ts_lib.py` · `scripts/check_comments.py`
+
+| 层 | 要求 | 验收盘 |
+|----|------|--------|
+| P0 | 每个 `export function` JSDoc：功能/业务 + 上游/下游/怎么用 | `scripts/check_harness.py` · `scripts/check_comments.py` |
+| P2 | 函数体 ≥10 行须有 `//` 块注释 | 同上 |
+| P3 | `throw` 须在 JSDoc 写异常/Error | 同上 |
+
+**CMNT-C（双速双严）**：standalone 激活后 `pre-commit` 自动装 hook — commit 校验 staged + 交互补骨架；push 全量。umbrella 托管时 monorepo 根 `./scripts/activate_dev_env.sh` 覆盖 `src/apps/web-admin/src/`。
+
+```bash
+python scripts/check_comments.py --staged   # commit 同款
+python scripts/comment_fix.py --staged --apply
+```
+
 ## 5. 契约镜像（迁出必选 · vendor 自给）
 
 | 镜像 | 路径 | 维护 |

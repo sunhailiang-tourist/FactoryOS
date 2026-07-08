@@ -1,4 +1,10 @@
-"""graph_service 包入口。"""
+"""graph_service 包入口（BusinessGraph CRUD · 生命周期）。
+
+作用：重导出 Graph 业务编排公开 API。
+业务关联：G-01～G-08 · execute 前 frozen 门禁。
+上游：server.api.modules.graphs.controllers
+下游：business_graphs 表 · audit_service
+"""
 from __future__ import annotations
 
 from os_core.graph_service.service import (

@@ -27,3 +27,12 @@
 1.
 2.
 3.
+
+
+## 注释门禁（须满足）
+
+真源：`contracts/comment-gate-spec.md`
+
+- 每个 `.ts/.tsx` 七标签文件头
+- 每个 `export function` 含 JSDoc（功能/业务 + 上游/下游/怎么用）
+- 复杂函数体 `//` 块注释 · `throw` 须写异常

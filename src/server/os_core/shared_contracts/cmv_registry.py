@@ -23,7 +23,13 @@ _L2_LEVELS = frozenset({"L2", "L3"})
 
 
 def clear_cache() -> None:
-  """Session 切换或 bootstrap 后清空进程内缓存。"""
+  """清空 CMV 动词进程内缓存。
+
+  功能：失效 lru_cache 包装的 _load_verbs_raw。
+  业务含义：Registry bootstrap 或 contract_set 切换后须重载动词表。
+  上游：测试 fixture · platform_registry 灌入后。
+  下游：list_dsl_actions · require_known_verb 下次调用重读真源。
+  """
   _load_verbs_raw.cache_clear()
 
 
@@ -51,7 +57,12 @@ def _load_verbs_raw() -> list[dict[str, Any]]:
 
 
 def list_dsl_actions() -> list[dict[str, Any]]:
-  """返回 DSLAction 形状列表（D-01）。"""
+  """返回 DSLAction 形状列表（D-01）。
+
+  功能：将 CMV verbs 映射为 OpenAPI DSLAction 字段集。
+  业务含义：GET /v1/dsl/registry 与 Studio Discover 读同一动词目录。
+  返回：含 verb · level · compensator · connector_ops 的 dict 列表。
+  """
   out: list[dict[str, Any]] = []
   for item in _load_verbs_raw():
     out.append(
@@ -69,7 +80,13 @@ def list_dsl_actions() -> list[dict[str, Any]]:
 
 
 def get_verb_level(verb: str) -> str | None:
-  """查动词 CMV level（L0/L2 等）；未知返回 None。"""
+  """查询动词的 CMV level（L0/L2/L3 等）。
+
+  功能：线性扫描注册表匹配 verb。
+  业务含义：execution 判断 L2 写须 compensator · Revert 链。
+  参数 verb：DSL 动词名。
+  返回：level 字符串；未知动词返回 None。
+  """
   for item in _load_verbs_raw():
     if item.get("verb") == verb:
       return str(item.get("level"))
@@ -77,7 +94,14 @@ def get_verb_level(verb: str) -> str | None:
 
 
 def require_known_verb(verb: str) -> dict[str, Any]:
-  """已知动词或抛 DSL_UNKNOWN（D-02）。"""
+  """已知动词或抛 DSL_UNKNOWN（D-02）。
+
+  功能：查找动词元数据，不存在则 PlatformError 400。
+  业务含义：execute 前置 · 未知动词拒绝进 Execution。
+  参数 verb：待校验 DSL 动词。
+  返回：CMV 注册表原始 verb dict。
+  异常：DSL_UNKNOWN 400。
+  """
   for item in _load_verbs_raw():
     if item.get("verb") == verb:
       return item
@@ -89,7 +113,12 @@ def require_known_verb(verb: str) -> dict[str, Any]:
 
 
 def draft_graph_checksum() -> str:
-  """draft Graph 占位 checksum（对齐 schema 约定）。"""
+  """返回 draft Graph 占位 checksum（对齐 schema 约定）。
+
+  功能：提供固定 sha256 全零占位符。
+  业务含义：draft 态 Graph 尚无内容哈希时的契约占位。
+  返回：sha256:000…0 格式字符串。
+  """
   return _DRAFT_CHECKSUM
 
 
@@ -109,6 +138,7 @@ def register_dsl_verb(
   业务含义：拒绝无 compensator 的 L2 动词，对齐 check_cmv_sync 规则。
   上游：POST /v1/registry/cmv/verbs
   下游：Studio 提案前置校验
+  异常: PlatformError · BLUEPRINT_INVALID 等
   """
   if level in _L2_LEVELS and not compensator and not verb.endswith("_REVERT"):
     raise PlatformError(

@@ -62,3 +62,12 @@ git diff --name-only <base>...HEAD
 - 阻断 → 禁止 `可以提交` · Dev 回修后重跑终轮
 - 需改进 → 列可执行项；须 `风险接受并继续` 才可提交
 - 通过 → 允许 `./scripts/gate delivery` 绿后提示 **可以 commit**
+
+
+## 注释门禁（须满足）
+
+真源：`contracts/comment-gate-spec.md`
+
+- 每个 `.ts/.tsx` 七标签文件头
+- 每个 `export function` 含 JSDoc（功能/业务 + 上游/下游/怎么用）
+- 复杂函数体 `//` 块注释 · `throw` 须写异常

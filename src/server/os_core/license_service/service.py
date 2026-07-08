@@ -57,6 +57,9 @@ def assert_pack_licensed(
 
   功能：execution 写路径前强制门禁（须 connector 已配置之后调用）。
   业务含义：T-02 负向断言真源。
+  参数 tenant_id · pack_id：授权键。
+  异常：未授权 MODULE_NOT_LICENSED 403。
+  上游：execution_service.execute（connector 已配置后）。
   """
   if is_pack_licensed(session, tenant_id=tenant_id, pack_id=pack_id):
     return

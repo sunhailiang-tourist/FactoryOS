@@ -22,7 +22,12 @@ def _row_to_graph(row: dict) -> BusinessGraph:
 
 
 def insert_graph(session: Session, graph: BusinessGraph) -> None:
-  """INSERT business_graphs（新版本行）。"""
+  """INSERT business_graphs（新版本行）。
+
+  功能：将 BusinessGraph JSON 写入 business_graphs 表。
+  业务含义：G-01 创建与 G-07 clone 的数据面落库。
+  参数 graph：待插入 BusinessGraph 模型。
+  """
   body = graph.model_dump(mode="json", by_alias=True)
   session.execute(
     text(
@@ -46,7 +51,12 @@ def insert_graph(session: Session, graph: BusinessGraph) -> None:
 
 
 def update_graph(session: Session, graph: BusinessGraph) -> None:
-  """UPDATE 已有 graph_id+version 行。"""
+  """UPDATE 已有 graph_id+version 行。
+
+  功能：按主键更新 status/checksum/body_json。
+  业务含义：G-02 编辑 · G-04 submit · G-05 freeze 共用。
+  参数 graph：含最新字段的 BusinessGraph。
+  """
   body = graph.model_dump(mode="json", by_alias=True)
   session.execute(
     text(
@@ -76,7 +86,13 @@ def get_graph(
   graph_id: str,
   version: str,
 ) -> BusinessGraph | None:
-  """按 graph_id + version 查单条。"""
+  """按 graph_id + version 查单条。
+
+  功能：SELECT body_json 并反序列化为 BusinessGraph。
+  业务含义：service 层读路径唯一 store 入口。
+  参数 graph_id/version：Graph 定位键。
+  返回：BusinessGraph 或 None。
+  """
   row = (
     session.execute(
       text(
@@ -97,7 +113,13 @@ def get_graph(
 
 
 def graph_exists(session: Session, *, graph_id: str, version: str) -> bool:
-  """版本行是否存在。"""
+  """版本行是否存在。
+
+  功能：委托 get_graph 判空。
+  业务含义：G-01 创建前唯一性校验。
+  参数 graph_id/version：Graph 定位键。
+  返回：存在 True，否则 False。
+  """
   return get_graph(session, graph_id=graph_id, version=version) is not None
 
 
@@ -132,7 +154,13 @@ def has_frozen_ruleset_for_graph(
   graph_id: str,
   graph_version: str,
 ) -> bool:
-  """同 graph 版本是否存在 frozen RuleSet（G-05 前置；避免 import rule_engine）。"""
+  """同 graph 版本是否存在 frozen RuleSet（G-05 前置）。
+
+  功能：直查 rulesets 表 frozen 行。
+  业务含义：freeze 前置；避免 import rule_engine 循环依赖。
+  参数 graph_id/graph_version：Graph 定位键。
+  返回：存在 frozen RuleSet 则 True。
+  """
   row = (
     session.execute(
       text(

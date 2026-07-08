@@ -8,6 +8,11 @@ kernel:
   pipeline: _factoryos_pipeline
   gate: scripts/gate
   harness: scripts/check_harness.py
+  comment_gate:
+    spec: contracts/comment-gate-spec.md
+    check: scripts/check_comments.py
+    fix: scripts/comment_fix.py
+    pre_commit: .pre-commit-config.yaml
 profiles:
   - id: web-admin
     rel_path: src/apps/web-admin

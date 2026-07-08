@@ -55,3 +55,11 @@ gate step : PASS/FAIL
 ## 8. 等待
 
 请回复：`可以继续` 或 `测试不通过` + 现象
+
+
+## 注释门禁（须满足）
+
+真源：`contracts/comment-gate-spec.md`
+
+- 每个 `.ts/.tsx` 七标签文件头
+- 每个 `export function` 含 JSDoc（功能/业务 + 上游/下游/怎么用）

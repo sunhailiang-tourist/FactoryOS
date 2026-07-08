@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""校验 server 侧 Python 中文注释（编码绝对门禁 §3 · stdlib only）。
+"""校验 server 侧 Python 中文注释（编码绝对门禁 §3 · P0～P3 · stdlib only）。
 
-作用：机械拦截「无文件头 / 公开函数无业务注释」导致的文档债。
+作用：机械拦截文件头/函数/字段/块注释/PlatformError doc 债。
 业务关联：SH-步步流 gate step · gate pr · check_static_quality。
 上游：docs/文档/架构/编码绝对门禁.md §3
 下游：check_static_quality.py · check_harness.py（step/full tier）
@@ -9,6 +9,7 @@
 Usage:
   python scripts/check_python_comments.py
   python scripts/check_python_comments.py --paths src/server/os_core/connector_sdk
+  python scripts/check_python_comments.py --no-fields   # 仅 P0～P2 子集调试
 
 Exit 0 = pass; 1 = violations.
 """
@@ -20,16 +21,16 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import comment_gate_lib as cg  # noqa: E402
+
 ENFORCED_MANIFEST = ROOT / "contracts" / "python_comment_enforced_paths.txt"
 DEFAULT_ROOTS = (
   ROOT / "src" / "server" / "os_core",
   ROOT / "src" / "server" / "api",
 )
 SERVER_PREFIXES = ("src/server/os_core/", "src/server/api/")
-
-FILE_HEADER_REQUIRED = ("作用", "业务关联", "上游", "下游")
-FUNC_BUSINESS_MARKERS = ("功能", "业务", "业务含义")
-FUNC_CHAIN_MARKERS = ("上游", "下游", "参数", "返回", "异常")
 
 SKIP_PARTS = frozenset({"__pycache__", "migrations"})
 
@@ -40,82 +41,7 @@ def _read_module_doc(path: Path) -> str | None:
   except OSError as exc:
     return f"__error__:{exc}"
   tree = ast.parse(text, filename=str(path))
-  doc = ast.get_docstring(tree, clean=False)
-  return doc
-
-
-def _check_file_header(path: Path, doc: str | None) -> list[str]:
-  errors: list[str] = []
-  if doc is None or doc.startswith("__error__"):
-    errors.append(f"{path}: missing module docstring (文件头)")
-    return errors
-  for tag in FILE_HEADER_REQUIRED:
-    if tag not in doc:
-      errors.append(f"{path}: file header missing 「{tag}」")
-  if len(doc.strip()) < 40:
-    errors.append(f"{path}: file header too short (<40 chars)")
-  return errors
-
-
-def _func_doc_ok(name: str, doc: str | None, body_len: int) -> list[str]:
-  if doc is None or not doc.strip():
-    if name.startswith("_") and body_len <= 3:
-      return []
-    return ["missing docstring"]
-  text = doc.strip()
-  if name.startswith("_"):
-    if len(text) < 8:
-      return ["private docstring too short (<8 chars)"]
-    return []
-  has_business = any(m in text for m in FUNC_BUSINESS_MARKERS)
-  has_chain = any(m in text for m in FUNC_CHAIN_MARKERS)
-  if not has_business:
-    return ["public function doc missing 功能/业务/业务含义"]
-  if not has_chain:
-    return ["public function doc missing 上游/下游/参数/返回/异常"]
-  if len(text) < 24:
-    return ["public docstring too short (<24 chars)"]
-  return []
-
-
-def _check_functions(path: Path) -> list[str]:
-  errors: list[str] = []
-  try:
-    text = path.read_text(encoding="utf-8")
-    tree = ast.parse(text, filename=str(path))
-  except SyntaxError as exc:
-    return [f"{path}: syntax error: {exc}"]
-
-  class _Visitor(ast.NodeVisitor):
-    def __init__(self) -> None:
-      self.errors: list[str] = []
-      self._depth = 0
-
-    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
-      self._visit_func(node)
-
-    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
-      self._visit_func(node)
-
-    def _visit_func(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
-      if self._depth > 0:
-        return
-      if node.name in ("main",):
-        return
-      body_len = len(node.body)
-      doc = ast.get_docstring(node, clean=False)
-      for msg in _func_doc_ok(node.name, doc, body_len):
-        self.errors.append(f"{path}:{node.lineno}: {node.name} — {msg}")
-      self._depth += 1
-      for child in node.body:
-        if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
-          continue
-        self.visit(child)
-      self._depth -= 1
-
-  visitor = _Visitor()
-  visitor.visit(tree)
-  return visitor.errors
+  return ast.get_docstring(tree, clean=False)
 
 
 def load_enforced_paths() -> list[Path]:
@@ -166,20 +92,43 @@ def iter_py_files(roots: list[Path]) -> list[Path]:
   return sorted(out)
 
 
-def check_files(files: list[Path]) -> list[str]:
+def check_files_list(
+  files: list[Path],
+  *,
+  check_fields: bool,
+  check_blocks: bool,
+  check_platform_error: bool,
+) -> list[str]:
   errors: list[str] = []
   for path in files:
     doc = _read_module_doc(path)
     if isinstance(doc, str) and doc.startswith("__error__"):
       errors.append(f"{path}: {doc}")
       continue
-    errors.extend(_check_file_header(path, doc))
-    errors.extend(_check_functions(path))
+    errors.extend(
+      cg.check_file_rules(
+        path,
+        check_fields=check_fields,
+        check_blocks=check_blocks,
+        check_platform_error=check_platform_error,
+      )
+    )
   return errors
 
 
-def check_paths(roots: list[Path]) -> list[str]:
-  return check_files(iter_py_files(roots))
+def check_paths(
+  roots: list[Path],
+  *,
+  check_fields: bool,
+  check_blocks: bool,
+  check_platform_error: bool,
+) -> list[str]:
+  return check_files_list(
+    iter_py_files(roots),
+    check_fields=check_fields,
+    check_blocks=check_blocks,
+    check_platform_error=check_platform_error,
+  )
 
 
 def resolve_gate_files() -> list[Path]:
@@ -194,40 +143,39 @@ def resolve_gate_files() -> list[Path]:
 
 
 def main() -> int:
-  p = argparse.ArgumentParser(description="Python Chinese comment gate (server)")
-  p.add_argument(
-    "--paths",
-    nargs="*",
-    help="optional subpaths under repo root (default: os_core + api)",
-  )
-  p.add_argument(
-    "--gate",
-    action="store_true",
-    help="enforced manifest + changed server .py (gate step / static quality)",
-  )
-  p.add_argument(
-    "--changed-only",
-    action="store_true",
-    help="only git-changed server .py files",
-  )
+  p = argparse.ArgumentParser(description="Python Chinese comment gate (server P0～P3)")
+  p.add_argument("--paths", nargs="*", help="optional subpaths under repo root")
+  p.add_argument("--gate", action="store_true", help="enforced + changed server .py")
+  p.add_argument("--changed-only", action="store_true")
+  p.add_argument("--no-fields", action="store_true", help="skip P1 field description")
+  p.add_argument("--no-blocks", action="store_true", help="skip P2 block comments")
+  p.add_argument("--no-platform-error", action="store_true", help="skip P3 PlatformError doc")
   args = p.parse_args()
+
+  opts = dict(
+    check_fields=not args.no_fields,
+    check_blocks=not args.no_blocks,
+    check_platform_error=not args.no_platform_error,
+  )
+
   if args.gate:
     files = resolve_gate_files()
     if not files:
       print("Python comment gate OK (no enforced/changed server files)")
       return 0
-    errors = check_files(files)
+    errors = check_files_list(files, **opts)
   elif args.changed_only:
     files = git_changed_server_py()
     if not files:
       print("Python comment gate OK (no changed server .py)")
       return 0
-    errors = check_files(files)
+    errors = check_files_list(files, **opts)
   elif args.paths:
     roots = [(ROOT / rel).resolve() for rel in args.paths]
-    errors = check_paths(roots)
+    errors = check_paths(roots, **opts)
   else:
-    errors = check_paths(list(DEFAULT_ROOTS))
+    errors = check_paths(list(DEFAULT_ROOTS), **opts)
+
   if errors:
     print("Python comment gate FAILED:", file=sys.stderr)
     for e in errors:

@@ -30,7 +30,13 @@ def _catalog_path(pack_id: str) -> Path:
 
 
 def validate_blueprint(blueprint: dict[str, Any]) -> dict[str, Any]:
-  """校验 Blueprint 结构；L2 CMV op 须含 revert（B-04）。"""
+  """校验 Blueprint 结构；L2 CMV op 须含 revert（B-04）。
+
+  功能：检查 apiVersion/kind/ops 与 L2 revert 声明。
+  业务含义：load_blueprint 前置；无效 Blueprint 拒绝加载。
+  参数 blueprint：待校验 Blueprint dict。
+  返回：{"valid": bool, "errors": [...]}。
+  """
   errors: list[dict[str, str]] = []
 
   if blueprint.get("apiVersion") != "factoryos.io/v1":
@@ -100,7 +106,14 @@ def _load_blueprint_file(pack_id: str) -> dict[str, Any]:
 
 
 def load_blueprint(*, pack_id: str, tenant_id: str) -> dict[str, Any]:
-  """加载 tenant 可见 Blueprint（B-01）。"""
+  """加载 tenant 可见 Blueprint（B-01）。
+
+  功能：Registry DB 优先加载并 validate_blueprint。
+  业务含义：runtime execute 与 connect/test 共用 Blueprint 真源。
+  参数 pack_id/tenant_id：Pack 与租户定位键。
+  返回：校验通过的 Blueprint dict。
+  异常：未配置或校验失败时 PlatformError。
+  """
   _ = tenant_id
   blueprint = _load_blueprint_file(pack_id)
   meta_pack = (blueprint.get("metadata") or {}).get("pack_id")
@@ -125,8 +138,10 @@ def assert_tenant_connector_configured(
 ) -> None:
   """租户未注册 Connector Pack 时抛出 CONNECTOR_NOT_CONFIGURED（403 · T-03）。
 
-  功能：execute 前门禁；先于 license 校验。
-  业务含义：ConnectorRegistry 未绑定 → 禁止 silent no-op。
+  功能：查 system_relation 是否存在；不存在则 403。
+  业务含义：execute 前门禁；先于 license 校验。
+  参数 tenant_id/pack_id：租户与 Pack 定位键。
+  异常：未配置时 PlatformError 403。
   """
   from os_core.platform_registry import tenant_config_store
 

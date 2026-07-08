@@ -43,7 +43,13 @@ def agent_plan_http(
   body: AgentPlanBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/agent/plan（H-01 · 仅产 DslPlan）。"""
+  """POST /v1/agent/plan（H-01 · 仅产 DslPlan）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：Agent 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.agent_orchestrator。
+  异常: PlatformError · RULE_DENIED / DSL_NOT_IN_GRAPH 等
+  """
   verb_meta = require_known_verb(_AGENT_STUB_VERB)
   verb_level = str(verb_meta["level"])
 

@@ -27,7 +27,12 @@ def get_execution_http(
   tenant_id: str | None = Query(default=None, description="调用方租户 ID"),
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """GET /v1/executions/{execId}（E-04 · N-03 tenant 隔离）。"""
+  """GET /v1/executions/{execId}（E-04 · N-03 tenant 隔离）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：Execution 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.execution_service。
+  """
   caller_tenant = tenant_id or get_tenant_id(request)
   record = get_execution_for_tenant(
     session,
@@ -44,7 +49,12 @@ def get_execution_evidence_http(
   tenant_id: str | None = Query(default=None, description="调用方租户 ID"),
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """GET /v1/executions/{execId}/evidence（E-09 · N-03 tenant 隔离）。"""
+  """GET /v1/executions/{execId}/evidence（E-09 · N-03 tenant 隔离）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：Execution 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.execution_service。
+  """
   caller_tenant = tenant_id or get_tenant_id(request)
   evidence = assemble_evidence_for_tenant(
     session,

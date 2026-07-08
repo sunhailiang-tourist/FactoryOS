@@ -12,15 +12,15 @@ alwaysApply: true
 
 | 是 | 否 |
 |----|-----|
-| 在 monorepo 内 `src/apps/web-admin/` 开发 | 把 web-admin 业务写进 `os_core` / `src/apps/api` |
+| 在 monorepo 内 `src/apps/web-admin/` 开发 | **禁止**把业务写进服务端内核（`os_core` 域）或废止 apps/api 路径 |
 | 只读消费 `contracts/openapi` 镜像 | 改 FactoryOS `contracts/` 锁文件 / `repo-structure.yaml` |
 | `./scripts/activate.sh` 验收盘 | 用 FactoryOS `pytest` / STU AC 阻塞 WEB-PROFILE |
 | WEB-PROFILE harness（18+2 checks） | 混用 FactoryOS `gate step` 后端 AC |
 
 ## 越权写路径（未经用户确认 · 强制停机）
 
-```
-src/os_core/**  src/apps/api/**  src/server/**  src/tests/**
+```text
+禁止写入（越权）：server 内核 · 废止 apps/api · server/** · tests/**
 templates/frontend-devkit/**  contracts/frontend-devkit-lock.yaml
 devkit.manifest.yaml  .cursor/factoryos/**  FactoryOS 步步流后端规则
 ```

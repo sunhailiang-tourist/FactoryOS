@@ -164,7 +164,13 @@ ROUTER_PROVIDERS: tuple[RouteProvider, ...] = tuple(d.provider for d in API_ROUT
 
 
 def register_v1(app: FastAPI) -> None:
-  """按 API_ROUTER_DOMAINS 顺序挂载全部 v1 路由。"""
+  """按 API_ROUTER_DOMAINS 顺序挂载全部 v1 路由。
+
+  功能：遍历 ROUTER_PROVIDERS 调用 include_router。
+  业务含义：OpenAPI /v1/* 域登记真源。
+  上游：register_routers。
+  下游：modules/*/get_routers。
+  """
   for provider in ROUTER_PROVIDERS:
     for router in provider():
       app.include_router(router)

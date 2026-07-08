@@ -80,6 +80,7 @@ def run_reconciliation(
   参数 tenant_id/scope/graph_id/since：对账范围
   返回：ReconciliationReport（Pydantic）
   """
+  # 业务：遍历 success L2 写记录，read-back Legacy 比对字段并汇总 drift
   started_at = datetime.now(UTC)
   run_id = uuid4()
   scope_val: str = scope if scope in ("daily", "ad_hoc") else "ad_hoc"

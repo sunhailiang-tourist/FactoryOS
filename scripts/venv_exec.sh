@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PY="${ROOT}/.venv/bin/python"
 if [[ ! -x "$PY" ]]; then
-  echo "Missing .venv — run: uv sync --frozen --extra dev" >&2
+  echo "Missing .venv — run: uv sync --frozen --extra dev --group comment-gate" >&2
   exit 1
 fi
 if [[ $# -lt 1 ]]; then

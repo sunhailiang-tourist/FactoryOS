@@ -24,6 +24,13 @@ class PlatformError(Exception):
     *,
     http_status: int = 400,
   ) -> None:
+    """构造可预期业务异常。
+
+    功能：绑定 ErrorCode · 文案 · 建议 HTTP 状态。
+    业务含义：负向 AC 与 Gate 拒绝的统一抛出类型。
+    参数 code：机器可读错误码；message 默认取 SSOT 中文。
+    参数 http_status：API 层映射用（如 403 RULE_DENIED）。
+    """
     msg = default_message(code) if message is None else message
     super().__init__(msg)
     self.code = code

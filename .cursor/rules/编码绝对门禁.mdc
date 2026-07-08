@@ -18,7 +18,7 @@ alwaysApply: true
 2. **函数**：功能 · 业务含义 · 上游调用方 · 下游被调方 · 参数/返回业务说明。
 3. **字段**：含义 · 业务含义 · 业务关联（Pydantic/SQLAlchemy/TS 类型字段均须）。
 4. 目标：**读代码像读业务流程**，不依赖 ADR 才能懂。
-5. **机械门禁**：`scripts/check_python_comments.py --gate`（`gate step` · `check_static_quality` · harness step/full）；强制路径见 `contracts/python_comment_enforced_paths.txt`；**凡 git 改动的 `src/server/**/*.py` 亦须达标**。
+5. **机械门禁**：commit 时 `check_comments_commit_hook.py` 交互校验+确认后补全；PR 用 `check_comments --full`。
 
 ## 代码质量
 

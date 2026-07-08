@@ -22,6 +22,6 @@
     };
 
     /** 合并各域 role → permissions（首期仅 studio）。 */
-    export function getRolePermissions(role: string): readonly string[] {
+export function getRolePermissions(role: string): readonly string[] {
       return STUDIO_ROLE_PERMISSIONS[role] ?? [];
     }

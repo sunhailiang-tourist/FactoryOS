@@ -148,8 +148,6 @@ def run_check(key: str) -> int:
     path = SCRIPTS / script
     print(f"\n── {label} ({script})")
     cmd = [PYTHON, str(path)]
-    if key == "python_comments":
-        cmd.append("--gate")
     r = subprocess.run(cmd, cwd=ROOT)
     return r.returncode
 

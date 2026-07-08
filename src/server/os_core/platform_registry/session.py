@@ -13,11 +13,21 @@ _registry_session: Session | None = None
 
 
 def get_registry_session() -> Session | None:
-  """返回当前绑定的 Registry Session；未绑定时 loader 回退 export 文件。"""
+  """返回当前绑定的 Registry Session。
+
+  功能：读取进程内全局 _registry_session。
+  业务含义：未绑定时 cmv/schema loader 回退 contracts/ export。
+  返回：Session 或 None。
+  """
   return _registry_session
 
 
 def set_registry_session(session: Session | None) -> None:
-  """绑定/解绑 Registry Session（须在 bootstrap 之后、首次 loader 调用之前）。"""
+  """绑定或解绑 Registry Session。
+
+  功能：写入进程内全局 _registry_session。
+  业务含义：须在 bootstrap 之后、首次 loader 调用之前完成注入。
+  参数 session：目标 Session；None 表示解绑。
+  """
   global _registry_session
   _registry_session = session

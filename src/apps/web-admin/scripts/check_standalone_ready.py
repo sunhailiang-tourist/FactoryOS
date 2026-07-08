@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""W-11 standalone 迁出前置自检 — vendor · 双路径 · simulate 脚本。
+"""W-11 standalone 迁出前置自检 — vendor · 双路径 · simulate · CMNT-C。
 
 作用：迁出前最后一英里门禁子项。
-业务关联：devkit.manifest.standalone.yaml · vendor/factoryos-contracts。
+业务关联：devkit.manifest.standalone.yaml · vendor/factoryos-contracts · comment-gate。
 上游：contracts_paths · devkit.profile standalone_ready
-下游：check_harness · simulate_standalone_activate.sh
+下游：check_harness · simulate_standalone_activate.sh · pre-commit
 """
 from __future__ import annotations
 
@@ -24,6 +24,16 @@ PIN_FILE = vendor_contracts_root(APP_ROOT) / "PIN"
 CODEGEN_CHECK = APP_ROOT / "scripts" / "check_codegen_fresh.py"
 SIMULATE = APP_ROOT / "scripts" / "simulate_standalone_activate.sh"
 STANDALONE_MANIFEST = APP_ROOT / "devkit.manifest.standalone.yaml"
+CMNT_FILES = (
+  "scripts/check_comments.py",
+  "scripts/check_comments_commit_hook.py",
+  "scripts/comment_fix.py",
+  "scripts/comment_fix_lib.py",
+  "scripts/comment_gate_git.py",
+  "scripts/venv_exec.sh",
+  ".pre-commit-config.yaml",
+  "contracts/comment-gate-spec.md",
+)
 
 
 def main() -> int:
@@ -31,6 +41,10 @@ def main() -> int:
 
   if not STANDALONE_MANIFEST.is_file():
     errors.append("missing devkit.manifest.standalone.yaml")
+  else:
+    manifest = STANDALONE_MANIFEST.read_text(encoding="utf-8")
+    if "comment_gate:" not in manifest:
+      errors.append("devkit.manifest.standalone.yaml missing comment_gate section")
 
   vendor_root = vendor_contracts_root(APP_ROOT)
   openapi_dir = vendor_root / "openapi"
@@ -62,14 +76,23 @@ def main() -> int:
   if not (APP_ROOT / "scripts" / "py.sh").is_file():
     errors.append("missing scripts/py.sh")
 
-  if not (APP_ROOT / "scripts" / "requirements.txt").is_file():
+  req_path = APP_ROOT / "scripts" / "requirements.txt"
+  if not req_path.is_file():
     errors.append("missing scripts/requirements.txt")
+  else:
+    req_text = req_path.read_text(encoding="utf-8")
+    if "pre-commit" not in req_text:
+      errors.append("scripts/requirements.txt must include pre-commit (CMNT-C)")
 
   if not (APP_ROOT / "scripts" / "check_error_registry_sync.py").is_file():
     errors.append("missing scripts/check_error_registry_sync.py")
 
   if not SIMULATE.is_file():
     errors.append("missing scripts/simulate_standalone_activate.sh")
+
+  for rel in CMNT_FILES:
+    if not (APP_ROOT / rel).is_file():
+      errors.append(f"missing CMNT-C asset: {rel}")
 
   if errors:
     print("standalone_ready FAIL:", file=sys.stderr)
@@ -83,7 +106,7 @@ def main() -> int:
       print(f"FAIL: standalone mode but OpenAPI resolved to {resolved}", file=sys.stderr)
       return 1
 
-  print("OK: standalone_ready (vendor pin · codegen dual-path · simulate script)")
+  print("OK: standalone_ready (vendor · codegen · CMNT-C · simulate)")
   return 0
 
 

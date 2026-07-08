@@ -1,11 +1,9 @@
-"""DB 会话依赖（config/dependencies）。
+"""PostgreSQL Session Depends。
 
-作用：测试/运行时 DB 会话 + Registry bootstrap。
-
-作用：与 pytest migrated_db_session 共用 SQLite shared memory。
-业务关联：W2 audit/execute · ADR-008 Registry 真源。
-上游：modules/*/controllers
-下游：SQLAlchemy Session · platform_registry
+作用：get_db_session 提供请求级 SQLAlchemy Session。
+业务关联：ADR-002 写路径须经 os_core service。
+上游：settings DATABASE_URL · lifespan 连接池。
+下游：os_core/*/service · store。
 """
 from __future__ import annotations
 
@@ -51,6 +49,7 @@ def _apply_migrations(engine) -> None:
 
 def _ensure_engine() -> sessionmaker[Session]:
   """懒初始化引擎与会话工厂。"""
+  # 业务：首次建连时创建引擎、跑迁移、bootstrap Registry 并缓存 Session 工厂
   global _engine, _SessionLocal
   if _SessionLocal is not None:
     return _SessionLocal
@@ -69,7 +68,13 @@ def _ensure_engine() -> sessionmaker[Session]:
 
 
 def get_db_session() -> Generator[Session, None, None]:
-  """FastAPI 依赖：请求级 Session，结束时 close。"""
+  """请求级 SQLAlchemy Session Depends。
+
+  功能：yield Session 并在请求结束 commit/rollback。
+  业务含义：controllers 唯一 DB 注入入口。
+  上游：settings DATABASE_URL。
+  下游：os_core/*/service。
+  """
   factory = _ensure_engine()
   session = factory()
   set_registry_session(session)

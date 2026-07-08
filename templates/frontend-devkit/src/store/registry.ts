@@ -27,6 +27,12 @@ export const STORE_REGISTRY: readonly StoreModuleEntry[] = [
   ...collectStoreEntries().sort((a, b) => a.moduleId.localeCompare(b.moduleId)),
 ] as const;
 
+/**
+ * 功能：getStoreByModuleId 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function getStoreByModuleId(moduleId: string): StoreModuleEntry | undefined {
   return STORE_REGISTRY.find((entry) => entry.moduleId === moduleId);
 }

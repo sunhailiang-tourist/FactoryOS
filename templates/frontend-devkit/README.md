@@ -43,8 +43,10 @@ Umbrella 下 pipeline 落盘可用 FactoryOS 根 `_factoryos_pipeline/`，但 **
 
 ```bash
 cp devkit.manifest.standalone.yaml devkit.manifest.yaml
-./scripts/activate.sh
+./scripts/activate.sh   # 含 pre-commit CMNT-C · pnpm check · harness
 ```
+
+**自带**：`contracts/comment-gate-spec.md` · `scripts/check_comments.py` · commit 交互补注释骨架。
 
 **必选**：`vendor/factoryos-contracts/`（OpenAPI · schemas · error-registry · pin）— 迁出后 **零父仓** 契约与错误码自给。
 

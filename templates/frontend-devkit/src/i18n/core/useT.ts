@@ -8,9 +8,15 @@
  * 关联：eslint no-restricted-imports
  */
 
-    import { useTranslation } from "react-i18next";
-    import type { I18nNamespace } from "@/i18n/registry";
+import { useTranslation } from "react-i18next";
+import type { I18nNamespace } from "@/i18n/registry";
 
-    export function useT(namespace: I18nNamespace | (string & {})) {
+/**
+ * 功能：useT 导出函数。
+ * 业务含义：见同文件模块文件头。
+ * 上游：见文件头上游。
+ * 下游：见文件头下游。
+ */
+export function useT(namespace: I18nNamespace | (string & {})) {
       return useTranslation(namespace);
     }

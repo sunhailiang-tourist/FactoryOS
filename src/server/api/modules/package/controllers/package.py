@@ -33,7 +33,12 @@ def export_package_http(
   body: PackageExportBody,
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/packages/export（P-01）。"""
+  """POST /v1/packages/export（P-01）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：Package 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.package_service。
+  """
   return export_implementation_package(
     session,
     tenant_id=body.tenant_id,
@@ -46,5 +51,10 @@ def import_package_http(
   body: dict[str, Any],
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /v1/packages/import（P-02）。"""
+  """POST /v1/packages/import（P-02）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：Package 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.package_service。
+  """
   return import_implementation_package(session, package=body)

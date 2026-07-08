@@ -12,6 +12,12 @@ import { getStudioFlows } from "@/api/functions/studio-shell";
 import { studioKeys } from "@/api/query/keys";
 import { ROUTE_REGISTRY } from "@/router/registry";
 
+/**
+ * 功能：prefetchStudioFlows 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function prefetchStudioFlows(queryClient: QueryClient): void {
   void queryClient.prefetchQuery({
     queryKey: studioKeys.flows(),
@@ -19,13 +25,32 @@ export function prefetchStudioFlows(queryClient: QueryClient): void {
   });
 }
 
+/**
+ * 功能：prefetchRouteChunk 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function prefetchRouteChunk(moduleId: string): void {
-  const entry = ROUTE_REGISTRY.find((r) => r.moduleId === moduleId);
+  // 业务：prefetchRouteChunk 主体编排（见文件头上下游）
+  const entry = ROUTE_/**
+ * 功能：prefetchStudioNavigation 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
+REGISTRY.find((r) => r.moduleId === moduleId);
   if (entry) {
     void entry.lazy();
   }
 }
 
+/**
+ * 功能：prefetchStudioNavigation 导出函数。
+ * 业务含义：见同文件模块文件头。
+ * 上游：见文件头上游。
+ * 下游：见文件头下游。
+ */
 export function prefetchStudioNavigation(
   queryClient: QueryClient,
   moduleId?: string,

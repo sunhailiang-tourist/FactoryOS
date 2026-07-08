@@ -21,7 +21,14 @@ import { createStudioFlowsLoader } from "@/router/loaders";
 import { getActorContext } from "@/api/request";
 import { getRoutesByLayout } from "@/router/registry";
 
+/**
+ * 功能：createAppRouter 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function createAppRouter(queryClient: QueryClient) {
+  // 业务：createAppRouter 主体编排（见文件头上下游）
   const actorRole = getActorContext().role;
   const studioFlowsLoader = createStudioFlowsLoader(queryClient);
   return createBrowserRouter(

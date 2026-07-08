@@ -51,6 +51,11 @@ def main() -> int:
     p = argparse.ArgumentParser(description="Static quality: ruff + pyright")
     p.add_argument("--ruff-only", action="store_true")
     p.add_argument("--allow-missing", action="store_true", help="skip if tools not installed")
+    p.add_argument(
+        "--no-comments",
+        action="store_true",
+        help="skip python comments (use check_comments.py --staged on pre-commit)",
+    )
     args = p.parse_args()
 
     if not _collect_py_files():
@@ -74,9 +79,13 @@ def main() -> int:
         print("\nStatic quality FAILED", file=sys.stderr)
         return 1
 
-    print("\n── python_comments (gate)")
+    if args.no_comments:
+        print("\nStatic quality OK (comments skipped — use check_comments.py)")
+        return 0
+
+    print("\n── comments (full · check_comments.py)")
     r = subprocess.run(
-        [sys.executable, str(ROOT / "scripts" / "check_python_comments.py"), "--gate"],
+        [sys.executable, str(ROOT / "scripts" / "check_comments.py"), "--full"],
         cwd=ROOT,
         capture_output=True,
         text=True,

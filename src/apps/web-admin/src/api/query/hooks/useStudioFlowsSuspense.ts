@@ -11,6 +11,12 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { getStudioFlows } from "@/api/functions/studio-shell";
 import { studioKeys } from "@/api/query/keys";
 
+/**
+ * 功能：useStudioFlowsSuspense 导出函数。
+ * 业务含义：web-admin 模块对外入口。
+ * 上游：同文件文件头。
+ * 下游：见调用链。
+ */
 export function useStudioFlowsSuspense() {
   return useSuspenseQuery({
     queryKey: studioKeys.flows(),

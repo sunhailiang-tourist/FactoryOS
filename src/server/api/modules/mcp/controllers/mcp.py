@@ -24,7 +24,12 @@ def mcp_json_rpc_http(
   body: dict[str, Any],
   session: Session = Depends(get_db_session),
 ) -> dict[str, Any]:
-  """POST /mcp/v1/{tenantId}（M-01 · M-02 · M-03 audit 落库）。"""
+  """POST /mcp/v1/{tenantId}（M-01 · M-02 · M-03 audit 落库）。
+  功能：薄路由 HTTP 处理；委托 os_core。
+  业务含义：MCP 域对外 API 入口。
+  上游：FastAPI 请求 · Depends 注入。
+  下游：os_core.mcp_gateway。
+  """
   result = handle_mcp_json_rpc(session, tenant_id=tenant_id, request=body)
   session.commit()
   return result
