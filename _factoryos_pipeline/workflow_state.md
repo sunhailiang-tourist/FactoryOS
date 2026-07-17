@@ -4,17 +4,18 @@
 > 真源说明：[ACTIVATION.md](../.cursor/factoryos/ACTIVATION.md)
 
 ```yaml
-phase: PLANNING
+phase: STEP0
 agent: dev
 step: 0
-plan: _factoryos_pipeline/2026-07-08/plan/plan-1554-cmnt-c-comment-closed-loop.md
+plan: null
 test_plan: null
-updated: 2026-07-08
+updated: 2026-07-14
 execution_strategy: .cursor/factoryos/PLATFORM-FIRST-EXECUTION-STRATEGY.md
-current_stage: cmnt_c_comment_loop
-goal: CMNT-C 注释闭环 v2 · 已落地 · 待用户 可以继续 解锁 1b
-blocked_until: CMNT-C08
+current_stage: awaiting_goal
+goal: null  # 【Dev模式启动】已激活 · 待用户给出本轮目标
+blocked_until: null
 blocked_1b_plan: _factoryos_pipeline/2026-07-08/plan/plan-1524-stu-ui-studio-api-wiring.md
+last_closed: CMNT-C (plan-1554) · 1a.5 已结案 · 1b 曾封存于 plan-1524
 ```
 
 ## 执行策略（锁死 · 2026-07-08 插入 1a.5）
@@ -99,6 +100,8 @@ blocked_1b_plan: _factoryos_pipeline/2026-07-08/plan/plan-1524-stu-ui-studio-api
 真源：`contracts/python_comment_backfill_batches.yaml` · 机械门禁已接 `gate step`（`--gate`）；Step5 切全量。
 
 ## 变更日志
+
+- 2026-07-14 【Dev模式启动】· `phase: STEP0` · 上轮 CMNT-C/1a.5 已结 · 本轮目标未定 · 等用户补齐后开 Step 0
 
 - 2026-07-08 用户决策 · **先 CMNT-C 注释闭环，暂停 1b 联调** · plan `plan-1554` · `blocked_until: CMNT-C08` · plan-1524 封存
 

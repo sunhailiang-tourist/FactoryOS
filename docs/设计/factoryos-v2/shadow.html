@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · 智能中枢系统</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .sidebar-item-active { background-color: #1e293b; border-left: 4px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(51, 65, 85, 0.5); }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- 侧边栏 -->
+<aside class="w-64 glass-card flex flex-col flex-none">
+<div class="p-6 border-b border-slate-700">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-3xl text-blue-500" icon="ph:factory-bold"></iconify-icon>
+<span class="text-xl font-bold tracking-tight">Ax OS</span>
+</div>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">智能中枢系统</p>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="strategy.html">
+<iconify-icon icon="ph:grid-four-bold"></iconify-icon>
+<span>制造全景</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="integration.html">
+<iconify-icon icon="ph:plug-bold"></iconify-icon>
+<span>产业连接</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="business.html">
+<iconify-icon icon="ph:package-bold"></iconify-icon>
+<span>资产与复制</span>
+</a>
+<a class="sidebar-item-active flex items-center gap-3 px-6 py-3 transition-colors" href="workflow.html">
+<iconify-icon icon="ph:shield-check-bold"></iconify-icon>
+<span>运营与合规</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="tenants.html">
+<iconify-icon icon="ph:cpu-bold"></iconify-icon>
+<span>平台治理</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+<div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold">A</div>
+<div class="flex-1 overflow-hidden text-xs">
+<p class="font-medium truncate">Ax OS</p>
+<p class="text-slate-500 truncate">v1.0.0</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="flex-1 overflow-y-auto p-8 bg-[#020617]">
+<!-- Header -->
+<header class="flex justify-between items-center mb-10">
+<div>
+<h1 class="text-3xl font-bold text-white">Ax OS · 运营与合规</h1>
+<p class="text-slate-400 mt-1">智能中枢系统 — Shadow Mode 管控</p>
+</div>
+<div class="flex gap-4">
+<div class="px-4 py-2 rounded-lg bg-slate-800 text-slate-400 text-sm font-medium border border-slate-700 flex items-center gap-2 cursor-not-allowed opacity-50">
+<iconify-icon icon="ph:lock-bold"></iconify-icon>
+                    生产写权限锁定
+                </div>
+</div>
+</header>
+<!-- Shadow Mode 状态卡片 -->
+<div class="grid grid-cols-1 gap-6 mb-8">
+<div class="glass-card p-6 rounded-xl border-l-4 border-emerald-500">
+<div class="flex justify-between items-start mb-6">
+<div>
+<div class="text-sm text-slate-400 mb-1">Shadow Mode 状态</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-2xl font-bold text-white uppercase tracking-wider">🟢 运行中</span>
+</div>
+</div>
+<div class="text-right">
+<div class="text-sm text-slate-400 mb-1">对账通过率</div>
+<div class="text-2xl font-bold text-emerald-400">99.8%</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-8">
+<div>
+<div class="text-xs text-slate-500 mb-2 font-semibold uppercase">已运行时间</div>
+<div class="flex items-center gap-2">
+<div class="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-blue-500 w-full"></div>
+</div>
+<span class="text-sm font-medium">14天 / 14天</span>
+</div>
+</div>
+<div>
+<div class="text-xs text-slate-500 mb-2 font-semibold uppercase">Drift 告警</div>
+<div class="text-lg font-bold text-white">0</div>
+</div>
+<div>
+<div class="text-xs text-slate-500 mb-2 font-semibold uppercase">生产写权限</div>
+<div class="flex items-center gap-2 text-red-400 font-bold">
+<iconify-icon icon="ph:lock-bold"></iconify-icon>
+<span>未开启（需 Prove 双签+Shadow通过）</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 生产写权限开关 -->
+<section class="glass-card p-8 rounded-xl mb-12 border border-slate-700">
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="ph:plugs-connected-bold"></iconify-icon>
+                生产环境写权限控制 (Write Access Control)
+            </h3>
+<div class="flex flex-col md:flex-row gap-10 items-center">
+<div class="flex-1">
+<div class="space-y-4 mb-8">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-emerald-500 text-xl" icon="ph:check-circle-bold"></iconify-icon>
+<span class="text-slate-300">Prove 双签已完成 ✅</span>
+</div>
+<div class="flex items-center gap-3">
+<iconify-icon class="text-emerald-500 text-xl" icon="ph:check-circle-bold"></iconify-icon>
+<span class="text-slate-300">Shadow 运行 ≥14 天 ✅</span>
+</div>
+<div class="flex items-center gap-3">
+<iconify-icon class="text-emerald-500 text-xl" icon="ph:check-circle-bold"></iconify-icon>
+<span class="text-slate-300">对账通过率 ≥99%（当前：99.8% ✅）</span>
+</div>
+<div class="flex items-center gap-3">
+<iconify-icon class="text-emerald-500 text-xl" icon="ph:check-circle-bold"></iconify-icon>
+<span class="text-slate-300">无严重 Drift 告警（当前：0 ✅）</span>
+</div>
+</div>
+ <div class="p-4 bg-slate-900/50 border border-slate-800 rounded-lg">
+<p class="text-sm text-red-400 flex items-center gap-2">
+<iconify-icon icon="ph:warning-bold"></iconify-icon>
+<strong>铁律：未 Prove 双签不得开生产写权限</strong>
+</p>
+<a class="mt-3 inline-flex items-center gap-2 text-xs text-amber-400 font-bold" href="studio.html">→ Studio Prove 双签 (W-07)</a>
+</div>
+</div>
+<div class="w-full md:w-80 p-8 glass-card rounded-2xl flex flex-col items-center justify-center border-dashed border-2 border-slate-700">
+<div class="text-sm text-slate-500 mb-4 font-semibold uppercase tracking-widest">当前写入模式</div>
+<div class="text-lg font-bold text-slate-300 mb-6 px-4 py-2 bg-slate-800 rounded-lg border border-slate-700">
+                        Shadow (Simulated)
+                    </div>
+<!-- 禁用状态开关 -->
+<div class="relative inline-flex items-center cursor-not-allowed opacity-50">
+<div class="w-16 h-8 bg-slate-700 rounded-full shadow-inner"></div>
+<div class="absolute left-1 top-1 w-6 h-6 bg-slate-500 rounded-full transition-transform"></div>
+</div>
+<p class="mt-6 text-xs text-slate-500 text-center">
+                        所有写入操作将仅在 FactoryOS 内部模拟并记录对账，不会回写 Legacy 系统。
+                    </p>
+</div>
+</div>
+</section>
+<!-- 对账记录 -->
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="ph:list-checks-bold"></iconify-icon>
+            Shadow 对账记录 (Reconciliation Log)
+        </h3>
+<div class="glass-card rounded-xl overflow-hidden">
+<table class="w-full text-left">
+<thead class="bg-slate-800/50 border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase">
+<tr>
+<th class="px-6 py-4">时间</th>
+<th class="px-6 py-4">Execution ID</th>
+<th class="px-6 py-4">系统</th>
+<th class="px-6 py-4">比对结果</th>
+<th class="px-6 py-4">详情</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800 text-sm">
+<tr>
+<td class="px-6 py-4 text-slate-400">14:00</td>
+<td class="px-6 py-4 font-mono text-blue-400 underline cursor-pointer">EXE-2024-00888</td>
+<td class="px-6 py-4 text-slate-300">金蝶ERP</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-emerald-500/10 text-emerald-500 rounded text-[10px] font-bold">✅ 一致</span>
+</td>
+<td class="px-6 py-4 text-slate-500">120件</td>
+</tr>
+<tr>
+<td class="px-6 py-4 text-slate-400">13:00</td>
+<td class="px-6 py-4 font-mono text-blue-400 underline cursor-pointer">EXE-2024-00887</td>
+<td class="px-6 py-4 text-slate-300">金蝶ERP</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-emerald-500/10 text-emerald-500 rounded text-[10px] font-bold">✅ 一致</span>
+</td>
+<td class="px-6 py-4 text-slate-500">85件</td>
+</tr>
+<tr>
+<td class="px-6 py-4 text-slate-400">12:00</td>
+<td class="px-6 py-4 font-mono text-blue-400 underline cursor-pointer">EXE-2024-00886</td>
+<td class="px-6 py-4 text-slate-300">金蝶ERP</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-amber-500/10 text-amber-500 rounded text-[10px] font-bold">⚠️ Drift</span>
+</td>
+<td class="px-6 py-4 text-slate-500">已处理</td>
+</tr>
+<tr>
+<td class="px-6 py-4 text-slate-400">11:00</td>
+<td class="px-6 py-4 font-mono text-blue-400 underline cursor-pointer">EXE-2024-00885</td>
+<td class="px-6 py-4 text-slate-300">金蝶ERP</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-emerald-500/10 text-emerald-500 rounded text-[10px] font-bold">✅ 一致</span>
+</td>
+<td class="px-6 py-4 text-slate-500">200件</td>
+</tr>
+<tr>
+<td class="px-6 py-4 text-slate-400">10:00</td>
+<td class="px-6 py-4 font-mono text-blue-400 underline cursor-pointer">EXE-2024-00884</td>
+<td class="px-6 py-4 text-slate-300">金���ERP</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-emerald-500/10 text-emerald-500 rounded text-[10px] font-bold">✅ 一致</span>
+</td>
+<td class="px-6 py-4 text-slate-500">50件</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+</body>
+</html>

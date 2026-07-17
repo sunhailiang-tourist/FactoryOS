@@ -123,6 +123,18 @@ def is_plan_draft_path(path: str) -> bool:
     return "/plan/plan-" in path and path.endswith(".md")
 
 
+def is_pm_draft_path(path: str) -> bool:
+    """PM Agent 落盘：无需 plan.ok（在确认规划之前）。"""
+    return "/pm/" in path and path.startswith("_factoryos_pipeline/")
+
+
+def is_pipeline_readme_path(path: str) -> bool:
+    """pipeline 说明 README：允许维护，不要求 plan.ok。"""
+    if path == "_factoryos_pipeline/README.md":
+        return True
+    return path.startswith("_factoryos_pipeline/") and path.endswith("/README.md")
+
+
 def is_chain_pipeline_artifact(path: str) -> bool:
     if not path.startswith("_factoryos_pipeline/"):
         return False
@@ -244,6 +256,16 @@ def main() -> None:
 
     # --- plan 草稿：PLANNING 阶段允许 ---
     if is_plan_draft_path(path):
+        print(json.dumps({"permission": "allow"}))
+        return
+
+    # --- PM 落盘：确认规划前允许（【PM模式启动】）---
+    if is_pm_draft_path(path):
+        print(json.dumps({"permission": "allow"}))
+        return
+
+    # --- pipeline README 说明 ---
+    if is_pipeline_readme_path(path):
         print(json.dumps({"permission": "allow"}))
         return
 

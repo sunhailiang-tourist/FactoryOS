@@ -56,7 +56,9 @@ L7 配置运行时   PostgreSQL Registry     Pack/Tenant/Contract/Relation（ADR
 
 ```mermaid
 flowchart TD
-  A[【Dev模式启动】] --> B[Step0 0-A/0-B/0-DB]
+  PM0[【PM模式启动】可选] --> PM1[pm/ 诊断·功能树·brief·AC草案]
+  PM1 --> A[【Dev模式启动】]
+  A --> B[Step0 0-A/0-B/0-DB]
   B --> C{用户: 可以继续}
   C --> D[plan 落盘]
   D --> E{用户: 确认规划}
@@ -95,10 +97,11 @@ flowchart TD
 
 真源：`_factoryos_pipeline/workflow_state.md` · [GATES.md](./GATES.md)
 
-### 三 Agent 口令
+### 四 Agent 口令
 
 | Agent | 口令 | 细则 |
 |-------|------|------|
+| PM | `【PM模式启动】` + 目标 | [PM-GATES](./PM-GATES.md) · 落盘 `pm/` · 默认只读 |
 | Dev | `【Dev模式启动】` + 目标 | [STEP0](./STEP0.md) · [DEV-GATES](./DEV-GATES.md) |
 | Test | `【Test模式启动】` · `【Test·Step N 验收】` · `【Test·终轮回归】` | [TEST-GATES](./TEST-GATES.md) |
 | Verify | `【Verify回合】Step N`（**新对话**） | [VERIFY-GATES](./VERIFY-GATES.md) |

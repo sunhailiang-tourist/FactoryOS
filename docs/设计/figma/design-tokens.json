@@ -1,0 +1,90 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Ax OS · FactoryOS — Figma Variables / Tokens Studio 导入用",
+  "color": {
+    "bg": {
+      "default": { "$value": "#0A0E1A", "$type": "color" },
+      "paper": { "$value": "rgba(15, 22, 40, 0.72)", "$type": "color" },
+      "elevated": { "$value": "rgba(20, 28, 52, 0.85)", "$type": "color" },
+      "input": { "$value": "rgba(8, 14, 28, 0.9)", "$type": "color" }
+    },
+    "primary": {
+      "default": { "$value": "#00D4FF", "$type": "color" },
+      "deep": { "$value": "#1565C0", "$type": "color" },
+      "light": { "$value": "#1E88E5", "$type": "color" },
+      "gradient-start": { "$value": "#1565C0", "$type": "color" },
+      "gradient-end": { "$value": "#00D4FF", "$type": "color" }
+    },
+    "text": {
+      "primary": { "$value": "#F0F4FF", "$type": "color" },
+      "secondary": { "$value": "rgba(240, 244, 255, 0.65)", "$type": "color" },
+      "muted": { "$value": "rgba(240, 244, 255, 0.4)", "$type": "color" }
+    },
+    "border": {
+      "default": { "$value": "rgba(0, 212, 255, 0.25)", "$type": "color" },
+      "glow": { "$value": "rgba(0, 212, 255, 0.5)", "$type": "color" },
+      "subtle": { "$value": "rgba(255, 255, 255, 0.08)", "$type": "color" }
+    },
+    "semantic": {
+      "success": { "$value": "#00E676", "$type": "color" },
+      "warning": { "$value": "#FFB300", "$type": "color" },
+      "error": { "$value": "#FF5252", "$type": "color" },
+      "info": { "$value": "#00D4FF", "$type": "color" }
+    },
+    "status": {
+      "shadow": { "$value": "#FFB300", "$type": "color" },
+      "frozen": { "$value": "#00E676", "$type": "color" },
+      "drift": { "$value": "#FF5252", "$type": "color" },
+      "offline": { "$value": "#FF5252", "$type": "color" },
+      "online": { "$value": "#00E676", "$type": "color" }
+    }
+  },
+  "spacing": {
+    "unit": { "$value": "8px", "$type": "dimension" },
+    "xs": { "$value": "4px", "$type": "dimension" },
+    "sm": { "$value": "8px", "$type": "dimension" },
+    "md": { "$value": "16px", "$type": "dimension" },
+    "lg": { "$value": "24px", "$type": "dimension" },
+    "xl": { "$value": "32px", "$type": "dimension" },
+    "2xl": { "$value": "48px", "$type": "dimension" }
+  },
+  "radius": {
+    "sm": { "$value": "6px", "$type": "dimension" },
+    "md": { "$value": "12px", "$type": "dimension" },
+    "lg": { "$value": "16px", "$type": "dimension" },
+    "pill": { "$value": "999px", "$type": "dimension" }
+  },
+  "font": {
+    "family": {
+      "sans": { "$value": "Inter, PingFang SC, Microsoft YaHei, sans-serif", "$type": "fontFamily" }
+    },
+    "size": {
+      "xs": { "$value": "12px", "$type": "dimension" },
+      "sm": { "$value": "14px", "$type": "dimension" },
+      "md": { "$value": "16px", "$type": "dimension" },
+      "lg": { "$value": "20px", "$type": "dimension" },
+      "xl": { "$value": "24px", "$type": "dimension" },
+      "2xl": { "$value": "32px", "$type": "dimension" },
+      "hero": { "$value": "40px", "$type": "dimension" }
+    },
+    "weight": {
+      "regular": { "$value": "400", "$type": "fontWeight" },
+      "medium": { "$value": "500", "$type": "fontWeight" },
+      "semibold": { "$value": "600", "$type": "fontWeight" },
+      "bold": { "$value": "700", "$type": "fontWeight" }
+    }
+  },
+  "shadow": {
+    "glow-sm": { "$value": "0 0 20px rgba(0, 212, 255, 0.15)", "$type": "shadow" },
+    "glow-md": { "$value": "0 0 40px rgba(0, 212, 255, 0.25)", "$type": "shadow" },
+    "card": { "$value": "0 8px 32px rgba(0, 0, 0, 0.4)", "$type": "shadow" }
+  },
+  "frame": {
+    "desktop-width": { "$value": "1440px", "$type": "dimension" },
+    "desktop-height": { "$value": "900px", "$type": "dimension" },
+    "mobile-width": { "$value": "390px", "$type": "dimension" },
+    "mobile-height": { "$value": "844px", "$type": "dimension" },
+    "sidebar-width": { "$value": "240px", "$type": "dimension" },
+    "topbar-height": { "$value": "56px", "$type": "dimension" }
+  }
+}

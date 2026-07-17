@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS - 报工入口 H-02</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 flex items-center justify-center min-h-screen p-4">
+<div class="w-[375px] h-[812px] bg-slate-900 rounded-[50px] border-[10px] border-slate-800 shadow-2xl overflow-hidden flex flex-col relative">
+<div class="h-10 flex justify-between items-center px-8 pt-4 flex-none z-20 text-white">
+<span class="text-xs font-bold">14:32</span>
+<div class="flex gap-1.5 items-center text-sm">
+<iconify-icon icon="ph:cell-signal-full-bold"></iconify-icon>
+<iconify-icon icon="ph:wifi-high-bold"></iconify-icon>
+<iconify-icon icon="ph:battery-full-bold"></iconify-icon>
+</div>
+</div>
+<div class="w-full h-6 bg-amber-500/20 flex items-center justify-center text-[10px] text-amber-500 font-bold border-y border-amber-500/20 z-20">
+<span>⚠️ 影子运行 · simulated only · 生产写禁用</span>
+</div>
+<div class="px-6 py-4 flex items-center justify-between flex-none">
+<a class="flex items-center gap-2 text-slate-400" href="h5_worker_home.html">
+<iconify-icon class="text-xl" icon="ph:arrow-left-bold"></iconify-icon>
+<span class="text-sm">返回</span>
+</a>
+<h1 class="text-white font-bold text-base">报工入口</h1>
+<span class="text-[9px] text-blue-400 font-mono font-bold">H-02</span>
+</div>
+<div class="flex-1 overflow-y-auto px-6 py-4">
+<p class="text-slate-500 text-xs mb-6">选择报工方式 · 感知输出将进入 Harness 确认卡（H-03）</p>
+<div class="bg-slate-800/50 rounded-2xl p-4 mb-6 border border-slate-700">
+<p class="text-[10px] text-slate-500 uppercase mb-1">当前工单</p>
+<p class="text-white font-bold">#WO-2024-00888 · CNC 精加工</p>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<a class="flex flex-col items-center gap-3 p-5 bg-blue-600/10 border border-blue-500/30 rounded-2xl hover:bg-blue-600/20 transition-all" href="h5_worker_confirm.html">
+<iconify-icon class="text-4xl text-blue-400" icon="ph:microphone-bold"></iconify-icon>
+<span class="text-sm font-bold text-white">语音报工</span>
+<span class="text-[10px] text-slate-500">说「报工 120 件」</span>
+</a>
+<a class="flex flex-col items-center gap-3 p-5 bg-emerald-600/10 border border-emerald-500/30 rounded-2xl hover:bg-emerald-600/20 transition-all" href="h5_worker_confirm.html">
+<iconify-icon class="text-4xl text-emerald-400" icon="ph:qr-code-bold"></iconify-icon>
+<span class="text-sm font-bold text-white">扫码报工</span>
+<span class="text-[10px] text-slate-500">扫工单/物料码</span>
+</a>
+<a class="flex flex-col items-center gap-3 p-5 bg-purple-600/10 border border-purple-500/30 rounded-2xl hover:bg-purple-600/20 transition-all" href="h5_worker_confirm.html">
+<iconify-icon class="text-4xl text-purple-400" icon="ph:camera-bold"></iconify-icon>
+<span class="text-sm font-bold text-white">拍照报工</span>
+<span class="text-[10px] text-slate-500">OCR 识别数量</span>
+</a>
+<a class="flex flex-col items-center gap-3 p-5 bg-amber-600/10 border border-amber-500/30 rounded-2xl hover:bg-amber-600/20 transition-all" href="h5_worker_confirm.html">
+<iconify-icon class="text-4xl text-amber-400" icon="ph:keyboard-bold"></iconify-icon>
+<span class="text-sm font-bold text-white">手动录入</span>
+<span class="text-[10px] text-slate-500">键入数量</span>
+</a>
+</div>
+<div class="p-4 bg-slate-900 rounded-xl border border-slate-800 text-xs text-slate-400">
+<iconify-icon class="text-blue-400 mr-1" icon="ph:info-bold"></iconify-icon>
+            Agent 仅输出 DslPlan，不直接写 Legacy。下一步进入 Harness 确认卡。
+        </div>
+</div>
+</div>
+</body>
+</html>

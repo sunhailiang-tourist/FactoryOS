@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ax OS · 产品流程原型</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0c1018;--card:#141c2e;--bd:#2a3a55;--pri:#4db8e8;--pri2:#3d8fd9;--txt:#e8edf5;--txt2:#9aa8be;--ok:#5fd68a;--warn:#e8b84d;--err:#e87070;--font:Inter,"PingFang SC",sans-serif}
+    body{font-family:var(--font);background:var(--bg);color:var(--txt);line-height:1.55}
+    .bar{position:fixed;top:0;left:0;right:0;z-index:99;height:42px;display:flex;align-items:center;padding:0 16px;gap:12px;background:#080c14;border-bottom:1px solid var(--bd);font-size:12px}
+    .bar span{color:var(--txt2)}.bar b{color:var(--pri)}
+    .nav-btn{padding:4px 10px;border:1px solid var(--bd);border-radius:4px;background:var(--card);color:var(--txt2);cursor:pointer;font-size:11px}
+    .nav-btn:hover{border-color:var(--pri);color:var(--pri)}
+    .page{display:none;max-width:1100px;margin:54px auto 40px;padding:0 24px}
+    .page.on{display:block}
+    h1{font-size:22px;margin-bottom:6px;color:var(--pri)}
+    .sub{font-size:13px;color:var(--txt2);margin-bottom:24px}
+    .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;background:#1a2840;color:var(--pri);border:1px solid var(--bd);margin-right:6px}
+    .box{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:16px 18px;margin-bottom:12px}
+    .box h3{font-size:14px;color:var(--pri);margin-bottom:8px}
+    .box p,.box li{font-size:13px;color:var(--txt2)}
+    .box ul{padding-left:18px}
+    .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0}
+    .node{padding:10px 14px;border-radius:6px;font-size:12px;border:1px solid var(--bd);background:#1a2236;cursor:pointer;text-align:center;min-width:90px}
+    .node:hover{border-color:var(--pri);color:var(--pri)}
+    .node.core{border-color:var(--pri2);background:#152238}
+    .node.gate{border-color:var(--warn);color:var(--warn)}
+    .node.data{border-color:var(--ok);color:var(--ok)}
+    .node.ext{border-color:#7a8aaa}
+    .arrow{color:var(--bd);font-size:16px}
+    .col2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .col3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+    th,td{padding:8px 10px;border:1px solid var(--bd);text-align:left}
+    th{background:#1a2236;color:var(--txt2);font-weight:500}
+    .foot{margin-top:28px;padding-top:16px;border-top:1px solid var(--bd)}
+    .foot-title{font-size:11px;color:var(--txt2);margin-bottom:8px}
+    .links{display:flex;flex-wrap:wrap;gap:6px}
+    .link{padding:6px 12px;border-radius:6px;font-size:11px;background:#1a2840;border:1px solid var(--bd);color:var(--pri);cursor:pointer}
+    .link:hover{background:#1e3050}
+    .lane{margin:12px 0;padding:12px;border-left:3px solid var(--pri);background:#111827}
+    .lane h4{font-size:12px;color:var(--pri);margin-bottom:6px}
+    pre{font-size:11px;color:var(--txt2);white-space:pre-wrap;line-height:1.5;background:#0a0e16;padding:12px;border-radius:6px;border:1px solid var(--bd);margin:10px 0}
+    .cover{text-align:center;padding:80px 20px}
+    .cover h1{font-size:32px;margin-bottom:12px}
+    .cover p{max-width:560px;margin:0 auto 24px;font-size:14px;color:var(--txt2)}
+  </style>
+</head>
+<body>
+<div class="bar">
+  <b>Ax OS 产品流程原型</b>
+  <span>业务思路 · os_core · 规划流（非高保真 UI）</span>
+  <button class="nav-btn" style="margin-left:auto" data-p="P00">封面</button>
+  <button class="nav-btn" data-p="P01">定位</button>
+  <button class="nav-btn" data-p="P06">os_core</button>
+  <button class="nav-btn" data-p="P12">接入</button>
+  <button class="nav-btn" data-p="P13">报工</button>
+</div>
+
+<!-- P00 封面 -->
+<div class="page on" id="P00">
+  <div class="cover">
+    <h1>Ax OS · FactoryOS</h1>
+    <p>产品流程设计稿 — 用于说明业务总体规划、os_core 能力设计与业务规划流程。打开即懂「卖什么、怎么接入、怎么运行、怎么复制」。</p>
+    <div class="flow" style="justify-content:center">
+      <span class="node" data-p="P01">产品定位</span><span class="arrow">→</span>
+      <span class="node core" data-p="P06">os_core</span><span class="arrow">→</span>
+      <span class="node gate" data-p="P12">业务接入</span><span class="arrow">→</span>
+      <span class="node" data-p="P13">日常运行</span><span class="arrow">→</span>
+      <span class="node data" data-p="P14">复制商业化</span>
+    </div>
+    <p style="font-size:12px;margin-top:32px;color:var(--txt2)">墨刀还原：每页用流程图元件，按 <code>Ax-OS-产品流程设计稿-v1.0.md</code> §篇章五建 17 页</p>
+  </div>
+  <div class="foot"><div class="foot-title">开始阅读</div><div class="links">
+    <span class="link" data-p="P01">P01 产品定位 →</span>
+  </div></div>
+</div>
+
+<!-- P01 定位 -->
+<div class="page" id="P01">
+  <span class="tag">篇章一</span><span class="tag">业务思路</span>
+  <h1>P01 · 产品定位</h1>
+  <p class="sub">制造业智能中枢 Overlay — 不替代 ERP，提供敢写、可追、可回滚的执行层</p>
+  <div class="col2">
+    <div class="box"><h3>✅ 我们是什么</h3><ul>
+      <li>ERP/MES 之上的 Governed AI 执行 Overlay</li>
+      <li>冻结 Graph + Rule + 唯一写路径 + Audit + Revert</li>
+      <li>部署即资产化（Package 可复制）</li>
+    </ul></div>
+    <div class="box"><h3>❌ 我们不是什么</h3><ul>
+      <li>ERP 替代品 / 聊天机器人</li>
+      <li>Agent 直连数据库</li>
+      <li>客户全量业务数据中台（默认）</li>
+    </ul></div>
+  </div>
+  <div class="box"><h3>产品双极（必须同时成立）</h3>
+    <div class="flow">
+      <span class="node">终端极<br><small>工人愿意用</small></span>
+      <span class="arrow">+</span>
+      <span class="node core">内核极<br><small>企业敢让写</small></span>
+      <span class="arrow">→</span>
+      <span class="node gate">Harness 确认门</span>
+    </div>
+  </div>
+  <div class="foot"><div class="foot-title">相关页面</div><div class="links">
+    <span class="link" data-p="P02">客户分型</span><span class="link" data-p="P05">四平面架构</span><span class="link" data-p="P03">D1/D2</span>
+  </div></div>
+</div>
+
+<!-- P02 客户分型 -->
+<div class="page" id="P02">
+  <span class="tag">篇章一</span>
+  <h1>P02 · 客户分型与切入</h1>
+  <p class="sub">A 类优先 · Phase1 先读后写 · 禁止自动财务过账</p>
+  <table>
+    <tr><th>类型</th><th>特征</th><th>策略</th></tr>
+    <tr><td><b>A 类</b></td><td>有 ERP/MES</td><td>优先 · Overlay</td></tr>
+    <tr><td>B 类</td><td>系统乱+Excel</td><td>先只读/半自动</td></tr>
+    <tr><td>C 类</td><td>无 ERP</td><td>暂缓 · Product B</td></tr>
+  </table>
+  <div class="box" style="margin-top:12px"><h3>场景顺序</h3>
+    <div class="flow"><span class="node">报工</span><span class="arrow">→</span><span class="node">生产分析</span><span class="arrow">→</span><span class="node">管理决策</span></div>
+    <p>铁律：读 → 建议 → 确认 → 自动化</p>
+  </div>
+  <div class="foot"><div class="links"><span class="link" data-p="P03">D1/D2 交付 →</span><span class="link" data-p="P08">Path A/B/C</span></div></div>
+</div>
+
+<!-- P03 D1/D2 -->
+<div class="page" id="P03">
+  <span class="tag">篇章一</span>
+  <h1>P03 · 两次交付 D1 / D2</h1>
+  <p class="sub">D1 通病包 ≤90天 · D2 工厂特异 ≥70% Pack 化</p>
+  <div class="flow" style="flex-direction:column;align-items:stretch">
+    <div class="box"><h3>D1 · 通病包</h3><p>五项机制 + 报工垂直场景 → Export Package v1</p>
+      <div class="flow"><span class="node data">只读查询</span><span class="node gate">受控写</span><span class="node">全审计</span><span class="node">可撤回</span><span class="node">每日对账</span></div>
+    </div>
+    <span class="arrow" style="text-align:center">▼ 工厂特异需求</span>
+    <div class="box"><h3>D2 · 扩展包</h3><p>计件/质量/外协等 · Package v2</p></div>
+  </div>
+  <div class="foot"><div class="links"><span class="link" data-p="P04">资产化飞轮</span><span class="link" data-p="P12">接入七步 →</span></div></div>
+</div>
+
+<!-- P04 资产化 -->
+<div class="page" id="P04">
+  <span class="tag">篇章一</span>
+  <h1>P04 · 部署即资产化</h1>
+  <pre>第一家（考古）──提取──► Graph / Pack / Package
+                              │
+第二家（复制）◄── import ────┘
+         S1 路径：代码零改动</pre>
+  <div class="box"><h3>卖的不是「连 API」</h3><p>而是可复制的 governed execution 资产</p></div>
+  <div class="foot"><div class="links"><span class="link" data-p="P14">第二家流程 →</span></div></div>
+</div>
+
+<!-- P05 四平面 -->
+<div class="page" id="P05">
+  <span class="tag">篇章二</span><span class="tag">架构</span>
+  <h1>P05 · 四平面架构</h1>
+  <div class="lane"><h4>Control Plane · 治理契约</h4><p>ADR · OpenAPI · Schema · CMV · Playbook</p></div>
+  <div class="lane"><h4>Runtime Plane · os_core + api</h4><p>执行引擎 · 十模块</p></div>
+  <div class="lane"><h4>Config Plane · Registry</h4><p>Studio publish · PostgreSQL · ADR-008</p></div>
+  <div class="lane"><h4>External Plane</h4><p>ERP/MES · Edge · H5 · Ax OS Web</p></div>
+  <div class="foot"><div class="links"><span class="link" data-p="P06">os_core 十模块 →</span></div></div>
+</div>
+
+<!-- P06 os_core -->
+<div class="page" id="P06">
+  <span class="tag">篇章二</span>
+  <h1>P06 · os_core 十模块</h1>
+  <p class="sub">模块化单体 · 唯一写 Legacy 仅 execution_service</p>
+  <div class="col3">
+    <div class="box"><h3>graph_service</h3><p>链路版本冻结<br>未冻结禁止 L2 写</p></div>
+    <div class="box"><h3>rule_engine</h3><p>默认拒绝授权</p></div>
+    <div class="box"><h3>execution_service ★</h3><p>唯一写路径<br>Saga·Revert·对账</p></div>
+    <div class="box"><h3>audit_service</h3><p>append-only 审计</p></div>
+    <div class="box"><h3>connector_sdk</h3><p>Blueprint·Legacy I/O</p></div>
+    <div class="box"><h3>platform_registry</h3><p>Pack/Tenant 真源</p></div>
+    <div class="box"><h3>agent_orchestrator</h3><p>唯一 LLM·只出计划</p></div>
+    <div class="box"><h3>license_service</h3><p>Pack 授权 403</p></div>
+    <div class="box"><h3>mcp_gateway</h3><p>工具→DslPlan·禁直写</p></div>
+  </div>
+  <div class="foot"><div class="links"><span class="link" data-p="P07">唯一写路径 →</span><span class="link" data-p="P08">Path A/B/C</span></div></div>
+</div>
+
+<!-- P07 写路径 -->
+<div class="page" id="P07">
+  <span class="tag">篇章二</span>
+  <h1>P07 · 唯一写路径（产品红线）</h1>
+  <div class="flow" style="flex-wrap:nowrap;overflow-x:auto;padding:8px 0">
+    <span class="node">感知输入</span><span class="arrow">→</span>
+    <span class="node">Agent 计划</span><span class="arrow">→</span>
+    <span class="node gate">Harness 确认</span><span class="arrow">→</span>
+    <span class="node core">Rule 评估</span><span class="arrow">→</span>
+    <span class="node core">Execution</span><span class="arrow">→</span>
+    <span class="node ext">Connector→ERP</span>
+  </div>
+  <div class="box"><p>↕ Audit 全程 · Revert 可撤回 · 次日对账</p><p><b>Agent/MCP 不得绕过此路径</b></p></div>
+  <div class="foot"><div class="links"><span class="link" data-p="P13">报工闭环 →</span></div></div>
+</div>
+
+<!-- P08 Path -->
+<div class="page" id="P08">
+  <span class="tag">篇章二</span>
+  <h1>P08 · 三条写入路径</h1>
+  <table>
+    <tr><th>Path</th><th>画像</th><th>写</th><th>读</th></tr>
+    <tr><td><b>A</b></td><td>有ERP无MES（哈森）</td><td>ERP</td><td>ERP</td></tr>
+    <tr><td><b>B</b></td><td>有MES</td><td>MES</td><td>ERP只读</td></tr>
+    <tr><td><b>C</b></td><td>无ERP B-Lite</td><td>内置账本</td><td>内置</td></tr>
+  </table>
+  <div class="foot"><div class="links"><span class="link" data-p="P11">Studio 六步</span><span class="link" data-p="P09">数据边界</span></div></div>
+</div>
+
+<!-- P09 数据 -->
+<div class="page" id="P09">
+  <span class="tag">篇章二</span>
+  <h1>P09 · 数据边界</h1>
+  <div class="flow" style="flex-direction:column;align-items:stretch">
+    <div class="node ext" style="text-align:left">L0 客户账本 ERP/MES — 权威，我们不替代</div>
+    <div class="node data" style="text-align:left">L1 运行数据 — Graph/Audit/Execution/对账【必做】</div>
+    <div class="node" style="text-align:left">L2 最小缓存 — 按需 TTL</div>
+    <div class="node" style="text-align:left;opacity:.6">L3 分析数仓 — 选配另立项</div>
+  </div>
+  <div class="foot"><div class="links"><span class="link" data-p="P15">商业化 →</span></div></div>
+</div>
+
+<!-- P10 Gate地图 -->
+<div class="page" id="P10">
+  <span class="tag">篇章三</span><span class="tag">业务规划</span>
+  <h1>P10 · Gate 全生命周期地图</h1>
+  <pre>G-ADMIT → G-PATH → G-CONNECT → G-DISCOVER → G-MAP
+    → G-BRONZE-REVIEW → G-GRAPH-DRAFT → G-FREEZE
+    → G-RULE-BIND → G-PROVE → G-WRITE-APPROVE
+    → G-UAT → G-EXPORT →（运维 G-DRIFT / G-REVERT）</pre>
+  <div class="box"><h3>❌ 不可自动化</h3><p>G-FREEZE · G-WRITE-APPROVE · G-BRONZE-REVIEW · G-UAT · G-DRIFT</p></div>
+  <div class="foot"><div class="links"><span class="link" data-p="P11">Studio 六步</span><span class="link" data-p="P12">接入七步</span></div></div>
+</div>
+
+<!-- P11 Studio六步 -->
+<div class="page" id="P11">
+  <span class="tag">篇章三</span>
+  <h1>P11 · Studio 六步 · 业务含义</h1>
+  <table>
+    <tr><th>步</th><th>业务问题</th><th>关键禁止</th></tr>
+    <tr><td>Connect</td><td>能连上吗？</td><td>此阶段任何写</td></tr>
+    <tr><td>Discover</td><td>对应哪些标准动作？</td><td>—</td></tr>
+    <tr><td>Map</td><td>字段对齐对吗？</td><td>AI 自动 publish</td></tr>
+    <tr><td>Prove</td><td>影子够久、账对吗？</td><td>&lt;14天开写</td></tr>
+    <tr><td>Freeze</td><td>链路定版了吗？</td><td>AI 自动冻结</td></tr>
+    <tr><td>Export</td><td>经验能带走吗？</td><td>无导出=未完成</td></tr>
+  </table>
+  <div class="box"><p>配置真源：Studio → API → DB（不是改 Git YAML）</p></div>
+  <div class="foot"><div class="links"><span class="link" data-p="P12">首家七步 →</span></div></div>
+</div>
+
+<!-- P12 接入七步 -->
+<div class="page" id="P12">
+  <span class="tag">篇章三</span>
+  <h1>P12 · 首家工厂接入（七步）</h1>
+  <div class="flow" style="flex-direction:column;align-items:stretch">
+    <span class="node">Step0 准入评估</span>
+    <span class="node gate">Step1 只读接入 Connect+Discover</span>
+    <span class="node gate">Step2 映射+Graph工作坊+Freeze</span>
+    <span class="node">Step3 规则绑定</span>
+    <span class="node gate">Step4 Shadow≥14d+双签开写</span>
+    <span class="node">Step5 试点UAT</span>
+    <span class="node">Step6 灰度推广</span>
+    <span class="node data">Step7 运维移交+Export</span>
+  </div>
+  <div class="foot"><div class="links"><span class="link" data-p="P13">日常报工 →</span><span class="link" data-p="P14">第二家</span></div></div>
+</div>
+
+<!-- P13 报工 -->
+<div class="page" id="P13">
+  <span class="tag">篇章三</span>
+  <h1>P13 · 日常报工业务闭环</h1>
+  <div class="flow">
+    <span class="node">工人感知<br>说扫拍</span><span class="arrow">→</span>
+    <span class="node gate">计划确认</span><span class="arrow">→</span>
+    <span class="node gate">主管确认</span><span class="arrow">→</span>
+    <span class="node core">Rule</span><span class="arrow">→</span>
+    <span class="node core">Execution</span><span class="arrow">→</span>
+    <span class="node ext">写ERP</span>
+  </div>
+  <div class="box"><p>↕ Audit · 次日对账 · drift→冻结写入</p>
+    <p>D1 KPI：P50≤30s · 培训≤10min · 零未解释 drift</p></div>
+  <div class="foot"><div class="links"><span class="link" data-p="P07">写路径</span><span class="link" data-p="P10">Gate地图</span></div></div>
+</div>
+
+<!-- P14 复制 -->
+<div class="page" id="P14">
+  <span class="tag">篇章三</span>
+  <h1>P14 · 第二家复制</h1>
+  <pre>有 Silver Package?
+  ├─ 是 → Import → 更新凭证 → 差异workshop → 仍须 Prove+双签（2-3周）
+  └─ 否 → 完整 D1（4-8周）</pre>
+  <div class="foot"><div class="links"><span class="link" data-p="P04">资产化</span><span class="link" data-p="P15">商业化</span></div></div>
+</div>
+
+<!-- P15 商业 -->
+<div class="page" id="P15">
+  <span class="tag">篇章四</span>
+  <h1>P15 · Pack 商业化</h1>
+  <div class="col3">
+    <div class="box"><h3>L1 Graph</h3><p>场景包</p></div>
+    <div class="box"><h3>L2 Capability</h3><p>能力包</p></div>
+    <div class="box"><h3>L3 Connector</h3><p>连接器包</p></div>
+  </div>
+  <table style="margin-top:12px">
+    <tr><th>套餐</th><th>Path</th></tr>
+    <tr><td>Starter-A</td><td>A · 哈森型</td></tr>
+    <tr><td>Starter</td><td>B · MES写</td></tr>
+    <tr><td>Starter-B-Lite</td><td>C · 无ERP</td></tr>
+  </table>
+  <div class="foot"><div class="links"><span class="link" data-p="P16">研发分期 →</span></div></div>
+</div>
+
+<!-- P16 分期 -->
+<div class="page" id="P16">
+  <span class="tag">篇章四</span>
+  <h1>P16 · 研发与规模分期</h1>
+  <div class="flow">
+    <span class="node core">Gate0 内核</span><span class="arrow">→</span>
+    <span class="node">1a API</span><span class="arrow">→</span>
+    <span class="node gate">1b Studio</span><span class="arrow">→</span>
+    <span class="node">2 h5</span><span class="arrow">→</span>
+    <span class="node">3 灯塔</span>
+  </div>
+  <div class="box"><p>规模：S0(1-10) → S1(百级RLS) → S2(Cell) → S3(Silo)</p></div>
+  <div class="foot"><div class="links"><span class="link" data-p="P17">长期演进</span></div></div>
+</div>
+
+<!-- P17 演进 -->
+<div class="page" id="P17">
+  <span class="tag">篇章四</span>
+  <h1>P17 · 长期战略演进</h1>
+  <div class="flow" style="flex-direction:column;align-items:stretch">
+    <span class="node data">Stage1 业务图谱（运转） ← D1</span>
+    <span class="node">Stage2 体验网络（判断） Y2+</span>
+    <span class="node">Stage3 决策参考</span>
+    <span class="node">Stage4 工厂大脑 愿景</span>
+  </div>
+  <div class="box"><p>编码真源今日仍是 Graph+Rule+Execution；Experience 尚未进 contracts</p></div>
+  <div class="foot"><div class="links"><span class="link" data-p="P00">回到封面</span><span class="link" data-p="P01">产品定位</span></div></div>
+</div>
+
+<script>
+  function show(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+    const el=document.getElementById(id);
+    if(el){el.classList.add('on');window.scrollTo(0,0);}
+  }
+  document.body.addEventListener('click',e=>{
+    const t=e.target.closest('[data-p]');
+    if(t) show(t.dataset.p);
+  });
+</script>
+</body>
+</html>

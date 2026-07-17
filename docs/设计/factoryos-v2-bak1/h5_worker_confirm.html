@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS - 报工确认卡</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .harness-card { 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #334155;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+        .harness-glow {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 flex items-center justify-center min-h-screen p-4">
+<!-- Mobile Wrapper -->
+<div class="w-[375px] h-[812px] bg-slate-900 rounded-[50px] border-[10px] border-slate-800 shadow-2xl overflow-hidden flex flex-col relative">
+<!-- Status Bar -->
+<div class="h-10 flex justify-between items-center px-8 pt-4 flex-none z-20">
+<span class="text-xs font-bold text-white">14:35</span>
+<div class="flex gap-1.5 items-center text-white text-sm">
+<iconify-icon icon="ion:cellular"></iconify-icon>
+<iconify-icon icon="ion:wifi"></iconify-icon>
+<iconify-icon icon="ion:battery-full"></iconify-icon>
+</div>
+</div>
+<!-- Header -->
+<div class="px-6 py-4 flex items-center justify-between flex-none">
+<a class="flex items-center gap-2 text-slate-400" href="h5_worker_home.html">
+<iconify-icon class="text-xl" icon="solar:alt-arrow-left-linear"></iconify-icon>
+<span class="text-sm">返回</span>
+</a>
+<h1 class="text-white font-bold text-base">报工确认</h1>
+<div class="w-10"></div>
+</div>
+<!-- Main Content -->
+<div class="flex-1 overflow-y-auto px-6 py-4 flex flex-col">
+<div class="mb-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+<span class="text-blue-500 text-[10px] font-mono tracking-widest font-bold">STU-001 / UX-001 标准交互</span>
+</div>
+<h2 class="text-white text-xl font-bold">Harness 确认卡</h2>
+<p class="text-slate-500 text-xs mt-1">≤3 tap 完成确认 · 记录审计不可篡改</p>
+</div>
+<!-- Harness UI Card -->
+<div class="harness-card rounded-[32px] p-6 relative">
+<div class="harness-glow"></div>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center border-b border-slate-700/50 pb-3">
+<span class="text-slate-500 text-xs uppercase font-medium">工单编号</span>
+<span class="text-white font-mono font-bold">#WO-2024-00888</span>
+</div>
+<div class="flex justify-between items-center border-b border-slate-700/50 pb-3">
+<span class="text-slate-500 text-xs uppercase font-medium">当前工序</span>
+<span class="text-white font-bold">CNC 精加工</span>
+</div>
+<div class="grid grid-cols-2 gap-4 py-2">
+<div class="bg-slate-800/50 p-3 rounded-2xl border border-slate-700">
+<p class="text-slate-500 text-[10px] mb-1">报工数量</p>
+<p class="text-white text-xl font-mono font-bold">120 <span class="text-xs font-normal">件</span></p>
+</div>
+<div class="bg-emerald-500/10 p-3 rounded-2xl border border-emerald-500/20">
+<p class="text-emerald-500/70 text-[10px] mb-1">合格数量</p>
+<p class="text-emerald-400 text-xl font-mono font-bold">118 <span class="text-xs font-normal">件</span></p>
+</div>
+</div>
+<div class="bg-red-500/10 p-3 rounded-2xl border border-red-500/20">
+<p class="text-red-500/70 text-[10px] mb-1">不合格数量</p>
+<div class="flex justify-between items-end">
+<p class="text-red-400 text-xl font-mono font-bold">2 <span class="text-xs font-normal">件</span></p>
+<span class="text-[10px] text-red-400/50">原因：边缘毛刺</span>
+</div>
+</div>
+</div>
+<!-- Input area -->
+<div class="space-y-3 mb-8">
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+<iconify-icon icon="solar:user-id-linear"></iconify-icon>
+</span>
+<input class="w-full bg-slate-800 border border-slate-700 rounded-2xl py-3 pl-10 pr-4 text-slate-300 text-sm focus:outline-none cursor-not-allowed" disabled="" type="text" value="张三"/>
+<label class="absolute -top-2 left-4 bg-slate-800 px-1 text-[9px] text-slate-500 uppercase">确认人</label>
+</div>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+<iconify-icon icon="solar:pen-new-square-linear"></iconify-icon>
+</span>
+<input class="w-full bg-slate-900 border border-slate-700 rounded-2xl py-3 pl-10 pr-4 text-white text-sm focus:border-blue-500 transition-colors outline-none" placeholder="可选备注信息" type="text"/>
+<label class="absolute -top-2 left-4 bg-slate-900 px-1 text-[9px] text-slate-500 uppercase">备注</label>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-2 gap-3">
+<a class="h-14 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-2xl flex items-center justify-center font-bold transition-all border border-slate-700" href="h5_worker_home.html">
+<iconify-icon class="mr-2 text-xl" icon="solar:close-circle-linear"></iconify-icon>
+                        取消
+                    </a>
+<a class="h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl flex items-center justify-center font-bold shadow-lg shadow-blue-900/40 transition-all active:scale-95" href="h5_worker_success.html">
+<iconify-icon class="mr-2 text-xl" icon="solar:check-read-linear"></iconify-icon>
+                        确认提交
+                    </a>
+</div>
+</div>
+<!-- Audit Trail Preview -->
+<div class="mt-8 flex items-start gap-3 bg-blue-500/5 border border-blue-500/10 p-4 rounded-2xl">
+<iconify-icon class="text-blue-500 text-xl flex-none" icon="solar:shield-check-bold"></iconify-icon>
+<div>
+<h4 class="text-blue-400 text-xs font-bold">ExecutionEvidence 自动记录</h4>
+<p class="text-slate-500 text-[10px] mt-1 leading-relaxed">提交后将自动捕获当前时间、位置及传感器指纹，并与 ERP 建立对账链条。</p>
+</div>
+</div>
+</div>
+<!-- Navigation Bar (Hidden in Confirm but reserved space) -->
+<div class="h-20 bg-slate-900 flex justify-around items-center pb-6 flex-none opacity-20 pointer-events-none">
+<iconify-icon class="text-2xl" icon="solar:home-2-bold"></iconify-icon>
+<iconify-icon class="text-2xl" icon="solar:clipboard-list-linear"></iconify-icon>
+<iconify-icon class="text-2xl" icon="solar:bell-linear"></iconify-icon>
+<iconify-icon class="text-2xl" icon="solar:user-linear"></iconify-icon>
+</div>
+<!-- Home Indicator -->
+<div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/10 rounded-full"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS - 报工记录</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 0; }
+    </style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body class="bg-slate-950 flex items-center justify-center min-h-screen p-4">
+<!-- Mobile Wrapper -->
+<div class="w-[375px] h-[812px] bg-slate-900 rounded-[50px] border-[10px] border-slate-800 shadow-2xl overflow-hidden flex flex-col relative">
+<!-- Status Bar -->
+<div class="h-10 flex justify-between items-center px-8 pt-4 flex-none z-20 text-white">
+<span class="text-xs font-bold">14:45</span>
+<div class="flex gap-1.5 items-center text-sm">
+<iconify-icon icon="ph:cell-signal-full-bold"></iconify-icon>
+<iconify-icon icon="ph:wifi-high-bold"></iconify-icon>
+<iconify-icon icon="ph:battery-full-bold"></iconify-icon>
+</div>
+</div>
+<!-- Global Status Bar (P1-12) -->
+<div class="w-full h-6 bg-amber-500/20 flex items-center justify-center text-[10px] text-amber-500 font-bold border-y border-amber-500/20 z-20">
+<iconify-icon class="mr-1 text-[8px]" icon="ph:circle-fill"></iconify-icon>
+<span>⚠️ 影子运行 · simulated only · 生产写禁用</span>
+</div>
+<!-- Header -->
+<div class="px-6 py-4 flex items-center justify-between flex-none">
+<a class="flex items-center gap-2 text-slate-400" href="h5_worker_home.html">
+<iconify-icon class="text-xl" icon="ph:arrow-left-bold"></iconify-icon>
+</a>
+<h1 class="text-white font-bold text-base">报工记录</h1>
+<button class="text-slate-500">
+<iconify-icon class="text-xl" icon="ph:funnel-bold"></iconify-icon>
+</button>
+</div>
+<!-- Filter Chips -->
+<div class="flex px-6 gap-2 mb-4 flex-none">
+<button class="px-4 py-1.5 bg-blue-600 text-white text-xs rounded-full font-bold">今日</button>
+<button class="px-4 py-1.5 bg-slate-800 text-slate-400 text-xs rounded-full">本周</button>
+<button class="px-4 py-1.5 bg-slate-800 text-slate-400 text-xs rounded-full">本月</button>
+</div>
+<!-- List -->
+<div class="flex-1 overflow-y-auto custom-scrollbar px-6 space-y-3">
+<p class="text-slate-500 text-[10px] font-mono tracking-widest uppercase mb-1 mt-2">2024年07月13日</p>
+<!-- Record Item -->
+<div class="bg-slate-800/40 border border-slate-800 p-4 rounded-3xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-16 h-16 bg-blue-500/5 blur-xl group-hover:bg-blue-500/10 transition-all"></div>
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-slate-700/50 rounded-lg flex items-center justify-center text-slate-400">
+<iconify-icon icon="ph:broadcast-bold"></iconify-icon>
+</div>
+<div>
+<h4 class="text-white text-sm font-bold">CNC 精加工</h4>
+<p class="text-slate-500 text-[10px] font-mono">#WO-2024-00888</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded flex items-center gap-1">
+<iconify-icon icon="ph:clock-bold"></iconify-icon>
+                            待审批
+                        </span>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<p class="text-slate-500 text-[10px] uppercase">报工时间</p>
+<p class="text-slate-300 text-xs mt-0.5">14:30</p>
+</div>
+<div class="text-right">
+<p class="text-slate-500 text-[10px] uppercase">提交数量</p>
+<p class="text-white font-mono font-bold text-lg">120 <span class="text-xs font-normal">件</span></p>
+</div>
+</div>
+</div>
+<!-- Record Item -->
+<div class="bg-slate-800/40 border border-slate-800 p-4 rounded-3xl relative overflow-hidden group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-slate-700/50 rounded-lg flex items-center justify-center text-slate-400">
+<iconify-icon icon="ph:gear-bold"></iconify-icon>
+</div>
+<div>
+<h4 class="text-white text-sm font-bold">钻孔工艺</h4>
+<p class="text-slate-500 text-[10px] font-mono">#WO-2024-00887</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded flex items-center gap-1">
+<iconify-icon icon="ph:clock-bold"></iconify-icon>
+                            待审批
+                        </span>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<p class="text-slate-500 text-[10px] uppercase">报工时间</p>
+<p class="text-slate-300 text-xs mt-0.5">13:00</p>
+</div>
+<div class="text-right">
+<p class="text-slate-500 text-[10px] uppercase">提交数量</p>
+<p class="text-white font-mono font-bold text-lg">50 <span class="text-xs font-normal">件</span></p>
+</div>
+</div>
+</div>
+<!-- Record Item (Confirmed) -->
+<div class="bg-slate-800/40 border border-slate-800 p-4 rounded-3xl relative overflow-hidden opacity-70">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-500/50">
+<iconify-icon icon="ph:check-circle-bold"></iconify-icon>
+</div>
+<div>
+<h4 class="text-white text-sm font-bold">精车工艺</h4>
+<p class="text-slate-500 text-[10px] font-mono">#WO-2024-00886</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded flex items-center gap-1">
+<iconify-icon icon="ph:seal-check-bold"></iconify-icon>
+                            已确认
+                        </span>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<p class="text-slate-500 text-[10px] uppercase">报工时间</p>
+<p class="text-slate-300 text-xs mt-0.5">10:15</p>
+</div>
+<div class="text-right">
+<p class="text-slate-500 text-[10px] uppercase">提交数量</p>
+<p class="text-white font-mono font-bold text-lg">80 <span class="text-xs font-normal">件</span></p>
+</div>
+</div>
+</div>
+<!-- Record Item (Confirmed) -->
+<div class="bg-slate-800/40 border border-slate-800 p-4 rounded-3xl relative overflow-hidden opacity-70">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-500/50">
+<iconify-icon icon="ph:check-circle-bold"></iconify-icon>
+</div>
+<div>
+<h4 class="text-white text-sm font-bold">粗车工艺</h4>
+<p class="text-slate-500 text-[10px] font-mono">#WO-2024-00885</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded flex items-center gap-1">
+<iconify-icon icon="ph:seal-check-bold"></iconify-icon>
+                            已确认
+                        </span>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<p class="text-slate-500 text-[10px] uppercase">报工时间</p>
+<p class="text-slate-300 text-xs mt-0.5">09:30</p>
+</div>
+<div class="text-right">
+<p class="text-slate-500 text-[10px] uppercase">提交数量</p>
+<p class="text-white font-mono font-bold text-lg">100 <span class="text-xs font-normal">件</span></p>
+</div>
+</div>
+</div>
+</div>
+<!-- Navigation Bar -->
+<div class="h-20 bg-slate-800/80 backdrop-blur-md border-t border-slate-700 flex justify-around items-center pb-6 flex-none z-20">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="h5_worker_home.html">
+<iconify-icon class="text-2xl" icon="ph:house-bold"></iconify-icon>
+<span class="text-[10px]">首页</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-blue-500" href="h5_worker_history.html">
+<iconify-icon class="text-2xl" icon="ph:clipboard-text-bold"></iconify-icon>
+<span class="text-[10px] font-bold">任务</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="h5_worker_shadow.html">
+<iconify-icon class="text-2xl" icon="ph:bell-bold"></iconify-icon>
+<span class="text-[10px]">消息</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 opacity-50" href="#">
+<iconify-icon class="text-2xl" icon="ph:user-bold"></iconify-icon>
+<span class="text-[10px]">我的</span>
+</a>
+</div>
+<!-- Home Indicator -->
+<div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/20 rounded-full"></div>
+</div>
+</body>
+</html>

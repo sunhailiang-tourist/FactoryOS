@@ -130,6 +130,31 @@
       "match": "docs/文档/接口/**",
       "note": "superseded_by contracts/openapi/",
       "affects": ["contracts/openapi/"]
+    },
+    {
+      "id": "design-prd-pm",
+      "match": "docs/设计/Ax-OS-产品PRD完整版*.md",
+      "affects": [
+        ".cursor/factoryos/PM-GATES.md",
+        ".cursor/rules/factoryos-pm-workflow.mdc",
+        ".cursor/rules/figma-ax-os-workflow.mdc"
+      ]
+    },
+    {
+      "id": "design-whitepaper-pm",
+      "match": "docs/设计/Ax-OS-平台定位与战略白皮书*.md",
+      "affects": [
+        ".cursor/factoryos/PM-GATES.md",
+        ".cursor/factoryos/PLATFORM-FIRST-EXECUTION-STRATEGY.md"
+      ]
+    },
+    {
+      "id": "design-figma-kit",
+      "match": "docs/设计/figma/**",
+      "affects": [
+        ".cursor/rules/figma-ax-os-workflow.mdc",
+        ".cursor/factoryos/PM-GATES.md"
+      ]
     }
   ]
 }

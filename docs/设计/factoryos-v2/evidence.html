@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · 智能中枢系统</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .sidebar-item-active { background-color: #1e293b; border-left: 4px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(51, 65, 85, 0.5); }
+        .evidence-node { position: relative; padding-bottom: 3rem; }
+        .evidence-node:last-child { padding-bottom: 0; }
+        .evidence-node::before { content: ''; position: absolute; left: 1.25rem; top: 2.5rem; bottom: 0; width: 2px; background: #1e293b; }
+        .evidence-node:last-child::before { display: none; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- 侧边栏 -->
+<aside class="w-64 glass-card flex flex-col flex-none">
+<div class="p-6 border-b border-slate-700">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-3xl text-blue-500" icon="ph:factory-bold"></iconify-icon>
+<span class="text-xl font-bold tracking-tight">Ax OS</span>
+</div>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">智能中枢系统</p>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="strategy.html">
+<iconify-icon icon="ph:grid-four-bold"></iconify-icon>
+<span>制造全景</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="integration.html">
+<iconify-icon icon="ph:plug-bold"></iconify-icon>
+<span>产业连接</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="business.html">
+<iconify-icon icon="ph:package-bold"></iconify-icon>
+<span>资产与复制</span>
+</a>
+<a class="sidebar-item-active flex items-center gap-3 px-6 py-3 transition-colors" href="workflow.html">
+<iconify-icon icon="ph:shield-check-bold"></iconify-icon>
+<span>运营与合规</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="tenants.html">
+<iconify-icon icon="ph:cpu-bold"></iconify-icon>
+<span>平台治理</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+<div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold">A</div>
+<div class="flex-1 overflow-hidden text-xs">
+<p class="font-medium truncate">Ax OS</p>
+<p class="text-slate-500 truncate">v1.0.0</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="flex-1 overflow-y-auto p-8 bg-[#020617]">
+<!-- Header -->
+<header class="flex justify-between items-center mb-10">
+<div>
+<h1 class="text-3xl font-bold text-white">Ax OS · 运营与合规</h1>
+<p class="text-slate-400 mt-1">智能中枢系统 — 执行详情 (Execution Evidence)</p>
+</div>
+<div class="flex gap-4">
+<button class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium border border-slate-700 hover:bg-slate-700 transition-colors flex items-center gap-2" onclick="window.history.back()">
+<iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
+                    返回时间线
+                </button>
+</div>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- 左侧：基本信息与 Evidence 链路 -->
+<div class="lg:col-span-2 space-y-8">
+<!-- 基本信息 -->
+<section class="glass-card rounded-xl overflow-hidden">
+<div class="px-6 py-4 bg-slate-800/50 border-b border-slate-700 flex justify-between items-center">
+<h3 class="text-sm font-bold text-white flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="ph:identification-card-bold"></iconify-icon>
+                            基本信息
+                        </h3>
+<span class="px-3 py-1 bg-blue-900/40 text-blue-400 rounded-md font-mono text-xs border border-blue-500/20 uppercase tracking-widest">
+                            EXE-2024-00888
+                        </span>
+</div>
+<table class="w-full text-left text-sm">
+<tbody class="divide-y divide-slate-800">
+<tr>
+<td class="px-6 py-4 text-slate-500 font-medium w-32 uppercase tracking-tighter">工单号</td>
+<td class="px-6 py-4 text-slate-300 font-mono">#WO-2024-00888</td>
+</tr>
+<tr>
+<td class="px-6 py-4 text-slate-500 font-medium uppercase tracking-tighter">操作类型</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 bg-blue-500/10 text-blue-500 rounded text-[10px] font-bold border border-blue-500/10">WORK_REPORT</span>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 text-slate-500 font-medium uppercase tracking-tighter">操作人</td>
+<td class="px-6 py-4 text-slate-300">张三（工人）</td>
+</tr>
+<tr>
+<td class="px-6 py-4 text-slate-500 font-medium uppercase tracking-tighter">操作时间</td>
+<td class="px-6 py-4 text-slate-300 font-mono tracking-tight">2024-07-10 14:30:22</td>
+</tr>
+<tr>
+<td class="px-6 py-4 text-slate-500 font-medium uppercase tracking-tighter">状态</td>
+<td class="px-6 py-4">
+<span class="text-emerald-500 font-bold flex items-center gap-1">
+<iconify-icon icon="ph:check-circle-bold"></iconify-icon>
+                                        完成
+                                    </span>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<!-- Evidence 6步链路 -->
+<section class="glass-card p-8 rounded-xl">
+<h3 class="text-lg font-bold mb-10 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="ph:plug-bold"></iconify-icon>
+                        Evidence 6步全链路证据链
+                    </h3>
+<div class="max-w-xl mx-auto">
+<div class="evidence-node flex gap-6">
+<div class="w-10 h-10 rounded-full bg-slate-800 border border-emerald-500/50 flex items-center justify-center text-emerald-500 z-10 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+<iconify-icon class="text-xl" icon="ph:brain-bold"></iconify-icon>
+</div>
+<div>
+<div class="flex items-center gap-3">
+<h4 class="text-white font-bold uppercase tracking-tight">① Agent 意图识别</h4>
+<span class="text-[10px] text-slate-500 font-mono">14:30:20</span>
+</div>
+<p class="text-xs text-slate-400 mt-1">语义解析：报工数量 [120]，对应工单 [#WO-2024-00888]</p>
+</div>
+</div>
+<div class="evidence-node flex gap-6">
+<div class="w-10 h-10 rounded-full bg-slate-800 border border-emerald-500/50 flex items-center justify-center text-emerald-500 z-10 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+<iconify-icon class="text-xl" icon="ph:code-bold"></iconify-icon>
+</div>
+<div>
+<div class="flex items-center gap-3">
+<h4 class="text-white font-bold uppercase tracking-tight">② DSL 生成</h4>
+<span class="text-[10px] text-slate-500 font-mono">14:30:20</span>
+</div>
+<p class="text-xs text-slate-400 mt-1">生成底层执行描述语言，准备进入 Harness 校验层</p>
+</div>
+</div>
+<div class="evidence-node flex gap-6">
+<div class="w-10 h-10 rounded-full bg-slate-800 border border-emerald-500/50 flex items-center justify-center text-emerald-500 z-10 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+<iconify-icon class="text-xl" icon="ph:shield-warning-bold"></iconify-icon>
+</div>
+<div>
+<div class="flex items-center gap-3">
+<h4 class="text-white font-bold uppercase tracking-tight">③ Harness 验证</h4>
+<span class="text-[10px] text-slate-500 font-mono">14:30:21</span>
+</div>
+<p class="text-xs text-emerald-500/80 mt-1 flex items-center gap-1">
+<iconify-icon icon="ph:shield-check-bold"></iconify-icon>
+                                    规则校验通过（白名单放行）
+                                </p>
+</div>
+</div>
+<div class="evidence-node flex gap-6">
+<div class="w-10 h-10 rounded-full bg-slate-800 border border-emerald-500/50 flex items-center justify-center text-emerald-500 z-10 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+<iconify-icon class="text-xl" icon="ph:funnel-bold"></iconify-icon>
+</div>
+<div>
+<div class="flex items-center gap-3">
+<h4 class="text-white font-bold uppercase tracking-tight">④ Rule Engine 校验</h4>
+<span class="text-[10px] text-slate-500 font-mono">14:30:21</span>
+</div>
+<p class="text-xs text-slate-400 mt-1">成功绑定业务逻辑图谱：<span class="text-blue-400">Production Graph v1.0</span></p>
+</div>
+</div>
+<div class="evidence-node flex gap-6">
+<div class="w-10 h-10 rounded-full bg-slate-800 border border-emerald-500/50 flex items-center justify-center text-emerald-500 z-10 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+<iconify-icon class="text-xl" icon="ph:database-bold"></iconify-icon>
+</div>
+<div>
+<div class="flex items-center gap-3">
+<h4 class="text-white font-bold uppercase tracking-tight">⑤ 记录 ExecutionEvidence</h4>
+<span class="text-[10px] text-slate-500 font-mono">14:30:22</span>
+</div>
+<div class="mt-2 space-y-1">
+<div class="flex items-center gap-2 text-[10px] text-slate-400">
+<iconify-icon class="text-emerald-500" icon="ph:check-bold"></iconify-icon>
+<span>状态快照记录已保存 (Before/After Snapshot)</span>
+</div>
+<div class="flex items-center gap-2 text-[10px] text-slate-400">
+<iconify-icon class="text-emerald-500" icon="ph:check-bold"></iconify-icon>
+<span>幂等键绑定成功 (Idempotency Key)</span>
+</div>
+<div class="flex items-center gap-2 text-[10px] text-slate-400">
+<iconify-icon class="text-emerald-500" icon="ph:check-bold"></iconify-icon>
+<span>审计哈希计算完成 (Audit Hash: 0x7f83b165...)</span>
+</div>
+</div>
+</div>
+</div>
+<div class="evidence-node flex gap-6">
+<div class="w-10 h-10 rounded-full bg-slate-800 border border-emerald-500/50 flex items-center justify-center text-emerald-500 z-10 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+<iconify-icon class="text-xl" icon="ph:plugs-connected-bold"></iconify-icon>
+</div>
+<div>
+<div class="flex items-center gap-3">
+<h4 class="text-white font-bold uppercase tracking-tight">⑥ Connector 写入金蝶ERP</h4>
+<span class="text-[10px] text-slate-500 font-mono">14:30:25</span>
+</div>
+<p class="text-xs text-emerald-500 font-bold mt-1">写入成功 (Legacy Write Success)</p>
+<div class="mt-3 p-3 bg-slate-900 rounded border border-emerald-500/20">
+<div class="flex items-center justify-between">
+<span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">对账结果 (Reconciliation)</span>
+<span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-500 rounded text-[10px] font-bold">✅ 一致</span>
+</div>
+<p class="text-[10px] text-slate-400 mt-1 uppercase">Job ID: REC-2024-00888-A | 时间: 14:31:00</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- 右侧：原始数据 JSON -->
+<div class="lg:col-span-1">
+<section class="glass-card h-full rounded-xl overflow-hidden flex flex-col sticky top-8">
+<div class="px-6 py-4 bg-slate-800/50 border-b border-slate-700 flex justify-between items-center">
+<h3 class="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-widest">
+<iconify-icon class="text-blue-500" icon="ph:brackets-curly-bold"></iconify-icon>
+                            原始证据数据
+                        </h3>
+<button class="text-slate-500 hover:text-white transition-colors">
+<iconify-icon icon="ph:copy-bold"></iconify-icon>
+</button>
+</div>
+<div class="flex-1 p-6 font-mono text-xs text-blue-400 bg-black/30 overflow-y-auto leading-relaxed">
+<pre>{
+  "execution_id": "EXE-2024-00888",
+  "work_order_id": "WO-2024-00888",
+  "operation": "WORK_REPORT",
+  "operator": "zhang_san",
+  "quantity": 120,
+  "unit": "PCS",
+  "before_snapshot": {
+    "status": "IN_PROGRESS",
+    "completed_qty": 450,
+    "target_qty": 1000
+  },
+  "after_snapshot": {
+    "status": "IN_PROGRESS",
+    "completed_qty": 570,
+    "target_qty": 1000
+  },
+  "idempotency_key": "key-20240710-wo888-001",
+  "audit_hash": "0x7f83b165c9281e7d23f4...",
+  "legacy_response": {
+    "code": 200,
+    "message": "Update Success",
+    "trace_id": "KD-TRC-998822"
+  }
+}</pre>
+</div>
+</section>
+</div>
+</div>
+</main>
+</body>
+</html>

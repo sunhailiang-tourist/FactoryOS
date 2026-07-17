@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS - 主管确认 H-06</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 flex items-center justify-center min-h-screen p-4">
+<div class="w-[375px] h-[812px] bg-slate-900 rounded-[50px] border-[10px] border-slate-800 shadow-2xl overflow-hidden flex flex-col relative">
+<div class="h-10 flex justify-between items-center px-8 pt-4 flex-none z-20 text-white">
+<span class="text-xs font-bold">14:42</span>
+<div class="flex gap-1.5 items-center text-sm">
+<iconify-icon icon="ph:cell-signal-full-bold"></iconify-icon>
+<iconify-icon icon="ph:wifi-high-bold"></iconify-icon>
+<iconify-icon icon="ph:battery-full-bold"></iconify-icon>
+</div>
+</div>
+<div class="w-full h-6 bg-slate-700/40 flex items-center justify-center text-[10px] text-slate-300 font-bold border-y border-slate-600/30 z-20">
+<span>🔒 生产写未批准 · write_approved=false · Connector 写禁用</span>
+</div>
+<div class="px-6 py-4 flex items-center justify-between flex-none border-b border-slate-800">
+<a class="flex items-center gap-2 text-slate-400" href="h5_worker_approve.html">
+<iconify-icon class="text-xl" icon="ph:arrow-left-bold"></iconify-icon>
+<span class="text-sm">待办列表</span>
+</a>
+<h1 class="text-white font-bold text-base">主管确认</h1>
+<span class="text-[9px] text-blue-400 font-mono font-bold">H-06</span>
+</div>
+<div class="flex-1 overflow-y-auto px-6 py-6">
+<div class="bg-slate-800/50 border border-slate-700 rounded-3xl p-5 mb-6">
+<div class="flex items-center gap-3 mb-4">
+<img alt="User" class="w-12 h-12 rounded-full border border-slate-600" src="https://modao.cc/agent-py/media/generated_images/2026-06-30/d45f3cbe1ebb4e37bf78af4a51600303.jpg"/>
+<div>
+<h4 class="text-white font-bold">张三 · 报工申请</h4>
+<p class="text-slate-500 text-xs">#WO-2024-00888 · 14:30 提交</p>
+</div>
+</div>
+<div class="space-y-3 text-sm">
+<div class="flex justify-between"><span class="text-slate-500">报工数量</span><span class="text-white font-bold">120 件</span></div>
+<div class="flex justify-between"><span class="text-slate-500">合格/不合格</span><span class="text-white"><span class="text-emerald-400">118</span> / <span class="text-red-400">2</span></span></div>
+<div class="flex justify-between"><span class="text-slate-500">Harness 状态</span><span class="text-amber-400 font-bold">工人已确认</span></div>
+</div>
+</div>
+<div class="p-4 bg-blue-500/5 border border-blue-500/20 rounded-2xl mb-6 text-xs text-slate-400">
+批准后将由 execution_service 写入金蝶 ERP（Path A）。工人端 H-04 仅显示待审批，不写 ERP。
+</div>
+<div class="grid grid-cols-2 gap-3">
+<a class="h-14 bg-slate-800 text-red-400 rounded-2xl flex items-center justify-center font-bold border border-slate-700" href="h5_worker_approve.html">驳回</a>
+<a class="h-14 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl flex items-center justify-center font-bold shadow-lg" href="h5_worker_done.html">批准并写入</a>
+</div>
+</div>
+</div>
+</body>
+</html>

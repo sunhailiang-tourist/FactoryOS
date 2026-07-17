@@ -16,7 +16,7 @@
 
 | 区 | 何时读 | 入口 |
 |----|--------|------|
-| **factoryos** | 每轮 Dev/Test/Verify · 产品宪法 | [factoryos/INDEX.md](factoryos/INDEX.md) |
+| **factoryos** | 每轮 PM/Dev/Test/Verify · 产品宪法 | [factoryos/INDEX.md](factoryos/INDEX.md) |
 | **docs-baseline** | 大改 `docs/` 后 | [docs-baseline/BASELINE.md](docs-baseline/BASELINE.md) |
 | **rules** | Agent 自动加载 | [rules/SH-步步流.mdc](rules/SH-步步流.mdc) |
 | **hooks** | 激活 Cursor 后 | [factoryos/ACTIVATION.md](factoryos/ACTIVATION.md) |
@@ -32,7 +32,9 @@
 contracts/     机器契约（OpenAPI · Schema · AC）
 src/           代码（os_core · apps · integration · tests）
 scripts/       gate · harness · docs_baseline
-_factoryos_pipeline/   运行时落盘（过程产物 + 强制结论 dev/test/verify）
+_factoryos_pipeline/   运行时落盘（pm · plan · test · verify · summary）
 docs/          厚文档（可选外迁；变更用 docs-baseline 检测）
 rules/         参考存档（非真源 · 见 rules/README.md）
 ```
+
+**产品 Agent**：`【PM模式启动】` → [factoryos/PM-GATES.md](factoryos/PM-GATES.md)（默认只读；改 Figma 须「可以改 Figma」）。

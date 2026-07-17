@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS - 产线终端入口</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        @font-face {
+            font-family: 'JetBrains Mono';
+            src: url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body class="bg-slate-950 flex items-center justify-center min-h-screen p-4">
+<!-- Ax OS Logo Link (Back to Desktop) -->
+<a class="absolute top-8 left-1/2 -translate-x-1/2 text-slate-500 text-xs font-mono opacity-50 hover:opacity-100 flex items-center gap-2 transition-all" href="kpi_dashboard.html">
+<iconify-icon icon="ph:monitor-bold"></iconify-icon>
+        Ax OS 智能中枢管理后台
+    </a>
+<!-- Mobile Wrapper -->
+<div class="w-[375px] h-[812px] bg-slate-900 rounded-[50px] border-[10px] border-slate-800 shadow-2xl overflow-hidden flex flex-col relative">
+<!-- Status Bar -->
+<div class="h-10 flex justify-between items-center px-8 pt-4 flex-none z-10">
+<span class="text-xs font-bold text-white">09:41</span>
+<div class="flex gap-1.5 items-center text-white text-sm">
+<iconify-icon icon="ph:cell-signal-full-bold"></iconify-icon>
+<iconify-icon icon="ph:wifi-high-bold"></iconify-icon>
+<iconify-icon icon="ph:battery-full-bold"></iconify-icon>
+</div>
+</div>
+<!-- Global Status Bar (P1-12) · 当前：shadow_mode -->
+<div class="w-full h-6 bg-amber-500/20 flex items-center justify-center text-[10px] text-amber-500 font-bold border-y border-amber-500/20 z-20">
+<iconify-icon class="mr-1 text-[8px]" icon="ph:circle-fill"></iconify-icon>
+<span>⚠️ 影子运行 · simulated only · 生产写禁用</span>
+</div>
+<!-- 三态图例（P1-14） -->
+<div class="px-4 py-2 bg-slate-950/80 border-b border-slate-800 z-20">
+<p class="text-[9px] text-slate-500 uppercase tracking-widest text-center mb-1.5">顶栏状态条 · 三态互斥</p>
+<div class="flex gap-1.5 text-[8px] font-bold">
+<div class="flex-1 py-1 rounded bg-amber-500/20 text-amber-500 text-center border border-amber-500/30">🟡 shadow</div>
+<div class="flex-1 py-1 rounded bg-slate-800 text-slate-400 text-center border border-slate-700">🔒 未批准</div>
+<div class="flex-1 py-1 rounded bg-slate-800 text-slate-400 text-center border border-slate-700">✅ 已批准</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col px-6 pt-12 pb-20">
+<!-- Brand Header -->
+<div class="text-center mb-12">
+<div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-blue-900/40 mb-4">
+<iconify-icon class="text-white text-4xl" icon="ph:broadcast-bold"></iconify-icon>
+</div>
+<h1 class="text-2xl font-bold text-white tracking-tight">Ax OS</h1>
+<p class="text-slate-400 text-sm mt-1">智能中枢 · 产线终端 h5-worker</p>
+</div>
+<div class="space-y-4">
+<p class="text-slate-500 text-xs font-medium uppercase tracking-widest pl-2">请选择登录角色</p>
+<!-- Role: Worker -->
+<a class="group block bg-slate-800 border border-slate-700 p-5 rounded-3xl hover:bg-slate-700/50 hover:border-blue-500/50 transition-all" href="h5_worker_home.html">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+<iconify-icon class="text-2xl" icon="ph:hand-waving-bold"></iconify-icon>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-semibold">一线工人</h3>
+<p class="text-slate-400 text-xs">报工、查单、拍照、领料</p>
+</div>
+<iconify-icon class="text-slate-600" icon="ph:arrow-right-bold"></iconify-icon>
+</div>
+</a>
+<!-- Role: Manager -->
+<a class="group block bg-slate-800 border border-slate-700 p-5 rounded-3xl hover:bg-slate-700/50 hover:border-emerald-500/50 transition-all" href="h5_worker_approve.html">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+<iconify-icon class="text-2xl" icon="ph:users-three-bold"></iconify-icon>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-semibold">班组长 / 主管</h3>
+<p class="text-slate-400 text-xs">审批任务、调度生产、查看看板</p>
+</div>
+<iconify-icon class="text-slate-600" icon="ph:arrow-right-bold"></iconify-icon>
+</div>
+</a>
+<!-- Role: Maintenance -->
+<div class="group relative bg-slate-800/40 border border-slate-800 p-5 rounded-3xl opacity-60">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-slate-700 rounded-2xl flex items-center justify-center text-slate-500">
+<iconify-icon class="text-2xl" icon="ph:gear-bold"></iconify-icon>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-semibold">维修工</h3>
+<p class="text-slate-400 text-xs">设备维保、点检、紧急报修</p>
+</div>
+<span class="absolute top-4 right-4 bg-slate-700 text-[10px] px-2 py-0.5 rounded-full text-slate-400 font-mono">Phase 2+</span>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-8 text-center">
+<p class="text-slate-500 text-[11px]">当前接入方式：钉钉/企微 H5 微应用</p>
+<p class="text-slate-600 text-[10px] font-mono mt-1 uppercase">Environment: Production v1.0.4</p>
+</div>
+</div>
+<!-- Home Indicator -->
+<div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/10 rounded-full"></div>
+</div>
+</body>
+</html>

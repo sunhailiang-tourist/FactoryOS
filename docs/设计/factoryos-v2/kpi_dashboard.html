@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS - KPI 仪表盘</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/echarts.min.js"></script>
+<style>
+        body { background-color: #020617; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; overflow: hidden; }
+        .sidebar-item { transition: all 0.3s; border-left: 3px solid transparent; }
+        .sidebar-item.active { background: linear-gradient(90deg, rgba(6, 182, 212, 0.1) 0%, transparent 100%); border-left-color: #06b6d4; color: #06b6d4; }
+        .sidebar-item:hover:not(.active) { background: rgba(255, 255, 255, 0.05); }
+        .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .kpi-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .step-node.active { background: #06b6d4; box-shadow: 0 0 15px rgba(6, 182, 212, 0.5); }
+    </style>
+</head>
+<body class="flex h-screen">
+<!-- 侧边栏 -->
+<aside class="w-64 flex-none border-r border-white/5 flex flex-col glass-panel">
+<div class="p-6">
+<div class="flex items-center gap-2 mb-8">
+<div class="w-8 h-8 bg-cyan-600 rounded flex items-center justify-center">
+<iconify-icon class="text-white text-xl" icon="ph:cpu-bold"></iconify-icon>
+</div>
+<div>
+<h1 class="text-lg font-bold tracking-tight text-white leading-none">Ax OS</h1>
+<span class="text-[10px] text-slate-500 font-medium">智能中枢系统</span>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="sidebar-item active flex items-center gap-3 px-4 py-3 rounded-r-lg text-sm font-medium" href="kpi_dashboard.html">
+<iconify-icon class="text-xl" icon="ph:squares-four-bold"></iconify-icon>
+                    制造全景
+                </a>
+<a class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-r-lg text-sm font-medium text-slate-400" href="integration.html">
+<iconify-icon class="text-xl" icon="ph:plug-bold"></iconify-icon>
+                    产业连接
+                </a>
+<a class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-r-lg text-sm font-medium text-slate-400" href="business.html">
+<iconify-icon class="text-xl" icon="ph:package-bold"></iconify-icon>
+                    资产与复制
+                </a>
+<a class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-r-lg text-sm font-medium text-slate-400" href="workflow.html">
+<iconify-icon class="text-xl" icon="ph:shield-check-bold"></iconify-icon>
+                    运营与合规
+                </a>
+<a class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-r-lg text-sm font-medium text-slate-400" href="tenants.html">
+<iconify-icon class="text-xl" icon="ph:buildings-bold"></iconify-icon>
+                    平台治理
+                </a>
+</nav>
+</div>
+<div class="mt-auto p-6">
+<div class="p-4 rounded-xl bg-slate-900/50 border border-white/5">
+<div class="flex items-center gap-3 mb-3">
+<img alt="User avatar" class="w-10 h-10 rounded-full border border-cyan-500/30" src="https://modao.cc/agent-py/media/generated_images/2026-06-26/30ed4b633c9940e987376b5ee0a166c4.jpg"/>
+<div>
+<div class="text-xs font-bold text-white">哈森灯塔项目组</div>
+<div class="text-[10px] text-slate-500">管理员 ID: #702</div>
+</div>
+</div>
+<button class="w-full py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-medium transition-colors">
+                    系统设置
+                </button>
+</div>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="flex-1 flex flex-col min-w-0 bg-slate-950">
+<!-- 顶栏 -->
+<header class="h-16 flex-none border-b border-white/5 px-8 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<span class="text-[10px] text-slate-500 uppercase font-bold">W-02 首页</span>
+<div class="text-xs text-slate-500">制造全景 / <span class="text-slate-200">KPI 仪表盘</span></div>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-[10px] border border-emerald-500/20 font-bold">ERP 金蝶 ✅</span>
+<span class="px-2 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-[10px] border border-blue-500/20 font-bold">Edge 在线</span>
+<span class="px-2 py-1 rounded-lg bg-amber-500/10 text-amber-400 text-[10px] border border-amber-500/20 font-bold">Path A · Pool</span>
+</div>
+<div class="flex items-center gap-6 text-slate-400">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+<span class="text-xs">系统正常运行</span>
+</div>
+<iconify-icon class="text-xl cursor-pointer hover:text-white transition-colors" icon="ph:magnifying-glass-bold"></iconify-icon>
+<iconify-icon class="text-xl cursor-pointer hover:text-white transition-colors" icon="ph:bell-bold"></iconify-icon>
+</div>
+</header>
+<!-- 滚动区 -->
+<div class="flex-1 overflow-y-auto p-8 space-y-8">
+<!-- KPI 概览 -->
+<div class="grid grid-cols-4 gap-6">
+<div class="kpi-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<iconify-icon class="text-6xl" icon="ph:buildings-bold"></iconify-icon>
+</div>
+<div class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">今日报工</div>
+<div class="flex items-end gap-3">
+<span class="text-3xl font-bold text-white leading-none">1,284</span>
+<span class="text-green-500 text-xs font-medium flex items-center pb-1">
+<iconify-icon icon="ph:arrow-up-bold"></iconify-icon> 5.4%
+                        </span>
+</div>
+</div>
+<div class="kpi-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<iconify-icon class="text-6xl" icon="ph:arrows-clockwise-bold"></iconify-icon>
+</div>
+<div class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">待确认</div>
+<div class="flex items-end gap-3">
+<span class="text-3xl font-bold text-amber-400 leading-none">3</span>
+<span class="text-amber-500 text-xs font-medium flex items-center pb-1">Harness 待办</span>
+</div>
+</div>
+<div class="kpi-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<iconify-icon class="text-6xl" icon="ph:warning-bold"></iconify-icon>
+</div>
+<div class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">对账漂移</div>
+<div class="flex items-end gap-3">
+<span class="text-3xl font-bold text-white leading-none">2</span>
+<span class="text-rose-400 text-xs font-medium flex items-center pb-1">待处理</span>
+</div>
+</div>
+<div class="kpi-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<iconify-icon class="text-6xl" icon="ph:ghost-bold"></iconify-icon>
+</div>
+<div class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Shadow 天数</div>
+<div class="flex items-end gap-3">
+<span class="text-3xl font-bold text-white leading-none">14<span class="text-lg text-slate-400">/14</span></span>
+</div>
+</div>
+</div>
+<!-- 快捷入口 -->
+<div class="grid grid-cols-4 gap-6">
+<a class="p-4 bg-cyan-600/10 border border-cyan-500/20 rounded-xl flex items-center gap-4 hover:bg-cyan-600/20 transition-all" href="tenants.html">
+<div class="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center text-white text-xl">
+<iconify-icon icon="ph:factory-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-sm font-bold text-white">进入 Studio</div>
+<div class="text-[10px] text-cyan-400">W-03 选租户 → Connect</div>
+</div>
+</a>
+<a class="p-4 bg-slate-800/40 border border-white/5 rounded-xl flex items-center gap-4 hover:bg-slate-800/60 transition-all" href="gate.html">
+<div class="w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center text-white text-xl">
+<iconify-icon icon="ph:door-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-sm font-bold text-white">查看门禁地图</div>
+<div class="text-[10px] text-slate-500">Shadow 状态管控</div>
+</div>
+</a>
+<a class="p-4 bg-slate-800/40 border border-white/5 rounded-xl flex items-center gap-4 hover:bg-slate-800/60 transition-all" href="h5_worker_entry.html">
+<div class="w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center text-white text-xl">
+<iconify-icon icon="ph:device-mobile-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-sm font-bold text-white">产线终端</div>
+<div class="text-[10px] text-slate-500">阶段2 预览 · UX-001</div>
+</div>
+</a>
+<a class="p-4 bg-purple-600/10 border border-purple-500/20 rounded-xl flex items-center gap-4 hover:bg-purple-600/20 transition-all" href="import.html">
+<div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-xl">
+<iconify-icon icon="ph:lightning-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-sm font-bold text-white">第二家 Import</div>
+<div class="text-[10px] text-purple-400">Pack 快速复制</div>
+</div>
+</a>
+</div>
+<div class="grid grid-cols-3 gap-8">
+<!-- 近期活动时间线 -->
+<div class="col-span-2 glass-panel rounded-2xl p-6">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-bold text-white flex items-center gap-2">
+<iconify-icon class="text-cyan-400" icon="ph:clock-counter-clockwise-bold"></iconify-icon>
+                            近期活动时间线
+                        </h3>
+<a class="text-xs text-cyan-400 hover:underline" href="audit.html">查看全量审计日志</a>
+</div>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="flex-none relative">
+<div class="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+<div class="absolute top-4 left-1 w-px h-full bg-slate-800"></div>
+</div>
+<div class="flex-1 pb-4 border-b border-white/5">
+<div class="flex justify-between mb-1">
+<span class="text-sm font-bold text-white">哈森灯塔 · 报工 120 件</span>
+<span class="text-xs text-slate-500">14:30</span>
+</div>
+<p class="text-xs text-slate-400 mb-2">工单 #WO-2024-00888 执行成功</p>
+<div class="flex items-center gap-3">
+<span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-white/5">金蝶ERP ✅ 对账一致</span>
+<span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-white/5 font-mono text-cyan-400">ExecutionEvidence-OK</span>
+</div>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex-none relative">
+<div class="w-2 h-2 rounded-full bg-cyan-500 mt-2"></div>
+<div class="absolute top-4 left-1 w-px h-full bg-slate-800"></div>
+</div>
+<div class="flex-1 pb-4 border-b border-white/5">
+<div class="flex justify-between mb-1">
+<span class="text-sm font-bold text-white">先锋电子 · 接入完成</span>
+<span class="text-xs text-slate-500">13:00</span>
+</div>
+<p class="text-xs text-slate-400 mb-2">完成 Connect + Discover 阶段，自动进入 Shadow 模式</p>
+<span class="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded border border-cyan-500/20">Shadow 模式开启</span>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex-none relative">
+<div class="w-2 h-2 rounded-full bg-purple-500 mt-2"></div>
+<div class="absolute top-4 left-1 w-px h-full bg-slate-800"></div>
+</div>
+<div class="flex-1 pb-4 border-b border-white/5">
+<div class="flex justify-between mb-1">
+<span class="text-sm font-bold text-white">明光机械 · Package 导出</span>
+<span class="text-xs text-slate-500">11:00</span>
+</div>
+<p class="text-xs text-slate-400 mb-2">沉淀行业通用 Pack `skill-report-v1.0`，可用于快速复制</p>
+<span class="text-[10px] bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded border border-purple-500/20">Pack 注册成功</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 阶段状态图 -->
+<div class="glass-panel rounded-2xl p-6">
+<h3 class="font-bold text-white mb-6">实施阶段概览</h3>
+<div class="space-y-6">
+<div class="flex items-start gap-4">
+<div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-slate-900 flex-none mt-1">
+<iconify-icon class="text-lg" icon="ph:check-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-sm font-bold text-white">Gate 0 · 战略对齐</div>
+<div class="text-[10px] text-green-500">已完成 2026-06-16</div>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-slate-900 flex-none mt-1">
+<iconify-icon class="text-lg" icon="ph:check-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-sm font-bold text-white">Phase 1a · API 接入</div>
+<div class="text-[10px] text-green-500">已打通核心写接口</div>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-6 h-6 rounded-full bg-cyan-600 flex items-center justify-center text-white flex-none mt-1 animate-pulse shadow-[0_0_10px_rgba(8,145,178,0.5)]">
+<iconify-icon class="text-lg" icon="ph:clock-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-sm font-bold text-white">Phase 1b · Studio UI</div>
+<div class="text-[10px] text-cyan-400">开发中 (85%)</div>
+</div>
+</div>
+<div class="flex items-start gap-4 opacity-50">
+<div class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-slate-500 flex-none mt-1">
+<iconify-icon class="text-lg" icon="ph:lock-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-sm font-bold text-slate-400">阶段2 · h5-worker 终端</div>
+<div class="text-[10px] text-slate-600">须 Phase 1b Studio UI 全绿后解锁</div>
+</div>
+</div>
+<div class="flex items-start gap-4 opacity-50">
+<div class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-slate-500 flex-none mt-1">
+<iconify-icon class="text-lg" icon="ph:lock-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-sm font-bold text-slate-400">阶段3 · 灯塔项目验证</div>
+<div class="text-[10px] text-slate-600">预计 Y1 Q4</div>
+</div>
+</div>
+</div>
+<div class="mt-8 p-4 bg-slate-900/50 rounded-xl border border-white/5">
+<div class="text-xs font-bold text-slate-400 mb-2">本周系统看板</div>
+<div class="w-full h-24" id="miniChart"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // 初始化小型趋势图
+        document.addEventListener('DOMContentLoaded', function() {
+            const chartDom = document.getElementById('miniChart');
+            const myChart = echarts.init(chartDom);
+            const option = {
+                grid: { left: 0, right: 0, top: 0, bottom: 0 },
+                xAxis: { type: 'category', show: false },
+                yAxis: { type: 'value', show: false },
+                series: [{
+                    data: [120, 200, 150, 80, 70, 110, 130, 180, 220, 190],
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'none',
+                    lineStyle: { color: '#06b6d4', width: 2 },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(6, 182, 212, 0.3)' },
+                            { offset: 1, color: 'rgba(6, 182, 212, 0)' }
+                        ])
+                    }
+                }]
+            };
+            myChart.setOption(option);
+        });
+    </script>
+</body>
+</html>

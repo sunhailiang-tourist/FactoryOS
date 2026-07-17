@@ -1,6 +1,6 @@
 # _factoryos_pipeline · SH-步步流 v2.1 运行时落盘
 
-每轮 Dev/Test 的 **可审计工件**（策略真源在 `.cursor/factoryos/`）。
+每轮 PM/Dev/Test 的 **可审计工件**（策略真源在 `.cursor/factoryos/`）。
 
 ## 结构
 
@@ -9,6 +9,7 @@ _factoryos_pipeline/
   workflow_state.md                         # 状态机（hooks 读取）
   .gates/plan.ok                            # gate plan 成功后写入
   <YYYY-MM-DD>/
+    pm/pm-<HHmm>-*.md                       # PM Agent（确认规划前 · 无需 plan.ok）
     plan/plan-<HHmm>-<slug>.md
     test/test-<HHmm>-<slug>.md              # 编码前 test-plan
     test/test-<HHmm>-stepN-regression.md      # 每 Step Test 硬性验收（强制）
@@ -27,6 +28,7 @@ _factoryos_pipeline/
 
 | 模板 | 路径 |
 |------|------|
+| pm-* | `.cursor/factoryos/templates/pm-*-template.md` |
 | plan | `.cursor/factoryos/templates/plan-template.md` |
 | test（编码前） | `.cursor/factoryos/templates/test-template.md` |
 | test-step（每 Step） | `.cursor/factoryos/templates/test-step-regression-template.md` |

@@ -97,6 +97,16 @@ Agent **收到用户关键词后必须先改** `_factoryos_pipeline/workflow_sta
 
 ---
 
+## 三b、产品 Agent（可选 · 在 Dev 之前）
+
+| 口令 | 落盘 | 细则 |
+|------|------|------|
+| `【PM模式启动】` + 目标 | `_factoryos_pipeline/<date>/pm/` | [PM-GATES.md](./PM-GATES.md) |
+
+默认只读；改 Figma 须当轮「可以改 Figma」。不写 `.gates/*`，不替代 `确认规划`。
+
+---
+
 ## 四、里程碑附加口令（非通用 · 示例 W1）
 
 > 通用 SH-步步流 **不含** 本节；仅当 plan / 项目规则要求时，在 **`可以开始` 之前**追加。

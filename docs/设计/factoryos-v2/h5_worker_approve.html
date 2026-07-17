@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS - 主管审批</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 0; }
+        .tab-active { color: #3b82f6; position: relative; }
+        .tab-active::after { content: ''; position: absolute; bottom: -8px; left: 0; right: 0; height: 2px; background: #3b82f6; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-slate-950 flex items-center justify-center min-h-screen p-4">
+<!-- Mobile Wrapper -->
+<div class="w-[375px] h-[812px] bg-slate-900 rounded-[50px] border-[10px] border-slate-800 shadow-2xl overflow-hidden flex flex-col relative">
+<!-- Status Bar -->
+<div class="h-10 flex justify-between items-center px-8 pt-4 flex-none z-20">
+<span class="text-xs font-bold text-white">14:40</span>
+<div class="flex gap-1.5 items-center text-white text-sm">
+<iconify-icon icon="ph:cell-signal-full-bold"></iconify-icon>
+<iconify-icon icon="ph:wifi-high-bold"></iconify-icon>
+<iconify-icon icon="ph:battery-full-bold"></iconify-icon>
+</div>
+</div>
+<!-- Global Status Bar (P1-12) · write_approved=false -->
+<div class="w-full h-6 bg-slate-700/40 flex items-center justify-center text-[10px] text-slate-300 font-bold border-y border-slate-600/30 z-20">
+<span>🔒 生产写未批准 · write_approved=false · Connector 写禁用</span>
+</div>
+<!-- Header -->
+<div class="px-6 pt-4 pb-4 flex items-center justify-between flex-none border-b border-slate-800">
+<h1 class="text-white font-bold text-lg">审批中心</h1>
+<div class="flex items-center gap-1 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+<span class="text-emerald-400 text-[10px] font-bold">3 待办</span>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex px-6 pt-4 gap-8 flex-none border-b border-slate-800/50">
+<button class="text-sm font-bold pb-2 tab-active">待我审批</button>
+<button class="text-sm font-bold pb-2 text-slate-500">审批历史</button>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto custom-scrollbar px-6 py-4 space-y-4">
+<p class="text-slate-500 text-[10px] font-mono tracking-widest uppercase mb-2">最近待办事项</p>
+<!-- Approval Item 1 -->
+<div class="bg-slate-800/50 border border-slate-700/50 rounded-3xl p-4">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<img alt="User" class="w-10 h-10 rounded-full border border-slate-700" src="https://modao.cc/agent-py/media/generated_images/2026-06-30/d45f3cbe1ebb4e37bf78af4a51600303.jpg"/>
+<div>
+<h4 class="text-white text-sm font-bold">张三</h4>
+<p class="text-slate-500 text-[10px]">CNC 精加工 · 14:30 提交</p>
+</div>
+</div>
+<span class="bg-blue-500/20 text-blue-400 text-[9px] px-2 py-0.5 rounded font-mono">#WO-888</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-5 px-1">
+<div>
+<p class="text-slate-500 text-[10px] uppercase">报工数量</p>
+<p class="text-white font-mono font-bold">120 <span class="text-[10px] font-normal">件</span></p>
+</div>
+<div>
+<p class="text-slate-500 text-[10px] uppercase">合格/不合格</p>
+<p class="text-white font-mono font-bold text-emerald-400">118<span class="text-slate-600 font-normal mx-1">/</span><span class="text-red-400">2</span></p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 h-10 bg-slate-700 hover:bg-red-900/40 text-slate-300 hover:text-red-400 rounded-xl text-xs font-bold transition-all border border-slate-600">驳回</button>
+<a class="flex-1 h-10 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-emerald-900/20 flex items-center justify-center" href="h5_worker_supervisor_confirm.html">查看并审批</a>
+</div>
+</div>
+<!-- Approval Item 2 -->
+<div class="bg-slate-800/50 border border-slate-700/50 rounded-3xl p-4">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<img alt="User" class="w-10 h-10 rounded-full border border-slate-700" src="https://modao.cc/agent-py/media/generated_images/2026-06-26/5c95e4b809e946bf87aeaede8cef63d2.jpg"/>
+<div>
+<h4 class="text-white text-sm font-bold">李四</h4>
+<p class="text-slate-500 text-[10px]">精车工艺 · 14:15 提交</p>
+</div>
+</div>
+<span class="bg-blue-500/20 text-blue-400 text-[9px] px-2 py-0.5 rounded font-mono">#WO-889</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-5 px-1">
+<div>
+<p class="text-slate-500 text-[10px] uppercase">报工数量</p>
+<p class="text-white font-mono font-bold">85 <span class="text-[10px] font-normal">件</span></p>
+</div>
+<div>
+<p class="text-slate-500 text-[10px] uppercase">合格/不合格</p>
+<p class="text-white font-mono font-bold text-emerald-400">85<span class="text-slate-600 font-normal mx-1">/</span><span class="text-emerald-400">0</span></p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 h-10 bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-600">驳回</button>
+<a class="flex-1 h-10 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-900/20 flex items-center justify-center" href="h5_worker_supervisor_confirm.html">查看并审批</a>
+</div>
+</div>
+<!-- Approval Item 3 -->
+<div class="bg-slate-800/50 border border-slate-700/50 rounded-3xl p-4">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<img alt="User" class="w-10 h-10 rounded-full border border-slate-700" src="https://modao.cc/agent-py/media/generated_images/2026-06-26/1e6c3700aaed4eeab622a5493b909edf.jpg"/>
+<div>
+<h4 class="text-white text-sm font-bold">王五</h4>
+<p class="text-slate-500 text-[10px]">钻孔工艺 · 13:55 提交</p>
+</div>
+</div>
+<span class="bg-blue-500/20 text-blue-400 text-[9px] px-2 py-0.5 rounded font-mono">#WO-890</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-5 px-1">
+<div>
+<p class="text-slate-500 text-[10px] uppercase">报工数量</p>
+<p class="text-white font-mono font-bold">200 <span class="text-[10px] font-normal">件</span></p>
+</div>
+<div>
+<p class="text-slate-500 text-[10px] uppercase">合格/不合格</p>
+<p class="text-white font-mono font-bold text-emerald-400">195<span class="text-slate-600 font-normal mx-1">/</span><span class="text-red-400">5</span></p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 h-10 bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-600">驳回</button>
+<a class="flex-1 h-10 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-900/20 flex items-center justify-center" href="h5_worker_supervisor_confirm.html">查看并审批</a>
+</div>
+</div>
+<!-- History Collapse -->
+<div class="py-4 text-center">
+<button class="text-slate-500 text-[10px] flex items-center gap-1 mx-auto hover:text-slate-300">
+                    查看已完成审批 (12条)
+                    <iconify-icon icon="ph:caret-down-bold"></iconify-icon>
+</button>
+</div>
+</div>
+<!-- Navigation Bar -->
+<div class="h-20 bg-slate-800/80 backdrop-blur-md border-t border-slate-700 flex justify-around items-center pb-6 flex-none z-20">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="h5_worker_home.html">
+<iconify-icon class="text-2xl" icon="ph:house-bold"></iconify-icon>
+<span class="text-[10px]">首页</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-blue-500" href="h5_worker_history.html">
+<iconify-icon class="text-2xl" icon="ph:clipboard-text-bold"></iconify-icon>
+<span class="text-[10px] font-bold">任务</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="h5_worker_shadow.html">
+<iconify-icon class="text-2xl" icon="ph:bell-bold"></iconify-icon>
+<span class="text-[10px]">消息</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 opacity-50" href="#">
+<iconify-icon class="text-2xl" icon="ph:user-bold"></iconify-icon>
+<span class="text-[10px]">我的</span>
+</a>
+</div>
+<!-- Home Indicator -->
+<div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/20 rounded-full"></div>
+</div>
+</body>
+</html>

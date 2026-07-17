@@ -5,6 +5,7 @@ Agent 日常协作 **不依赖 docs/**；机器契约见 `contracts/`。
 | 文件 | 内容 |
 |------|------|
 | [UI-FIRST-CONFIG-PRINCIPLE.md](./UI-FIRST-CONFIG-PRINCIPLE.md) | **产品宪法** · 管理台主路径 |
+| [PM-GATES.md](./PM-GATES.md) | **资深 PM Agent** · `【PM模式启动】` |
 | [INTEGRATION-CHAIN.md](./INTEGRATION-CHAIN.md) | 接入/扩展 · Studio |
 | [PRE-DEV-CHAIN.md](./PRE-DEV-CHAIN.md) | **开发前全链路** · 维护地图 |
 | [INDEX.md](./INDEX.md) | 总索引 |

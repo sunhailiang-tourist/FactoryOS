@@ -1,0 +1,49 @@
+---
+description: Ax OS × Figma MCP 设计流 — 用户提到 Figma / 原型 / UX 图 / html.to.design / design-tokens 时加载
+alwaysApply: false
+---
+
+# Ax OS · Figma 工作流（Cursor）
+
+## 真源优先级（不可颠倒）
+
+1. ADR-000～008 · STU/UX/MVP/BASE 验收  
+2. `docs/设计/Ax-OS-产品PRD完整版-可还原原型-v2.0.md`（**v2.1**）  
+3. `docs/设计/Ax-OS-平台定位与战略白皮书-v1.0.md`（**v1.1**）  
+4. 线框：`docs/设计/factoryos-v2/*.html`  
+5. Token：`docs/设计/figma/design-tokens.json`  
+6. 登录定稿：`docs/设计/ax-os-ui/ax-os-login-v4-smart-hub.png`  
+7. Figma File（经 MCP 读写）  
+
+## 铁律
+
+- 侧栏 **五域**：制造全景 / 产业连接 / 资产与复制 / 运营与合规 / 平台治理  
+- Studio 六步名：**Connect → Discover → Map → Prove → Freeze → Export**（禁止 Simulate/Publish/Monitor）  
+- 人审三门语义（2026-07-15 裁定）：**G-FREEZE → G-SHADOW(≥14d) → G-WRITE-APPROVE**  
+- 禁止抄：`ax-os-login-v3`、`ax-os-home-dashboard` 错误 IA、Figma prove-ref 错误六步名  
+- 禁止明文密钥；用 `secrets_ref`  
+- H5 顶栏三态互斥：`shadow` / `write_approved=false` / `write_approved=true`  
+- H-04 禁止写「ERP 已成功」  
+
+## 与 PM Agent
+
+- 产品梳理 / 设计 brief：优先 `【PM模式启动】` → 见 `PM-GATES.md`  
+- **默认只读** Figma；写画布须用户当轮「可以改 Figma」  
+
+## Cursor ↔ Figma 动作
+
+| 目标 | 做法 |
+|------|------|
+| 读设计落地代码 | 粘贴 Figma Frame 链接 → 用 Figma MCP 取结构/变量 → 写 `web-admin` / `h5-worker` |
+| 从 PRD 建画布 | 先读 PRD §4～§8 → 须「可以改 Figma」→ `create_new_file` / `use_figma`（先加载 skill） |
+| Token | 以 `design-tokens.json` 为准，映射 Figma Variables |
+| 线框灌入 | 优先 `factoryos-v2` / `ax-os-figma-kit.html` + html.to.design；MCP 用于精修与 Code Connect |
+
+## 首批必做屏（Day1）
+
+L01 登录 · L02 KPI · S02 Connect · S05 Prove · S06 Freeze · H00 入口 · H03 确认卡 · H07 完成  
+
+## 与工程边界
+
+- Figma/MCP **不替代** SH-步步流 stamp；写 `src/**` 业务码仍须 `gate start`  
+- web-admin 改动走 WebDev 边界规则  

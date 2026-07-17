@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · h5-worker 产线终端预览壳</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .sidebar-item-active { background-color: #1e293b; border-left: 4px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(51, 65, 85, 0.5); }
+        
+        /* 手机壳容器 */
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background-color: #020617;
+            border: 12px solid #1e293b;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+        }
+
+        /* 顶部刘海 */
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background-color: #1e293b;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- 侧边栏 -->
+<aside class="w-64 glass-card flex flex-col flex-none">
+<div class="p-6 border-b border-slate-700">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-3xl text-blue-500" icon="ph:factory-bold"></iconify-icon>
+<span class="text-xl font-bold tracking-tight">Ax OS</span>
+</div>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">智能中枢系统</p>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="strategy.html">
+<iconify-icon icon="ph:grid-four-bold"></iconify-icon>
+<span>制造全景</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="integration.html">
+<iconify-icon icon="ph:plug-bold"></iconify-icon>
+<span>产业连接</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="business.html">
+<iconify-icon icon="ph:package-bold"></iconify-icon>
+<span>资产与复制</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="workflow.html">
+<iconify-icon icon="ph:shield-check-bold"></iconify-icon>
+<span>运营与合规</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="tenants.html">
+<iconify-icon icon="ph:cpu-bold"></iconify-icon>
+<span>平台治理</span>
+</a>
+<!-- 产线终端入口 (当前页) -->
+<a class="sidebar-item-active mt-4 flex items-center gap-3 px-6 py-3 transition-colors" href="mobile.html">
+<iconify-icon icon="ph:device-mobile-bold"></iconify-icon>
+<span>产线终端</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+<div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold">A</div>
+<div class="flex-1 overflow-hidden text-xs">
+<p class="font-medium truncate">Ax OS Admin</p>
+<p class="text-slate-500 truncate">h5-worker 控制台</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="flex-1 overflow-y-auto p-8 bg-[#020617] relative flex flex-col items-center">
+<!-- Header -->
+<header class="w-full flex justify-between items-center mb-10 relative z-10">
+<div>
+<h1 class="text-3xl font-bold text-white">h5-worker · 产线终端预览壳</h1>
+<p class="text-slate-400 mt-1">管理台预览模式：体验工人/主管通过钉钉/企微 H5 接入的真实效果</p>
+</div>
+<div class="flex gap-4">
+<div class="px-4 py-2 rounded border border-slate-700 bg-slate-800/30 text-xs flex items-center gap-2 text-blue-400">
+<iconify-icon icon="ph:seal-check-bold"></iconify-icon>
+                    验收标注: UX-001 / STU-001
+                </div>
+</div>
+</header>
+<!-- 手机框架 -->
+<div class="phone-container scale-90 origin-top">
+<div class="phone-notch"></div>
+<!-- 状态栏 -->
+<div class="h-10 flex justify-between items-center px-6 pt-2 text-[10px] font-bold z-40 relative text-slate-300">
+<span>09:41</span>
+<div class="flex gap-1 items-center">
+<iconify-icon icon="ph:cell-signal-full-bold"></iconify-icon>
+<iconify-icon icon="ph:wifi-high-bold"></iconify-icon>
+<iconify-icon icon="ph:battery-high-bold"></iconify-icon>
+</div>
+</div>
+<!-- Content Shell -->
+<div class="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-8">
+<div class="w-20 h-20 bg-blue-600 rounded-3xl mx-auto flex items-center justify-center shadow-lg shadow-blue-900/40">
+<iconify-icon class="text-white text-5xl" icon="ph:broadcast-bold"></iconify-icon>
+</div>
+<div>
+<h2 class="text-xl font-bold text-white mb-2">产线终端 · h5-worker</h2>
+<p class="text-slate-500 text-xs px-4">通过钉钉/企微 H5 微应用接入，支持报工、审批、设备点检等核心功能。</p>
+</div>
+<div class="w-full space-y-4 pt-8">
+<a class="block w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold text-sm transition-all shadow-xl shadow-blue-900/40" href="h5_worker_entry.html">
+                        进入产线终端 →
+                    </a>
+<p class="text-[10px] text-slate-600 uppercase font-bold tracking-widest">Ax OS · 智能中枢系统</p>
+</div>
+</div>
+<!-- iOS Home Indicator -->
+<div class="h-1 w-32 bg-slate-700 rounded-full absolute bottom-2 left-1/2 -translate-x-1/2 opacity-50"></div>
+</div>
+<!-- 验收说明 -->
+<div class="mt-4 p-4 rounded-xl bg-slate-800/50 border border-slate-700 max-w-lg w-full">
+<h4 class="text-xs font-bold text-blue-400 mb-2 flex items-center gap-2">
+<iconify-icon icon="ph:info-bold"></iconify-icon>
+                预览模式说明
+            </h4>
+<p class="text-[10px] text-slate-400 leading-relaxed">
+                本页面为管理端提供的 H5 终端模拟预览。点击上方按钮可直接进入 H5 端的工作流。
+                工人端包含 D1 标准：Harness 确认卡、语音/拍照报工。
+                主管端包含 D1 标准：报工审批、看板概览。
+            </p>
+</div>
+</main>
+</body>
+</html>

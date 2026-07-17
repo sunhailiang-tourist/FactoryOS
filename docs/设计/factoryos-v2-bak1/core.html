@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · 智能中枢系统</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .sidebar-item-active { background-color: #1e293b; border-left: 4px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(51, 65, 85, 0.5); }
+        .module-card:hover { transform: translateY(-4px); transition: all 0.3s ease; }
+        .zone-label { font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; margin-bottom: 4px; display: inline-block; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- 侧边栏 -->
+<aside class="w-64 glass-card flex flex-col flex-none">
+<div class="p-6 border-b border-slate-700">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-3xl text-blue-500" icon="mdi:robot-industrial"></iconify-icon>
+<span class="text-xl font-bold tracking-tight">Ax OS</span>
+</div>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">智能中枢系统</p>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="strategy.html">
+<iconify-icon icon="mdi:chart-bar"></iconify-icon>
+<span>制造全景</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="integration.html">
+<iconify-icon icon="mdi:link-variant"></iconify-icon>
+<span>产业连接</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="business.html">
+<iconify-icon icon="mdi:package-variant-closed"></iconify-icon>
+<span>资产与复制</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="workflow.html">
+<iconify-icon icon="mdi:shield-check-outline"></iconify-icon>
+<span>运营与合规</span>
+</a>
+<a class="sidebar-item-active flex items-center gap-3 px-6 py-3 transition-colors" href="data.html">
+<iconify-icon icon="mdi:cog-outline"></iconify-icon>
+<span>平台治理</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+<div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold">A</div>
+<div class="flex-1 overflow-hidden text-xs">
+<p class="font-medium truncate">Ax OS</p>
+<p class="text-slate-500 truncate">v1.0.0</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="flex-1 overflow-y-auto p-8 bg-[#020617]">
+<!-- Header -->
+<header class="flex justify-between items-center mb-10">
+<div>
+<h1 class="text-3xl font-bold text-white">Ax OS · 核心基座</h1>
+<p class="text-slate-400 mt-1">智能中枢系统 — Modular Monolith · L0 信任内核</p>
+</div>
+<div class="flex gap-4 text-xs">
+<div class="px-4 py-2 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                    当前状态: 脚手架已就绪 (Gateway PR Passed)
+                </div>
+<div class="px-4 py-2 rounded bg-slate-800 text-slate-400 border border-slate-700">
+                    业务实现率: 0%
+                </div>
+</div>
+</header>
+<!-- 一句话描述 -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+<div class="p-6 rounded-xl border border-slate-700 bg-slate-800/30">
+<span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-2 block">面向非技术人</span>
+<p class="text-lg text-slate-300">在现有 ERP/MES 之上，加一层「办事要审批、错了能撤、全程留痕」的执行引擎。</p>
+</div>
+<div class="p-6 rounded-xl border border-slate-700 bg-slate-800/30">
+<span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-2 block">面向技术人员</span>
+<p class="text-lg text-slate-300">Modular Monolith 架构 · L0 四块读写路径 · GIP/Integration 外置 · Gate 0 门禁。</p>
+</div>
+</div>
+<!-- 10 大核心模块 -->
+<h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="mdi:view-grid-plus-outline"></iconify-icon>
+            核心组件 (Packages)
+        </h2>
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+<!-- Graph Service -->
+<div class="glass-card p-6 rounded-xl module-card border-t-2 border-t-blue-500">
+<div class="flex justify-between items-start mb-4">
+<iconify-icon class="text-3xl text-blue-400" icon="mdi:graph"></iconify-icon>
+<span class="text-[10px] px-2 py-0.5 rounded bg-blue-500/10 text-blue-400">graph_service</span>
+</div>
+<h3 class="font-bold text-white mb-2">Graph 服务</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4">业务流程图引擎，节点=步骤，边=流转；RDS 存储 + 版本号 + checksum 校验。</p>
+<div class="flex gap-2 text-[10px] text-slate-500">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span>就绪 · CORE PLATFORM</span>
+</div>
+</div>
+<!-- Rule Engine -->
+<div class="glass-card p-6 rounded-xl module-card border-t-2 border-t-emerald-500">
+<div class="flex justify-between items-start mb-4">
+<iconify-icon class="text-3xl text-emerald-400" icon="mdi:gavel"></iconify-icon>
+<span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400">rule_engine</span>
+</div>
+<h3 class="font-bold text-white mb-2">Rule 引擎</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4">规则集引擎，定义谁能在何条件下执行何动词；强制绑定 Graph Version。</p>
+<div class="flex gap-2 text-[10px] text-slate-500">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span>就绪 · DECISION SYSTEM</span>
+</div>
+</div>
+<!-- Execution Service -->
+<div class="glass-card p-6 rounded-xl module-card border-t-2 border-t-blue-500">
+<div class="flex justify-between items-start mb-4">
+<iconify-icon class="text-3xl text-blue-400" icon="mdi:play-circle-outline"></iconify-icon>
+<span class="text-[10px] px-2 py-0.5 rounded bg-blue-500/10 text-blue-400">execution_service</span>
+</div>
+<h3 class="font-bold text-white mb-2">Execution 服务</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4">执行引擎，维护 ExecutionEvidence，是系统唯一写路径的必经关口。</p>
+<div class="flex gap-2 text-[10px] text-slate-500">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span>就绪 · ACTION CORE</span>
+</div>
+</div>
+<!-- Audit Service -->
+<div class="glass-card p-6 rounded-xl module-card border-t-2 border-t-slate-500">
+<div class="flex justify-between items-start mb-4">
+<iconify-icon class="text-3xl text-slate-400" icon="mdi:history"></iconify-icon>
+<span class="text-[10px] px-2 py-0.5 rounded bg-slate-500/10 text-slate-400">audit_service</span>
+</div>
+<h3 class="font-bold text-white mb-2">Audit 服务</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4">审计日志引擎，记录全链路操作痕迹，支持对账与异常回溯。</p>
+<div class="flex gap-2 text-[10px] text-slate-500">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span>就绪 · TRUST LAYER</span>
+</div>
+</div>
+<!-- Connector SDK -->
+<div class="glass-card p-6 rounded-xl module-card border-t-2 border-t-amber-500">
+<div class="flex justify-between items-start mb-4">
+<iconify-icon class="text-3xl text-amber-400" icon="mdi:connection"></iconify-icon>
+<span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400">connector_sdk</span>
+</div>
+<h3 class="font-bold text-white mb-2">Connector 服务</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4">连接器 SDK，通过 Blueprint 隔离协议细节，对接异构系统。</p>
+<div class="flex gap-2 text-[10px] text-slate-500">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span>就绪 · GIP INTERFACE</span>
+</div>
+</div>
+<!-- Agent Orchestrator -->
+<div class="glass-card p-6 rounded-xl module-card border-t-2 border-t-purple-500">
+<div class="flex justify-between items-start mb-4">
+<iconify-icon class="text-3xl text-purple-400" icon="mdi:robot-outline"></iconify-icon>
+<span class="text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-400">agent_orchestrator</span>
+</div>
+<h3 class="font-bold text-white mb-2">Agent 编排</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4">意图识别中心，LiteLLM，将 Intent 转化为 DSL 执行计划。</p>
+<div class="flex gap-2 text-[10px] text-slate-500">
+<span class="w-2 h-2 rounded-full bg-slate-500"></span>
+<span>待开发 · INTELLIGENCE</span>
+</div>
+</div>
+<!-- License Service -->
+<div class="glass-card p-6 rounded-xl module-card border-t-2 border-t-blue-500">
+<div class="flex justify-between items-start mb-4">
+<iconify-icon class="text-3xl text-blue-400" icon="mdi:key-variant"></iconify-icon>
+<span class="text-[10px] px-2 py-0.5 rounded bg-blue-500/10 text-blue-400">license_service</span>
+</div>
+<h3 class="font-bold text-white mb-2">License 服务</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4">租户 License 授权控制，精确到 Pack 和能力单元的生命周期管理。</p>
+<div class="flex gap-2 text-[10px] text-slate-500">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span>就绪 · COMMERCIAL</span>
+</div>
+</div>
+<!-- MCP Gateway -->
+<div class="glass-card p-6 rounded-xl module-card border-t-2 border-t-slate-500">
+<div class="flex justify-between items-start mb-4">
+<iconify-icon class="text-3xl text-slate-400" icon="mdi:gate"></iconify-icon>
+<span class="text-[10px] px-2 py-0.5 rounded bg-slate-500/10 text-slate-400">mcp_gateway</span>
+</div>
+<h3 class="font-bold text-white mb-2">MCP 网关</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4">Model Context Protocol 网关，支持标准化外部协议转换与接入。</p>
+<div class="flex gap-2 text-[10px] text-slate-500">
+<span class="w-2 h-2 rounded-full bg-slate-500"></span>
+<span>待开发 · CONNECTIVITY</span>
+</div>
+</div>
+<!-- Pack Registry -->
+<div class="glass-card p-6 rounded-xl module-card border-t-2 border-t-amber-500">
+<div class="flex justify-between items-start mb-4">
+<iconify-icon class="text-3xl text-amber-400" icon="mdi:archive-settings-outline"></iconify-icon>
+<span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400">registry</span>
+</div>
+<h3 class="font-bold text-white mb-2">Pack 注册表</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4">Pack 配置资产中心，支持 JSON 格式的 export/import 流转。</p>
+<div class="flex gap-2 text-[10px] text-slate-500">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span>就绪 · ASSETS</span>
+</div>
+</div>
+<!-- Platform Registry -->
+<div class="glass-card p-6 rounded-xl module-card border-t-2 border-t-blue-500">
+<div class="flex justify-between items-start mb-4">
+<iconify-icon class="text-3xl text-blue-400" icon="mdi:database-cog-outline"></iconify-icon>
+<span class="text-[10px] px-2 py-0.5 rounded bg-blue-500/10 text-blue-400">platform_registry</span>
+</div>
+<h3 class="font-bold text-white mb-2">平台注册表</h3>
+<p class="text-xs text-slate-400 leading-relaxed mb-4">基于 PostgreSQL + Studio publish 管理配置真源，禁止手改 YAML。</p>
+<div class="flex gap-2 text-[10px] text-slate-500">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span>最新 · CONFIG SOURCE</span>
+</div>
+</div>
+</section>
+<!-- 模块契约说明 -->
+<div class="mb-12 p-4 rounded-xl bg-slate-800/30 border border-slate-700 text-xs text-slate-400 flex items-center gap-3">
+<iconify-icon class="text-blue-400 text-xl" icon="mdi:information-outline"></iconify-icon>
+<p>此外还有 <code class="text-blue-300">shared_contracts</code> 模块作为模块间契约共享层，定义全系统 <span class="text-blue-200 font-bold underline">JSON Schema 宪法</span>。</p>
+</div>
+<h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="mdi:office-building-cog-outline"></iconify-icon>
+            制造业 10 类系统覆盖
+        </h2>
+<section class="glass-card p-8 rounded-2xl mb-12">
+<div class="flex flex-wrap gap-3 mb-8">
+<span class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold">MES</span>
+<span class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold">ERP</span>
+<span class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold">WMS</span>
+<span class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold">OA</span>
+<span class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold">CRM</span>
+<span class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold">CSM</span>
+<span class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold">APS</span>
+<span class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold">PLM</span>
+<span class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold">QMS</span>
+<span class="px-4 py-2 rounded-lg bg-blue-900/30 border border-blue-500/30 text-blue-400 font-bold">Mock</span>
+</div>
+<div class="p-4 rounded-xl bg-blue-900/20 border border-blue-500/30 flex items-center gap-4">
+<iconify-icon class="text-2xl text-blue-400" icon="mdi:shield-check-outline"></iconify-icon>
+<p class="text-slate-300">
+<span class="font-bold text-white">「新厂商加 Pack，不加内核 if 分支」</span> —— 新增系统通过 Connector Pack 扩展，不修改 os_core 内核代码。
+                </p>
+</div>
+</section>
+<!-- 六区物理架构示意 -->
+<h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="mdi:graph-outline"></iconify-icon>
+            能力结构示意图 (V3.3.3)
+        </h2>
+<section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+<!-- A区 -->
+<div class="glass-card p-4 rounded border-dashed border-slate-600 bg-slate-800/20">
+<div class="zone-label text-blue-400">A区 - 基座物理组成</div>
+<div class="text-[11px] text-slate-400 space-y-1">
+<p>• src/server/api (FastAPI·OpenAPI 唯一生产枢纽)</p>
+<p>• src/server/os_core/ (内核九/十模块)</p>
+<p>• src/integration/ (catalog·packs·tenants·GIP外置)</p>
+<p>• PostgreSQL / Redis / OSS</p>
+</div>
+</div>
+<!-- B区 -->
+<div class="glass-card p-4 rounded border-dashed border-slate-600 bg-slate-800/20">
+<div class="zone-label text-emerald-400">B区 - 平台四层</div>
+<div class="text-[11px] text-slate-400 space-y-1 text-center">
+<p class="bg-slate-700/50 p-1 rounded">入口层</p>
+<p class="text-blue-500">↓</p>
+<p class="bg-blue-900/30 p-1 rounded">体验层 (L2)</p>
+<p class="text-blue-500">↓</p>
+<p class="bg-emerald-900/30 p-1 rounded">信任内核 (L0)</p>
+<p class="text-blue-500">↓</p>
+<p class="bg-slate-700/50 p-1 rounded">连接层 (L1)</p>
+</div>
+</div>
+<!-- AI 边界说明 -->
+<div class="md:col-span-2 lg:col-span-1 glass-card p-4 rounded border border-blue-500/30 bg-blue-900/10">
+<h4 class="text-xs font-bold text-blue-400 mb-4 flex items-center gap-2">
+<iconify-icon icon="mdi:robot-confused-outline"></iconify-icon>
+                    AI 边界 — 唯一 LLM 使用点
+                </h4>
+<div class="text-[10px] border border-blue-500/20 rounded overflow-hidden">
+<div class="bg-blue-500/20 p-2 text-center font-bold text-blue-200 border-b border-blue-500/20">
+                        仅 agent_orchestrator 用 LLM<br/>→ 输出 DSL JSON
+                    </div>
+<div class="grid grid-cols-2 text-slate-400">
+<div class="p-2 border-r border-b border-blue-500/20">graph_service</div>
+<div class="p-2 border-b border-blue-500/20 text-rose-400">零 LLM</div>
+<div class="p-2 border-r border-b border-blue-500/20">rule_engine</div>
+<div class="p-2 border-b border-blue-500/20 text-rose-400">零 LLM</div>
+<div class="p-2 border-r border-b border-blue-500/20">execution_service</div>
+<div class="p-2 border-b border-blue-500/20 text-rose-400">零 LLM</div>
+<div class="p-2 border-r border-b border-blue-500/20">audit_service</div>
+<div class="p-2 border-b border-blue-500/20 text-rose-400">零 LLM</div>
+<div class="p-2 border-r border-blue-500/20">connector_sdk</div>
+<div class="p-2 text-rose-400">零 LLM</div>
+</div>
+<div class="bg-slate-900 p-2 text-center text-[9px] text-slate-500 italic">
+                        唯一写路径：execution → connector_sdk → Legacy
+                    </div>
+</div>
+</div>
+<!-- C区 -->
+<div class="glass-card p-4 rounded border-dashed border-slate-600 bg-slate-800/20">
+<div class="zone-label text-amber-400">C区 - 10大模块职责</div>
+<div class="text-[11px] text-slate-400">
+<p>参见上方「核心组件」列表，各模块在 packages/ 目录下实现，通过契约接口解耦。</p>
+</div>
+</div>
+<!-- D区 -->
+<div class="glass-card p-4 rounded border-dashed border-slate-600 bg-slate-800/20">
+<div class="zone-label text-purple-400">D区 - 运行时唯一写路径</div>
+<div class="text-[11px] text-slate-300">
+<p class="italic text-slate-500 mb-1">强制路径流程:</p>
+<p>1. 用户请求 → Agent Orchestrator 意图识别 → DSL 计划</p>
+<p>2. Harness 验证 (确认门：人工/规则通过)</p>
+<p>3. Rule Engine 校验 (规则默认拒绝，白名单放行)</p>
+<p>4. 记录 ExecutionEvidence (唯一写路径必经)</p>
+<p>5. Connector 写入 Data-L0/L1</p>
+<p>6. 对账 Job 验证一致性</p>
+</div>
+</div>
+<!-- E区 -->
+<div class="glass-card p-4 rounded border-dashed border-slate-600 bg-slate-800/20">
+<div class="zone-label text-blue-400">E区 - 三条接入路径</div>
+<div class="text-[11px] text-slate-400 space-y-1">
+<p><span class="text-blue-400 font-bold">Path A:</span> 有 ERP → Connector 直接写</p>
+<p><span class="text-emerald-400 font-bold">Path B:</span> 有 MES → MES 写 + ERP 读</p>
+<p><span class="text-amber-400 font-bold">Path C:</span> 无系统 → Builtin 账本模拟</p>
+</div>
+</div>
+<!-- F区 -->
+<div class="glass-card p-4 rounded border-dashed border-slate-600 bg-slate-800/20">
+<div class="zone-label text-slate-400">F区 - 适配场景</div>
+<div class="grid grid-cols-2 gap-2 text-[9px] text-slate-500">
+<p class="border border-slate-700 p-1 rounded">有ERP厂</p>
+<p class="border border-slate-700 p-1 rounded">双系统厂</p>
+<p class="border border-slate-700 p-1 rounded">Agent/MCP</p>
+<p class="border border-slate-700 p-1 rounded">千级产线级</p>
+</div>
+</div>
+</section>
+<!-- ADR-008 说明 -->
+<h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="mdi:gavel"></iconify-icon>
+            ADR-008 Registry 配置真源
+        </h2>
+<section class="glass-card p-6 rounded-2xl mb-12 border border-blue-500/30 bg-blue-900/10">
+<div class="flex items-start gap-4">
+<div class="p-3 rounded-full bg-blue-500/20">
+<iconify-icon class="text-2xl text-blue-400" icon="mdi:database-check"></iconify-icon>
+</div>
+<div>
+<h3 class="font-bold text-white mb-2">Registry = PostgreSQL + Studio publish</h3>
+<p class="text-sm text-slate-300 leading-relaxed">
+                        所有 Pack 配置、版本管理、Override 文档均以 Studio 发布到 PostgreSQL 为准。
+                        <span class="text-rose-400 font-bold underline">禁止直接修改 Git 中的 YAML 文件</span>，确保运行时配置的唯一真源与热更新能力。
+                    </p>
+</div>
+</div>
+</section>
+</main>
+</body>
+</html>

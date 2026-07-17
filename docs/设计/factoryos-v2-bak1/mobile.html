@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · 智能中枢系统</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .sidebar-item-active { background-color: #1e293b; border-left: 4px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(51, 65, 85, 0.5); }
+        
+        /* 手机壳容器 */
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background-color: #0f172a;
+            border: 12px solid #1e293b;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+        }
+
+        /* 顶部刘海 */
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background-color: #1e293b;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            z-index: 50;
+        }
+
+        /* 滚动区域 */
+        .scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 80px; /* 为底部 Tab 留空 */
+        }
+        .scroll-area::-webkit-scrollbar { display: none; }
+
+        .role-active { background-color: #3b82f6; color: white; }
+        .tab-active { color: #3b82f6; }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- 侧边栏 -->
+<aside class="w-64 glass-card flex flex-col flex-none">
+<div class="p-6 border-b border-slate-700">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-3xl text-blue-500" icon="mdi:robot-industrial"></iconify-icon>
+<span class="text-xl font-bold tracking-tight">Ax OS</span>
+</div>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">智能中枢系统</p>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="strategy.html">
+<iconify-icon icon="mdi:chart-bar"></iconify-icon>
+<span>制造全景</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="integration.html">
+<iconify-icon icon="mdi:link-variant"></iconify-icon>
+<span>产业连接</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="business.html">
+<iconify-icon icon="mdi:package-variant-closed"></iconify-icon>
+<span>资产与复制</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="workflow.html">
+<iconify-icon icon="mdi:shield-check-outline"></iconify-icon>
+<span>运营与合规</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="data.html">
+<iconify-icon icon="mdi:cog-outline"></iconify-icon>
+<span>平台治理</span>
+</a>
+<!-- 产线终端入口 (当前页) -->
+<a class="sidebar-item-active mt-4 flex items-center gap-3 px-6 py-3 transition-colors" href="mobile.html">
+<iconify-icon icon="mdi:cellphone"></iconify-icon>
+<span>产线终端</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+<div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold">A</div>
+<div class="flex-1 overflow-hidden text-xs">
+<p class="font-medium truncate">Ax OS Admin</p>
+<p class="text-slate-500 truncate">h5-worker 控制台</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="flex-1 overflow-y-auto p-8 bg-[#020617] relative flex flex-col items-center">
+<!-- Header -->
+<header class="w-full flex justify-between items-center mb-6 relative z-10">
+<div>
+<h1 class="text-3xl font-bold text-white">h5-worker · 产线终端</h1>
+<p class="text-slate-400 mt-1">通过钉钉/企微 H5 微应用接入，非独立 App Store 应用</p>
+</div>
+<div class="flex gap-4">
+<div class="px-4 py-2 rounded border border-slate-700 bg-slate-800/30 text-xs flex items-center gap-2 text-blue-400">
+<iconify-icon icon="mdi:check-decagram"></iconify-icon>
+                    验收标注: UX-001 / STU-001
+                </div>
+</div>
+</header>
+<!-- 手机框架 -->
+<div class="phone-container scale-90 origin-top">
+<div class="phone-notch"></div>
+<!-- 状态栏 -->
+<div class="h-10 flex justify-between items-center px-6 pt-2 text-[10px] font-bold z-40 relative text-slate-300">
+<span>09:41</span>
+<div class="flex gap-1 items-center">
+<iconify-icon icon="mdi:signal-cellular-3"></iconify-icon>
+<iconify-icon icon="mdi:wifi"></iconify-icon>
+<iconify-icon icon="mdi:battery-80"></iconify-icon>
+</div>
+</div>
+<!-- 角色切换器 (APP 顶部自定义) -->
+<div class="px-4 py-2 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+<div class="flex p-1 bg-slate-800 rounded-lg text-[10px] font-bold">
+<button class="role-active flex-1 py-1.5 rounded-md transition-all" id="btn-worker" onclick="switchRole('worker')">工人</button>
+<button class="flex-1 py-1.5 rounded-md text-slate-400 transition-all" id="btn-leader" onclick="switchRole('leader')">班组长</button>
+<button class="flex-1 py-1.5 rounded-md text-slate-400 transition-all" id="btn-maintenance" onclick="switchRole('maintenance')">维修工 (P2+)</button>
+</div>
+</div>
+<!-- APP 内容区 -->
+<div class="bg-blue-600 text-[9px] px-4 py-1 text-center font-bold text-white">
+                D1 聚焦：工人报工闭环（报工→确认卡→主管批准）
+            </div>
+<div class="scroll-area fade-in bg-slate-900" id="app-content">
+<!-- 动态注入内容 -->
+</div>
+<!-- 底部 Tab 导航 -->
+<div class="h-20 bg-slate-900/90 backdrop-blur-xl border-t border-slate-800 flex justify-around items-center px-4 absolute bottom-0 left-0 right-0 z-50">
+<button class="tab-active flex flex-col items-center gap-1" id="tab-home" onclick="switchTab('home')">
+<iconify-icon class="text-2xl" icon="mdi:home-variant"></iconify-icon>
+<span class="text-[10px]">首页</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500" id="tab-tasks" onclick="switchTab('tasks')">
+<iconify-icon class="text-2xl" icon="mdi:clipboard-list-outline"></iconify-icon>
+<span class="text-[10px]">任务</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500 relative" id="tab-msgs" onclick="switchTab('msgs')">
+<iconify-icon class="text-2xl" icon="mdi:message-text-outline"></iconify-icon>
+<span class="text-[10px]">消息</span>
+<span class="absolute top-0 right-1 w-2 h-2 bg-rose-500 rounded-full border-2 border-slate-900"></span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500" id="tab-profile" onclick="switchTab('profile')">
+<iconify-icon class="text-2xl" icon="mdi:account-outline"></iconify-icon>
+<span class="text-[10px]">我的</span>
+</button>
+</div>
+<!-- iOS Home Indicator -->
+<div class="h-1 w-32 bg-slate-700 rounded-full absolute bottom-2 left-1/2 -translate-x-1/2 opacity-50"></div>
+</div>
+<!-- 验收说明 -->
+<div class="mt-4 p-4 rounded-xl bg-slate-800/50 border border-slate-700 max-w-lg w-full">
+<h4 class="text-xs font-bold text-blue-400 mb-2 flex items-center gap-2">
+<iconify-icon icon="mdi:check-decagram"></iconify-icon>
+                验收自检清单
+            </h4>
+<ul class="text-[10px] text-slate-400 space-y-1">
+<li class="flex items-center gap-2"><iconify-icon class="text-green-500" icon="mdi:check"></iconify-icon> 产线端命名为 h5-worker，接入方式为钉钉/企微</li>
+<li class="flex items-center gap-2"><iconify-icon class="text-green-500" icon="mdi:check"></iconify-icon> 包含 Harness 确认卡交互示意 (D1 标准)</li>
+<li class="flex items-center gap-2"><iconify-icon class="text-green-500" icon="mdi:check"></iconify-icon> 对齐 AC：UX-001（h5-worker报工）、STU-001（Studio流程）</li>
+</ul>
+</div>
+</main>
+<script>
+        let currentRole = 'worker';
+        let currentTab = 'home';
+
+        const rolesData = {
+            worker: {
+                name: "张工人",
+                avatar: "张",
+                workshop: "哈森制造 - 1号总装车间",
+                home: `
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h2 class="text-lg font-bold">你好, 张工人 👋</h2>
+                                <p class="text-[10px] text-slate-500">1号总装车间 · 数字化工位 04</p>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold">张</div>
+                        </div>
+                        
+                        <!-- 快捷操作 -->
+                        <div class="grid grid-cols-2 gap-4 mb-8">
+                            <button class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-slate-800/50 border border-slate-700">
+                                <iconify-icon icon="mdi:microphone" class="text-3xl text-blue-400"></iconify-icon>
+                                <span class="text-xs">语音报工</span>
+                                <span class="text-[8px] text-blue-500 font-bold">D1 核心</span>
+                            </button>
+                            <button class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-slate-800/50 border border-slate-700">
+                                <iconify-icon icon="mdi:camera" class="text-3xl text-emerald-400"></iconify-icon>
+                                <span class="text-xs">拍照上传</span>
+                                <span class="text-[8px] text-emerald-500 font-bold">D1 核心</span>
+                            </button>
+                        </div>
+
+                        <!-- Harness 确认卡示意 (D1 标准) -->
+                        <div class="mb-8 p-4 rounded-2xl border-2 border-blue-500/50 bg-blue-500/5 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 px-2 py-0.5 bg-blue-500 text-[8px] font-bold rounded-bl-lg">Harness 确认卡</div>
+                            <div class="space-y-2 pt-2">
+                                <div class="flex justify-between items-center text-[10px]">
+                                    <span class="text-slate-500">工单:</span>
+                                    <span class="font-mono">#WO-2024-00888</span>
+                                </div>
+                                <div class="flex justify-between items-center text-[10px]">
+                                    <span class="text-slate-500">工序:</span>
+                                    <span>CNC 精加工</span>
+                                </div>
+                                <div class="flex justify-between items-center text-[10px] border-b border-slate-800 pb-2">
+                                    <span class="text-slate-500">报工数量:</span>
+                                    <span class="text-blue-400 font-bold">120 件</span>
+                                </div>
+                                <div class="space-y-2 pt-2">
+                                    <input type="text" placeholder="确认人 (选填)" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-[10px] outline-none text-slate-300">
+                                    <input type="text" placeholder="备注 (选填)" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-[10px] outline-none text-slate-300">
+                                </div>
+                                <div class="flex gap-2 pt-2">
+                                    <button class="flex-1 py-2 rounded bg-slate-700 text-white text-[10px] font-bold">退回</button>
+                                    <button class="flex-[2] py-2 rounded bg-blue-600 text-white text-[10px] font-bold">确认提交</button>
+                                </div>
+                                <p class="text-center text-[8px] text-slate-500 mt-2">≤3 tap 完成确认 · D1 标准交互</p>
+                            </div>
+                        </div>
+
+                        <!-- 当前工单 -->
+                        <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 mb-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-[10px] bg-blue-600 px-2 py-0.5 rounded text-white font-bold">进行中</span>
+                                <iconify-icon icon="mdi:dots-horizontal" class="text-white"></iconify-icon>
+                            </div>
+                            <p class="text-[10px] text-slate-400">当前执行工单</p>
+                            <h3 class="text-lg font-bold mb-4">WO-2026-0710-128</h3>
+                            <div class="flex justify-between items-center text-[10px] text-slate-300">
+                                <span>工序: 总装 A-02</span>
+                                <span>计划: 500 Pcs</span>
+                            </div>
+                        </div>
+
+                        <!-- 报工记录 -->
+                        <h3 class="font-bold text-sm mb-4">今日报工记录</h3>
+                        <div class="space-y-3">
+                            <div class="p-3 rounded-xl bg-slate-800/30 flex justify-between items-center">
+                                <div>
+                                    <p class="text-xs font-bold">14:20 报工</p>
+                                    <p class="text-[9px] text-slate-500">合格: 120 Pcs | 废品: 2 Pcs</p>
+                                </div>
+                                <iconify-icon icon="mdi:check-circle" class="text-emerald-500 text-xl"></iconify-icon>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            leader: {
+                name: "李组长",
+                avatar: "李",
+                workshop: "1号总装车间 · 数字化产线",
+                home: `
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h2 class="text-lg font-bold">你好, 李组长 👨‍✈️</h2>
+                                <p class="text-[10px] text-slate-500">管理产线: 总装 A 线 / B 线</p>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center font-bold">李</div>
+                        </div>
+
+                        <!-- 数据看板 -->
+                        <div class="grid grid-cols-3 gap-2 mb-8">
+                            <div class="p-2 rounded-xl bg-slate-800 text-center">
+                                <p class="text-[18px] font-bold text-white">24</p>
+                                <p class="text-[9px] text-slate-500">在线人数</p>
+                            </div>
+                            <div class="p-2 rounded-xl bg-slate-800 text-center">
+                                <p class="text-[18px] font-bold text-emerald-400">92%</p>
+                                <p class="text-[9px] text-slate-500">任务达成</p>
+                            </div>
+                            <div class="p-2 rounded-xl bg-slate-800 text-center">
+                                <p class="text-[18px] font-bold text-rose-500">3</p>
+                                <p class="text-[9px] text-slate-500">异常告警</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 快捷操作 -->
+                        <div class="grid grid-cols-2 gap-4 mb-8">
+                            <button class="flex items-center gap-3 p-4 rounded-2xl bg-slate-800/50 border border-slate-700">
+                                <iconify-icon icon="mdi:check-all" class="text-2xl text-emerald-400"></iconify-icon>
+                                <span class="text-xs">审批待办</span>
+                            </button>
+                            <button class="flex items-center gap-3 p-4 rounded-2xl bg-slate-800/50 border border-slate-700">
+                                <iconify-icon icon="mdi:chart-timeline-variant" class="text-2xl text-blue-400"></iconify-icon>
+                                <span class="text-xs">产线看板</span>
+                            </button>
+                        </div>
+
+                        <!-- 待审批 -->
+                        <h3 class="font-bold text-sm mb-4">待处理审批</h3>
+                        <div class="space-y-3">
+                            <div class="p-4 rounded-xl bg-slate-800/30 border border-slate-700">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-[9px] text-slate-500">报工审批 · 刚刚</span>
+                                    <span class="text-[9px] text-amber-500 font-bold">待处理</span>
+                                </div>
+                                <p class="text-xs font-bold mb-1">张工人 - WO-2026-0710-128</p>
+                                <p class="text-[10px] text-slate-400 mb-3">报工数量: 120 Pcs | 发现不良: 2 Pcs</p>
+                                <div class="flex gap-2">
+                                    <button class="flex-1 py-1.5 rounded bg-emerald-600 text-white text-[10px] font-bold">通过</button>
+                                    <button class="flex-1 py-1.5 rounded bg-slate-700 text-white text-[10px] font-bold">查看详情</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            maintenance: {
+                name: "赵技工",
+                avatar: "赵",
+                workshop: "全厂区设备运维组",
+                home: `
+                    <div class="p-6">
+                        <div class="mb-4 p-2 rounded bg-amber-500/10 border border-amber-500/30 text-[9px] text-amber-500 flex items-center gap-2">
+                            <iconify-icon icon="mdi:alert-circle" class="text-xs"></iconify-icon>
+                            <span>⚠️ Phase 2+ 规划 — 维修工相关功能 D1 暂不交付</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h2 class="text-lg font-bold">你好, 赵技工 🔧</h2>
+                                <p class="text-[10px] text-slate-500">今日待修设备: 4 台</p>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center font-bold">赵</div>
+                        </div>
+
+                        <!-- 快捷操作 -->
+                        <div class="grid grid-cols-2 gap-4 mb-8">
+                            <button class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-slate-800/50 border border-slate-700">
+                                <iconify-icon icon="mdi:camera-plus" class="text-3xl text-purple-400"></iconify-icon>
+                                <span class="text-xs">拍照报修</span>
+                            </button>
+                            <button class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-slate-800/50 border border-slate-700">
+                                <iconify-icon icon="mdi:tools" class="text-3xl text-blue-400"></iconify-icon>
+                                <span class="text-xs">维修工单</span>
+                            </button>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        const otherTabs = {
+            tasks: `
+                <div class="p-6">
+                    <h2 class="text-lg font-bold mb-6">我的任务</h2>
+                    <div class="flex gap-4 border-b border-slate-800 mb-4">
+                        <span class="pb-2 border-b-2 border-blue-500 text-blue-500 text-xs font-bold">待处理</span>
+                        <span class="pb-2 text-slate-500 text-xs">进行中</span>
+                        <span class="pb-2 text-slate-500 text-xs">已完成</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-slate-800/50 text-center py-12 text-slate-500 italic text-xs">
+                            <iconify-icon icon="mdi:inbox-outline" class="text-4xl mb-2"></iconify-icon>
+                            <p>暂无更多待办任务</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            msgs: `
+                <div class="p-6">
+                    <h2 class="text-lg font-bold mb-6">消息通知</h2>
+                    <div class="space-y-4">
+                        <div class="flex gap-4 p-3 rounded-xl bg-slate-800/30">
+                            <div class="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center">
+                                <iconify-icon icon="mdi:bell" class="text-xl text-blue-500"></iconify-icon>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center mb-1">
+                                    <p class="text-xs font-bold">系统通知</p>
+                                    <span class="text-[9px] text-slate-500">10:30</span>
+                                </div>
+                                <p class="text-[10px] text-slate-400">您的报工单 #EV-0822 已经自动通过对账。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            profile: `
+                <div class="p-6">
+                    <div class="flex flex-col items-center gap-3 mb-8">
+                        <div id="profile-avatar" class="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-2xl font-bold shadow-lg shadow-blue-900/40">?</div>
+                        <div class="text-center">
+                            <h2 id="profile-name" class="text-lg font-bold">?</h2>
+                            <p id="profile-workshop" class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">?</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800/50 rounded-2xl overflow-hidden mb-6">
+                        <div class="p-4 flex justify-between items-center border-b border-slate-700 text-slate-300">
+                            <div class="flex items-center gap-3">
+                                <iconify-icon icon="mdi:account-cog-outline" class="text-xl text-slate-400"></iconify-icon>
+                                <span class="text-xs">个人设置</span>
+                            </div>
+                            <iconify-icon icon="mdi:chevron-right" class="text-slate-600"></iconify-icon>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-3 rounded-xl bg-slate-800 text-rose-500 text-xs font-bold border border-slate-700 hover:bg-slate-700 transition-colors">退出登录</button>
+                    
+                    <div class="mt-8 text-center">
+                        <p class="text-[9px] text-slate-600 font-mono tracking-widest uppercase">h5-worker v2.1.0-align</p>
+                    </div>
+                </div>
+            `
+        };
+
+        function switchRole(role) {
+            currentRole = role;
+            document.querySelectorAll('[id^="btn-"]').forEach(btn => btn.classList.remove('role-active', 'text-slate-400'));
+            document.getElementById(`btn-${role}`).classList.add('role-active');
+            renderContent();
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('[id^="tab-"]').forEach(btn => btn.classList.remove('tab-active', 'text-slate-500'));
+            document.getElementById(`tab-${tab}`).classList.add('tab-active');
+            renderContent();
+        }
+
+        function renderContent() {
+            const container = document.getElementById('app-content');
+            container.classList.remove('fade-in');
+            void container.offsetWidth; // trigger reflow
+            container.classList.add('fade-in');
+
+            if (currentTab === 'home') {
+                container.innerHTML = rolesData[currentRole].home;
+            } else if (currentTab === 'profile') {
+                container.innerHTML = otherTabs.profile;
+                document.getElementById('profile-name').innerText = rolesData[currentRole].name;
+                document.getElementById('profile-workshop').innerText = rolesData[currentRole].workshop;
+                document.getElementById('profile-avatar').innerText = rolesData[currentRole].avatar;
+                
+                // Color mapping for roles
+                const colors = { worker: 'bg-blue-600', leader: 'bg-emerald-600', maintenance: 'bg-purple-600' };
+                document.getElementById('profile-avatar').className = `w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold shadow-lg ${colors[currentRole]}`;
+            } else {
+                container.innerHTML = otherTabs[currentTab];
+            }
+        }
+
+        // Init
+        renderContent();
+    </script>
+</body>
+</html>

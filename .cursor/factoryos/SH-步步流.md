@@ -22,18 +22,20 @@
 | L2 Spec 轨 | Contract Registry published + `contracts/` export 对账 + plan AC/红线 |
 | L3 Harness 轨 | `./scripts/gate step` · `./scripts/gate delivery` · [ACTIVATION.md](./ACTIVATION.md) |
 
-## 三 Agent + 口令
+## 四 Agent + 口令
 
 | Agent | 激活 | 细则 |
 |-------|------|------|
+| **PM** | `【PM模式启动】`（Dev / `确认规划` **之前**） | [PM-GATES.md](./PM-GATES.md) · 默认只读 · 落盘 `pm/` |
 | Dev | `【Dev模式启动】` | [STEP0.md](./STEP0.md) · [DEV-GATES.md](./DEV-GATES.md) |
 | Test | `【Test模式启动】`（编码前）· `【Test·Step N 验收】`（每 Step）· `【Test·终轮回归】`（commit 前） | [TEST-GATES.md](./TEST-GATES.md) |
 | Verify | `【Verify回合】Step N`（**新对话** · Test 验收之后） | [VERIFY-GATES.md](./VERIFY-GATES.md) |
 
-Test 只写 `src/tests/**`；Dev 不宣称测过；Verify 只写 `verify/` 审阅。
+PM 只写 `pm/`（+ 授权下 Figma）；Test 只写 `src/tests/**`；Dev 不宣称测过；Verify 只写 `verify/` 审阅。
 
 ## 单次迭代
 
+0. （可选）`【PM模式启动】` → `pm/` 诊断/功能树/brief/AC 草案 → 你确认产品结论  
 1. Step 0 → `可以继续`
 2. plan 落盘 → `确认规划` → `gate plan`
 3. test-plan + failing tests → `gate test`

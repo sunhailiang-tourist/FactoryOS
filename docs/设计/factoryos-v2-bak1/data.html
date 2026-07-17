@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · 智能中枢系统</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .sidebar-item-active { background-color: #1e293b; border-left: 4px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(51, 65, 85, 0.5); }
+        .infra-badge { font-size: 10px; padding: 2px 8px; border-radius: 99px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- 侧边栏 -->
+<aside class="w-64 glass-card flex flex-col flex-none">
+<div class="p-6 border-b border-slate-700">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-3xl text-blue-500" icon="mdi:robot-industrial"></iconify-icon>
+<span class="text-xl font-bold tracking-tight">Ax OS</span>
+</div>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">智能中枢系统</p>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="strategy.html">
+<iconify-icon icon="mdi:chart-bar"></iconify-icon>
+<span>制造全景</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="integration.html">
+<iconify-icon icon="mdi:link-variant"></iconify-icon>
+<span>产业连接</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="business.html">
+<iconify-icon icon="mdi:package-variant-closed"></iconify-icon>
+<span>资产与复制</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="workflow.html">
+<iconify-icon icon="mdi:shield-check-outline"></iconify-icon>
+<span>运营与合规</span>
+</a>
+<a class="sidebar-item-active flex items-center gap-3 px-6 py-3 transition-colors" href="data.html">
+<iconify-icon icon="mdi:cog-outline"></iconify-icon>
+<span>平台治理</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+<div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold">A</div>
+<div class="flex-1 overflow-hidden text-xs">
+<p class="font-medium truncate">Ax OS</p>
+<p class="text-slate-500 truncate">v1.0.0</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="flex-1 overflow-y-auto p-8 bg-[#020617]">
+<!-- Header -->
+<header class="flex justify-between items-center mb-10">
+<div>
+<h1 class="text-3xl font-bold text-white">Ax OS · 平台治理</h1>
+<p class="text-slate-400 mt-1">智能中枢系统 — 数据治理与合规</p>
+</div>
+<div class="flex gap-4">
+<button class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-sm font-medium transition-colors">导出数据白皮书</button>
+</div>
+</header>
+<!-- 数据四层详细说明 -->
+<section class="glass-card rounded-xl overflow-hidden mb-12">
+<div class="p-6 border-b border-slate-700 flex justify-between items-center bg-slate-800/30">
+<h3 class="font-bold text-white flex items-center gap-2">
+<iconify-icon class="text-blue-400" icon="mdi:layers-triple"></iconify-icon>
+                    数据层级详细定义
+                </h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-slate-900/50 text-[10px] text-slate-500 uppercase tracking-widest border-b border-slate-800">
+<tr>
+<th class="px-6 py-4">层级</th>
+<th class="px-6 py-4">内容</th>
+<th class="px-6 py-4">位置</th>
+<th class="px-6 py-4">原则与策略</th>
+<th class="px-6 py-4">状态</th>
+</tr>
+</thead>
+<tbody class="text-sm divide-y divide-slate-800">
+<tr class="hover:bg-blue-500/5 transition-colors">
+<td class="px-6 py-6 font-mono text-blue-400">Data-L0</td>
+<td class="px-6 py-6">
+<p class="text-white font-medium">客户账本 (权威源)</p>
+<p class="text-xs text-slate-500 mt-1 italic">ERP/MES/WMS/OA 原始单据</p>
+</td>
+<td class="px-6 py-6 text-slate-400">客户现有系统</td>
+<td class="px-6 py-6 text-slate-400 leading-relaxed">
+                                FactoryOS 不替代，不成为第二套账本。<br/>
+<span class="text-[10px] text-amber-500/80">Path C 特例: builtin_ledger 模拟 L0</span>
+</td>
+<td class="px-6 py-6"><span class="px-2 py-1 rounded bg-slate-800 text-slate-500 text-[10px]">外部/只读</span></td>
+</tr>
+<tr class="hover:bg-emerald-500/5 transition-colors">
+<td class="px-6 py-6 font-mono text-emerald-400">Data-L1</td>
+<td class="px-6 py-6">
+<p class="text-white font-medium">运行时运行数据</p>
+<p class="text-xs text-slate-500 mt-1 italic">Graph/Rule版本, Audit, Evidence</p>
+</td>
+<td class="px-6 py-6 text-slate-400">RDS (PG 16)</td>
+<td class="px-6 py-6 text-slate-400 leading-relaxed">
+<span class="text-emerald-400">必做项。</span>写成功后记录 + 定时对账。<br/>
+                                全表 tenant_id 隔离，RLS@S1 级安全。
+                            </td>
+<td class="px-6 py-6"><span class="px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 text-[10px]">必选·持久</span></td>
+</tr>
+<tr class="hover:bg-blue-500/5 transition-colors">
+<td class="px-6 py-6 font-mono text-blue-400">Data-L2</td>
+<td class="px-6 py-6">
+<p class="text-white font-medium">业务缓存</p>
+<p class="text-xs text-slate-500 mt-1 italic">工单快照, 查询加速, 影子引用</p>
+</td>
+<td class="px-6 py-6 text-slate-400">Redis / RDS</td>
+<td class="px-6 py-6 text-slate-400 leading-relaxed">
+<span class="text-blue-400">按需项。</span>能读 ERP 就不落库。<br/>
+                                仅存储回滚所需最小快照，设 TTL。
+                            </td>
+<td class="px-6 py-6"><span class="px-2 py-1 rounded bg-blue-500/10 text-blue-400 text-[10px]">按需·临时</span></td>
+</tr>
+<tr class="hover:bg-slate-500/5 transition-colors">
+<td class="px-6 py-6 font-mono text-slate-500">Data-L3</td>
+<td class="px-6 py-6">
+<p class="text-white font-medium">分析/数据池</p>
+<p class="text-xs text-slate-500 mt-1 italic">全量同步, 看板, 跨系统汇总</p>
+</td>
+<td class="px-6 py-6 text-slate-400">OSS / Data Lake</td>
+<td class="px-6 py-6 text-slate-400 leading-relaxed">
+<span class="text-slate-500">选配项。</span>非 Overlay 默认。<br/>
+                                需书面采购，客户信任 + D1 结案后。
+                            </td>
+<td class="px-6 py-6"><span class="px-2 py-1 rounded bg-slate-800 text-slate-500 text-[10px]">扩展·增值</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- 基础设施与数据流 -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+<!-- 阿里云资源映射 -->
+<div class="glass-card p-6 rounded-xl">
+<h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-400" icon="mdi:cloud-outline"></iconify-icon>
+                    阿里云基础设施规格 (Standard)
+                </h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 rounded-lg bg-slate-800/40">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-2xl text-slate-500" icon="mdi:server"></iconify-icon>
+<div>
+<p class="text-sm font-bold">ECS (云服务器)</p>
+<p class="text-[10px] text-slate-500">Linux / Docker Runtime</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-300">Prod: 4C16G × 1</p>
+<p class="text-xs text-slate-500">Staging: 4C16G × 1</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-lg bg-slate-800/40 border-l-4 border-emerald-500">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-2xl text-emerald-500" icon="mdi:database"></iconify-icon>
+<div>
+<p class="text-sm font-bold">RDS (关系型数据库)</p>
+<p class="text-[10px] text-slate-500">PostgreSQL 16.x</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-300">Prod: 4C8G (Autoscale)</p>
+<p class="text-xs text-slate-500">Storage: ESSD PL1</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-lg bg-slate-800/40">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-2xl text-blue-400" icon="mdi:archive-outline"></iconify-icon>
+<div>
+<p class="text-sm font-bold">OSS (对象存储)</p>
+<p class="text-[10px] text-slate-500">语音 / 图片 / 视频</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-300">30天生命周期</p>
+<p class="text-xs text-slate-500">自动清理逻辑</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-lg bg-slate-800/40">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-2xl text-amber-500" icon="mdi:flash-outline"></iconify-icon>
+<div>
+<p class="text-sm font-bold">Redis (Tair)</p>
+<p class="text-[10px] text-slate-500">Cache &amp; Rate Limiting</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-300">1GB 主从版</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-lg bg-slate-800/40">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-2xl text-purple-500" icon="mdi:shield-key-outline"></iconify-icon>
+<div>
+<p class="text-sm font-bold">WAF / SLB</p>
+<p class="text-[10px] text-slate-500">HTTPS / VPC Private Link</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-300">内网隔离安全组</p>
+</div>
+</div>
+</div>
+<div class="mt-6 p-4 rounded bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-200 leading-relaxed">
+<iconify-icon class="mr-1" icon="mdi:alert-circle-outline"></iconify-icon>
+                    原则: Day1 齐套，以后只升配不新增组件类型。不引入 K8s / Kafka 以降低运维成本。
+                </div>
+</div>
+<!-- 写操作数据流示意 -->
+<div class="glass-card p-6 rounded-xl relative overflow-hidden">
+<h3 class="text-lg font-bold mb-6">写操作数据流 (Execution Path)</h3>
+<div class="relative py-4">
+<!-- Flow Line -->
+<div class="absolute left-6 top-0 bottom-0 w-0.5 bg-slate-700"></div>
+<div class="space-y-6 relative">
+<div class="flex items-start gap-4 ml-2">
+<div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold z-10">1</div>
+<div class="flex-1 pt-1">
+<p class="text-sm font-bold text-white font-mono uppercase text-[10px]">Intent &amp; Plan</p>
+<p class="text-xs text-slate-300 font-bold">Agent Orchestrator 意图识别 → DSL 计划</p>
+</div>
+</div>
+<div class="flex items-start gap-4 ml-2">
+<div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-xs font-bold z-10">2</div>
+<div class="flex-1 pt-1">
+<p class="text-sm font-bold text-white font-mono uppercase text-[10px]">Guardrail</p>
+<p class="text-xs text-slate-300 font-bold">Harness 验证（规则默认拒绝，白名单放行）</p>
+</div>
+</div>
+<div class="flex items-start gap-4 ml-2">
+<div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold z-10">3</div>
+<div class="flex-1 pt-1">
+<p class="text-sm font-bold text-white font-mono uppercase text-[10px]">Validation</p>
+<p class="text-xs text-slate-300 font-bold">Rule Engine 校验（绑定已冻结 Graph 版本）</p>
+</div>
+</div>
+<div class="flex items-start gap-4 ml-2">
+<div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-xs font-bold z-10">4</div>
+<div class="flex-1 pt-1">
+<p class="text-sm font-bold text-emerald-400 font-bold font-mono uppercase text-[10px]">Evidence</p>
+<p class="text-xs text-emerald-400 font-bold">记录 ExecutionEvidence（唯一写路径必经）</p>
+</div>
+</div>
+<div class="flex items-start gap-4 ml-2">
+<div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold z-10">5</div>
+<div class="flex-1 pt-1">
+<p class="text-sm font-bold text-white font-mono uppercase text-[10px]">Execution</p>
+<p class="text-xs text-slate-300 font-bold">Connector 调用（写入客户系统或 Builtin 表）</p>
+</div>
+</div>
+<div class="flex items-start gap-4 ml-2">
+<div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-xs font-bold z-10">6</div>
+<div class="flex-1 pt-1">
+<p class="text-sm font-bold text-white font-mono uppercase text-[10px]">Audit</p>
+<p class="text-xs text-slate-300 font-bold">对账 Job 验证一致性</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 对比与话术 -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10">
+<div class="glass-card p-6 rounded-xl">
+<h3 class="text-lg font-bold mb-6">测试域 vs 生产域对比</h3>
+<div class="space-y-4">
+<div class="grid grid-cols-3 gap-4 pb-2 border-b border-slate-700 text-[10px] text-slate-500 uppercase font-bold">
+<div>维度</div>
+<div>测试域 (Staging)</div>
+<div>生产域 (Production)</div>
+</div>
+<div class="grid grid-cols-3 gap-4 text-xs">
+<div class="text-slate-400">备份策略</div>
+<div class="text-white">RDS 7天</div>
+<div class="text-emerald-400 font-bold">RDS 15天 + 季度演练</div>
+</div>
+<div class="grid grid-cols-3 gap-4 text-xs">
+<div class="text-slate-400">资源隔离</div>
+<div class="text-white">独立 ECS / VPC</div>
+<div class="text-white">独立 ECS / 专线</div>
+</div>
+<div class="grid grid-cols-3 gap-4 text-xs">
+<div class="text-slate-400">数据来源</div>
+<div class="text-white">脱敏 / Mock</div>
+<div class="text-white">真实生产数据</div>
+</div>
+<div class="grid grid-cols-3 gap-4 text-xs">
+<div class="text-slate-400">更新频率</div>
+<div class="text-white">随 CI/CD 实时</div>
+<div class="text-amber-400">发布窗口期定时</div>
+</div>
+</div>
+</div>
+<div class="p-6 rounded-xl bg-blue-900/10 border border-blue-500/20">
+<h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-400" icon="mdi:file-document-edit-outline"></iconify-icon>
+                    方案与合同话术 (客户信任)
+                </h3>
+<div class="space-y-3">
+<div class="flex items-start gap-2">
+<iconify-icon class="text-emerald-500 mt-1" icon="mdi:check-circle"></iconify-icon>
+<p class="text-sm text-slate-300"><span class="font-bold text-white">权威源:</span> 业务数据权威系统始终为客户现有 ERP/MES/WMS，FactoryOS 不替代原账本。</p>
+</div>
+<div class="flex items-start gap-2">
+<iconify-icon class="text-emerald-500 mt-1" icon="mdi:check-circle"></iconify-icon>
+<p class="text-sm text-slate-300"><span class="font-bold text-white">最小化:</span> FactoryOS 仅存储流程定义(Graph)及回滚对账所需最小快照。</p>
+</div>
+<div class="flex items-start gap-2">
+<iconify-icon class="text-emerald-500 mt-1" icon="mdi:check-circle"></iconify-icon>
+<p class="text-sm text-slate-300"><span class="font-bold text-white">不出厂:</span> 数据默认私有化部署或客户专属 Tenant，不进行跨客户数据汇总。</p>
+</div>
+<div class="flex items-start gap-2">
+<iconify-icon class="text-rose-500 mt-1" icon="mdi:close-circle"></iconify-icon>
+<p class="text-sm text-slate-500 italic"><span class="font-bold">避免承诺:</span> 「替代 ERP 成为唯一数据源」「统一同步全量业务数据」。</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body>
+</html>

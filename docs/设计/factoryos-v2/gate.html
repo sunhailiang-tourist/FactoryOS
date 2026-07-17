@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · 智能中枢系统</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #e2e8f0; }
+        .sidebar-item-active { background: rgba(59, 130, 246, 0.1); border-right: 3px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .gate-flow-line { height: 2px; background: linear-gradient(90deg, #10b981 0%, #10b981 50%, #64748b 50%, #64748b 100%); }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden font-sans antialiased">
+<!-- Sidebar -->
+<aside class="w-64 flex-none border-r border-slate-800 flex flex-col bg-slate-900/50">
+<div class="p-6">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+<iconify-icon class="text-white text-xl" icon="ph:factory-bold"></iconify-icon>
+</div>
+<div>
+<div class="font-bold text-lg leading-none">Ax OS</div>
+<div class="text-[10px] text-blue-400 font-medium tracking-tighter uppercase mt-1">智能中枢系统</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 mt-4 px-3 space-y-1">
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="strategy.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:grid-four-bold"></iconify-icon>
+<span class="font-medium">制造全景</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="integration.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:plug-bold"></iconify-icon>
+<span class="font-medium">产业连接</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="business.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:package-bold"></iconify-icon>
+<span class="font-medium">资产与复制</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl sidebar-item-active transition-colors group" href="workflow.html">
+<iconify-icon class="text-xl" icon="ph:shield-check-bold"></iconify-icon>
+<span class="font-medium">运营与合规</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="tenants.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:cpu-bold"></iconify-icon>
+<span class="font-medium">平台治理</span>
+</a>
+</nav>
+<div class="p-6 border-t border-slate-800">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 overflow-hidden">
+<img alt="Admin Avatar" src="https://modao.cc/agent-py/media/generated_images/2026-06-30/86531aa94d544af29b5d400b8ef7b279.jpg"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold truncate">系统管理员</p>
+<p class="text-[10px] text-slate-500 uppercase">Enterprise</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-hidden bg-slate-950">
+<header class="h-16 flex items-center justify-between px-8 border-b border-slate-800 bg-slate-900/30">
+<div class="flex items-center space-x-4">
+<h2 class="text-lg font-bold">门禁管控地图 (Gate Governance Map)</h2>
+<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">D1 交付保障机制</span>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-8">
+<!-- Summary Info -->
+<div class="max-w-6xl mx-auto mb-10 p-6 glass-card rounded-2xl border-l-4 border-blue-500">
+<h3 class="font-bold mb-2">架构说明</h3>
+<p class="text-sm text-slate-400 leading-relaxed">
+                    Ax OS 的可靠性源于“全流程闸门审计”：任何生产写操作均需通过三道人工/自动化复合门禁。
+                    每一步均需符合 <span class="text-blue-400">Workshop 签字</span>、<span class="text-blue-400">影子模式验证</span> 及 <span class="text-blue-400">双签对账</span> 铁律，
+                    确保护航 D1 交付，零风险上线。
+                    <br/><br/>
+<span class="text-amber-400 font-bold">「无 ERP ≠ 无确认门 / 无 Shadow」</span>
+</p>
+</div>
+<!-- Gate Cards：UC-01 顺序 Shadow → Write → Freeze -->
+<div class="max-w-6xl mx-auto grid grid-cols-3 gap-8 mb-12">
+<!-- Gate 1: G-SHADOW -->
+<div class="glass-card rounded-3xl p-6 border border-slate-800 relative overflow-hidden group bg-slate-800/20 border-l-4 border-l-blue-500">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-blue-400">
+<iconify-icon class="text-6xl" icon="ph:ghost-bold"></iconify-icon>
+</div>
+<div class="flex items-center space-x-3 mb-6">
+<div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white">
+<iconify-icon class="text-xl" icon="ph:check-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">GATE 1 · W-07 Prove</div>
+<h4 class="font-bold">G-SHADOW (影子运行门)</h4>
+</div>
+</div>
+<div class="space-y-4 mb-6 text-xs text-slate-400">
+<p>Shadow ≥14 天、对账一致、无未处理 drift。simulated 不写 Legacy。位于 Studio Prove 阶段。</p>
+<div class="bg-slate-900/80 rounded-xl p-3 space-y-2 border border-slate-800">
+<div class="flex items-center justify-between text-[10px]">
+<span class="text-slate-500 font-bold uppercase tracking-tighter">Shadow Days</span>
+<span class="text-emerald-400 font-bold">14/14 ✅</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Gate 2: G-WRITE-APPROVE -->
+<div class="glass-card rounded-3xl p-6 border border-slate-800 relative overflow-hidden group border-l-4 border-l-amber-500">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-amber-400">
+<iconify-icon class="text-6xl" icon="ph:signature-bold"></iconify-icon>
+</div>
+<div class="flex items-center space-x-3 mb-6">
+<div class="w-10 h-10 rounded-xl bg-amber-600 flex items-center justify-center text-white">
+<iconify-icon class="text-xl" icon="ph:pencil-line-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">GATE 2 · W-07 Prove</div>
+<h4 class="font-bold">G-WRITE-APPROVE (写权限门)</h4>
+</div>
+</div>
+<div class="space-y-4 mb-6 text-xs text-slate-400">
+<p>实施方 + 客户方双签后批准开写。未满 14 天或未双签时按钮禁用。</p>
+<div class="bg-slate-900/80 rounded-xl p-3 space-y-2 border border-slate-800">
+<div class="flex items-center justify-between text-[10px]">
+<span class="text-slate-500 font-bold uppercase tracking-tighter">Status</span>
+<span class="text-amber-400 font-bold">待客户双签</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Gate 3: G-FREEZE -->
+<div class="glass-card rounded-3xl p-6 border border-slate-800 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<iconify-icon class="text-6xl text-white" icon="ph:lock-bold"></iconify-icon>
+</div>
+<div class="flex items-center space-x-3 mb-6">
+<div class="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white">
+<iconify-icon class="text-xl" icon="ph:snowflake-bold"></iconify-icon>
+</div>
+<div>
+<div class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">GATE 3 · W-08 Freeze</div>
+<h4 class="font-bold">G-FREEZE (图谱冻结门)</h4>
+</div>
+</div>
+<div class="space-y-4 mb-6 text-xs text-slate-400">
+<p>Prove 双签完成后冻结 Graph。位置：Studio Step 5 Freeze（W-08）。business_owner 签字。</p>
+<div class="bg-slate-900/80 rounded-xl p-3 space-y-2 border border-slate-800">
+<div class="flex items-center justify-between text-[10px]">
+<span class="text-slate-500 font-bold uppercase tracking-tighter">Graph</span>
+<span class="text-slate-400 font-bold">待 Freeze</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Gate Timeline Flow -->
+<div class="max-w-6xl mx-auto mt-16 pb-12">
+<h3 class="text-center font-bold mb-10 text-slate-400 uppercase tracking-[0.2em] text-sm">Ax OS 交付路径图</h3>
+<div class="relative px-20">
+<!-- Flow Lines -->
+<div class="absolute top-6 left-20 right-20 h-0.5 bg-slate-800">
+<div class="h-full bg-emerald-500 w-[60%] transition-all"></div>
+</div>
+<div class="flex justify-between relative">
+<!-- Milestone 1 -->
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full bg-emerald-500 border-4 border-slate-950 flex items-center justify-center z-10 shadow-lg shadow-emerald-500/20">
+<iconify-icon class="text-white text-xl" icon="ph:flag-bold"></iconify-icon>
+</div>
+<div class="mt-4 text-center">
+<div class="text-[10px] font-bold text-emerald-500 mb-1">Gate 0</div>
+<div class="text-xs font-medium">底座部署</div>
+</div>
+</div>
+<!-- Milestone 2 -->
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full bg-emerald-500 border-4 border-slate-950 flex items-center justify-center z-10 shadow-lg shadow-emerald-500/20">
+<iconify-icon class="text-white text-xl" icon="ph:eye-bold"></iconify-icon>
+</div>
+<div class="mt-4 text-center">
+<div class="text-[10px] font-bold text-emerald-500 mb-1">G-SHADOW</div>
+<div class="text-xs font-medium">Prove 影子验证</div>
+</div>
+</div>
+<!-- Milestone 3 -->
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full bg-blue-500 border-4 border-slate-950 flex items-center justify-center z-10 shadow-lg shadow-blue-500/20">
+<iconify-icon class="text-white text-xl" icon="ph:signature-bold"></iconify-icon>
+</div>
+<div class="mt-4 text-center">
+<div class="text-[10px] font-bold text-blue-500 mb-1">G-WRITE-APPROVE</div>
+<div class="text-xs font-medium">双签开写 (W-07)</div>
+</div>
+</div>
+<!-- Milestone 4 -->
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full bg-emerald-500 border-4 border-slate-950 flex items-center justify-center z-10 shadow-lg shadow-emerald-500/20">
+<iconify-icon class="text-white text-xl" icon="ph:lock-bold"></iconify-icon>
+</div>
+<div class="mt-4 text-center">
+<div class="text-[10px] font-bold text-emerald-500 mb-1">G-FREEZE</div>
+<div class="text-xs font-medium">图谱冻结 (W-08)</div>
+</div>
+</div>
+<!-- Milestone 5 -->
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full bg-slate-800 border-4 border-slate-950 flex items-center justify-center z-10">
+<iconify-icon class="text-slate-500 text-xl" icon="ph:export-bold"></iconify-icon>
+</div>
+<div class="mt-4 text-center">
+<div class="text-[10px] font-bold text-slate-500 mb-1">Export</div>
+<div class="text-xs font-medium">Package 导出</div>
+</div>
+</div>
+<!-- Milestone 6 -->
+<div class="flex flex-col items-center">
+<div class="w-12 h-12 rounded-full bg-slate-800 border-4 border-slate-950 flex items-center justify-center z-10">
+<iconify-icon class="text-slate-500 text-xl" icon="ph:rocket-bold"></iconify-icon>
+</div>
+<div class="mt-4 text-center">
+<div class="text-[10px] font-bold text-slate-500 mb-1">D1 DONE</div>
+<div class="text-xs font-medium">正式上线</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Actions -->
+<div class="max-w-6xl mx-auto mt-8 flex justify-center gap-6 pb-20">
+<a class="flex items-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-500/20" href="tenants.html">
+<span>进入 Studio 租户选择 (W-03) →</span>
+</a>
+<a class="flex items-center gap-2 px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold border border-slate-700 transition-all" href="import.html">
+<span>查看 Import 向导 →</span>
+</a>
+</div>
+</div>
+</main>
+</body>
+</html>

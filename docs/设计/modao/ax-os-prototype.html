@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ax OS · 产品原型</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0A0E1A;--paper:rgba(15,22,40,.72);--elev:rgba(20,28,52,.85);--input:rgba(8,14,28,.9);
+      --pri:#00D4FF;--pri-d:#1565C0;--txt:#F0F4FF;--txt2:rgba(240,244,255,.65);--txt3:rgba(240,244,255,.4);
+      --bd:rgba(0,212,255,.25);--ok:#00E676;--warn:#FFB300;--err:#FF5252;--r:12px;
+      --font:Inter,"PingFang SC","Microsoft YaHei",sans-serif;--sw:240px;--th:56px;
+    }
+    body{font-family:var(--font);background:#030508;color:var(--txt);min-height:100vh}
+    a,button{cursor:pointer;font-family:var(--font)}
+    .proto-bar{
+      position:fixed;top:0;left:0;right:0;z-index:10000;height:44px;
+      display:flex;align-items:center;gap:10px;padding:0 16px;
+      background:rgba(0,0,0,.92);border-bottom:1px solid var(--bd);font-size:12px;
+    }
+    .proto-bar .role-btn{padding:5px 12px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--txt2)}
+    .proto-bar .role-btn.on{background:var(--pri-d);color:#fff;border-color:var(--pri)}
+    .proto-bar .flow-label{color:var(--txt3);margin-left:auto}
+    .proto-bar .toast-btn{padding:5px 12px;border-radius:6px;background:rgba(0,212,255,.15);border:1px solid var(--bd);color:var(--pri)}
+    .stage{display:none;padding:52px 16px 16px;justify-content:center;align-items:flex-start;min-height:100vh}
+    .stage.on{display:flex}
+    .frame{width:1440px;height:900px;position:relative;overflow:hidden;background:var(--bg);box-shadow:0 0 0 1px var(--bd)}
+    .frame.m{width:390px;height:844px;border-radius:24px;box-shadow:0 0 0 2px var(--bd),0 20px 60px rgba(0,0,0,.6)}
+    .glass{background:var(--paper);backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:var(--r);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+    .clickable{cursor:pointer;transition:opacity .15s}.clickable:hover{opacity:.85}
+    /* login */
+    .login-wrap{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 75% 50%,rgba(0,212,255,.07),transparent 60%),var(--bg)}
+    .login-grid{position:absolute;inset:0;opacity:.12;background-image:linear-gradient(rgba(0,212,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.08) 1px,transparent 1px);background-size:40px 40px}
+    .login-body{position:relative;z-index:1;display:flex;height:100%;padding:40px 56px;gap:40px;align-items:center}
+    .login-card{width:380px;padding:36px;flex-shrink:0}
+    .logo{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+    .logo-ic{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--pri-d),var(--pri));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;box-shadow:0 0 20px rgba(0,212,255,.4)}
+    .logo h1{font-size:26px}
+    .sub{color:var(--pri);font-size:17px;margin-bottom:4px}
+    .tag{font-size:12px;color:var(--txt2);margin-bottom:2px}
+    .inp{display:flex;align-items:center;gap:8px;background:var(--input);border:1px solid var(--bd);border-radius:8px;padding:0 12px;height:42px;margin-bottom:12px}
+    .inp input{flex:1;background:none;border:none;outline:none;color:var(--txt);font-size:14px}
+    .btn-g{width:100%;height:42px;border:none;border-radius:8px;background:linear-gradient(90deg,var(--pri-d),var(--pri));color:#fff;font-weight:600;font-size:14px;box-shadow:0 4px 16px rgba(0,212,255,.3)}
+    .btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;border:none}
+    .btn-g2{background:linear-gradient(90deg,var(--pri-d),var(--pri));color:#fff}
+    .btn-o{background:transparent;border:1px solid var(--bd);color:var(--txt2)}
+    .btn:disabled{opacity:.35;cursor:not-allowed}
+    .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .hub{position:relative;width:460px;height:340px}
+    .hub-c{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:88px;height:88px;border-radius:50%;background:radial-gradient(circle,var(--pri),var(--pri-d));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;box-shadow:0 0 50px rgba(0,212,255,.5);z-index:2}
+    .hub-r{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:250px;height:250px;border-radius:50%;border:2px solid rgba(0,212,255,.25)}
+    .hub-n{position:absolute;width:64px;height:64px;background:var(--elev);border:1px solid var(--bd);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+    .hub-n.erp{top:0;left:50%;transform:translateX(-50%)}
+    .hub-n.mes{top:50%;right:0;transform:translateY(-50%)}
+    .hub-n.wms{bottom:0;right:22%}
+    .hub-n.plm{bottom:0;left:22%}
+    .hub-n.oa{top:50%;left:0;transform:translateY(-50%)}
+    .tags{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap;justify-content:center}
+    .tag-p{padding:6px 14px;border-radius:16px;font-size:11px;background:rgba(0,212,255,.1);border:1px solid var(--bd);color:var(--pri)}
+    /* shell */
+    .shell{display:flex;height:100%}
+    .side{width:var(--sw);background:rgba(6,10,20,.96);border-right:1px solid var(--bd);padding:14px 0;flex-shrink:0}
+    .side-logo{padding:0 18px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bd);margin-bottom:10px}
+    .side-logo .logo-ic{width:28px;height:28px;font-size:10px}
+    .ng-title{font-size:9px;letter-spacing:.1em;color:var(--txt3);padding:10px 16px 4px;text-transform:uppercase}
+    .ni{display:flex;align-items:center;gap:8px;padding:9px 14px;margin:2px 8px;border-radius:8px;font-size:13px;color:var(--txt2);text-decoration:none;border:none;background:none;width:calc(100% - 16px);text-align:left}
+    .ni.on{background:rgba(0,212,255,.12);color:var(--pri);border:1px solid var(--bd)}
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .top{height:var(--th);display:flex;align-items:center;padding:0 20px;border-bottom:1px solid var(--bd);gap:12px;background:rgba(10,14,26,.85)}
+    .top h2{flex:1;font-size:15px;font-weight:600}
+    .tenant{font-size:12px;padding:5px 10px;border:1px solid var(--bd);border-radius:6px;color:var(--txt2)}
+    .av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--pri-d),var(--pri))}
+    .cnt{flex:1;padding:20px;overflow:auto}
+    .badge{display:inline-flex;padding:3px 9px;border-radius:5px;font-size:10px;font-weight:600}
+    .b-path{background:rgba(0,212,255,.12);color:var(--pri);border:1px solid var(--bd)}
+    .b-ok{background:rgba(0,230,118,.12);color:var(--ok)}
+    .b-warn{background:rgba(255,179,0,.12);color:var(--warn)}
+    .b-err{background:rgba(255,82,82,.12);color:var(--err)}
+    .gates{display:flex;gap:4px;margin-bottom:18px}
+    .gate{flex:1;text-align:center;padding:8px 2px;border-radius:6px;font-size:10px;border:1px solid var(--bd);background:var(--input);color:var(--txt3)}
+    .gate.done{color:var(--ok);border-color:rgba(0,230,118,.3)}
+    .gate.cur{color:var(--pri);border-color:var(--pri);background:rgba(0,212,255,.08);font-weight:600}
+    .warn-bar{background:rgba(255,179,0,.12);border:1px solid rgba(255,179,0,.35);color:var(--warn);padding:9px 14px;border-radius:8px;font-size:12px;margin-bottom:16px}
+    .card{padding:18px;margin-bottom:14px}
+    .card h3{font-size:13px;font-weight:600;margin-bottom:14px}
+    .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+    .kpi .glass{padding:18px}
+    .kpi .v{font-size:26px;font-weight:700;color:var(--pri)}
+    .kpi .l{font-size:11px;color:var(--txt2);margin-top:2px}
+    .row{display:grid;grid-template-columns:130px 1fr;gap:10px;align-items:center;margin-bottom:10px;font-size:13px}
+    .row label{color:var(--txt2)}
+    .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
+    .dot.on{background:var(--ok);box-shadow:0 0 6px var(--ok)}
+    .prog{height:7px;background:var(--input);border-radius:4px;overflow:hidden;margin:6px 0}
+    .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--pri-d),var(--pri))}
+    .trow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:12px}
+    .signs{display:flex;gap:12px;margin-top:12px}
+    .sign{flex:1;padding:14px;border:1px dashed var(--bd);border-radius:8px;font-size:12px}
+    .sign.ok{border-color:var(--ok);border-style:solid;background:rgba(0,230,118,.05)}
+    .gflow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px 0}
+    .gn{padding:8px 12px;border-radius:6px;font-size:11px;background:var(--elev);border:1px solid var(--bd)}
+    .gn.a{border-color:var(--pri);color:var(--pri)}
+    .gn.c{border-color:var(--warn);color:var(--warn)}
+    table{width:100%;border-collapse:collapse;font-size:12px}
+    th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--bd)}
+    th{color:var(--txt3);font-weight:500}
+    /* mobile */
+    .mob{height:100%;display:flex;flex-direction:column;background:var(--bg)}
+    .mob-h{padding:44px 18px 12px;font-size:17px;font-weight:600}
+    .mob-c{margin:12px;padding:22px}
+    .qty{font-size:44px;font-weight:700;color:var(--pri);margin:12px 0}
+    .mob-a{display:flex;gap:10px;margin-top:20px}
+    .mob-a .btn{flex:1;height:46px}
+    .wo-big{padding:20px;margin:12px}
+    .wo-id{font-size:22px;font-weight:700;margin-bottom:4px}
+    .wo-meta{font-size:12px;color:var(--txt2)}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
+    .act{padding:20px;border-radius:var(--r);text-align:center;font-size:13px;background:var(--elev);border:1px solid var(--bd)}
+    .act .ic{font-size:28px;margin-bottom:6px}
+    /* toast */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:20000;display:none;align-items:center;justify-content:center}
+    .overlay.on{display:flex}
+    .modal{max-width:420px;padding:24px;background:var(--elev);border:1px solid var(--bd);border-radius:var(--r)}
+    .modal h4{margin-bottom:8px;color:var(--pri)}
+    .modal p{font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:16px}
+  </style>
+</head>
+<body>
+
+<!-- 原型控制条 -->
+<div class="proto-bar">
+  <span style="color:var(--txt2)">Ax OS 原型</span>
+  <button class="role-btn on" data-jump="L01">实施顾问</button>
+  <button class="role-btn" data-jump="H01">工人</button>
+  <button class="role-btn" data-jump="H08">主管</button>
+  <button class="toast-btn" id="bizBtn">业务流程说明</button>
+  <span class="flow-label" id="flowLabel">路径：D1 接入</span>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h4 id="modalTitle">业务流程</h4>
+    <p id="modalBody"></p>
+    <button class="btn btn-g2" onclick="closeModal()">知道了</button>
+  </div>
+</div>
+
+<!-- ═══ L01 登录 ═══ -->
+<div class="stage on" id="L01" data-name="登录">
+  <div class="frame">
+    <div class="login-wrap"><div class="login-grid"></div>
+      <div class="login-body">
+        <div class="glass login-card">
+          <div class="logo"><div class="logo-ic">AX</div><h1>Ax OS</h1></div>
+          <div class="sub">智能中枢系统</div>
+          <div class="tag">AI 时代 · 全域连接 · 全程可追</div>
+          <div class="tag" style="font-style:italic;color:var(--txt3);margin-bottom:24px">The Axis of Modern Manufacturing</div>
+          <div class="inp"><span>👤</span><input placeholder="企业账号" value="integrator@hasen" /></div>
+          <div class="inp"><span>🔒</span><input type="password" value="••••••" /></div>
+          <div class="inp"><span>🏢</span><input value="hasen-lighthouse" /></div>
+          <button class="btn-g clickable" data-go="L02" data-biz="登录后进入 Ax OS 管理台。单入口 + RBAC 裁剪菜单；实施顾问可见「产业连接」域。">登 录</button>
+          <p style="text-align:center;font-size:10px;color:var(--txt3);margin-top:16px">私有化部署 · 多租户 SaaS</p>
+        </div>
+        <div class="hero">
+          <div class="hub">
+            <div class="hub-r"></div><div class="hub-c">Ax OS</div>
+            <div class="hub-n erp">ERP</div><div class="hub-n mes">MES</div>
+            <div class="hub-n wms">WMS</div><div class="hub-n plm">PLM</div><div class="hub-n oa">OA</div>
+          </div>
+          <div class="tags">
+            <span class="tag-p">打破孤岛</span><span class="tag-p">执行可管</span>
+            <span class="tag-p">决策可追</span><span class="tag-p">AI 降复杂度</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ L02 首页 ═══ -->
+<div class="stage" id="L02" data-name="首页 Dashboard">
+  <div class="frame"><div class="shell">
+    <aside class="side">
+      <div class="side-logo"><div class="logo-ic">AX</div><strong>Ax OS</strong></div>
+      <div class="ng-title">制造全景</div>
+      <button class="ni on clickable" data-go="L02">首页概览</button>
+      <div class="ng-title">产业连接</div>
+      <button class="ni clickable" data-go="S01" data-biz="实施顾问从「产业连接」进入 Integration Studio，完成首家工厂 D1 接入。">Integration Studio</button>
+      <div class="ng-title">运营与合规</div>
+      <button class="ni clickable" data-go="O02">对账与审计</button>
+    </aside>
+    <div class="main">
+      <header class="top"><h2>制造全景 · 首页</h2><span class="tenant">hasen-lighthouse</span><div class="av"></div></header>
+      <div class="cnt">
+        <div class="kpi">
+          <div class="glass"><div class="v">128</div><div class="l">今日报工笔数</div></div>
+          <div class="glass"><div class="v">12</div><div class="l">待班长确认</div></div>
+          <div class="glass"><div class="v" style="color:var(--ok)">0</div><div class="l">对账漂移</div></div>
+          <div class="glass"><div class="v">12</div><div class="l">Shadow 天数</div></div>
+        </div>
+        <div class="glass card">
+          <h3>产业连接状态</h3>
+          <span class="dot on"></span>ERP 金蝶 · 已连通 &nbsp;
+          <span class="dot on"></span>Edge · 在线 &nbsp;
+          <span class="badge b-path">Path A</span>
+          <button class="btn btn-g2 clickable" style="margin-top:14px" data-go="S01">进入 Studio 继续配置 →</button>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══ S01 租户 ═══ -->
+<div class="stage" id="S01" data-name="Studio · 租户">
+  <div class="frame"><div class="shell">
+    <aside class="side"><div class="side-logo"><div class="logo-ic">AX</div><strong>Ax OS</strong></div>
+      <button class="ni on">Studio · 租户</button></aside>
+    <div class="main">
+      <header class="top"><h2>Integration Studio</h2><span class="tenant">hasen-lighthouse</span></header>
+      <div class="cnt">
+        <button class="btn btn-g2 clickable" style="margin-bottom:16px" data-go="S02" data-biz="G-PATH：已裁定 Path A（ERP 写）。租户创建后进入 Connect 连通 Legacy。">+ 配置当前租户</button>
+        <div class="glass card">
+          <table>
+            <tr><th>租户</th><th>Path</th><th>Shadow</th><th>开写</th><th></th></tr>
+            <tr><td>hasen-lighthouse</td><td><span class="badge b-path">A</span></td><td>开启</td><td>未批准</td>
+              <td><button class="btn btn-o clickable" data-go="S02">继续 →</button></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══ S02 Connect ═══ -->
+<div class="stage" id="S02" data-name="Studio · Connect">
+  <div class="frame"><div class="shell">
+    <aside class="side"><div class="side-logo"><div class="logo-ic">AX</div><strong>Ax OS</strong></div>
+      <button class="ni on">① Connect</button></aside>
+    <div class="main">
+      <header class="top"><h2>Studio · ① Connect</h2><span class="badge b-path">Path A</span></header>
+      <div class="cnt">
+        <div class="gates"><div class="gate cur">① Connect</div><div class="gate">② Discover</div><div class="gate">③ Map</div><div class="gate">④ Prove</div><div class="gate">⑤ Freeze</div><div class="gate">⑥ Export</div></div>
+        <div class="glass card">
+          <h3>系统连通 <span style="font-size:11px;color:var(--txt3)">G-CONNECT · 只读/ping，禁止写</span></h3>
+          <div class="row"><label>Pack</label><div class="inp"><input value="conn-erp-kingdee-write" readonly /></div></div>
+          <div class="row"><label>Base URL</label><div class="inp"><input value="https://erp.customer.internal/api" /></div></div>
+          <div class="row"><label>Secrets Ref</label><div class="inp"><input value="vault://hasen/erp" /><span style="font-size:10px;color:var(--txt3)">非明文</span></div></div>
+          <div class="row"><label>Edge</label><span><span class="dot on"></span>edge-01 在线</span></div>
+          <button class="btn btn-g2 clickable" data-go="S03" data-biz="连通成功后进入 Discover：上传 OpenAPI 或选 Blueprint，发现 CMV 标准动词候选。">测试连通 → 下一步</button>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══ S03 Discover ═══ -->
+<div class="stage" id="S03" data-name="Studio · Discover">
+  <div class="frame"><div class="shell">
+    <aside class="side"><div class="side-logo"><div class="logo-ic">AX</div><strong>Ax OS</strong></div>
+      <button class="ni on">② Discover</button></aside>
+    <div class="main">
+      <header class="top"><h2>Studio · ② Discover</h2></header>
+      <div class="cnt">
+        <div class="gates"><div class="gate done">①</div><div class="gate cur">② Discover</div><div class="gate">③</div><div class="gate">④</div><div class="gate">⑤</div><div class="gate">⑥</div></div>
+        <div class="glass card">
+          <h3>CMV 动词候选 <span style="font-size:11px;color:var(--txt3)">G-DISCOVER</span></h3>
+          <table>
+            <tr><th>动词</th><th>级别</th><th>Legacy 操作</th><th>状态</th></tr>
+            <tr><td>QUERY_WO</td><td>L0</td><td>GET 生产订单</td><td><span class="badge b-ok">候选</span></td></tr>
+            <tr><td>WORK_REPORT</td><td>L2</td><td>POST 报工</td><td><span class="badge b-ok">候选</span></td></tr>
+            <tr><td>WORK_REPORT_REVERT</td><td>L2</td><td>POST 撤回</td><td><span class="badge b-ok">候选</span></td></tr>
+          </table>
+          <button class="btn btn-g2 clickable" style="margin-top:14px" data-go="S04" data-biz="Discover 确认动词后进入 Map：DSL 字段 ↔ ERP 字段对齐；AI 建议须人工确认。">确认候选 → Map</button>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══ S04 Map ═══ -->
+<div class="stage" id="S04" data-name="Studio · Map">
+  <div class="frame"><div class="shell">
+    <aside class="side"><div class="side-logo"><div class="logo-ic">AX</div><strong>Ax OS</strong></div>
+      <button class="ni on">③ Map</button></aside>
+    <div class="main">
+      <header class="top"><h2>Studio · ③ Map</h2></header>
+      <div class="cnt">
+        <div class="gates"><div class="gate done">①②</div><div class="gate cur">③ Map</div><div class="gate">④</div><div class="gate">⑤</div><div class="gate">⑥</div></div>
+        <div class="glass card">
+          <h3>字段映射 WORK_REPORT <span style="font-size:11px;color:var(--txt3)">G-MAP</span></h3>
+          <table>
+            <tr><th>DSL 参数</th><th>→</th><th>金蝶字段</th><th>AI 置信度</th></tr>
+            <tr><td>work_order_id</td><td>→</td><td>FBillNo</td><td><span class="badge b-ok">0.96 ✓</span></td></tr>
+            <tr><td>quantity</td><td>→</td><td>FQty</td><td><span class="badge b-ok">0.94 ✓</span></td></tr>
+            <tr><td>reported_by</td><td>→</td><td>FOperator</td><td><span class="badge b-warn">0.78 待确认</span></td></tr>
+          </table>
+          <button class="btn btn-g2 clickable" style="margin-top:14px" data-go="S05" data-biz="Map 完成后进入 Prove：开启 Shadow，L2 写仅模拟；须 Shadow≥14天 + 对账 + 双签才能开生产写。">保存映射 → Prove</button>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══ S05 Prove ═══ -->
+<div class="stage" id="S05" data-name="Studio · Prove">
+  <div class="frame"><div class="shell">
+    <aside class="side"><div class="side-logo"><div class="logo-ic">AX</div><strong>Ax OS</strong></div>
+      <button class="ni on">④ Prove</button></aside>
+    <div class="main">
+      <header class="top"><h2>Studio · ④ Prove</h2></header>
+      <div class="cnt">
+        <div class="gates"><div class="gate done">①②③</div><div class="gate cur">④ Prove</div><div class="gate">⑤</div><div class="gate">⑥</div></div>
+        <div class="warn-bar">⚠ 影子模式 · 所有 L2 写入仅模拟，不写入 ERP</div>
+        <div class="glass card"><h3>Shadow 12 / 14 天</h3><div class="prog"><i style="width:86%"></i></div></div>
+        <div class="glass card"><h3>Contract Test</h3>
+          <div class="trow"><span class="badge b-ok">✓</span> WORK_REPORT mock</div>
+          <div class="trow"><span class="badge b-ok">✓</span> QUERY_WO</div>
+        </div>
+        <div class="glass card"><h3>对账样例</h3><p style="font-size:12px;color:var(--txt2)">状态 <span class="badge b-ok">ok</span> · 24h drift: 0</p></div>
+        <div class="glass card"><h3>开写批准 G-WRITE-APPROVE ❌ 须双签</h3>
+          <div class="signs">
+            <div class="sign clickable" id="sign1" data-biz="admin 签署：批准 tenant 退出 shadow 模式。">租户管理员<br><br>点击签署</div>
+            <div class="sign clickable" id="sign2" data-biz="business_owner 签署：业务侧确认可开生产写。">业务负责人<br><br>点击签署</div>
+          </div>
+          <button class="btn btn-g2" id="approveBtn" disabled style="margin-top:12px">批准生产写（需双签+满14天）</button>
+          <button class="btn btn-o clickable" style="margin-top:8px;margin-left:8px" data-go="S05b" data-biz="演示用：跳过等待，查看双签完成态。">演示：双签完成态 →</button>
+        </div>
+        <button class="btn btn-g2 clickable" data-go="S06" data-biz="Prove 通过后进入 Freeze：Graph 工作坊，业务负责人签字冻结报工链路。" style="margin-top:8px">进入 Freeze →</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- S05b Prove 完成态 -->
+<div class="stage" id="S05b" data-name="Studio · Prove 已批准">
+  <div class="frame"><div class="shell">
+    <aside class="side"><div class="side-logo"><div class="logo-ic">AX</div><strong>Ax OS</strong></div>
+      <button class="ni on">④ Prove ✓</button></aside>
+    <div class="main">
+      <header class="top"><h2>Studio · ④ Prove · 已批准</h2><span class="badge b-ok">write_approved</span></header>
+      <div class="cnt">
+        <div class="glass card" style="border-color:var(--ok)">
+          <h3 style="color:var(--ok)">✓ 生产写已批准</h3>
+          <p style="font-size:12px;color:var(--txt2)">shadow_mode=false · Audit: integration.write_approved</p>
+        </div>
+        <button class="btn btn-g2 clickable" data-go="S06">继续 Freeze →</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══ S06 Freeze ═══ -->
+<div class="stage" id="S06" data-name="Studio · Freeze">
+  <div class="frame"><div class="shell">
+    <aside class="side"><div class="side-logo"><div class="logo-ic">AX</div><strong>Ax OS</strong></div>
+      <button class="ni on">⑤ Freeze</button></aside>
+    <div class="main">
+      <header class="top"><h2>Studio · ⑤ Freeze</h2><span class="badge b-warn">in_review</span></header>
+      <div class="cnt">
+        <div class="gates"><div class="gate done">①～④</div><div class="gate cur">⑤ Freeze</div><div class="gate">⑥</div></div>
+        <div class="glass card">
+          <h3>graph-work-report v0.1.0 <span style="font-size:11px;color:var(--txt3)">G-FREEZE · 业务负责人签字</span></h3>
+          <div class="gflow">
+            <span class="gn">start</span>→<span class="gn">查工单</span>→<span class="gn a">工人输入</span>→<span class="gn c">主管确认</span>→<span class="gn a">写报工</span>→<span class="gn">end</span>
+          </div>
+          <p style="font-size:11px;color:var(--txt3);margin:10px 0">checksum: a3f8c2…</p>
+          <button class="btn btn-g2 clickable" data-go="S06b" data-biz="Freeze 后 Graph 不可原地修改；L2 写必须与 frozen Graph 白名单动词一致。">冻结并签字 →</button>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div class="stage" id="S06b" data-name="Studio · 已冻结">
+  <div class="frame"><div class="shell">
+    <aside class="side"><div class="side-logo"><div class="logo-ic">AX</div><strong>Ax OS</strong></div>
+      <button class="ni on">⑤ Frozen ✓</button></aside>
+    <div class="main">
+      <header class="top"><h2>Graph 已冻结</h2><span class="badge b-ok">frozen</span></header>
+      <div class="cnt">
+        <div class="glass card"><h3 style="color:var(--ok)">✓ GRAPH_FREEZE</h3><p style="font-size:12px;color:var(--txt2)">business_owner 已签字 · v1.0.0</p></div>
+        <button class="btn btn-g2 clickable" data-go="S07">Export 导出 Package →</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══ S07 Export ═══ -->
+<div class="stage" id="S07" data-name="Studio · Export">
+  <div class="frame"><div class="shell">
+    <aside class="side"><div class="side-logo"><div class="logo-ic">AX</div><strong>Ax OS</strong></div>
+      <button class="ni on">⑥ Export</button></aside>
+    <div class="main">
+      <header class="top"><h2>Studio · ⑥ Export</h2><span class="badge b-ok">D1 结案</span></header>
+      <div class="cnt">
+        <div class="gates"><div class="gate done">①～⑤</div><div class="gate cur">⑥ Export</div></div>
+        <div class="glass card">
+          <h3>Implementation Package <span style="font-size:11px;color:var(--txt3)">G-EXPORT</span></h3>
+          <p style="font-size:12px;color:var(--txt2);margin-bottom:12px">含：frozen Graph · RuleSet · Pack 列表 · Overrides（无 secrets）</p>
+          <button class="btn btn-g2 clickable" data-biz="Package 导出后，第二家工厂可走 Import 向导，仍须 Prove + 双签。">下载 Package JSON</button>
+          <button class="btn btn-o clickable" style="margin-left:8px" data-go="H01" data-biz="D1 配置完成。切换到工人视角体验报工闭环：说/扫/拍 → 确认 → 主管批准 → 写 ERP。">→ 体验工人报工</button>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══ O02 对账 ═══ -->
+<div class="stage" id="O02" data-name="运营 · 对账">
+  <div class="frame"><div class="shell">
+    <aside class="side"><div class="side-logo"><div class="logo-ic">AX</div><strong>Ax OS</strong></div>
+      <button class="ni on">对账 Drift</button></aside>
+    <div class="main">
+      <header class="top"><h2>运营与合规 · 对账</h2></header>
+      <div class="cnt">
+        <div class="glass card"><h3>今日对账 <span class="badge b-ok">ok</span></h3>
+          <p style="font-size:12px;color:var(--txt2)">match_key: completed_qty · 0 未解释 drift</p></div>
+        <button class="btn btn-o clickable" data-go="L02">← 返回首页</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══ H01 工人首页 ═══ -->
+<div class="stage" id="H01" data-name="H5 · 工人首页">
+  <div class="frame m">
+    <div class="mob">
+      <div class="mob-h">当前工单</div>
+      <div class="glass wo-big">
+        <div class="wo-id">WO-2024-0881</div>
+        <div class="wo-meta">计划 500 件 · 已完成 380 件 · 线 3</div>
+      </div>
+      <div class="actions">
+        <button class="act clickable" data-go="H02" data-biz="工人 0 智能：只展示当前工单动作，不展示 ERP 菜单树。"><div class="ic">🎤</div>语音报工</button>
+        <button class="act clickable" data-go="H03"><div class="ic">📷</div>扫码</button>
+        <button class="act clickable" data-go="H04"><div class="ic">📸</div>拍照</button>
+        <button class="act clickable" data-go="H06"><div class="ic">⌨️</div>手动输入</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="stage" id="H02" data-name="H5 · 语音">
+  <div class="frame m"><div class="mob">
+    <div class="mob-h">语音报工</div>
+    <div class="glass mob-c" style="text-align:center;padding:40px">
+      <div style="font-size:48px;margin-bottom:16px">🎤</div>
+      <p style="color:var(--txt2);font-size:13px">「报工 120 件」</p>
+      <p style="color:var(--pri);font-size:12px;margin-top:8px">识别置信度 0.92</p>
+      <button class="btn btn-g2 clickable" style="margin-top:24px;width:100%" data-go="H06">生成确认卡 →</button>
+    </div>
+  </div></div>
+</div>
+
+<div class="stage" id="H03" data-name="H5 · 扫码">
+  <div class="frame m"><div class="mob">
+    <div class="mob-h">扫描工单</div>
+    <div class="glass mob-c" style="text-align:center;padding:60px 20px">
+      <div style="font-size:64px;margin-bottom:12px">▣</div>
+      <p style="font-size:13px;color:var(--txt2)">WO-2024-0881 已识别</p>
+      <button class="btn btn-g2 clickable" style="margin-top:20px;width:100%" data-go="H06">下一步 →</button>
+    </div>
+  </div></div>
+</div>
+
+<div class="stage" id="H04" data-name="H5 · 拍照">
+  <div class="frame m"><div class="mob">
+    <div class="mob-h">拍照识数</div>
+    <div class="glass mob-c">
+      <p style="font-size:12px;color:var(--txt2)">VLM 建议数量（须点确认，不可静默执行）</p>
+      <div class="qty">118 <span style="font-size:16px;color:var(--txt2)">件</span></div>
+      <button class="btn btn-g2 clickable" style="width:100%" data-go="H06">使用建议 →</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══ H06 确认卡 ═══ -->
+<div class="stage" id="H06" data-name="H5 · 确认卡">
+  <div class="frame m"><div class="mob">
+    <div class="mob-h">确认报工</div>
+    <div class="glass mob-c">
+      <p style="font-size:12px;color:var(--txt2)">工单 WO-2024-0881</p>
+      <div class="qty">120 <span style="font-size:18px;color:var(--txt2)">件</span></div>
+      <p style="font-size:12px;color:var(--txt2)">24 小时内可撤回</p>
+      <p style="font-size:11px;color:var(--txt3);margin-top:8px">🎤 语音 · 置信 0.92</p>
+      <div class="mob-a">
+        <button class="btn btn-o clickable" data-go="H01">取消</button>
+        <button class="btn btn-g2 clickable" data-go="H07" data-biz="Harness 确认门：工人确认后仅产生待办，尚未写 ERP；须主管二次确认。">确认提交</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div class="stage" id="H07" data-name="H5 · 待确认">
+  <div class="frame m"><div class="mob">
+    <div class="mob-h" style="color:var(--ok)">✓ 已提交</div>
+    <div class="glass mob-c" style="text-align:center">
+      <p style="font-size:15px;margin-bottom:8px">待班长确认</p>
+      <p style="font-size:12px;color:var(--txt2)">主管将收到 IM 待办</p>
+      <button class="btn btn-o clickable" style="margin-top:20px" data-go="H08" data-biz="切换到主管视角：IM 待办 → 确认 → Rule 评估 → Execution 写 ERP。">切换主管视角 →</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══ H08 主管待办 ═══ -->
+<div class="stage" id="H08" data-name="H5 · 主管待办">
+  <div class="frame m"><div class="mob">
+    <div class="mob-h">待确认报工 (3)</div>
+    <div class="glass mob-c clickable" data-go="H09" style="margin-bottom:10px">
+      <p style="font-weight:600">WO-2024-0881</p>
+      <p style="font-size:13px;color:var(--txt2)">张三 · 120 件 · 刚刚</p>
+    </div>
+    <div class="glass mob-c" style="opacity:.5"><p>WO-2024-0879 · 80 件</p></div>
+  </div></div>
+</div>
+
+<div class="stage" id="H09" data-name="H5 · 主管确认">
+  <div class="frame m"><div class="mob">
+    <div class="mob-h">确认报工</div>
+    <div class="glass mob-c">
+      <p style="font-size:12px;color:var(--txt2)">工人 张三 · WO-2024-0881</p>
+      <div class="qty">120 <span style="font-size:18px;color:var(--txt2)">件</span></div>
+      <p style="font-size:11px;color:var(--txt3)">确认后将写入 ERP（Path A）</p>
+      <div class="mob-a">
+        <button class="btn btn-o clickable" data-go="H08">拒绝</button>
+        <button class="btn btn-g2 clickable" data-go="H10" data-biz="主管确认 → Rule allow → Execution → Connector → ERP。全链路 Audit；可对账 read-back。">批准写入</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div class="stage" id="H10" data-name="H5 · 完成">
+  <div class="frame m"><div class="mob">
+    <div class="mob-h" style="color:var(--ok)">✓ 报工完成</div>
+    <div class="glass mob-c" style="text-align:center">
+      <p style="font-size:14px;margin-bottom:6px">已写入 ERP</p>
+      <p style="font-size:11px;color:var(--txt3)">exec_id: ex-8f3a… · Audit 已记录</p>
+      <button class="btn btn-o clickable" style="margin-top:16px" data-go="L02">← 返回管理台</button>
+    </div>
+  </div></div>
+</div>
+
+<script>
+  const BIZ = {
+    overview: `【Ax OS 两条主路径】\n\n① D1 接入（实施顾问）\n准入→Path→Connect→Discover→Map→Prove(Shadow+双签)→Freeze→Export\n\n② 报工闭环（工人+主管）\n感知输入→确认卡→主管批准→Rule→Execution→ERP→Audit\n\n核心：写路径唯一；Graph 须冻结；Shadow≥14天；人机分治。`
+  };
+  let signs = 0;
+  function go(id) {
+    document.querySelectorAll('.stage').forEach(s => s.classList.remove('on'));
+    const el = document.getElementById(id);
+    if (el) { el.classList.add('on'); updateFlow(id); }
+  }
+  function updateFlow(id) {
+    const label = document.getElementById('flowLabel');
+    const d1 = ['L01','L02','S01','S02','S03','S04','S05','S05b','S06','S06b','S07'];
+    const wr = ['H01','H02','H03','H04','H06','H07','H08','H09','H10'];
+    if (d1.includes(id)) label.textContent = '路径：D1 接入 · ' + (document.getElementById(id)?.dataset.name || id);
+    else if (wr.includes(id)) label.textContent = '路径：报工闭环 · ' + (document.getElementById(id)?.dataset.name || id);
+    else label.textContent = '路径：' + (document.getElementById(id)?.dataset.name || id);
+    document.querySelectorAll('.role-btn').forEach(b => b.classList.toggle('on', b.dataset.jump === id || (b.dataset.jump==='L01'&&d1.includes(id)) || (b.dataset.jump==='H01'&&wr.includes(id)&&id!=='H08'&&id!=='H09'&&id!=='H10') || (b.dataset.jump==='H08'&&['H08','H09','H10'].includes(id))));
+  }
+  function showModal(title, body) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalBody').textContent = body;
+    document.getElementById('overlay').classList.add('on');
+  }
+  function closeModal() { document.getElementById('overlay').classList.remove('on'); }
+  document.getElementById('bizBtn').onclick = () => showModal('业务流程总览', BIZ.overview);
+  document.body.addEventListener('click', e => {
+    const t = e.target.closest('[data-go]');
+    if (t) { if (t.dataset.biz) showModal('业务说明', t.dataset.biz); go(t.dataset.go); return; }
+    const b = e.target.closest('[data-biz]');
+    if (b && b.dataset.biz && !b.dataset.go) showModal('业务说明', b.dataset.biz);
+    const j = e.target.closest('[data-jump]');
+    if (j) go(j.dataset.jump);
+  });
+  document.getElementById('sign1')?.addEventListener('click', function(){ this.classList.add('ok'); this.innerHTML='租户管理员<br><br><span style="color:var(--ok)">✓ 已签署</span>'; signs++; if(signs>=2) document.getElementById('approveBtn').disabled=false; });
+  document.getElementById('sign2')?.addEventListener('click', function(){ this.classList.add('ok'); this.innerHTML='业务负责人<br><br><span style="color:var(--ok)">✓ 已签署</span>'; signs++; if(signs>=2) document.getElementById('approveBtn').disabled=false; });
+  document.getElementById('approveBtn')?.addEventListener('click', function(){ if(!this.disabled) go('S05b'); });
+</script>
+</body>
+</html>

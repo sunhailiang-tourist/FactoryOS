@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · 智能中枢系统</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .sidebar-item-active { background-color: #1e293b; border-left: 4px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(51, 65, 85, 0.5); }
+        .tenant-card:hover { transform: translateY(-2px); transition: all 0.3s ease; }
+    </style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- 侧边栏 -->
+<aside class="w-64 glass-card flex flex-col flex-none">
+<div class="p-6 border-b border-slate-700">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-3xl text-blue-500" icon="ph:factory-bold"></iconify-icon>
+<div class="flex flex-col">
+<span class="text-xl font-bold tracking-tight leading-none">Ax OS</span>
+<span class="text-[10px] text-blue-400 font-medium tracking-tighter uppercase mt-1">智能中枢系统</span>
+</div>
+</div>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="strategy.html">
+<iconify-icon icon="ph:grid-four-bold"></iconify-icon>
+<span>制造全景</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="integration.html">
+<iconify-icon icon="ph:plug-bold"></iconify-icon>
+<span>产业连接</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="business.html">
+<iconify-icon icon="ph:package-bold"></iconify-icon>
+<span>资产与复制</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="workflow.html">
+<iconify-icon icon="ph:shield-check-bold"></iconify-icon>
+<span>运营与合规</span>
+</a>
+<a class="sidebar-item-active flex items-center gap-3 px-6 py-3 transition-colors" href="tenants.html">
+<iconify-icon icon="ph:cpu-bold"></iconify-icon>
+<span>平台治理</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+<div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold text-white">A</div>
+<div class="flex-1 overflow-hidden text-xs">
+<p class="font-medium truncate text-white">Ax OS</p>
+<p class="text-slate-500 truncate">v1.0.0</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="flex-1 overflow-hidden flex flex-col bg-[#020617]">
+<!-- Header -->
+<header class="h-16 flex items-center justify-between px-8 border-b border-slate-800 bg-slate-900/30 flex-none">
+<div class="flex items-center gap-4">
+<h1 class="text-lg font-bold text-white">Ax OS · 平台治理 — 租户管理</h1>
+<span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold uppercase">Multitenancy</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative">
+<iconify-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" icon="ph:magnifying-glass-bold"></iconify-icon>
+<input class="bg-slate-900 border border-slate-700 rounded-lg py-1.5 pl-9 pr-4 text-sm focus:outline-none focus:border-blue-500 transition-colors w-64" placeholder="搜索租户..." type="text"/>
+</div>
+<button class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold px-4 py-1.5 rounded-lg transition-colors flex items-center gap-2">
+<iconify-icon icon="ph:plus-bold"></iconify-icon>
+<span>新增租户</span>
+</button>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-8">
+<!-- W-03 Studio 租户选择 -->
+<div class="glass-card rounded-2xl p-6 mb-8 border border-cyan-500/20 bg-cyan-500/5">
+<div class="flex items-center justify-between mb-4">
+<div>
+<h2 class="text-lg font-bold text-white flex items-center gap-2">
+<iconify-icon class="text-cyan-400" icon="ph:wrench-bold"></iconify-icon>
+                        Integration Studio · 租户选择
+                    </h2>
+<p class="text-xs text-slate-400 mt-1">W-03 — 选择租户进入 Studio 六步主路径（Connect → Export）</p>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">STU-001</span>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<a class="p-4 rounded-xl bg-slate-900 border-2 border-cyan-500/40 hover:border-cyan-400 transition-all group" href="studio.html">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-xl bg-cyan-600 flex items-center justify-center font-bold text-white">H</div>
+<div>
+<p class="font-bold text-white group-hover:text-cyan-300">哈森制造</p>
+<p class="text-[10px] text-slate-500 font-mono">T-001 · Path A · Pool</p>
+</div>
+</div>
+<p class="text-[10px] text-cyan-400 font-bold">→ 进入 Studio Connect</p>
+</a>
+<div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800 opacity-60">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center font-bold text-slate-500">X</div>
+<div>
+<p class="font-bold text-slate-400">先锋电子</p>
+<p class="text-[10px] text-slate-600 font-mono">T-002 · 接入中</p>
+</div>
+</div>
+<p class="text-[10px] text-slate-600">完成 Connect 后可选</p>
+</div>
+<div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800 opacity-60">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center font-bold text-slate-500">M</div>
+<div>
+<p class="font-bold text-slate-400">明光机械</p>
+<p class="text-[10px] text-slate-600 font-mono">T-003 · Path C</p>
+</div>
+</div>
+<p class="text-[10px] text-slate-600">Import 复制租户</p>
+</div>
+</div>
+</div>
+<!-- SaaS 平台治理 -->
+<h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">平台治理 · 全量租户</h2>
+<div class="grid grid-cols-4 gap-6 mb-8">
+<div class="glass-card p-4 rounded-xl border-l-4 border-l-blue-500">
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">总租户数</p>
+<h3 class="text-2xl font-bold">128</h3>
+</div>
+<div class="glass-card p-4 rounded-xl border-l-4 border-l-emerald-500">
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">运行中</p>
+<h3 class="text-2xl font-bold">124</h3>
+</div>
+<div class="glass-card p-4 rounded-xl border-l-4 border-l-amber-500">
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">接入中</p>
+<h3 class="text-2xl font-bold">4</h3>
+</div>
+<div class="glass-card p-4 rounded-xl border-l-4 border-l-rose-500">
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">告警租户</p>
+<h3 class="text-2xl font-bold">0</h3>
+</div>
+</div>
+<!-- 租户列表表格 -->
+<div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-slate-800/50 border-b border-slate-700">
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">租户ID</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">名称</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">类型</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Path</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">部署模式</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">状态</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">创建时间</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800">
+<tr class="hover:bg-slate-800/30 transition-colors cursor-pointer" onclick="showDetail('T-001')">
+<td class="px-6 py-4 font-mono text-sm text-blue-400">T-001</td>
+<td class="px-6 py-4 font-bold text-white">哈森制造</td>
+<td class="px-6 py-4 text-sm text-slate-400">灯塔</td>
+<td class="px-6 py-4 text-sm text-slate-400 font-mono text-amber-500">Path A</td>
+<td class="px-6 py-4 text-sm text-slate-400">Pool</td>
+<td class="px-6 py-4 text-sm">
+<span class="flex items-center gap-1.5 text-emerald-400 font-bold">
+<span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)] animate-pulse"></span>
+                                    运行中
+                                </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-400">2026-07</td>
+<td class="px-6 py-4">
+<a class="text-cyan-400 hover:text-cyan-300 text-xs font-bold underline" href="studio.html" onclick="event.stopPropagation()">进入 Studio</a>
+</td>
+</tr>
+<tr class="hover:bg-slate-800/30 transition-colors cursor-pointer" onclick="showDetail('T-002')">
+<td class="px-6 py-4 font-mono text-sm text-blue-400">T-002</td>
+<td class="px-6 py-4 font-bold text-white">先锋电子</td>
+<td class="px-6 py-4 text-sm text-slate-400">标准</td>
+<td class="px-6 py-4 text-sm text-slate-400 font-mono text-blue-400">Path B</td>
+<td class="px-6 py-4 text-sm text-slate-400">Bridge</td>
+<td class="px-6 py-4 text-sm">
+<span class="flex items-center gap-1.5 text-amber-400 font-bold">
+<span class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(fb,bf,24,0.5)]"></span>
+                                    接入中
+                                </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-400">2026-08</td>
+<td class="px-6 py-4">
+<button class="text-blue-400 hover:text-blue-300 text-xs font-bold underline">查看</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-800/30 transition-colors cursor-pointer" onclick="showDetail('T-003')">
+<td class="px-6 py-4 font-mono text-sm text-blue-400">T-003</td>
+<td class="px-6 py-4 font-bold text-white">明光机械</td>
+<td class="px-6 py-4 text-sm text-slate-400">Lite</td>
+<td class="px-6 py-4 text-sm text-slate-400 font-mono text-purple-400">Path C</td>
+<td class="px-6 py-4 text-sm text-slate-400">Silo</td>
+<td class="px-6 py-4 text-sm">
+<span class="flex items-center gap-1.5 text-emerald-400 font-bold">
+<span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+                                    运行中
+                                </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-400">2026-09</td>
+<td class="px-6 py-4">
+<button class="text-blue-400 hover:text-blue-300 text-xs font-bold underline">查看</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- 租户详情 Modal (模拟) -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" id="detailModal">
+<div class="glass-card w-full max-w-2xl rounded-3xl border border-slate-700 shadow-2xl overflow-hidden">
+<div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-800/30">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-xl font-bold text-white shadow-lg shadow-blue-500/20" id="detailIcon">H</div>
+<div>
+<h2 class="text-xl font-bold text-white" id="detailTitle">哈森制造 (T-001)</h2>
+<p class="text-xs text-slate-500">创建于 2026-07-13 14:20:00</p>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full hover:bg-slate-800 flex items-center justify-center transition-colors" onclick="hideDetail()">
+<iconify-icon class="text-xl text-slate-400" icon="ph:x-bold"></iconify-icon>
+</button>
+</div>
+<div class="p-8 space-y-8">
+<!-- 基本信息 -->
+<div class="grid grid-cols-3 gap-6">
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Path 类型</p>
+<p class="text-sm font-mono text-amber-500">Path A (Overlay ERP)</p>
+</div>
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">部署模式</p>
+<p class="text-sm">Pool (共享集群)</p>
+</div>
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">运行状态</p>
+<p class="text-sm text-emerald-400 font-bold">🟢 Active</p>
+</div>
+</div>
+<!-- 接入配置 -->
+<div class="space-y-3">
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+<iconify-icon icon="ph:plug-bold"></iconify-icon>
+                        接入配置 (Connector Instances)
+                    </h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-slate-900/80 rounded-xl p-3 border border-slate-800">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-bold">Kingdee Cloud ERP</span>
+<span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-1.5 rounded uppercase font-bold">Read/Write</span>
+</div>
+<p class="text-[10px] text-slate-500 font-mono">ID: conn_hsn_001 · v1.2.4</p>
+</div>
+<div class="bg-slate-900/80 rounded-xl p-3 border border-slate-800">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-bold">DingTalk Gateway</span>
+<span class="text-[10px] bg-blue-500/10 text-blue-400 px-1.5 rounded uppercase font-bold">Event</span>
+</div>
+<p class="text-[10px] text-slate-500 font-mono">ID: conn_hsn_dt · v2.0.1</p>
+</div>
+</div>
+</div>
+<!-- License 授权 -->
+<div class="space-y-3">
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+<iconify-icon icon="ph:key-bold"></iconify-icon>
+                        已购 Pack 列表
+                    </h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full text-xs text-blue-400">Foundation Pack</span>
+<span class="px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-full text-xs text-purple-400">Textile industry pack</span>
+<span class="px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs text-emerald-400">Audit &amp; Revert Plus</span>
+<span class="px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full text-xs text-amber-400">ERP Writing Connector</span>
+</div>
+</div>
+<!-- 运行指标 -->
+<div class="grid grid-cols-2 gap-6 p-4 bg-slate-900 rounded-2xl border border-slate-800">
+<div class="text-center">
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Shadow 对账率</p>
+<p class="text-xl font-mono font-bold text-emerald-400">99.98%</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-slate-500 uppercase font-bold mb-1">未结 Drift 告警</p>
+<p class="text-xl font-mono font-bold text-emerald-400">0</p>
+</div>
+</div>
+</div>
+<div class="p-6 border-t border-slate-800 flex justify-end gap-3 bg-slate-800/30">
+<button class="px-6 py-2 rounded-xl text-sm font-bold border border-slate-700 hover:bg-slate-800 transition-colors" onclick="hideDetail()">关闭</button>
+<button class="px-6 py-2 rounded-xl text-sm font-bold bg-cyan-600 hover:bg-cyan-500 text-white transition-colors" onclick="window.location.href='studio.html'">进入 Studio 配置</button>
+</div>
+</div>
+</div>
+<script>
+        function showDetail(id) {
+            const modal = document.getElementById('detailModal');
+            const title = document.getElementById('detailTitle');
+            const icon = document.getElementById('detailIcon');
+            
+            if (id === 'T-001') {
+                title.innerText = '哈森制造 (T-001)';
+                icon.innerText = 'H';
+            } else if (id === 'T-002') {
+                title.innerText = '先锋电子 (T-002)';
+                icon.innerText = 'X';
+            } else if (id === 'T-003') {
+                title.innerText = '明光机械 (T-003)';
+                icon.innerText = 'M';
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function hideDetail() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        // 点击背景关闭
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) hideDetail();
+        });
+    </script>
+</body>
+</html>

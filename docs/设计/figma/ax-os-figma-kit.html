@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ax OS · Figma Kit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ax-bg: #0A0E1A;
+      --ax-paper: rgba(15, 22, 40, 0.72);
+      --ax-elevated: rgba(20, 28, 52, 0.85);
+      --ax-input: rgba(8, 14, 28, 0.9);
+      --ax-primary: #00D4FF;
+      --ax-primary-deep: #1565C0;
+      --ax-text: #F0F4FF;
+      --ax-text-2: rgba(240, 244, 255, 0.65);
+      --ax-text-3: rgba(240, 244, 255, 0.4);
+      --ax-border: rgba(0, 212, 255, 0.25);
+      --ax-glow: rgba(0, 212, 255, 0.5);
+      --ax-success: #00E676;
+      --ax-warning: #FFB300;
+      --ax-error: #FF5252;
+      --ax-radius: 12px;
+      --ax-font: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+      --sidebar-w: 240px;
+      --topbar-h: 56px;
+    }
+    body {
+      font-family: var(--ax-font);
+      background: #050810;
+      color: var(--ax-text);
+      min-height: 100vh;
+    }
+    /* ── Kit 导航（导入 Figma 时可裁掉） ── */
+    .kit-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+      display: flex; gap: 8px; padding: 8px 16px;
+      background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--ax-border);
+      flex-wrap: wrap;
+    }
+    .kit-nav button {
+      padding: 6px 14px; border-radius: 6px; border: 1px solid var(--ax-border);
+      background: transparent; color: var(--ax-text-2); font-size: 12px; cursor: pointer;
+      font-family: var(--ax-font);
+    }
+    .kit-nav button.active { background: var(--ax-primary-deep); color: #fff; border-color: var(--ax-primary); }
+    .kit-hint {
+      font-size: 11px; color: var(--ax-text-3); align-self: center; margin-left: auto;
+    }
+    /* ── 屏幕容器 ── */
+    .screen { display: none; padding-top: 48px; justify-content: center; }
+    .screen.active { display: flex; }
+    .frame {
+      width: 1440px; height: 900px; position: relative; overflow: hidden;
+      background: var(--ax-bg);
+      box-shadow: 0 0 0 1px var(--ax-border);
+    }
+    .frame-mobile { width: 390px; height: 844px; }
+    /* ── 玻璃卡片 ── */
+    .glass {
+      background: var(--ax-paper);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--ax-border);
+      border-radius: var(--ax-radius);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 40px rgba(0,212,255,0.08);
+    }
+    /* ── L01 登录 ── */
+    .login-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 50%, rgba(0,212,255,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(21,101,192,0.15) 0%, transparent 50%),
+        var(--ax-bg);
+    }
+    .login-grid {
+      position: absolute; inset: 0; opacity: 0.15;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.1) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .login-layout {
+      position: relative; z-index: 1;
+      display: flex; height: 100%; padding: 48px 64px; gap: 48px; align-items: center;
+    }
+    .login-form-panel { width: 400px; flex-shrink: 0; padding: 40px; }
+    .logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .logo-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--ax-primary-deep), var(--ax-primary));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 18px; color: #fff;
+      box-shadow: 0 0 24px rgba(0,212,255,0.4);
+    }
+    .brand-title { font-size: 28px; font-weight: 700; }
+    .brand-sub { font-size: 18px; color: var(--ax-primary); margin-bottom: 4px; }
+    .brand-tag { font-size: 13px; color: var(--ax-text-2); margin-bottom: 4px; }
+    .brand-en { font-size: 12px; color: var(--ax-text-3); font-style: italic; margin-bottom: 32px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 12px; color: var(--ax-text-2); margin-bottom: 6px; }
+    .input-wrap {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--ax-input); border: 1px solid var(--ax-border);
+      border-radius: 8px; padding: 0 14px; height: 44px;
+    }
+    .input-wrap input {
+      flex: 1; background: none; border: none; outline: none;
+      color: var(--ax-text); font-size: 14px; font-family: var(--ax-font);
+    }
+    .input-wrap input::placeholder { color: var(--ax-text-3); }
+    .btn-primary {
+      width: 100%; height: 44px; margin-top: 8px;
+      background: linear-gradient(90deg, var(--ax-primary-deep), var(--ax-primary));
+      border: none; border-radius: 8px; color: #fff;
+      font-size: 15px; font-weight: 600; cursor: pointer; font-family: var(--ax-font);
+      box-shadow: 0 4px 20px rgba(0,212,255,0.35);
+    }
+    .login-footer { margin-top: 24px; font-size: 11px; color: var(--ax-text-3); text-align: center; }
+    .hero-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+    .hub-diagram { position: relative; width: 520px; height: 400px; }
+    .hub-center {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: 100px; height: 100px; border-radius: 50%;
+      background: radial-gradient(circle, var(--ax-primary) 0%, var(--ax-primary-deep) 70%);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px; color: #fff;
+      box-shadow: 0 0 60px rgba(0,212,255,0.6);
+      z-index: 2;
+    }
+    .hub-ring {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: 280px; height: 280px; border-radius: 50%;
+      border: 2px solid rgba(0,212,255,0.3);
+      box-shadow: 0 0 30px rgba(0,212,255,0.2);
+    }
+    .hub-node {
+      position: absolute; width: 72px; height: 72px;
+      background: var(--ax-elevated); border: 1px solid var(--ax-border);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; color: var(--ax-text);
+      box-shadow: var(--ax-glow) 0 0 15px;
+    }
+    .hub-node.erp { top: 0; left: 50%; transform: translateX(-50%); }
+    .hub-node.mes { top: 50%; right: 0; transform: translateY(-50%); }
+    .hub-node.wms { bottom: 0; right: 25%; }
+    .hub-node.plm { bottom: 0; left: 25%; }
+    .hub-node.oa { top: 50%; left: 0; transform: translateY(-50%); }
+    .hub-line {
+      position: absolute; background: linear-gradient(90deg, transparent, var(--ax-primary), transparent);
+      height: 2px; opacity: 0.6;
+    }
+    .outcome-tags { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; justify-content: center; }
+    .outcome-tag {
+      padding: 8px 16px; border-radius: 20px; font-size: 12px;
+      background: rgba(0,212,255,0.1); border: 1px solid var(--ax-border); color: var(--ax-primary);
+    }
+    /* ── 主布局 Shell ── */
+    .shell { display: flex; height: 100%; }
+    .sidebar {
+      width: var(--sidebar-w); background: rgba(8,12,24,0.95);
+      border-right: 1px solid var(--ax-border); display: flex; flex-direction: column;
+      padding: 16px 0;
+    }
+    .sidebar-logo { padding: 0 20px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--ax-border); margin-bottom: 12px; }
+    .sidebar-logo .logo-icon { width: 32px; height: 32px; font-size: 12px; }
+    .sidebar-logo span { font-weight: 700; font-size: 16px; }
+    .nav-group { padding: 8px 12px; }
+    .nav-group-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ax-text-3); padding: 8px 8px 4px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+      border-radius: 8px; font-size: 14px; color: var(--ax-text-2); cursor: pointer;
+    }
+    .nav-item.active { background: rgba(0,212,255,0.12); color: var(--ax-primary); border: 1px solid var(--ax-border); }
+    .nav-item .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.5; }
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar {
+      height: var(--topbar-h); display: flex; align-items: center; padding: 0 24px;
+      border-bottom: 1px solid var(--ax-border); background: rgba(10,14,26,0.8);
+      gap: 16px;
+    }
+    .topbar-title { font-size: 16px; font-weight: 600; flex: 1; }
+    .topbar-search {
+      width: 240px; height: 36px; background: var(--ax-input); border: 1px solid var(--ax-border);
+      border-radius: 8px; padding: 0 12px; font-size: 13px; color: var(--ax-text-3);
+      display: flex; align-items: center;
+    }
+    .topbar-tenant { font-size: 13px; color: var(--ax-text-2); padding: 6px 12px; border: 1px solid var(--ax-border); border-radius: 8px; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--ax-primary-deep), var(--ax-primary)); }
+    .content { flex: 1; padding: 24px; overflow: auto; }
+    /* ── 通用组件 ── */
+    .badge { display: inline-flex; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .badge-path { background: rgba(0,212,255,0.15); color: var(--ax-primary); border: 1px solid var(--ax-border); }
+    .badge-success { background: rgba(0,230,118,0.15); color: var(--ax-success); }
+    .badge-warning { background: rgba(255,179,0,0.15); color: var(--ax-warning); }
+    .badge-error { background: rgba(255,82,82,0.15); color: var(--ax-error); }
+    .shadow-bar {
+      background: rgba(255,179,0,0.15); border: 1px solid rgba(255,179,0,0.4);
+      color: var(--ax-warning); padding: 10px 16px; border-radius: 8px; font-size: 13px;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+    }
+    .gate-progress { display: flex; gap: 4px; margin-bottom: 24px; }
+    .gate-step {
+      flex: 1; text-align: center; padding: 10px 4px; border-radius: 8px;
+      font-size: 11px; color: var(--ax-text-3); border: 1px solid var(--ax-border);
+      background: var(--ax-input);
+    }
+    .gate-step.done { color: var(--ax-success); border-color: rgba(0,230,118,0.3); }
+    .gate-step.current { color: var(--ax-primary); border-color: var(--ax-primary); background: rgba(0,212,255,0.1); font-weight: 600; }
+    .card { padding: 20px; margin-bottom: 16px; }
+    .card-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--ax-text); }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .kpi-card { padding: 20px; }
+    .kpi-value { font-size: 28px; font-weight: 700; color: var(--ax-primary); }
+    .kpi-label { font-size: 12px; color: var(--ax-text-2); margin-top: 4px; }
+    .form-row { display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: center; margin-bottom: 12px; }
+    .form-label { font-size: 13px; color: var(--ax-text-2); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .status-dot.online { background: var(--ax-success); box-shadow: 0 0 8px var(--ax-success); }
+    .progress-bar { height: 8px; background: var(--ax-input); border-radius: 4px; overflow: hidden; margin: 8px 0; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--ax-primary-deep), var(--ax-primary)); border-radius: 4px; }
+    .test-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--ax-border); font-size: 13px; }
+    .test-row:last-child { border-bottom: none; }
+    .sign-row { display: flex; gap: 16px; margin-top: 16px; }
+    .sign-box { flex: 1; padding: 16px; border: 1px dashed var(--ax-border); border-radius: 8px; }
+    .sign-box.checked { border-color: var(--ax-success); border-style: solid; background: rgba(0,230,118,0.05); }
+    .btn { padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; font-family: var(--ax-font); }
+    .btn-gradient { background: linear-gradient(90deg, var(--ax-primary-deep), var(--ax-primary)); color: #fff; }
+    .btn-ghost { background: transparent; border: 1px solid var(--ax-border); color: var(--ax-text-2); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .graph-flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 16px 0; }
+    .graph-node {
+      padding: 10px 16px; border-radius: 8px; font-size: 12px;
+      background: var(--ax-elevated); border: 1px solid var(--ax-border);
+    }
+    .graph-node.action { border-color: var(--ax-primary); color: var(--ax-primary); }
+    .graph-node.confirm { border-color: var(--ax-warning); color: var(--ax-warning); }
+    .graph-arrow { color: var(--ax-text-3); font-size: 16px; }
+    /* ── H06 移动端 ── */
+    .mobile-shell { height: 100%; background: var(--ax-bg); display: flex; flex-direction: column; }
+    .mobile-header { padding: 48px 20px 16px; font-size: 18px; font-weight: 600; }
+    .confirm-card { margin: 16px; padding: 24px; }
+    .confirm-wo { font-size: 13px; color: var(--ax-text-2); margin-bottom: 8px; }
+    .confirm-qty { font-size: 48px; font-weight: 700; color: var(--ax-primary); margin: 16px 0; }
+    .confirm-meta { font-size: 12px; color: var(--ax-text-2); margin-bottom: 8px; }
+    .confirm-source { font-size: 12px; color: var(--ax-text-3); margin-bottom: 24px; }
+    .mobile-actions { display: flex; gap: 12px; }
+    .mobile-actions .btn { flex: 1; height: 48px; }
+  </style>
+</head>
+<body>
+
+  <!-- Kit 导航：导入 Figma 前可隐藏此栏 -->
+  <nav class="kit-nav" id="kitNav">
+    <button class="active" data-screen="L01">L01 登录</button>
+    <button data-screen="L02">L02 首页</button>
+    <button data-screen="S02">S02 Connect</button>
+    <button data-screen="S05">S05 Prove</button>
+    <button data-screen="S06">S06 Freeze</button>
+    <button data-screen="H06">H06 确认卡</button>
+    <span class="kit-hint">html.to.design 导入 · 1440×900 / 390×844</span>
+  </nav>
+
+  <!-- ══════════ L01 登录 ══════════ -->
+  <div class="screen active" id="L01">
+    <div class="frame" data-figma-name="L01-Login">
+      <div class="login-bg"></div>
+      <div class="login-grid"></div>
+      <div class="login-layout">
+        <div class="glass login-form-panel">
+          <div class="logo-row">
+            <div class="logo-icon">AX</div>
+            <div>
+              <div class="brand-title">Ax OS</div>
+            </div>
+          </div>
+          <div class="brand-sub">智能中枢系统</div>
+          <div class="brand-tag">AI 时代 · 全域连接 · 全程可追</div>
+          <div class="brand-en">The Axis of Modern Manufacturing</div>
+          <div class="field">
+            <div class="input-wrap">
+              <span>👤</span>
+              <input type="text" placeholder="企业账号" value="" />
+            </div>
+          </div>
+          <div class="field">
+            <div class="input-wrap">
+              <span>🔒</span>
+              <input type="password" placeholder="密码" />
+              <span style="color:var(--ax-text-3)">👁</span>
+            </div>
+          </div>
+          <div class="field">
+            <div class="input-wrap">
+              <span>🏢</span>
+              <input type="text" placeholder="租户 ID" value="hasen-lighthouse" />
+            </div>
+          </div>
+          <button class="btn-primary">登 录</button>
+          <div class="login-footer">私有化部署 · 多租户 SaaS</div>
+        </div>
+        <div class="hero-panel">
+          <div class="hub-diagram">
+            <div class="hub-ring"></div>
+            <div class="hub-center">Ax OS</div>
+            <div class="hub-node erp">ERP</div>
+            <div class="hub-node mes">MES</div>
+            <div class="hub-node wms">WMS</div>
+            <div class="hub-node plm">PLM</div>
+            <div class="hub-node oa">OA</div>
+          </div>
+          <div class="outcome-tags">
+            <span class="outcome-tag">打破孤岛</span>
+            <span class="outcome-tag">执行可管</span>
+            <span class="outcome-tag">决策可追</span>
+            <span class="outcome-tag">AI 降复杂度</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ L02 首页 Dashboard ══════════ -->
+  <div class="screen" id="L02">
+    <div class="frame" data-figma-name="L02-Dashboard">
+      <div class="shell">
+        <aside class="sidebar">
+          <div class="sidebar-logo">
+            <div class="logo-icon">AX</div>
+            <span>Ax OS</span>
+          </div>
+          <div class="nav-group">
+            <div class="nav-group-title">制造全景</div>
+            <div class="nav-item active"><span class="dot"></span> 首页概览</div>
+            <div class="nav-item"><span class="dot"></span> 工单看板</div>
+          </div>
+          <div class="nav-group">
+            <div class="nav-group-title">产业连接</div>
+            <div class="nav-item"><span class="dot"></span> Integration Studio</div>
+          </div>
+          <div class="nav-group">
+            <div class="nav-group-title">运营与合规</div>
+            <div class="nav-item"><span class="dot"></span> 对账与审计</div>
+          </div>
+        </aside>
+        <div class="main">
+          <header class="topbar">
+            <div class="topbar-title">制造全景 · 首页</div>
+            <div class="topbar-search">搜索工单、执行记录…</div>
+            <div class="topbar-tenant">hasen-lighthouse</div>
+            <div class="avatar"></div>
+          </header>
+          <div class="content">
+            <div class="kpi-row">
+              <div class="glass kpi-card">
+                <div class="kpi-value">128</div>
+                <div class="kpi-label">今日报工笔数</div>
+              </div>
+              <div class="glass kpi-card">
+                <div class="kpi-value">12</div>
+                <div class="kpi-label">待班长确认</div>
+              </div>
+              <div class="glass kpi-card">
+                <div class="kpi-value" style="color:var(--ax-success)">0</div>
+                <div class="kpi-label">对账漂移</div>
+              </div>
+              <div class="glass kpi-card">
+                <div class="kpi-value">14</div>
+                <div class="kpi-label">Shadow 天数</div>
+              </div>
+            </div>
+            <div class="glass card">
+              <div class="card-title">产业连接状态</div>
+              <div style="display:flex;gap:24px;font-size:13px;color:var(--ax-text-2)">
+                <span><span class="status-dot online"></span>ERP 金蝶 · 已连通</span>
+                <span><span class="status-dot online"></span>Edge Agent · 在线</span>
+                <span class="badge badge-path">Path A</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ S02 Connect ══════════ -->
+  <div class="screen" id="S02">
+    <div class="frame" data-figma-name="S02-Connect">
+      <div class="shell">
+        <aside class="sidebar">
+          <div class="sidebar-logo"><div class="logo-icon">AX</div><span>Ax OS</span></div>
+          <div class="nav-group">
+            <div class="nav-group-title">产业连接</div>
+            <div class="nav-item active"><span class="dot"></span> Studio · Connect</div>
+          </div>
+        </aside>
+        <div class="main">
+          <header class="topbar">
+            <div class="topbar-title">Integration Studio · ① Connect</div>
+            <div class="topbar-tenant">hasen-lighthouse</div>
+            <div class="avatar"></div>
+          </header>
+          <div class="content">
+            <div class="gate-progress">
+              <div class="gate-step current">① Connect</div>
+              <div class="gate-step">② Discover</div>
+              <div class="gate-step">③ Map</div>
+              <div class="gate-step">④ Prove</div>
+              <div class="gate-step">⑤ Freeze</div>
+              <div class="gate-step">⑥ Export</div>
+            </div>
+            <span class="badge badge-path">Path A · ERP 写 + ERP 读</span>
+            <div class="glass card" style="margin-top:16px">
+              <div class="card-title">系统连通配置</div>
+              <div class="form-row"><span class="form-label">Connector Pack</span><div class="input-wrap" style="height:40px"><input value="conn-erp-kingdee-write" readonly /></div></div>
+              <div class="form-row"><span class="form-label">Base URL</span><div class="input-wrap" style="height:40px"><input value="https://erp.customer.internal/api" /></div></div>
+              <div class="form-row"><span class="form-label">Secrets Ref</span><div class="input-wrap" style="height:40px"><input value="vault://hasen/erp-credentials" /><span style="font-size:11px;color:var(--ax-text-3)">非明文</span></div></div>
+              <div class="form-row"><span class="form-label">Edge Agent</span><span style="font-size:13px"><span class="status-dot online"></span>edge-01 · 在线 · 12s 前</span></div>
+              <button class="btn btn-gradient" style="margin-top:16px">测试连通</button>
+            </div>
+            <div class="glass card">
+              <div class="card-title">连通报告</div>
+              <div class="test-row"><span class="badge badge-success">✓</span> health · OK · 45ms</div>
+              <div class="test-row"><span class="badge badge-success">✓</span> QUERY_WO · 128ms</div>
+              <div class="test-row"><span class="badge badge-success">✓</span> WORK_REPORT dry_run · 156ms</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ S05 Prove ══════════ -->
+  <div class="screen" id="S05">
+    <div class="frame" data-figma-name="S05-Prove">
+      <div class="shell">
+        <aside class="sidebar">
+          <div class="sidebar-logo"><div class="logo-icon">AX</div><span>Ax OS</span></div>
+          <div class="nav-group"><div class="nav-item active"><span class="dot"></span> Studio · Prove</div></div>
+        </aside>
+        <div class="main">
+          <header class="topbar">
+            <div class="topbar-title">Integration Studio · ④ Prove</div>
+            <div class="topbar-tenant">hasen-lighthouse</div>
+            <div class="avatar"></div>
+          </header>
+          <div class="content">
+            <div class="gate-progress">
+              <div class="gate-step done">① Connect</div>
+              <div class="gate-step done">② Discover</div>
+              <div class="gate-step done">③ Map</div>
+              <div class="gate-step current">④ Prove</div>
+              <div class="gate-step">⑤ Freeze</div>
+              <div class="gate-step">⑥ Export</div>
+            </div>
+            <div class="shadow-bar">⚠ 影子模式已开启 · 所有 L2 写入仅模拟，不会写入 ERP</div>
+            <div class="glass card">
+              <div class="card-title">Shadow 进度 · 12 / 14 天</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:86%"></div></div>
+            </div>
+            <div class="glass card">
+              <div class="card-title">Contract Test</div>
+              <div class="test-row"><span class="badge badge-success">✓</span> WORK_REPORT mock</div>
+              <div class="test-row"><span class="badge badge-success">✓</span> QUERY_WO</div>
+              <div class="test-row"><span class="badge badge-success">✓</span> WORK_REPORT_REVERT</div>
+            </div>
+            <div class="glass card">
+              <div class="card-title">对账样例</div>
+              <div style="font-size:13px;color:var(--ax-text-2)">状态 <span class="badge badge-success">ok</span> · 匹配键 completed_qty · 24h drift: 0</div>
+            </div>
+            <div class="glass card">
+              <div class="card-title">开写批准（双签 · G-WRITE-APPROVE）</div>
+              <div class="sign-row">
+                <div class="sign-box"><div style="font-size:12px;color:var(--ax-text-2)">租户管理员</div><div style="margin-top:8px;font-size:13px">待签署</div></div>
+                <div class="sign-box"><div style="font-size:12px;color:var(--ax-text-2)">业务负责人</div><div style="margin-top:8px;font-size:13px">待签署</div></div>
+              </div>
+              <button class="btn btn-gradient" disabled style="margin-top:16px">批准生产写（需满 14 天且双签）</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ S06 Freeze ══════════ -->
+  <div class="screen" id="S06">
+    <div class="frame" data-figma-name="S06-Freeze">
+      <div class="shell">
+        <aside class="sidebar">
+          <div class="sidebar-logo"><div class="logo-icon">AX</div><span>Ax OS</span></div>
+          <div class="nav-group"><div class="nav-item active"><span class="dot"></span> Studio · Freeze</div></div>
+        </aside>
+        <div class="main">
+          <header class="topbar">
+            <div class="topbar-title">Integration Studio · ⑤ Freeze</div>
+            <span class="badge badge-warning">in_review</span>
+          </header>
+          <div class="content">
+            <div class="gate-progress">
+              <div class="gate-step done">①～④</div>
+              <div class="gate-step current">⑤ Freeze</div>
+              <div class="gate-step">⑥ Export</div>
+            </div>
+            <div class="glass card">
+              <div class="card-title">graph-work-report v0.1.0</div>
+              <div class="graph-flow">
+                <span class="graph-node">start</span>
+                <span class="graph-arrow">→</span>
+                <span class="graph-node">查工单</span>
+                <span class="graph-arrow">→</span>
+                <span class="graph-node action">工人输入</span>
+                <span class="graph-arrow">→</span>
+                <span class="graph-node confirm">主管确认</span>
+                <span class="graph-arrow">→</span>
+                <span class="graph-node action">写报工</span>
+                <span class="graph-arrow">→</span>
+                <span class="graph-node">end</span>
+              </div>
+              <div style="font-size:12px;color:var(--ax-text-3);margin-top:12px">checksum: a3f8c2… · RuleSet: rs-work-report-01</div>
+              <div style="margin-top:16px;display:flex;gap:12px">
+                <button class="btn btn-ghost">提交审核</button>
+                <button class="btn btn-gradient">冻结并签字</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ H06 工人确认卡 ══════════ -->
+  <div class="screen" id="H06">
+    <div class="frame frame-mobile" data-figma-name="H06-ConfirmCard">
+      <div class="mobile-shell">
+        <div class="mobile-header">确认报工</div>
+        <div class="glass confirm-card">
+          <div class="confirm-wo">工单 WO-2024-0881</div>
+          <div class="confirm-qty">120 <span style="font-size:20px;color:var(--ax-text-2)">件</span></div>
+          <div class="confirm-meta">24 小时内可撤回</div>
+          <div class="confirm-source">🎤 语音输入 · 置信度 0.92</div>
+          <div class="mobile-actions">
+            <button class="btn btn-ghost">取消</button>
+            <button class="btn btn-gradient">确认提交</button>
+          </div>
+        </div>
+        <div style="padding:16px;font-size:13px;color:var(--ax-text-3);text-align:center">提交后待班长确认</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.kit-nav button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.kit-nav button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.screen).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

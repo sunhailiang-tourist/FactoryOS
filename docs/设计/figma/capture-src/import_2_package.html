@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · import · Package</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #e2e8f0; }
+        .sidebar-item-active { background: rgba(59, 130, 246, 0.1); border-right: 3px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .step-active { color: #3b82f6; border-color: #3b82f6; }
+        .step-inactive { color: #64748b; border-color: #334155; }
+    </style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body class="flex h-screen overflow-hidden font-sans antialiased">
+<!-- Sidebar -->
+<aside class="w-64 flex-none border-r border-slate-800 flex flex-col bg-slate-900/50">
+<div class="p-6">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+<iconify-icon class="text-white text-xl" icon="ph:factory-bold"></iconify-icon>
+</div>
+<div>
+<div class="font-bold text-lg leading-none">Ax OS</div>
+<div class="text-[10px] text-blue-400 font-medium tracking-tighter uppercase mt-1">智能中枢系统</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 mt-4 px-3 space-y-1">
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="strategy.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:grid-four-bold"></iconify-icon>
+<span class="font-medium">制造全景</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="integration.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:plug-bold"></iconify-icon>
+<span class="font-medium">产业连接</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl sidebar-item-active transition-colors group" href="business.html">
+<iconify-icon class="text-xl" icon="ph:package-bold"></iconify-icon>
+<span class="font-medium">资产与复制</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="workflow.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:shield-check-bold"></iconify-icon>
+<span class="font-medium">运营与合规</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="tenants.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:cpu-bold"></iconify-icon>
+<span class="font-medium">平台治理</span>
+</a>
+</nav>
+<div class="p-6 border-t border-slate-800 mt-auto">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 overflow-hidden">
+<img alt="Admin Avatar" src="https://modao.cc/agent-py/media/generated_images/2026-06-30/009eb25069a248f28949db06c3781b9f.jpg"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold truncate">系统管理员</p>
+<p class="text-[10px] text-slate-500 uppercase">Enterprise</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-hidden bg-slate-950">
+<header class="h-16 flex items-center justify-between px-8 border-b border-slate-800 bg-slate-900/30">
+<div class="flex items-center space-x-4">
+<h2 class="text-lg font-bold">第二家工厂 Import 向导</h2>
+<span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold">快速复制模式 (Scale-up)</span>
+</div>
+<div class="text-xs text-slate-500">
+                当前向导引导您将现有成熟资产快速导入新客户租户
+            </div>
+</header>
+<div class="flex-1 overflow-y-auto p-8">
+<div class="max-w-5xl mx-auto mb-6 text-center">
+<p class="text-slate-400 italic">“第 2 家起 import 为主、workshop 为差量。相似 D2 直接选用 Pack，不必重复集成。”</p>
+<span class="inline-block mt-2 px-2 py-0.5 rounded text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono font-bold">W-10 Import 向导</span>
+</div>
+<!-- 可点击步骤条 -->
+<div class="max-w-5xl mx-auto mb-8">
+<div class="flex items-center justify-between">
+<button class="step-btn flex flex-col items-center space-y-2 group" onclick="switchStep(1)">
+<div class="w-10 h-10 rounded-full border-2 flex items-center justify-center step-active transition-all" id="step-circle-1">
+<iconify-icon icon="ph:key-bold"></iconify-icon>
+</div>
+<span class="text-[10px] font-bold step-active" id="step-text-1">1. Connect</span>
+</button>
+<div class="flex-1 h-0.5 bg-slate-800 mx-2 mb-5"></div>
+<button class="step-btn flex flex-col items-center space-y-2 group" onclick="switchStep(2)">
+<div class="w-10 h-10 rounded-full border-2 flex items-center justify-center step-inactive transition-all" id="step-circle-2">
+<iconify-icon icon="ph:package-bold"></iconify-icon>
+</div>
+<span class="text-[10px] font-bold step-inactive" id="step-text-2">2. Package</span>
+</button>
+<div class="flex-1 h-0.5 bg-slate-800 mx-2 mb-5"></div>
+<button class="step-btn flex flex-col items-center space-y-2 group" onclick="switchStep(3)">
+<div class="w-10 h-10 rounded-full border-2 flex items-center justify-center step-inactive transition-all" id="step-circle-3">
+<iconify-icon icon="ph:sliders-bold"></iconify-icon>
+</div>
+<span class="text-[10px] font-bold step-inactive" id="step-text-3">3. Override</span>
+</button>
+<div class="flex-1 h-0.5 bg-slate-800 mx-2 mb-5"></div>
+<button class="step-btn flex flex-col items-center space-y-2 group" onclick="switchStep(4)">
+<div class="w-10 h-10 rounded-full border-2 flex items-center justify-center step-inactive transition-all" id="step-circle-4">
+<iconify-icon icon="ph:git-diff-bold"></iconify-icon>
+</div>
+<span class="text-[10px] font-bold step-inactive" id="step-text-4">4. Delta</span>
+</button>
+<div class="flex-1 h-0.5 bg-slate-800 mx-2 mb-5"></div>
+<button class="step-btn flex flex-col items-center space-y-2 group" onclick="switchStep(5)">
+<div class="w-10 h-10 rounded-full border-2 flex items-center justify-center step-inactive transition-all" id="step-circle-5">
+<iconify-icon icon="ph:signature-bold"></iconify-icon>
+</div>
+<span class="text-[10px] font-bold step-inactive" id="step-text-5">5. Prove</span>
+</button>
+<div class="flex-1 h-0.5 bg-slate-800 mx-2 mb-5"></div>
+<button class="step-btn flex flex-col items-center space-y-2 group" onclick="switchStep(6)">
+<div class="w-10 h-10 rounded-full border-2 flex items-center justify-center step-inactive transition-all" id="step-circle-6">
+<iconify-icon icon="ph:rocket-launch-bold"></iconify-icon>
+</div>
+<span class="text-[10px] font-bold step-inactive" id="step-text-6">6. Deploy</span>
+</button>
+</div>
+</div>
+<div class="max-w-5xl mx-auto flex gap-8 pb-12">
+<div class="flex-1">
+<!-- Step 1 -->
+<div class="step-pane glass-card rounded-2xl p-6 border-l-4 border-l-blue-600 hidden" id="step-content-1">
+<h3 class="font-bold mb-4">Connect 更新凭证 (连接新客户)</h3>
+<div class="space-y-4 mb-4">
+<div>
+<label class="block text-xs text-slate-500 mb-1">新客户 API Endpoint</label>
+<input class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs outline-none focus:ring-1 focus:ring-blue-500" placeholder="https://api.new-client.com/erp/v1" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-xs text-slate-500 mb-1">App ID</label>
+<input class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs" placeholder="HS_NEW_2026" type="text"/>
+</div>
+<div>
+<label class="block text-xs text-slate-500 mb-1">App Secret · secrets_ref</label>
+<input class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs" placeholder="vault://tenant-new/erp" type="password"/>
+</div>
+</div>
+</div>
+<div class="p-3 bg-blue-500/5 rounded-lg border border-blue-500/20 text-[10px] text-blue-400 font-bold mb-4">
+须更新新客户凭证，不可复用源客户的连接凭证。
+</div>
+<button class="px-4 py-2 bg-blue-600 rounded-lg text-xs font-bold" onclick="switchStep(2)">下一步 → Package</button>
+</div>
+<!-- Step 2 -->
+<div class="step-pane glass-card rounded-2xl p-6" id="step-content-2">
+<h3 class="font-bold mb-4">选择源资产包 (Source Package)</h3>
+<div class="grid grid-cols-2 gap-4 mb-4">
+<div class="p-4 rounded-xl border-2 border-blue-500 bg-blue-500/5 cursor-pointer">
+<div class="font-bold text-sm">哈森鞋业报工包</div>
+<div class="text-[10px] text-slate-500 mt-1">v1.2.0 · Path A · conn-erp-kingdee-write</div>
+</div>
+<div class="p-4 rounded-xl border border-slate-800 bg-slate-900/50 cursor-pointer hover:border-slate-700">
+<div class="font-bold text-sm">通用 MES 采集包</div>
+<div class="text-[10px] text-slate-500 mt-1">v2.1.0 · Path B · MES 写</div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-slate-800 rounded-lg text-xs" onclick="switchStep(1)">← 上一步</button>
+<button class="px-4 py-2 bg-blue-600 rounded-lg text-xs font-bold" onclick="switchStep(3)">下一步 → Override</button>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="step-pane glass-card rounded-2xl p-6 hidden" id="step-content-3">
+<h3 class="font-bold mb-4">配置差异 (Override)</h3>
+<div class="bg-slate-900 rounded-lg p-3 border border-slate-800 mb-4">
+<div class="flex items-center justify-between text-xs">
+<span class="font-mono">FBillNo</span>
+<iconify-icon class="text-slate-700" icon="ph:arrow-right-bold"></iconify-icon>
+<input class="bg-slate-800 border border-slate-700 rounded px-2 py-1 w-32 text-[10px]" type="text" value="FBillNo"/>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-slate-800 rounded-lg text-xs" onclick="switchStep(2)">← 上一步</button>
+<button class="px-4 py-2 bg-blue-600 rounded-lg text-xs font-bold" onclick="switchStep(4)">下一步 → Delta</button>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="step-pane glass-card rounded-2xl p-6 hidden" id="step-content-4">
+<h3 class="font-bold mb-4">Workshop 差量确认 (Delta)</h3>
+<div class="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl mb-4">
+<div class="text-xs font-bold text-amber-500 mb-2">检测到 2 项业务规则差异</div>
+<ul class="text-[10px] text-slate-400 space-y-1 list-disc list-inside">
+<li>工单结案逻辑差异 (按数量 vs 按状态)</li>
+<li>质检缺陷代码映射缺失</li>
+</ul>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-slate-800 rounded-lg text-xs" onclick="switchStep(3)">← 上一步</button>
+<button class="px-4 py-2 bg-blue-600 rounded-lg text-xs font-bold" onclick="switchStep(5)">下一步 → Prove 双签</button>
+</div>
+</div>
+<!-- Step 5 -->
+<div class="step-pane glass-card rounded-2xl p-6 hidden" id="step-content-5">
+<h3 class="font-bold mb-4">Prove 双签验证 (门禁 · 不可跳过)</h3>
+<div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl mb-4">
+<div class="flex items-center justify-between mb-4">
+<span class="text-xs font-bold text-emerald-400">Shadow 验证期</span>
+<span class="text-[10px] text-slate-500 font-mono">14 / 14 Days</span>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-2 bg-slate-900 rounded border border-slate-800 text-[10px]">
+<span>实施方影子期签字</span>
+<span class="text-emerald-500 font-bold">已完成</span>
+</div>
+<div class="flex items-center justify-between p-2 bg-slate-900 rounded border border-slate-800 text-[10px]">
+<span>客户方业务对账双签</span>
+<button class="px-3 py-1 bg-blue-600 rounded text-[9px] font-bold">待签字</button>
+</div>
+</div>
+<p class="mt-4 text-[9px] text-slate-500 italic">STU-R5：Import 后仍须 Prove + 双签，治理不可跳过</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-slate-800 rounded-lg text-xs" onclick="switchStep(4)">← 上一步</button>
+<button class="px-4 py-2 bg-blue-600 rounded-lg text-xs font-bold" onclick="switchStep(6)">下一步 → Deploy</button>
+</div>
+</div>
+<!-- Step 6 -->
+<div class="step-pane glass-card rounded-2xl p-6 border-l-4 border-l-emerald-500 hidden" id="step-content-6">
+<h3 class="font-bold mb-4">快速部署 (Deploy)</h3>
+<a class="block w-full py-4 bg-blue-600 hover:bg-blue-500 rounded-2xl font-bold flex items-center justify-center space-x-2 shadow-xl shadow-blue-600/20 text-white text-center mb-3" href="studio.html">
+<iconify-icon class="text-xl" icon="ph:rocket-launch-bold"></iconify-icon>
+<span>Deploy 完成 → 进入 Studio Prove 双签</span>
+</a>
+<p class="text-center text-[10px] text-slate-500">OverrideDocument 经 Studio publish 生效 · 仓库 diff 仅作研发审计</p>
+<button class="mt-4 px-4 py-2 bg-slate-800 rounded-lg text-xs" onclick="switchStep(5)">← 上一步</button>
+</div>
+</div>
+<!-- Right sidebar -->
+<div class="w-80 space-y-6 flex-none">
+<div class="glass-card rounded-2xl p-6 overflow-hidden relative border-t-4 border-emerald-500">
+<h4 class="text-sm font-bold mb-6 text-emerald-400">加速复制效应 (Scale-up)</h4>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between text-[10px] mb-1.5">
+<span class="text-slate-400 uppercase">实施周期</span>
+<span class="text-emerald-400 font-bold font-mono">-85%</span>
+</div>
+<div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500 w-[15%]"></div>
+</div>
+<div class="flex justify-between text-[8px] mt-1 text-slate-600 font-bold">
+<span>考古: 16 周</span>
+<span class="text-emerald-500">Import: 2～3 周</span>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-2xl p-6">
+<h4 class="text-sm font-bold mb-4">Import 任务队列</h4>
+<div class="space-y-4 text-[10px]" id="import-queue">
+<div class="flex items-center space-x-3 text-emerald-500 font-bold queue-item" data-step="1">
+<iconify-icon icon="ph:check-circle-bold"></iconify-icon>
+<span>Connect 凭证更新</span>
+</div>
+<div class="flex items-center space-x-3 opacity-50 queue-item" data-step="2">
+<div class="w-4 h-4 rounded-full border border-slate-700"></div>
+<span>资产包导入与映射</span>
+</div>
+<div class="flex items-center space-x-3 opacity-50 queue-item" data-step="3">
+<div class="w-4 h-4 rounded-full border border-slate-700"></div>
+<span>Override 差异同步</span>
+</div>
+<div class="flex items-center space-x-3 opacity-50 queue-item" data-step="5">
+<div class="w-4 h-4 rounded-full border border-slate-700"></div>
+<span>Prove 双签验证</span>
+</div>
+<div class="flex items-center space-x-3 opacity-50 queue-item" data-step="6">
+<div class="w-4 h-4 rounded-full border border-slate-700"></div>
+<span>Shadow Mode 初始化</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function switchStep(step) {
+            document.querySelectorAll('.step-pane').forEach(p => p.classList.add('hidden'));
+            const target = document.getElementById('step-content-' + step);
+            if (target) target.classList.remove('hidden');
+            for (let i = 1; i <= 6; i++) {
+                const circle = document.getElementById('step-circle-' + i);
+                const text = document.getElementById('step-text-' + i);
+                if (i === step) {
+                    circle.className = 'w-10 h-10 rounded-full border-2 flex items-center justify-center step-active transition-all';
+                    text.className = 'text-[10px] font-bold step-active';
+                } else if (i < step) {
+                    circle.className = 'w-10 h-10 rounded-full border-2 flex items-center justify-center border-emerald-500 text-emerald-500 transition-all';
+                    text.className = 'text-[10px] font-bold text-emerald-500';
+                } else {
+                    circle.className = 'w-10 h-10 rounded-full border-2 flex items-center justify-center step-inactive transition-all';
+                    text.className = 'text-[10px] font-bold step-inactive';
+                }
+            }
+            document.querySelectorAll('.queue-item').forEach(item => {
+                const s = parseInt(item.dataset.step, 10);
+                const label = item.querySelector('span')?.textContent || '';
+                if (s <= step) {
+                    item.className = 'flex items-center space-x-3 text-emerald-500 font-bold queue-item';
+                    item.innerHTML = '<iconify-icon icon="ph:check-circle-bold"></iconify-icon><span>' + label + '</span>';
+                } else {
+                    item.className = 'flex items-center space-x-3 opacity-50 queue-item';
+                    item.innerHTML = '<div class="w-4 h-4 rounded-full border border-slate-700"></div><span>' + label + '</span>';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

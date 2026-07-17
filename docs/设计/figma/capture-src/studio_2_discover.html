@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · studio · Discover</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #e2e8f0; }
+        .sidebar-item-active { background: rgba(59, 130, 246, 0.1); border-right: 3px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .step-active { color: #3b82f6; border-color: #3b82f6; }
+        .step-inactive { color: #64748b; border-color: #334155; }
+    </style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body class="flex h-screen overflow-hidden font-sans antialiased">
+<!-- Sidebar -->
+<aside class="w-64 flex-none border-r border-slate-800 flex flex-col bg-slate-900/50">
+<div class="p-6">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+<iconify-icon class="text-white text-xl" icon="ph:factory-bold"></iconify-icon>
+</div>
+<div>
+<div class="font-bold text-lg leading-none">Ax OS</div>
+<div class="text-[10px] text-blue-400 font-medium tracking-tighter uppercase mt-1">智能中枢系统</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 mt-4 px-3 space-y-1">
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="strategy.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:grid-four-bold"></iconify-icon>
+<span class="font-medium">制造全景</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl sidebar-item-active transition-colors group" href="integration.html">
+<iconify-icon class="text-xl" icon="ph:plug-bold"></iconify-icon>
+<span class="font-medium">产业连接</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="business.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:package-bold"></iconify-icon>
+<span class="font-medium">资产与复制</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="workflow.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:shield-check-bold"></iconify-icon>
+<span class="font-medium">运营与合规</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 transition-colors group" href="tenants.html">
+<iconify-icon class="text-xl text-slate-500 group-hover:text-blue-400" icon="ph:cpu-bold"></iconify-icon>
+<span class="font-medium">平台治理</span>
+</a>
+</nav>
+<div class="p-6 border-t border-slate-800">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 overflow-hidden">
+<img alt="Admin Avatar" src="https://modao.cc/agent-py/media/generated_images/2026-06-30/86531aa94d544af29b5d400b8ef7b279.jpg"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold truncate">系统管理员</p>
+<p class="text-[10px] text-slate-500 uppercase">Enterprise</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-hidden bg-slate-950">
+<!-- Top Bar -->
+<header class="h-16 flex items-center justify-between px-8 border-b border-slate-800 bg-slate-900/30">
+<div class="flex items-center space-x-4">
+<h2 class="text-lg font-bold">Integration Studio</h2>
+<span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold">UI-FIRST 主路径</span>
+</div>
+<div class="flex items-center space-x-4">
+<button class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-sm hover:bg-slate-700 transition-colors">
+<iconify-icon icon="ph:book-open-bold"></iconify-icon>
+<span>集成手册</span>
+</button>
+<button class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-500 transition-colors">
+<iconify-icon icon="ph:plus-bold"></iconify-icon>
+<span>新建集成链路</span>
+</button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="flex-1 overflow-y-auto p-8">
+<!-- Progress Steps -->
+<div class="max-w-6xl mx-auto mb-10">
+<div class="flex items-center justify-between">
+<button class="step-btn flex flex-col items-center space-y-2 group" data-step="1" onclick="switchStep(1)">
+<div class="w-12 h-12 rounded-full border-2 flex items-center justify-center step-active transition-all" id="step-circle-1">
+<iconify-icon class="text-2xl" icon="ph:plug-bold"></iconify-icon>
+</div>
+<span class="text-xs font-bold step-active" id="step-text-1">1. Connect</span>
+</button>
+<div class="flex-1 h-0.5 bg-slate-800 mx-4 mb-6"></div>
+<button class="step-btn flex flex-col items-center space-y-2 group" data-step="2" onclick="switchStep(2)">
+<div class="w-12 h-12 rounded-full border-2 flex items-center justify-center step-inactive transition-all" id="step-circle-2">
+<iconify-icon class="text-2xl" icon="ph:magnifying-glass-bold"></iconify-icon>
+</div>
+<span class="text-xs font-bold step-inactive" id="step-text-2">2. Discover</span>
+</button>
+<div class="flex-1 h-0.5 bg-slate-800 mx-4 mb-6"></div>
+<button class="step-btn flex flex-col items-center space-y-2 group" data-step="3" onclick="switchStep(3)">
+<div class="w-12 h-12 rounded-full border-2 flex items-center justify-center step-inactive transition-all" id="step-circle-3">
+<iconify-icon class="text-2xl" icon="ph:intersect-bold"></iconify-icon>
+</div>
+<span class="text-xs font-bold step-inactive" id="step-text-3">3. Map</span>
+</button>
+<div class="flex-1 h-0.5 bg-slate-800 mx-4 mb-6"></div>
+<button class="step-btn flex flex-col items-center space-y-2 group" data-step="4" onclick="switchStep(4)">
+<div class="w-12 h-12 rounded-full border-2 flex items-center justify-center step-inactive transition-all" id="step-circle-4">
+<iconify-icon class="text-2xl" icon="ph:signature-bold"></iconify-icon>
+</div>
+<span class="text-xs font-bold step-inactive" id="step-text-4">4. Prove</span>
+</button>
+<div class="flex-1 h-0.5 bg-slate-800 mx-4 mb-6"></div>
+<button class="step-btn flex flex-col items-center space-y-2 group" data-step="5" onclick="switchStep(5)">
+<div class="w-12 h-12 rounded-full border-2 flex items-center justify-center step-inactive transition-all" id="step-circle-5">
+<iconify-icon class="text-2xl" icon="ph:snowflake-bold"></iconify-icon>
+</div>
+<span class="text-xs font-bold step-inactive" id="step-text-5">5. Freeze</span>
+</button>
+<div class="flex-1 h-0.5 bg-slate-800 mx-4 mb-6"></div>
+<button class="step-btn flex flex-col items-center space-y-2 group" data-step="6" onclick="switchStep(6)">
+<div class="w-12 h-12 rounded-full border-2 flex items-center justify-center step-inactive transition-all" id="step-circle-6">
+<iconify-icon class="text-2xl" icon="ph:export-bold"></iconify-icon>
+</div>
+<span class="text-xs font-bold step-inactive" id="step-text-6">6. Export</span>
+</button>
+</div>
+</div>
+<!-- Step Contents -->
+<div class="step-pane hidden" id="step-content-1">
+<div class="w-full max-w-4xl mx-auto mb-4 px-4 py-2 bg-rose-500/10 border border-rose-500/20 rounded-lg text-xs text-rose-300 flex items-center gap-2">
+<iconify-icon icon="ph:prohibit-bold"></iconify-icon>
+<span>Connect 阶段只读摸底 · 禁止生产写 · credentials 使用 secrets_ref（Vault）</span>
+</div>
+<div class="max-w-4xl mx-auto glass-card rounded-2xl p-8">
+<h3 class="text-xl font-bold mb-6 flex items-center space-x-2">
+<iconify-icon class="text-blue-500" icon="ph:plug-bold"></iconify-icon>
+<span>Step 1: Connect — 接入配置</span>
+</h3>
+<div class="grid grid-cols-2 gap-8">
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-slate-400 mb-1.5">目标遗留系统 (Legacy System)</label>
+<select class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 outline-none focus:ring-1 focus:ring-blue-500">
+<option>Kingdee K/3 Cloud (金蝶云星空)</option>
+<option>Acme MES v4.2</option>
+<option>SAP S/4HANA</option>
+<option>Builtin PostgreSQL Ledger</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-400 mb-1.5">Connector Pack (Write)</label>
+<div class="px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-sm font-mono">
+                                    conn-erp-kingdee-write
+                                </div>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-400 mb-1.5">接入路径 (Path)</label>
+<div class="px-3 py-2 bg-blue-500/5 border border-blue-500/20 rounded-lg text-blue-400 text-sm">
+                                    Path A: Overlay · ERP 主导 (灯塔模式)
+                                </div>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-400 mb-1.5">API 终端地址</label>
+<input class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 outline-none" type="text" value="https://api.hasen.com/erp/v1"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-400 mb-1.5">secrets_ref (Vault)</label>
+<input class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 outline-none font-mono text-xs" readonly="" type="text" value="vault://hasen/prod/erp-kingdee"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-400 mb-1.5">Edge Agent 状态</label>
+<div class="px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-sm flex items-center gap-2">
+<iconify-icon icon="ph:check-circle-fill"></iconify-icon>
+                                    在线 · WSS 出站连接
+                                </div>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-slate-400 mb-1.5">身份验证 (Credentials)</label>
+<div class="p-4 bg-slate-900 rounded-lg border border-slate-800 space-y-3">
+<div class="flex items-center justify-between text-xs">
+<span class="text-slate-500">App ID</span>
+<span class="font-mono">HS_2026_PROD</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-slate-500">App Secret</span>
+<span class="font-mono">••••••••••••••••</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold transition-all flex items-center justify-center space-x-2">
+<iconify-icon icon="ph:lightning-bold"></iconify-icon>
+<span>测试连接并保存</span>
+</button>
+<p class="text-center text-xs text-emerald-400 flex items-center justify-center space-x-1">
+<iconify-icon icon="ph:check-circle-fill"></iconify-icon>
+<span>连接已建立：2026-07-10 10:11:11</span>
+</p>
+</div>
+</div>
+</div>
+</div>
+<div class="step-pane" id="step-content-2">
+<div class="max-w-5xl mx-auto glass-card rounded-2xl p-8">
+<h3 class="text-xl font-bold mb-6 flex items-center space-x-2">
+<iconify-icon class="text-blue-500" icon="ph:magnifying-glass-bold"></iconify-icon>
+<span>Step 2: Discover — 业务发现</span>
+</h3>
+<div class="grid grid-cols-12 gap-8">
+<div class="col-span-4 bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+<div class="p-4 border-b border-slate-800 bg-slate-800/50 flex items-center justify-between">
+<span class="text-sm font-bold">已发现对象库</span>
+<iconify-icon class="text-blue-400 cursor-pointer" icon="ph:arrows-clockwise-bold"></iconify-icon>
+</div>
+<div class="p-4 space-y-3">
+<div class="flex items-center space-x-2 text-sm text-blue-400 bg-blue-500/5 p-2 rounded-lg">
+<iconify-icon icon="ph:table-bold"></iconify-icon>
+<span>T_PROD_REPORT (生产汇报单)</span>
+</div>
+<div class="flex items-center space-x-2 text-sm p-2 text-slate-400">
+<iconify-icon icon="ph:table-bold"></iconify-icon>
+<span>T_WORK_ORDER (工单主表)</span>
+</div>
+<div class="flex items-center space-x-2 text-sm p-2 text-slate-400">
+<iconify-icon icon="ph:api-bold"></iconify-icon>
+<span>API_SYNC_MATERIAL (物料同步)</span>
+</div>
+</div>
+</div>
+<div class="col-span-8 space-y-4">
+<div class="p-6 bg-slate-900 rounded-xl border border-slate-800">
+<h4 class="text-sm font-bold mb-4 flex items-center justify-between">
+<span>CMV 动词表 · WORK_REPORT</span>
+<span class="text-xs text-slate-500">W-05 Discover</span>
+</h4>
+<table class="w-full text-xs mb-4">
+<thead>
+<tr class="text-slate-500 border-b border-slate-800">
+<th class="text-left py-2">动词</th>
+<th class="text-left py-2">CMV ID</th>
+<th class="text-left py-2">说明</th>
+<th class="text-right py-2">状态</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800/50">
+<tr><td class="py-2 font-mono text-blue-400">QUERY_WO</td><td class="py-2 text-slate-400">cmv.work-order.query</td><td class="py-2 text-slate-400">工单查询</td><td class="py-2 text-right text-emerald-400">已识别</td></tr>
+<tr><td class="py-2 font-mono text-blue-400">WORK_REPORT</td><td class="py-2 text-slate-400">cmv.prod.report</td><td class="py-2 text-slate-400">生产报工写</td><td class="py-2 text-right text-emerald-400">已识别</td></tr>
+<tr><td class="py-2 font-mono text-blue-400">RECONCILE</td><td class="py-2 text-slate-400">cmv.reconcile.daily</td><td class="py-2 text-slate-400">每日对账读回</td><td class="py-2 text-right text-emerald-400">已识别</td></tr>
+</tbody>
+</table>
+<h4 class="text-sm font-bold mb-4 flex items-center justify-between border-t border-slate-800 pt-4">
+<span>遗留字段: T_PROD_REPORT</span>
+<span class="text-xs text-slate-500">接口类型: SQL Connector</span>
+</h4>
+<div class="overflow-x-auto">
+<table class="w-full text-xs">
+<thead>
+<tr class="text-slate-500 border-b border-slate-800">
+<th class="text-left py-2 font-medium">字段名</th>
+<th class="text-left py-2 font-medium">类型</th>
+<th class="text-left py-2 font-medium">说明</th>
+<th class="text-right py-2 font-medium">状态</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800/50">
+<tr>
+<td class="py-2 font-mono">FBillNo</td>
+<td class="py-2 text-slate-400">String</td>
+<td class="py-2 text-slate-400">单据编号</td>
+<td class="py-2 text-right text-emerald-400">已识别</td>
+</tr>
+<tr>
+<td class="py-2 font-mono">FQty</td>
+<td class="py-2 text-slate-400">Decimal</td>
+<td class="py-2 text-slate-400">汇报数量</td>
+<td class="py-2 text-right text-emerald-400">已识别</td>
+</tr>
+<tr>
+<td class="py-2 font-mono">FWorkerID</td>
+<td class="py-2 text-slate-400">Int</td>
+<td class="py-2 text-slate-400">员工内码</td>
+<td class="py-2 text-right text-emerald-400">已识别</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<button class="w-full py-2 bg-blue-600 rounded-lg font-bold text-sm" onclick="switchStep(3)">确认接口清单，进入 Map</button>
+</div>
+</div>
+</div>
+</div>
+<div class="step-pane hidden" id="step-content-3">
+<div class="max-w-5xl mx-auto glass-card rounded-2xl p-8">
+<h3 class="text-xl font-bold mb-6 flex items-center space-x-2">
+<iconify-icon class="text-blue-500" icon="ph:intersect-bold"></iconify-icon>
+<span>Step 3: Map — 字段映射</span>
+</h3>
+<div class="grid grid-cols-2 gap-8">
+<div class="space-y-4">
+<div class="flex items-center justify-between px-4 py-2 bg-slate-800 rounded-t-lg border border-slate-700">
+<span class="text-xs font-bold uppercase tracking-widest text-slate-400">Ax OS DSL (Standard)</span>
+<span class="text-[10px] text-blue-400">Target: ExperienceEntry</span>
+</div>
+<div class="border border-slate-700 border-t-0 rounded-b-lg p-4 space-y-3 bg-slate-900/50">
+<div class="flex items-center justify-between p-2 rounded bg-slate-800 border border-blue-500/30">
+<span class="text-xs font-mono">work_order_id</span>
+<span class="text-[9px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">AI 98%</span>
+<iconify-icon class="text-blue-500" icon="ph:arrow-right-bold"></iconify-icon>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-slate-800 border border-blue-500/30">
+<span class="text-xs font-mono">reported_by</span>
+<span class="text-[9px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">AI 95%</span>
+<iconify-icon class="text-blue-500" icon="ph:arrow-right-bold"></iconify-icon>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-slate-800 border border-blue-500/30">
+<span class="text-xs font-mono">quantity</span>
+<span class="text-[9px] text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">AI 72% · 待确认</span>
+<iconify-icon class="text-blue-500" icon="ph:arrow-right-bold"></iconify-icon>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between px-4 py-2 bg-slate-800 rounded-t-lg border border-slate-700">
+<span class="text-xs font-bold uppercase tracking-widest text-slate-400">Legacy Fields (Kingdee)</span>
+<span class="text-[10px] text-amber-500">Source: T_PROD_REPORT</span>
+</div>
+<div class="border border-slate-700 border-t-0 rounded-b-lg p-4 space-y-3 bg-slate-900/50">
+<select class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs outline-none focus:border-blue-500">
+<option>FBillNo</option>
+<option>FOperator</option>
+<option>FQty</option>
+</select>
+<select class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs outline-none focus:border-blue-500">
+<option>FOperator</option>
+<option>FBillNo</option>
+<option>FQty</option>
+</select>
+<select class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs outline-none focus:border-blue-500">
+<option>FQty</option>
+<option>FBillNo</option>
+<option>FOperator</option>
+</select>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-end gap-3">
+<button class="px-6 py-2 rounded-lg bg-slate-800 border border-slate-700 text-sm font-bold hover:bg-slate-700">保存草稿</button>
+<button class="px-6 py-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-500" onclick="switchStep(4)">提交映射，进入 Prove</button>
+</div>
+</div>
+</div>
+<div class="step-pane hidden" id="step-content-4">
+<div class="w-full max-w-4xl mx-auto mb-4 px-4 py-2 bg-amber-500/20 border border-amber-500/30 rounded-lg text-xs text-amber-400 flex items-center justify-center gap-2">
+<iconify-icon icon="ph:warning-circle-fill"></iconify-icon>
+<span>🟡 shadow_mode=true · 影子模式 · simulated 不写 Legacy · W-07 Prove</span>
+</div>
+<div class="max-w-4xl mx-auto space-y-6">
+<div class="glass-card rounded-2xl p-8 border-l-4 border-l-amber-500">
+<div class="flex items-start justify-between mb-8">
+<div>
+<h3 class="text-2xl font-bold flex items-center space-x-2">
+<iconify-icon class="text-amber-500" icon="ph:signature-bold"></iconify-icon>
+<span>Step 4: Prove — 关键闸门：双签验证</span>
+</h3>
+<p class="text-slate-400 mt-2">在开启生产环境写操作前，必须由admin 与 business_owner共同完成 Shadow Mode 验证签字。</p>
+</div>
+<div class="px-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-center">
+<div class="text-xs text-slate-500 uppercase">影子运行周期</div>
+<div class="text-2xl font-bold text-blue-400">14 / 14 <span class="text-sm font-normal">Days</span></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-8 mb-8">
+<div class="p-6 bg-slate-900/80 rounded-2xl border border-slate-800 text-center">
+<div class="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
+<iconify-icon class="text-3xl text-emerald-500" icon="ph:user-check-bold"></iconify-icon>
+</div>
+<h4 class="font-bold mb-1">admin 确认 (Ax OS Side)</h4>
+<p class="text-xs text-slate-500 mb-4">验证影子期间逻辑与漂移符合标准</p>
+<div class="flex items-center justify-center space-x-2 text-emerald-400 font-bold">
+<iconify-icon icon="ph:check-circle-fill"></iconify-icon>
+<span>已签字：林工程 (2026-07-09)</span>
+</div>
+</div>
+<div class="p-6 bg-slate-900/80 rounded-2xl border-2 border-dashed border-slate-700 text-center relative group cursor-not-allowed opacity-50 transition-all" title="需先完成 Prove 双签">
+<div class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4 border border-slate-700">
+<iconify-icon class="text-3xl text-slate-500" icon="ph:signature-bold"></iconify-icon>
+</div>
+<h4 class="font-bold mb-1">business_owner 双签 (Customer Side)</h4>
+<p class="text-xs text-slate-500 mb-4">确认对账结果与原有 ERP 数据一致</p>
+<button class="px-6 py-2 bg-slate-700 rounded-lg text-sm font-bold cursor-not-allowed" disabled="">发起双签请求</button>
+</div>
+</div>
+<div class="bg-slate-900 rounded-xl p-4 border border-slate-800 mb-6">
+<div class="flex items-center justify-between text-sm mb-3">
+<span class="font-bold text-amber-400">Prove 双签准入条件</span>
+<span class="text-xs text-slate-500 italic">⚠️ 未满 14 天或未双签时按钮禁用</span>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="flex items-center space-x-2 text-[10px] text-emerald-400">
+<iconify-icon icon="ph:check-circle-fill"></iconify-icon>
+<span>Shadow 运行天数: 14/14</span>
+</div>
+<div class="flex items-center space-x-2 text-[10px] text-slate-500">
+<iconify-icon icon="ph:circle-dashed"></iconify-icon>
+<span>admin 已签字 (已完成)</span>
+</div>
+<div class="flex items-center space-x-2 text-[10px] text-slate-500">
+<iconify-icon icon="ph:circle-dashed"></iconify-icon>
+<span>business_owner 已签字 (待确认)</span>
+</div>
+</div>
+</div>
+<div class="bg-slate-900 rounded-xl p-4 border border-slate-800">
+<div class="flex items-center justify-between text-sm mb-3">
+<span class="font-bold">验证指标清单 (Verification Metrics)</span>
+<span class="text-xs text-slate-500">Shadow Mode: hasen-factory-01</span>
+</div>
+<div class="space-y-2">
+
+<div class="flex items-center justify-between p-2 rounded bg-slate-800/50">
+<span class="text-xs">Contract Test 全绿 (STU)</span>
+<span class="text-xs font-mono text-emerald-400 font-bold">PASS</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-slate-800/50">
+<span class="text-xs">数据对账通过率 (Reconciliation Rate)</span>
+<span class="text-xs font-mono text-emerald-400 font-bold">99.98%</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-slate-800/50">
+<span class="text-xs">关键链路漂移 (Business Drift)</span>
+<span class="text-xs font-mono text-emerald-400 font-bold">0.00ms</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-slate-800/50">
+<span class="text-xs">报警已处理比例 (Alert Closure)</span>
+<span class="text-xs font-mono text-emerald-400 font-bold">100%</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-4 py-3 bg-slate-700 rounded-lg font-bold text-sm cursor-not-allowed opacity-50" disabled="" title="business_owner 双签未完成">批准开写 (G-WRITE-APPROVE) — 待 business_owner 双签</button>
+<button class="w-full mt-6 py-3 bg-blue-600 rounded-lg font-bold text-sm" onclick="switchStep(5)">双签完成后进入 Freeze →</button>
+</div>
+</div>
+</div>
+<div class="step-pane hidden" id="step-content-5">
+<div class="max-w-4xl mx-auto glass-card rounded-2xl p-8 border-l-4 border-l-blue-500">
+<h3 class="text-xl font-bold mb-6 flex items-center space-x-2">
+<iconify-icon class="text-blue-500" icon="ph:snowflake-bold"></iconify-icon>
+<span>Step 5: Freeze — 图谱冻结</span>
+</h3>
+<div class="bg-slate-900 rounded-xl p-6 border border-slate-800 mb-8">
+<div class="flex items-center justify-between mb-6">
+<div>
+<div class="text-xs text-slate-500 uppercase font-bold">Target Graph</div>
+<div class="text-lg font-bold">Hasen_Production_Flow_V1.0</div>
+</div>
+<span class="px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded text-xs font-bold uppercase">Ready to Freeze</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center space-x-3 text-sm">
+<iconify-icon class="text-emerald-500" icon="ph:check-circle-fill"></iconify-icon>
+<span>所有节点已确认 (Nodes Verified)</span>
+</div>
+<div class="flex items-center space-x-3 text-sm">
+<iconify-icon class="text-emerald-500" icon="ph:check-circle-fill"></iconify-icon>
+<span>Workshop 签字已完成 (Workshop Sign-off)</span>
+</div>
+<div class="flex items-center space-x-3 text-sm">
+<iconify-icon class="text-emerald-500" icon="ph:check-circle-fill"></iconify-icon>
+<span>无未处理的差异项 (No Pending Drifts)</span>
+</div>
+</div>
+</div>
+<!-- Graph 节点流 W-08 -->
+<div class="bg-slate-900 rounded-xl p-6 border border-slate-800 mb-8">
+<h4 class="text-sm font-bold mb-4 text-slate-300">Graph 节点流 · Hasen_Production_Flow_V1.0</h4>
+<div class="flex items-center justify-between gap-2 overflow-x-auto pb-2">
+<div class="flex flex-col items-center min-w-[80px] p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
+<iconify-icon class="text-blue-400 text-xl mb-1" icon="ph:play-bold"></iconify-icon>
+<span class="text-[9px] font-mono text-blue-300">START</span>
+</div>
+<iconify-icon class="text-slate-600" icon="ph:arrow-right-bold"></iconify-icon>
+<div class="flex flex-col items-center min-w-[90px] p-3 rounded-lg bg-slate-800 border border-slate-700">
+<span class="text-[9px] text-slate-500">感知</span>
+<span class="text-[10px] font-bold">Perceive</span>
+</div>
+<iconify-icon class="text-slate-600" icon="ph:arrow-right-bold"></iconify-icon>
+<div class="flex flex-col items-center min-w-[90px] p-3 rounded-lg bg-slate-800 border border-slate-700">
+<span class="text-[9px] text-slate-500">Harness</span>
+<span class="text-[10px] font-bold">Confirm</span>
+</div>
+<iconify-icon class="text-slate-600" icon="ph:arrow-right-bold"></iconify-icon>
+<div class="flex flex-col items-center min-w-[90px] p-3 rounded-lg bg-slate-800 border border-slate-700">
+<span class="text-[9px] text-slate-500">规则</span>
+<span class="text-[10px] font-bold">RuleEval</span>
+</div>
+<iconify-icon class="text-slate-600" icon="ph:arrow-right-bold"></iconify-icon>
+<div class="flex flex-col items-center min-w-[90px] p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+<span class="text-[9px] text-emerald-500">写</span>
+<span class="text-[10px] font-bold text-emerald-400">Execute</span>
+</div>
+<iconify-icon class="text-slate-600" icon="ph:arrow-right-bold"></iconify-icon>
+<div class="flex flex-col items-center min-w-[80px] p-3 rounded-lg bg-slate-800 border border-slate-700">
+<iconify-icon class="text-slate-400 text-xl mb-1" icon="ph:flag-checkered-bold"></iconify-icon>
+<span class="text-[9px] font-mono">END</span>
+</div>
+</div>
+<p class="text-[10px] text-slate-500 mt-3">冻结签字人：business_owner · G-FREEZE · 状态 draft → frozen</p>
+</div>
+<div class="p-6 bg-blue-600/10 border border-blue-500/20 rounded-xl mb-8">
+<p class="text-sm text-blue-400 mb-4">注意：须在 Prove 双签（G-WRITE-APPROVE）完成后冻结。冻结后不可原地修改，只能新建版本。</p>
+<button class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/20 transition-all" onclick="switchStep(6)">
+                                冻结 Graph V1.0
+                            </button>
+</div>
+</div>
+</div>
+<div class="step-pane hidden" id="step-content-6">
+<div class="max-w-4xl mx-auto glass-card rounded-2xl p-8 border-l-4 border-l-emerald-500">
+<h3 class="text-xl font-bold mb-6 flex items-center space-x-2">
+<iconify-icon class="text-emerald-500" icon="ph:export-bold"></iconify-icon>
+<span>Step 6: Export — Implementation Package 导出</span>
+</h3>
+<div class="grid grid-cols-2 gap-8 mb-8">
+<div>
+<h4 class="text-sm font-bold mb-4 text-slate-400 uppercase tracking-widest">导出内容清单</h4>
+<div class="space-y-3">
+<label class="flex items-center space-x-3 p-3 bg-slate-900 rounded-lg border border-slate-800 cursor-pointer hover:border-blue-500/50 transition-all">
+<input checked="" class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-blue-600 focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm">Graph 定义 V1.0</span>
+</label>
+<label class="flex items-center space-x-3 p-3 bg-slate-900 rounded-lg border border-slate-800 cursor-pointer hover:border-blue-500/50 transition-all">
+<input checked="" class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-blue-600 focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm">RuleSet 绑定</span>
+</label>
+<label class="flex items-center space-x-3 p-3 bg-slate-900 rounded-lg border border-slate-800 cursor-pointer hover:border-blue-500/50 transition-all">
+<input checked="" class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-blue-600 focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm">Skill Pack (报工/质检)</span>
+</label>
+<label class="flex items-center space-x-3 p-3 bg-slate-900 rounded-lg border border-slate-800 cursor-pointer hover:border-blue-500/50 transition-all">
+<input checked="" class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-blue-600 focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm">Connector Pack (金蝶 write)</span>
+</label>
+</div>
+</div>
+<div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col justify-center items-center text-center">
+<div class="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
+<iconify-icon class="text-4xl text-emerald-500" icon="ph:archive-bold"></iconify-icon>
+</div>
+<div class="text-xs text-slate-500 uppercase font-bold mb-1">Package Version</div>
+<div class="text-2xl font-bold mb-2">v1.0.0</div>
+<p class="text-[10px] text-slate-500 font-mono mb-6">sha256: a3f8…c21d</p>
+<div class="flex gap-4 w-full">
+<button class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-all flex items-center justify-center space-x-2 shadow-lg shadow-emerald-500/20">
+<iconify-icon icon="ph:download-simple-bold"></iconify-icon>
+<span>导出 Implementation Package</span>
+</button>
+<a class="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all flex items-center justify-center space-x-2 shadow-lg shadow-blue-500/20" href="h5_worker_entry.html">
+<iconify-icon icon="ph:play-bold"></iconify-icon>
+<span>体验报工 → H-01</span>
+</a>
+</div>
+<a class="block w-full mt-3 py-2 text-center text-xs text-slate-400 hover:text-white" href="kpi_dashboard.html">← 返回管理台 W-02</a>
+</div>
+</div>
+<div class="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-xl">
+<p class="text-xs text-emerald-400/80 leading-relaxed text-center">
+                                Package v1.0.0 导出完成，包含完整生产配置快照，可用于第二家客户的快速 Import 复制。
+                            </p>
+</div>
+</div>
+</div>
+<!-- STU Iron Rules (Bottom) -->
+<div class="max-w-6xl mx-auto mt-12 grid grid-cols-5 gap-4">
+<div class="glass-card p-4 rounded-2xl border-l-2 border-blue-500 flex flex-col items-start space-y-2">
+<div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-none">
+<iconify-icon class="text-lg text-blue-400" icon="ph:prohibit-bold"></iconify-icon>
+</div>
+<div>
+<h4 class="text-xs font-bold mb-1">STU-R1: 配置只经 Studio 发布</h4>
+<p class="text-[9px] text-slate-500 leading-relaxed">租户 `tenant_profiles`、`system_relations`、`connector_instances`、`override_documents` 的 **published 写入** 仅经 Studio UI → `/v1/registry/*` 或 `/v1/integration/*`。违反则不算 D1 交付完成。</p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-2xl border-l-2 border-amber-500 flex flex-col items-start space-y-2">
+<div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-none">
+<iconify-icon class="text-lg text-amber-400" icon="ph:lock-bold"></iconify-icon>
+</div>
+<div>
+<h4 class="text-xs font-bold mb-1">STU-R2: 无需改仓库 onboard</h4>
+<p class="text-[9px] text-slate-500 leading-relaxed">实施顾问/客户 IT **无需** clone 仓库、改 YAML、提 PR。配置变更全在 Studio 内完成，Studio 自动同步到 DB。</p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-2xl border-l-2 border-emerald-500 flex flex-col items-start space-y-2">
+<div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-none">
+<iconify-icon class="text-lg text-emerald-400" icon="ph:door-open-bold"></iconify-icon>
+</div>
+<div>
+<h4 class="text-xs font-bold mb-1">STU-R3: 人审 Gate 不得跳过</h4>
+<p class="text-[9px] text-slate-500 leading-relaxed">G-FREEZE、G-WRITE-APPROVE 等人审 Gate 不得跳过或绕过。所有人工确认门必须在 Studio 中完成，禁止通过 API 或 CLI 绕过。</p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-2xl border-l-2 border-rose-500 flex flex-col items-start space-y-2">
+<div class="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center flex-none">
+<iconify-icon class="text-lg text-rose-400" icon="ph:monitor-dashboard-bold"></iconify-icon>
+</div>
+<div>
+<h4 class="text-xs font-bold mb-1">STU-R4: Git 仅为 export/fixture/CI 镜像</h4>
+<p class="text-[9px] text-slate-500 leading-relaxed">Git 中 `integration/`、`contracts/` 仅为 **export/fixture/CI 镜像**；日常配置变更 **不得** 以 PR 改 YAML 替代 Studio publish（ADR-008）。</p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-2xl border-l-2 border-purple-500 flex flex-col items-start space-y-2">
+<div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-none">
+<iconify-icon class="text-lg text-purple-400" icon="ph:file-edit-bold"></iconify-icon>
+</div>
+<div>
+<h4 class="text-xs font-bold mb-1">STU-R5: 第二家 import 向导为主路径</h4>
+<p class="text-[9px] text-slate-500 leading-relaxed">第二家起 S1 复制：**import 向导** 为主路径；仓库 diff 仅作平台研发 diff 审计。OverrideDocument 经 Studio 发布生效。</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function switchStep(step) {
+            // Hide all contents
+            document.querySelectorAll('.step-pane').forEach(p => p.classList.add('hidden'));
+            
+            // Show target content
+            const target = document.getElementById('step-content-' + step);
+            if(target) target.classList.remove('hidden');
+            
+            // Update UI steps
+            for(let i = 1; i <= 6; i++) {
+                const circle = document.getElementById('step-circle-' + i);
+                const text = document.getElementById('step-text-' + i);
+                
+                if(i === step) {
+                    circle.className = 'w-12 h-12 rounded-full border-2 flex items-center justify-center step-active transition-all';
+                    text.className = 'text-xs font-bold step-active';
+                } else if(i < step) {
+                    circle.className = 'w-12 h-12 rounded-full border-2 flex items-center justify-center border-emerald-500 text-emerald-500 transition-all';
+                    text.className = 'text-xs font-bold text-emerald-500';
+                } else {
+                    circle.className = 'w-12 h-12 rounded-full border-2 flex items-center justify-center step-inactive transition-all';
+                    text.className = 'text-xs font-bold step-inactive';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

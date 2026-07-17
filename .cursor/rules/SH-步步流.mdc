@@ -30,13 +30,14 @@ alwaysApply: true
 `_factoryos_pipeline/<YYYY-MM-DD>/{plan,test,step-stop,verify,summary}/`  
 每 Step 强制：`test-*-stepN-regression.md` · commit 前强制：`test-*-final-regression.md`
 
-## 三 Agent
+## 四 Agent
 
+- **PM**：`【PM模式启动】`（Dev / `确认规划` 前）→ `PM-GATES.md` · 默认只读 · 落盘 `pm/`
 - **Dev**：`【Dev模式启动】` → `STEP0.md` `DEV-GATES.md`
 - **Test**：`【Test模式启动】` · `【Test·Step N 验收】` · `【Test·终轮回归】` → `TEST-GATES.md`
 - **Verify**：`【Verify回合】Step N`（Test 之后 · **新对话**）→ `VERIFY-GATES.md`
 
-Test 只写 `src/tests/**`；禁止改业务实现。
+PM 不写业务码、不碰 stamp；改 Figma 须「可以改 Figma」。Test 只写 `src/tests/**`；禁止改业务实现。
 
 ## 单轮节拍（次序强制 · 节奏可快）
 

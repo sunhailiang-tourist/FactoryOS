@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · 资产与复制</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .sidebar-item-active { background-color: #1e293b; border-left: 4px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(51, 65, 85, 0.5); }
+        .pack-l1 { border-left: 4px solid #3b82f6; }
+        .pack-l2 { border-left: 4px solid #10b981; }
+        .pack-l3 { border-left: 4px solid #f59e0b; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- 侧边栏 -->
+<aside class="w-64 glass-card flex flex-col flex-none">
+<div class="p-6 border-b border-slate-700">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-3xl text-blue-500" icon="ph:factory-bold"></iconify-icon>
+<span class="text-xl font-bold tracking-tight">Ax OS</span>
+</div>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">智能中枢系统</p>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="strategy.html">
+<iconify-icon icon="ph:grid-four-bold"></iconify-icon>
+<span>制造全景</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="integration.html">
+<iconify-icon icon="ph:plug-bold"></iconify-icon>
+<span>产业连接</span>
+</a>
+<a class="sidebar-item-active flex items-center gap-3 px-6 py-3 transition-colors" href="business.html">
+<iconify-icon icon="ph:package-bold"></iconify-icon>
+<span>资产与复制</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="workflow.html">
+<iconify-icon icon="ph:shield-check-bold"></iconify-icon>
+<span>运营与合规</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="tenants.html">
+<iconify-icon icon="ph:cpu-bold"></iconify-icon>
+<span>平台治理</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+<div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold">A</div>
+<div class="flex-1 overflow-hidden text-xs">
+<p class="font-medium truncate">Ax OS</p>
+<p class="text-slate-500 truncate">v1.0.0</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="flex-1 overflow-y-auto p-8 bg-[#020617]">
+<!-- Header -->
+<header class="flex justify-between items-center mb-10">
+<div>
+<h1 class="text-3xl font-bold text-white">Ax OS · 资产与复制</h1>
+<p class="text-slate-400 mt-1">智能中枢系统 — Pack 三层体系 · 商业管理与资产化</p>
+</div>
+<div class="flex gap-4">
+<a class="px-6 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-bold flex items-center gap-2" href="import.html">
+<iconify-icon icon="ph:package-bold"></iconify-icon>
+                    第二家 Import 向导 (W-10)
+                </a>
+</div>
+</header>
+<!-- Pack 三层体系 -->
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="ph:package-bold"></iconify-icon>
+            Pack 三层可插拔模块体系
+        </h3>
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<div class="glass-card p-6 rounded-xl pack-l1">
+<p class="text-[10px] text-blue-500 font-bold uppercase mb-2">Pack-L1 | 流程模块</p>
+<h4 class="text-lg font-bold text-white mb-2">卖「业务场景」</h4>
+<p class="text-xs text-slate-400 mb-4">Graph Pack：定义端到端的业务闭环，如“标准离散报工流程”、“精益质检流程”。</p>
+<div class="text-[10px] bg-slate-800 p-2 rounded text-slate-500 font-mono">
+                    example: graph-report-v1.json
+                </div>
+</div>
+<div class="glass-card p-6 rounded-xl pack-l2">
+<p class="text-[10px] text-emerald-500 font-bold uppercase mb-2">Pack-L2 | 能力模块</p>
+<h4 class="text-lg font-bold text-white mb-2">卖「能做什么」</h4>
+<p class="text-xs text-slate-400 mb-4">Capability Pack：通用的 AI 或执行能力，如“语音识别报工”、“OCR 图片转单据”。</p>
+<div class="text-[10px] bg-slate-800 p-2 rounded text-slate-500 font-mono">
+                    example: cap-voice-to-dsl.json
+                </div>
+</div>
+<div class="glass-card p-6 rounded-xl pack-l3">
+<p class="text-[10px] text-amber-500 font-bold uppercase mb-2">Pack-L3 | 连接模块</p>
+<h4 class="text-lg font-bold text-white mb-2">卖「接什么系统」</h4>
+<p class="text-xs text-slate-400 mb-4">Connector Pack：异构系统的适配器，如“金蝶 Cloud 连接器”、“SAP Connector”。</p>
+<div class="text-[10px] bg-slate-800 p-2 rounded text-slate-500 font-mono">
+                    example: conn-kingdee-write.json
+                </div>
+</div>
+</section>
+<!-- 收入层级 vs Pack 层级 -->
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="ph:currency-dollar-bold"></iconify-icon>
+            收入层级 vs Pack 层级
+        </h3>
+<section class="glass-card p-6 rounded-xl mb-12">
+<table class="w-full text-sm text-left">
+<thead class="text-slate-500 border-b border-slate-800">
+<tr>
+<th class="py-3 px-4">收入层级</th>
+<th class="py-3 px-4">Pack 层级</th>
+<th class="py-3 px-4">卖什么 (销售口径)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800 text-slate-300">
+<tr>
+<td class="py-4 px-4 font-bold text-white">L0 底座订阅</td>
+<td class="py-4 px-4 text-slate-500">—</td>
+<td class="py-4 px-4">SaaS 基座能力、多租户管理、审计存证</td>
+</tr>
+<tr>
+<td class="py-4 px-4 font-bold text-white">L1 场景包</td>
+<td class="py-4 px-4 text-blue-400 font-mono">Pack-L1 Graph Pack</td>
+<td class="py-4 px-4">端到端业务场景（如：标准服装厂报工包）</td>
+</tr>
+<tr>
+<td class="py-4 px-4 font-bold text-white">L2 能力包</td>
+<td class="py-4 px-4 text-emerald-400 font-mono">Pack-L2 Capability Pack</td>
+<td class="py-4 px-4">AI / 执行增强能力（如：语音转 DSL、智能纠错）</td>
+</tr>
+<tr>
+<td class="py-4 px-4 font-bold text-white">L3 连接器</td>
+<td class="py-4 px-4 text-amber-400 font-mono">Pack-L3 Connector Pack</td>
+<td class="py-4 px-4">异构系统对接（如：金蝶 Cloud Write 连接器）</td>
+</tr>
+</tbody>
+</table>
+<div class="mt-4 p-4 rounded bg-blue-900/20 border border-blue-500/30 text-[11px] text-blue-300">
+<iconify-icon class="mr-1" icon="ph:info-bold"></iconify-icon>
+<strong>Override 机制:</strong> 所有租户定制逻辑均通过 <span class="font-bold underline">OverrideDocument</span> 实现，经 Studio publish 生效，禁止手动修改通用 Pack JSON。
+            </div>
+</section>
+<!-- License 运行时与 Graph 资产 -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+<!-- License 运行时关系 -->
+<div class="glass-card p-6 rounded-xl relative overflow-hidden">
+<h3 class="text-lg font-bold mb-6">租户 License 运行时关系</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-slate-800 flex items-center justify-center border border-slate-700">
+<iconify-icon class="text-2xl text-blue-400" icon="ph:key-bold"></iconify-icon>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold">租户 License 配置</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">graph-xxx + cap-xxx + conn-xxx</p>
+</div>
+</div>
+<div class="pl-6 border-l-2 border-slate-800 ml-6 space-y-4">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-slate-600" icon="ph:caret-right-bold"></iconify-icon>
+<span class="text-xs text-slate-300">Agent 只加载已授权的 Capability Module</span>
+</div>
+<div class="flex items-center gap-3">
+<iconify-icon class="text-slate-600" icon="ph:caret-right-bold"></iconify-icon>
+<span class="text-xs text-slate-300">DSL 执行计划只调用已授权的 Action 动词</span>
+</div>
+<div class="flex items-center gap-3">
+<iconify-icon class="text-slate-600" icon="ph:caret-right-bold"></iconify-icon>
+<span class="text-xs text-slate-300 text-emerald-400 font-bold italic">Connector 只访问已授权的 Legacy 系统 API</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 五类 Graph 资产 -->
+<div class="glass-card p-6 rounded-xl">
+<h3 class="text-lg font-bold mb-6">五类 Graph 核心知识资产</h3>
+<div class="space-y-2">
+<div class="flex items-center justify-between p-2 rounded bg-slate-800/30 border border-slate-700">
+<span class="text-xs font-bold text-slate-200">1. System Graph</span>
+<span class="text-[10px] text-blue-400 font-bold">D1 现网</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-slate-800/30 border border-slate-700">
+<span class="text-xs font-bold text-slate-200">2. Business Graph</span>
+<span class="text-[10px] text-emerald-400 font-bold">D1 现网 ✅ 核心交付</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-slate-800/30 border border-slate-700">
+<span class="text-xs font-bold text-slate-200">3. Experience Graph</span>
+<span class="text-[10px] text-amber-500 font-bold">Stage 3+ 战略</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-slate-800/30 border border-slate-700">
+<span class="text-xs font-bold text-slate-200">4. Knowledge Graph</span>
+<span class="text-[10px] text-slate-500 font-bold">Stage 2+</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-slate-800/30 border border-slate-700">
+<span class="text-xs font-bold text-slate-200">5. Decision Graph</span>
+<span class="text-[10px] text-slate-500 font-bold">Stage 4+</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Shadow 试用定价区补 -->
+<section class="p-6 rounded-xl bg-amber-900/20 border border-amber-500/30 mb-12">
+<h4 class="font-bold text-amber-400 mb-2 flex items-center gap-2">
+<iconify-icon icon="ph:clock-bold"></iconify-icon>
+                Shadow 试用与准入说明
+            </h4>
+<ul class="text-xs text-slate-400 space-y-1 list-disc list-inside">
+<li><span class="text-slate-200 font-bold">Shadow 验证:</span> 必须进行 ≥14 天的影子模式运行，期间 simulated 不执行任何 Legacy 写操作。</li>
+<li><span class="text-slate-200 font-bold">开通准入:</span> 必须经 Prove 流程双签确认后，方可开启生产环境写权限。</li>
+</ul>
+</section>
+<!-- Graph 路线图阶段 -->
+<section class="glass-card p-6 rounded-xl mb-12">
+<h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-400" icon="ph:path-bold"></iconify-icon>
+                Graph 路线图阶段
+            </h3>
+<div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="text-slate-500 border-b border-slate-800">
+<tr>
+<th class="text-left py-3 px-4">Graph 类型</th>
+<th class="text-left py-3 px-4">交付阶段</th>
+<th class="text-left py-3 px-4">说明</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800 text-slate-300">
+<tr>
+<td class="py-4 px-4 font-bold text-white">System Graph</td>
+<td class="py-4 px-4 text-xs">D1 现网</td>
+<td class="py-4 px-4 text-xs text-slate-400">系统对接、接口映射</td>
+</tr>
+<tr>
+<td class="py-4 px-4 font-bold text-white">Business Graph</td>
+<td class="py-4 px-4 text-xs text-emerald-400 font-bold">D1 现网 ✅</td>
+<td class="py-4 px-4 text-xs text-slate-400">订单→报工流程，当前核心交付</td>
+</tr>
+<tr>
+<td class="py-4 px-4 font-bold text-white">Knowledge Graph</td>
+<td class="py-4 px-4 text-xs">Stage 2+</td>
+<td class="py-4 px-4 text-xs text-slate-400">SOP、工艺文档知识化</td>
+</tr>
+<tr>
+<td class="py-4 px-4 font-bold text-white">Experience Graph</td>
+<td class="py-4 px-4 text-xs text-amber-500 font-bold">Stage 3+ 战略</td>
+<td class="py-4 px-4 text-xs text-slate-400">老师傅隐性经验沉淀（终极壁垒）</td>
+</tr>
+<tr>
+<td class="py-4 px-4 font-bold text-white">Decision Graph</td>
+<td class="py-4 px-4 text-xs">Stage 4+</td>
+<td class="py-4 px-4 text-xs text-slate-400">融合数据生成经营决策方案</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-4 p-4 rounded bg-slate-800/50 border border-slate-700 text-xs text-slate-400 leading-relaxed">
+<iconify-icon class="text-blue-400 mr-1" icon="ph:info-bold"></iconify-icon>
+<strong>说明文字：</strong>D1 交付聚焦 Business Graph + System Graph。Experience/Knowledge/Decision Graph 为中长期路线图规划，不作为当前交付承诺
+            </div>
+</section>
+<!-- 客户分型与准入分级 -->
+<h3 class="text-xl font-bold mb-6">客户画像与准入策略 (Customer Profiling)</h3>
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+<div class="glass-card rounded-xl overflow-hidden">
+<div class="p-4 bg-slate-800/50 border-b border-slate-700 text-sm font-bold">客户分型 (Classification)</div>
+<div class="divide-y divide-slate-800">
+<div class="p-4 flex justify-between items-center hover:bg-slate-800/30">
+<div>
+<p class="text-white font-bold text-sm">A 类客户</p>
+<p class="text-[10px] text-slate-500">有成熟 ERP/MES 账本</p>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-500 text-[10px] font-bold">🔴 核心目标</span>
+</div>
+<div class="p-4 flex justify-between items-center hover:bg-slate-800/30">
+<div>
+<p class="text-white font-bold text-sm">B 类客户</p>
+<p class="text-[10px] text-slate-500">烂系统 + Excel 并行</p>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 text-[10px] font-bold">🟡 高痛点·难啃</span>
+</div>
+<div class="p-4 flex justify-between items-center hover:bg-slate-800/30">
+<div>
+<p class="text-white font-bold text-sm">C 类客户</p>
+<p class="text-[10px] text-slate-500">无系统 (白地)</p>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-500 text-[10px] font-bold">⚪ 产品 B 全栈</span>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-xl overflow-hidden">
+<div class="p-4 bg-slate-800/50 border-b border-slate-700 text-sm font-bold">准入分级 (Qualification)</div>
+<div class="divide-y divide-slate-800">
+<div class="p-3 text-xs flex justify-between gap-4">
+<span class="w-12 font-bold text-blue-400">S (快)</span>
+<span class="flex-1 text-slate-400">已认证 ERP + 有 API + 有 MES 报工</span>
+<span class="w-16 text-right text-slate-500">4-6 周</span>
+</div>
+<div class="p-3 text-xs flex justify-between gap-4">
+<span class="w-12 font-bold text-emerald-400">A</span>
+<span class="flex-1 text-slate-400">同型 ERP 但仅 DB 只读权限</span>
+<span class="w-16 text-right text-slate-500">8-12 周</span>
+</div>
+<div class="p-3 text-xs flex justify-between gap-4 text-slate-500 italic">
+<span class="w-12 font-bold">C</span>
+<span class="flex-1">无 ERP、无编码规范 (不接)</span>
+<span class="w-16 text-right">—</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 对账机制与 Drift 告警 -->
+<section class="glass-card p-6 rounded-xl border-l-4 border-amber-500 mb-12 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<iconify-icon class="text-9xl" icon="ph:shield-warning-bold"></iconify-icon>
+</div>
+<h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-amber-500" icon="ph:arrows-left-right-bold"></iconify-icon>
+                Drift 漂移告警与对账机制
+            </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+<div class="space-y-4">
+<p class="text-sm text-slate-300 leading-relaxed">
+                        制造业通病是“账实不符”。FactoryOS 通过 <span class="text-amber-500 font-bold">ExecutionEvidence</span> 记录每一次指令发出，并由对账 Job 定时校验 ERP/MES 真实落账状态。
+                    </p>
+<div class="p-4 rounded-lg bg-slate-800/50 border border-slate-700 text-xs">
+<div class="flex items-center gap-2 mb-2 text-rose-400 font-bold">
+<iconify-icon icon="ph:warning-bold"></iconify-icon>
+<span>Drift detected!</span>
+</div>
+<p class="text-slate-400">Order #WO20240710-01: FactoryOS reported SUCCESS, but Kingdee ERP record NOT FOUND.</p>
+<p class="text-blue-400 mt-2 cursor-pointer hover:underline">→ 人工介入处理 (Workflow triggered)</p>
+</div>
+</div>
+<div class="bg-[#020617] p-6 rounded-xl border border-slate-800 flex flex-col gap-4">
+<div class="flex justify-between items-center text-[10px] text-slate-500 font-mono">
+<span>EV-RECORD-0822</span>
+<span>STATUS: PENDING_RECONCILE</span>
+</div>
+<div class="h-1 bg-slate-800 rounded-full overflow-hidden">
+<div class="w-2/3 h-full bg-blue-500"></div>
+</div>
+<div class="grid grid-cols-2 gap-4 text-center">
+<div class="p-2 border border-slate-800 rounded">
+<p class="text-[9px] text-slate-600 uppercase">OS Evidence</p>
+<p class="text-lg font-bold text-white">100 Pcs</p>
+</div>
+<div class="p-2 border border-slate-800 rounded">
+<p class="text-[9px] text-slate-600 uppercase">Legacy System</p>
+<p class="text-lg font-bold text-rose-500">0 Pcs</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 定价逻辑 -->
+<section class="glass-card p-6 rounded-xl mb-12">
+<h3 class="text-lg font-bold mb-6">商业化定价逻辑</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="p-4 rounded bg-slate-800/30 border border-slate-700 text-center">
+<p class="text-[10px] text-slate-500 uppercase mb-2">Shadow 试用</p>
+<p class="text-xl font-bold text-white mb-1">Q0 付费试运行</p>
+<p class="text-xs text-slate-400">低成本接入，只读模式验证 Graph</p>
+</div>
+<div class="p-4 rounded bg-blue-900/20 border border-blue-500/30 text-center scale-105 relative z-10">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-[8px] px-2 py-0.5 rounded-full font-bold">MOST POPULAR</div>
+<p class="text-[10px] text-blue-400 uppercase mb-2">D1 通病包</p>
+<p class="text-xl font-bold text-white mb-1">订阅 + 审计年费</p>
+<p class="text-xs text-slate-400">报工+查询+对账，实现闭环</p>
+</div>
+<div class="p-4 rounded bg-slate-800/30 border border-slate-700 text-center">
+<p class="text-[10px] text-slate-500 uppercase mb-2">资产化导出</p>
+<p class="text-xl font-bold text-white mb-1">Package License</p>
+<p class="text-xs text-slate-400">Graph/Pack 资产导出及授权</p>
+</div>
+</div>
+<div class="mt-8 flex justify-center">
+<p class="text-sm text-slate-400 italic">“不换 ERP，工人说一句话就能报工，财务能查、能退、能对账。”</p>
+</div>
+</section>
+<!-- ADR-003 模块包授权与覆盖配置 -->
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="ph:gavel-bold"></iconify-icon>
+            关键技术决策 — 模块包授权与覆盖配置 (ADR-003)
+        </h3>
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<div class="glass-card p-6 rounded-xl border-t-2 border-t-blue-500">
+<h4 class="font-bold text-white mb-3 flex items-center gap-2">
+<iconify-icon class="text-blue-400" icon="ph:arrows-left-right-bold"></iconify-icon>
+                    1. L3 Override/定制机制
+                </h4>
+<ul class="text-xs text-slate-400 space-y-2">
+<li class="flex gap-2 items-start"><iconify-icon class="text-blue-500 mt-0.5" icon="ph:check-circle-bold"></iconify-icon> 机制：OverrideDocument + 实施人天</li>
+<li class="flex gap-2 items-start"><iconify-icon class="text-blue-500 mt-0.5" icon="ph:check-circle-bold"></iconify-icon> 用途：客户特定字段映射覆盖，不修改通用 Pack</li>
+</ul>
+</div>
+<div class="glass-card p-6 rounded-xl border-t-2 border-t-emerald-500">
+<h4 class="font-bold text-white mb-3 flex items-center gap-2">
+<iconify-icon class="text-emerald-400" icon="ph:code-bold"></iconify-icon>
+                    2. Coding 预埋规则 (Phase 0)
+                </h4>
+<ul class="text-xs text-slate-400 space-y-2">
+<li class="flex gap-2 items-start"><iconify-icon class="text-emerald-500 mt-0.5" icon="ph:check-circle-bold"></iconify-icon> 全表含 tenant_id</li>
+<li class="flex gap-2 items-start"><iconify-icon class="text-emerald-500 mt-0.5" icon="ph:check-circle-bold"></iconify-icon> ExecutionRecord 含 scope_id (line/equipment)</li>
+<li class="flex gap-2 items-start"><iconify-icon class="text-emerald-500 mt-0.5" icon="ph:check-circle-bold"></iconify-icon> license-service 包占位</li>
+<li class="flex gap-2 items-start"><iconify-icon class="text-rose-500 mt-0.5" icon="ph:x-circle-bold"></iconify-icon> <span class="text-rose-400 font-bold">禁止 if (customerId === 'xxx')</span></li>
+</ul>
+</div>
+<div class="glass-card p-6 rounded-xl border-t-2 border-t-slate-600">
+<h4 class="font-bold text-white mb-3 flex items-center gap-2">
+<iconify-icon class="text-slate-400" icon="ph:dots-three-circle-bold"></iconify-icon>
+                    3. 不决策项 (Phase 2+)
+                </h4>
+<ul class="text-xs text-slate-500 space-y-2">
+<li>• 具体定价数字</li>
+<li>• 按写次数计量计费实现细节</li>
+<li>• 伙伴 Pack 签名算法</li>
+</ul>
+</div>
+</section>
+</main>
+</body>
+</html>

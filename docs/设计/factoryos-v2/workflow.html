@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ax OS · 智能中枢系统</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .sidebar-item-active { background-color: #1e293b; border-left: 4px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(51, 65, 85, 0.5); }
+        .step-node { position: relative; padding-bottom: 2rem; }
+        .step-node:last-child { padding-bottom: 0; }
+        .step-node::before { content: ''; position: absolute; left: 1rem; top: 2rem; bottom: 0; width: 2px; background: #334155; }
+        .step-node:last-child::before { display: none; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- 侧边栏 -->
+<aside class="w-64 glass-card flex flex-col flex-none">
+<div class="p-6 border-b border-slate-700">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-3xl text-blue-500" icon="ph:factory-bold"></iconify-icon>
+<span class="text-xl font-bold tracking-tight">Ax OS</span>
+</div>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">智能中枢系统</p>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="strategy.html">
+<iconify-icon icon="ph:grid-four-bold"></iconify-icon>
+<span>制造全景</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="integration.html">
+<iconify-icon icon="ph:plug-bold"></iconify-icon>
+<span>产业连接</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="business.html">
+<iconify-icon icon="ph:package-bold"></iconify-icon>
+<span>资产与复制</span>
+</a>
+<a class="sidebar-item-active flex items-center gap-3 px-6 py-3 transition-colors" href="workflow.html">
+<iconify-icon icon="ph:shield-check-bold"></iconify-icon>
+<span>运营与合规</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors" href="tenants.html">
+<iconify-icon icon="ph:cpu-bold"></iconify-icon>
+<span>平台治理</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+<div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold">A</div>
+<div class="flex-1 overflow-hidden text-xs">
+<p class="font-medium truncate">Ax OS</p>
+<p class="text-slate-500 truncate">v1.0.0</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- 主内容区 -->
+<main class="flex-1 overflow-y-auto p-8 bg-[#020617]">
+<!-- Header -->
+<header class="flex justify-between items-center mb-10">
+<div>
+<h1 class="text-3xl font-bold text-white">Ax OS · 运营与合规</h1>
+<p class="text-slate-400 mt-1">智能中枢系统 — 业务链路与实施流程</p>
+</div>
+<div class="flex gap-4">
+<div class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-sm font-medium transition-colors flex items-center gap-2 cursor-pointer">
+<iconify-icon icon="ph:play-bold"></iconify-icon>
+                    启动新产线实施 (D1)
+                </div>
+</div>
+</header>
+<!-- 七步实施法 -->
+<h3 class="text-xl font-bold mb-8 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="ph:list-numbers-bold"></iconify-icon>
+            Ax OS · 七步实施法 (Implementation Framework)
+        </h3>
+<p class="text-xs text-slate-500 mb-6">交付方法论（售前→Export）。<strong class="text-cyan-400">Studio 六步 UI 顺序</strong>以 Connect→Discover→Map→<strong>Prove(Shadow+双签)</strong>→<strong>Freeze</strong>→Export 为准（W-04～W-09）。</p>
+<section class="glass-card p-8 rounded-xl mb-12">
+<div class="max-w-4xl mx-auto">
+<div class="step-node flex gap-6">
+<div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold z-10 text-slate-400">0</div>
+<div>
+<h4 class="text-white font-bold">售前/准入评估 <span class="text-[10px] text-slate-500 ml-2 font-normal">(1-3天)</span></h4>
+<p class="text-xs text-slate-400 mt-1">系统清单收集、准入分级 (S/A/B/C)、数据完整性 Checklist。</p>
+</div>
+</div>
+<div class="step-node flex gap-6">
+<div class="w-8 h-8 rounded-full bg-blue-900 border border-blue-500 flex items-center justify-center text-xs font-bold z-10 text-blue-400">1</div>
+<div>
+<h4 class="text-white font-bold">环境接入与摸底 (只读)</h4>
+<p class="text-xs text-slate-400 mt-1">Connector 读接口/结构化摸底，完成 L2 业务缓存配置。</p>
+</div>
+</div>
+<div class="step-node flex gap-6">
+<div class="w-8 h-8 rounded-full bg-blue-900 border border-blue-500 flex items-center justify-center text-xs font-bold z-10 text-blue-400">2</div>
+<div>
+<h4 class="text-white font-bold">Discover &amp; Map（业务发现与映射）</h4>
+<p class="text-xs text-slate-400 mt-1">CMV 动词表 + 字段映射 + AI 置信度。对应 Studio W-05/W-06。</p>
+<a class="inline-flex items-center gap-1 text-[10px] text-cyan-400 hover:underline mt-2" href="studio.html">进入 Studio Discover/Map →</a>
+</div>
+</div>
+<div class="step-node flex gap-6">
+<div class="w-8 h-8 rounded-full bg-amber-900 border border-amber-500 flex items-center justify-center text-xs font-bold z-10 text-amber-500">3</div>
+<div>
+<h4 class="text-white font-bold italic">Prove：Shadow + 双签 (G-SHADOW / G-WRITE-APPROVE)</h4>
+<p class="text-xs text-slate-400 mt-1">Shadow ≥14 天、对账达标、实施方+客户方双签后方可开写。对应 Studio W-07。</p>
+<a class="inline-flex items-center gap-1 text-[10px] text-amber-500 hover:underline mt-2" href="shadow.html">进入 Shadow 管控台 →</a>
+</div>
+</div>
+<div class="step-node flex gap-6">
+<div class="w-8 h-8 rounded-full bg-blue-900 border border-blue-500 flex items-center justify-center text-xs font-bold z-10 text-blue-400">4</div>
+<div>
+<h4 class="text-white font-bold">Graph 冻结 (G-FREEZE)</h4>
+<p class="text-xs text-slate-400 mt-1">Prove 通过后工作坊冻结 Graph Draft → L4 frozen。对应 Studio W-08。</p>
+</div>
+</div>
+<div class="step-node flex gap-6">
+<div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold z-10 text-slate-400">5</div>
+<div>
+<h4 class="text-white font-bold">规则与 DSL 绑定 + 试点 UAT</h4>
+<p class="text-xs text-slate-400 mt-1">RuleSet 与 Graph 版本绑定；1 条产线跑通 Agent + ERP Overlay 闭环。</p>
+</div>
+</div>
+<div class="step-node flex gap-6">
+<div class="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-500 flex items-center justify-center text-xs font-bold z-10 text-emerald-400">6</div>
+<div>
+<h4 class="text-white font-bold">Export Package · 运维移交</h4>
+<p class="text-xs text-slate-400 mt-1">D1/D2 结案，Export 进入第二家 Import 飞轮。对应 Studio W-09 / W-10。</p>
+<a class="inline-flex items-center gap-1 text-[10px] text-emerald-400 hover:underline mt-2" href="import.html">第二家 Import 向导 →</a>
+</div>
+</div>
+</div>
+</section>
+<!-- 运营监控与审计 -->
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="ph:monitor-bold"></iconify-icon>
+            运营监控与全链路审计
+        </h3>
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<a class="glass-card p-6 rounded-xl border border-slate-800 hover:border-blue-500/50 transition-all group" href="drift.html">
+<div class="w-10 h-10 rounded bg-amber-500/10 flex items-center justify-center text-amber-500 mb-4 group-hover:scale-110 transition-transform">
+<iconify-icon class="text-2xl" icon="ph:radar-bold"></iconify-icon>
+</div>
+<h4 class="text-white font-bold mb-2">Drift 对账看板</h4>
+<p class="text-xs text-slate-500">监控 FactoryOS 与 Legacy 系统间的数据差异，确保账本零漂移。</p>
+</a>
+<a class="glass-card p-6 rounded-xl border border-slate-800 hover:border-blue-500/50 transition-all group" href="audit.html">
+<div class="w-10 h-10 rounded bg-blue-500/10 flex items-center justify-center text-blue-500 mb-4 group-hover:scale-110 transition-transform">
+<iconify-icon class="text-2xl" icon="ph:clock-counter-clockwise-bold"></iconify-icon>
+</div>
+<h4 class="text-white font-bold mb-2">审计时间线</h4>
+<p class="text-xs text-slate-500">全链路操作日志，ExecutionEvidence 证据链持久化记录。</p>
+</a>
+<a class="glass-card p-6 rounded-xl border border-slate-800 hover:border-blue-500/50 transition-all group" href="evidence.html">
+<div class="w-10 h-10 rounded bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-4 group-hover:scale-110 transition-transform">
+<iconify-icon class="text-2xl" icon="ph:shield-check-bold"></iconify-icon>
+</div>
+<h4 class="text-white font-bold mb-2">执行证据链路</h4>
+<p class="text-xs text-slate-500">查看单次操作的 6 步完整证据链，包含 Snapshots 与 Hash。</p>
+</a>
+</section>
+<!-- 产品 B-Lite 应急开发指引 -->
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-amber-500" icon="ph:lightning-bold"></iconify-icon>
+            产品 B-Lite 应急开发指引
+        </h3>
+<section class="glass-card p-6 rounded-xl border-l-4 border-amber-500 mb-12">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div>
+<h4 class="font-bold text-white mb-4">场景：无 ERP 客户的快速部署方案</h4>
+<div class="space-y-4">
+<div class="p-3 rounded bg-amber-900/20 border border-amber-500/30">
+<p class="text-xs font-bold text-amber-400 mb-1">核心交付节点</p>
+<p class="text-xs text-slate-300">D10：Simulated ExecutionRecord 14 天环境就绪；实施文档交接</p>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-300 mb-2">不可砍项 (与 Overlay 相同)</p>
+<ul class="space-y-1 text-xs text-slate-400">
+<li class="flex items-center gap-2"><iconify-icon class="text-emerald-500" icon="ph:check-circle-bold"></iconify-icon> Graph freeze + Rule + Audit + Revert</li>
+<li class="flex items-center gap-2"><iconify-icon class="text-emerald-500" icon="ph:check-circle-bold"></iconify-icon> B0 编码 workshop 书面签字</li>
+<li class="flex items-center gap-2"><iconify-icon class="text-emerald-500" icon="ph:check-circle-bold"></iconify-icon> 无 ERP ≠ 无确认门 / 无 Simulated ExecutionRecord</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+<h4 class="text-xs font-bold text-slate-500 uppercase mb-4">增量工期 (Man-power &amp; Cycle)</h4>
+<table class="w-full text-xs">
+<thead class="text-slate-500 border-b border-slate-800">
+<tr>
+<th class="text-left py-2">前提</th>
+<th class="text-right py-2">增量工期</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800 text-slate-300">
+<tr>
+<td class="py-3">AC-BASE-001 已绿</td>
+<td class="py-3 text-right text-emerald-400 font-bold">2～4 周<br/><span class="text-[10px] font-normal text-slate-500">(1～2 后端)</span></td>
+</tr>
+<tr>
+<td class="py-3">底座未就绪</td>
+<td class="py-3 text-right text-amber-400 font-bold">先 8～11 周 Gate 0<br/><span class="text-[10px] font-normal text-slate-500">再 +2～4 周</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- 三条切入路径与部署隔离模型 -->
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-blue-500" icon="ph:tree-structure-bold"></iconify-icon>
+            写入路径与部署隔离模型 (Path &amp; Deployment)
+        </h3>
+<div class="space-y-8 mb-12">
+<!-- 子区块1：三条写入路径 -->
+<section class="glass-card p-6 rounded-xl">
+<h4 class="text-lg font-bold mb-4 text-blue-400 border-b border-slate-700 pb-2">子区块1：三条写入路径 (Path A/B/C)</h4>
+<div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="text-slate-500 border-b border-slate-800">
+<tr>
+<th class="text-left py-3 px-4">路径</th>
+<th class="text-left py-3 px-4">定义</th>
+<th class="text-left py-3 px-4">写入方式</th>
+<th class="text-left py-3 px-4">典型场景</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800 text-slate-300">
+<tr>
+<td class="py-4 px-4 font-bold text-white">Path A</td>
+<td class="py-4 px-4 text-xs">ERP 写路径</td>
+<td class="py-4 px-4 text-xs">Agent → DSL → Rule Engine → Connector → <span class="text-blue-400 font-mono text-[10px]">ERP API</span> 直接写入</td>
+<td class="py-4 px-4 text-xs text-slate-400">哈森灯塔：无MES，报工直写金蝶ERP</td>
+</tr>
+<tr>
+<td class="py-4 px-4 font-bold text-white">Path B</td>
+<td class="py-4 px-4 text-xs">MES 写 + ERP 读</td>
+<td class="py-4 px-4 text-xs">MES 负责写入生产数据，Connector 读取 ERP 数据用于对账/追溯</td>
+<td class="py-4 px-4 text-xs text-slate-400">通用MES厂：MES写入+ERP读取 (Acme占位, 当前blocked)</td>
+</tr>
+<tr>
+<td class="py-4 px-4 font-bold text-white">Path C</td>
+<td class="py-4 px-4 text-xs">Builtin 内置账本</td>
+<td class="py-4 px-4 text-xs">Agent → DSL → Rule Engine → <span class="text-amber-400 font-mono text-[10px]">builtin_ledger schema</span> (PostgreSQL)</td>
+<td class="py-4 px-4 text-xs text-slate-400">B-Lite：无ERP无MES环境，内置账本实现D1报工闭环</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- 子区块2：三种部署隔离模型 -->
+<section class="glass-card p-6 rounded-xl">
+<h4 class="text-lg font-bold mb-4 text-emerald-400 border-b border-slate-700 pb-2">子区块2：三种部署隔离模型 (Pool/Bridge/Silo)</h4>
+<div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="text-slate-500 border-b border-slate-800">
+<tr>
+<th class="text-left py-3 px-4">模型</th>
+<th class="text-left py-3 px-4">描述</th>
+<th class="text-left py-3 px-4">适用场景</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800 text-slate-300">
+<tr>
+<td class="py-4 px-4 font-bold text-white">Pool</td>
+<td class="py-4 px-4 text-xs">SaaS多租户池，单VPC·RDS·tenant_id+RLS逻辑隔离</td>
+<td class="py-4 px-4 text-xs text-slate-400">哈森灯塔（首期SaaS部署）</td>
+</tr>
+<tr>
+<td class="py-4 px-4 font-bold text-white">Bridge</td>
+<td class="py-4 px-4 text-xs">schema-per-tenant 隔离，同库不同schema，非私网桥接</td>
+<td class="py-4 px-4 text-xs text-slate-400">通用MES厂（需要schema级隔离）</td>
+</tr>
+<tr>
+<td class="py-4 px-4 font-bold text-white">Silo</td>
+<td class="py-4 px-4 text-xs">独立部署，内置账本独立运行</td>
+<td class="py-4 px-4 text-xs text-slate-400">B-Lite（无ERP无MES）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-4 p-4 rounded bg-blue-900/10 border border-blue-500/20 text-xs text-slate-400 leading-relaxed">
+<iconify-icon class="text-blue-400 mr-1" icon="ph:info-bold"></iconify-icon>
+<strong>说明文字：</strong>写入路径（Path A/B/C）与部署模型（Pool/Bridge/Silo）是两个独立维度。例如 Path A 可以跑在 Pool 上也跑在 Silo 上；Path C 可以选择 Silo 也可以选择 Pool。当前首期哈森灯塔采用 Path A + Pool 组合。
+                </div>
+</section>
+</div>
+<!-- 写路径红线 -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+<div class="p-6 rounded-xl bg-rose-900/10 border border-rose-500/20 relative overflow-hidden">
+<div class="absolute -top-4 -right-4 opacity-5">
+<iconify-icon class="text-[200px]" icon="ph:shield-warning-bold"></iconify-icon>
+</div>
+<h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="text-rose-500" icon="ph:warning-octagon-bold"></iconify-icon>
+                    唯一写路径红线 (The Red Line)
+                </h3>
+<div class="space-y-4 relative z-10">
+<div class="flex items-center gap-4 bg-[#020617] p-3 rounded border border-rose-500/30">
+<span class="text-rose-500 font-mono font-bold">MANDATORY</span>
+<iconify-icon class="text-slate-700" icon="ph:arrow-right-bold"></iconify-icon>
+<span class="text-xs text-slate-300 italic">ExecutionEvidence 必须在 Connector 调用前持久化</span>
+</div>
+<ul class="space-y-2 text-xs text-slate-400">
+<li class="flex gap-2"><iconify-icon class="text-rose-500" icon="ph:x-circle-bold"></iconify-icon> 禁止 Agent 直接写数据库</li>
+<li class="flex gap-2"><iconify-icon class="text-rose-500" icon="ph:x-circle-bold"></iconify-icon> 禁止无确认的库存调整/自动审批</li>
+<li class="flex gap-2"><iconify-icon class="text-emerald-500" icon="ph:check-circle-bold"></iconify-icon> 先读 → 后建议 → 再确认 → 最后自动化</li>
+</ul>
+</div>
+</div>
+<div class="glass-card p-6 rounded-xl">
+<h3 class="text-lg font-bold mb-6">加速飞轮 (Flywheel)</h3>
+<div class="flex flex-col gap-4">
+<div class="p-4 rounded-lg bg-slate-800/40 border border-slate-700 text-xs">
+<p class="font-bold text-white mb-1">第 1 家 (考古):</p>
+<p class="text-slate-400">全量七步实施，提炼 Business Graph，完成 Export Package。</p>
+</div>
+<div class="text-center py-1">
+<iconify-icon class="text-blue-500 animate-bounce text-2xl" icon="ph:caret-double-down-bold"></iconify-icon>
+</div>
+<div class="p-4 rounded-lg bg-blue-900/20 border border-blue-500/30 text-xs">
+<p class="font-bold text-blue-400 mb-1">第 2 家起 (Import):</p>
+<p class="text-blue-200">Import 为主，Workshop 仅处理差量。实施周期缩短 60%。</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 系统与业务资产全链路 -->
+<h3 class="text-xl font-bold mb-6">交付资产清单 (Implementation Package)</h3>
+<section class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
+<div class="p-4 glass-card rounded text-center">
+<iconify-icon class="text-2xl text-blue-400 mb-2" icon="ph:tree-structure-bold"></iconify-icon>
+<p class="text-[10px] text-slate-300">Frozen Graph</p>
+</div>
+<div class="p-4 glass-card rounded text-center">
+<iconify-icon class="text-2xl text-emerald-400 mb-2" icon="ph:shield-check-bold"></iconify-icon>
+<p class="text-[10px] text-slate-300">Rule 模板</p>
+</div>
+<div class="p-4 glass-card rounded text-center">
+<iconify-icon class="text-2xl text-amber-400 mb-2" icon="ph:lightning-bold"></iconify-icon>
+<p class="text-[10px] text-slate-300">Skill Pack</p>
+</div>
+<div class="p-4 glass-card rounded text-center">
+<iconify-icon class="text-2xl text-purple-400 mb-2" icon="ph:plug-bold"></iconify-icon>
+<p class="text-[10px] text-slate-300">Connector Pack</p>
+</div>
+<div class="p-4 glass-card rounded text-center bg-blue-500/10 border-blue-500/50">
+<iconify-icon class="text-2xl text-blue-500 mb-2" icon="ph:briefcase-bold"></iconify-icon>
+<p class="text-[10px] text-white font-bold">最终导出版</p>
+</div>
+</section>
+<!-- Bottom Actions -->
+<div class="max-w-4xl mx-auto mt-12 flex justify-center gap-6 pb-20">
+<a class="flex items-center gap-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-emerald-600/20" href="gate.html">
+<span>查看门禁地图 →</span>
+</a>
+<a class="flex items-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-500/20" href="studio.html">
+<span>进入 Integration Studio →</span>
+</a>
+</div>
+</main>
+</body>
+</html>

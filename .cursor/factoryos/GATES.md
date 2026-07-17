@@ -90,6 +90,7 @@ Dev step-stop-*-stepN.md
 
 ```text
 _factoryos_pipeline/<YYYY-MM-DD>/
+  pm/pm-<HHmm>-*.md                             # PM Agent（确认规划前 · 无需 plan.ok）
   plan/plan-<HHmm>-<slug>.md
   test/test-<HHmm>-<slug>.md                    # 编码前 test-plan
   test/test-<HHmm>-stepN-regression.md          # 每 Step Test 硬性验收（强制）
@@ -99,7 +100,9 @@ _factoryos_pipeline/<YYYY-MM-DD>/
   summary/change-summary-<HHmm>.md
 ```
 
-模板：`.cursor/factoryos/templates/test-step-regression-template.md` · `test-final-regression-template.md`
+模板：`.cursor/factoryos/templates/pm-*-template.md` · `test-step-regression-template.md` · `test-final-regression-template.md`
+
+**PM 口令**（产品轨 · 不替代 stamp）：`【PM模式启动】` → 见 [PM-GATES.md](./PM-GATES.md)。
 
 ## 违规回滚
 
