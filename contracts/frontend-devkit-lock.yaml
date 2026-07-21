@@ -3,8 +3,8 @@
 # 变更纪律：结构/治理/技术策略改动须用户书面确认 → 改金样 → sync → bump version
 
 lock_id: frontend-devkit
-version: "2.0.0-s6"
-locked_at: "2026-07-08"
+version: "2.0.0-s7"
+locked_at: "2026-07-21"
 decision_ref: D16-frontend-devkit-lock
 golden_source: src/apps/web-admin
 template_path: templates/frontend-devkit
@@ -97,6 +97,15 @@ parity_required_paths:
   - ARCHITECTURE.md
   - scripts/check_harness.py
   - scripts/activate.sh
+  - scripts/web_gate
+  - scripts/web_gate_cli.py
+  - scripts/web_plan_gate_lib.py
+  - scripts/web_check_harness_eval.py
+  - scripts/web_harness_eval_lib.py
+  - scripts/web_failure_taxonomy_lib.py
+  - .cursor/factoryos/WEB-GATES.md
+  - .cursor/factoryos/WEB-HARNESS-EVAL.md
+  - .cursor/INDEX.md
   - scripts/check_comments.py
   - scripts/check_comments_commit_hook.py
   - scripts/comment_fix.py

@@ -84,18 +84,28 @@ def test_workflow_state_can_test_blocked_without_plan_ok() -> None:
   import plan_gate_lib
 
   backup = _backup_gates()
+  materials_backup = (
+    plan_gate_lib.MATERIALS_GATE.read_text(encoding="utf-8")
+    if plan_gate_lib.MATERIALS_GATE.is_file()
+    else None
+  )
   if PLAN_GATE.is_file():
     PLAN_GATE.unlink()
+  # 升到 CAN_TEST 前须 materials.ok；本测只断言缺 plan.ok 仍拦截
+  plan_gate_lib.write_materials_gate_stamp(mode="na", reason="unit-test")
   try:
     text = STATE_FILE.read_text(encoding="utf-8")
-    text = text.replace("phase: CAN_TEST", "phase: PLANNING")
-    text = text.replace("phase: CAN_CODE", "phase: PLANNING")
-    text = text.replace("phase: CAN_VERIFY", "phase: PLANNING")
-    simulated = text.replace("phase: PLANNING", "phase: CAN_TEST", 1)
+    import re
+    simulated = re.sub(r"^phase:\s*\S+", "phase: CAN_TEST", text, count=1, flags=re.M)
     errors = plan_gate_lib.validate_workflow_state_content(simulated)
-    assert any("plan.ok" in e for e in errors)
+    assert any("plan.ok" in e for e in errors), errors
   finally:
     _restore_gates(backup)
+    if materials_backup is None:
+      if plan_gate_lib.MATERIALS_GATE.is_file():
+        plan_gate_lib.MATERIALS_GATE.unlink()
+    else:
+      plan_gate_lib.MATERIALS_GATE.write_text(materials_backup, encoding="utf-8")
 
 
 @pytest.mark.workflow
@@ -151,6 +161,7 @@ def test_workflow_state_documents_plan_absolute_gate() -> None:
 @pytest.mark.workflow
 def test_protect_paths_hook_module_documents_stamps() -> None:
   hook = (ROOT / ".cursor" / "hooks" / "protect-paths.py").read_text(encoding="utf-8")
+  assert "materials.ok" in hook
   assert "plan.ok" in hook
   assert "code.ok" in hook
   assert "test.ok" in hook

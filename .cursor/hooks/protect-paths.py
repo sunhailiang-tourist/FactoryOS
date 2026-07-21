@@ -1,16 +1,18 @@
-#!/usr/bin/env python3
 """Cursor preToolUse hook: SH-步步流路径保护（fail closed · stamp 绝对门禁）。
 
 真源 stamp（仅 ./scripts/gate 可写）：
-  plan.ok  ← gate plan（用户「确认规划」后）
-  test.ok  ← gate test
-  code.ok  ← gate start（用户「可以开始」后）
+  materials.ok ← gate materials（用户「材料已齐」后）
+  plan.ok      ← gate plan（用户「确认规划」后）
+  test.ok      ← gate test
+  code.ok      ← gate start（用户「可以开始」后）
 
+垂直链：materials → plan → test → code（不可跳）。
 Agent 改 workflow_state 升 phase 须与 stamp 一致，否则 deny。
 """
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -111,6 +113,25 @@ def is_src_code_path(path: str) -> bool:
     return path.startswith("src/") and path.endswith((".py", ".sql"))
 
 
+def is_frontend_app_scripts_path(path: str) -> bool:
+    """前端 App 内 scripts/（web_gate 等）— 非后端业务码，允许维护。"""
+    return bool(
+        re.match(r"^src/apps/[^/]+/scripts/", path)
+    ) and path.endswith((".py", ".sh"))
+
+
+def is_frontend_app_cursor_path(path: str) -> bool:
+    """前端 App 内 .cursor/（WEB 工作流/hooks）— 允许维护。"""
+    return bool(re.match(r"^src/apps/[^/]+/\.cursor/", path))
+
+
+def is_web_pipeline_path(path: str) -> bool:
+    """WEB 独立落盘：src/apps/<id>/_web_pipeline/ 或迁出后 _web_pipeline/。"""
+    if path.startswith("_web_pipeline/"):
+        return True
+    return bool(re.match(r"^src/apps/[^/]+/_web_pipeline/", path))
+
+
 def is_gate_stamp_path(path: str) -> bool:
     return path.startswith("_factoryos_pipeline/.gates/")
 
@@ -119,8 +140,75 @@ def is_workflow_state_path(path: str) -> bool:
     return path == "_factoryos_pipeline/workflow_state.md"
 
 
+def is_materials_draft_path(path: str) -> bool:
+    """材料准入单：无需 stamp（gate materials 之前可落盘）。"""
+    return (
+        path.startswith("_factoryos_pipeline/")
+        and "/plan/materials-" in path
+        and path.endswith(".md")
+    )
+
+
 def is_plan_draft_path(path: str) -> bool:
-    return "/plan/plan-" in path and path.endswith(".md")
+    """仅 FactoryOS 后端 plan（不含 WEB _web_pipeline）。"""
+    return (
+        path.startswith("_factoryos_pipeline/")
+        and "/plan/plan-" in path
+        and path.endswith(".md")
+    )
+
+
+def is_web_materials_draft_path(path: str) -> bool:
+    return is_web_pipeline_path(path) and "/plan/materials-" in path and path.endswith(".md")
+
+
+def is_web_plan_draft_path(path: str) -> bool:
+    return is_web_pipeline_path(path) and "/plan/plan-" in path and path.endswith(".md")
+
+
+def is_web_gate_stamp_path(path: str) -> bool:
+    return is_web_pipeline_path(path) and "/.gates/" in path
+
+
+def is_web_app_src_path(path: str) -> bool:
+    """前端 App 业务源码：src/apps/<id>/src/**.{ts,tsx,js,jsx,css}。"""
+    if not re.match(r"^src/apps/[^/]+/src/", path):
+        return False
+    return path.endswith((".ts", ".tsx", ".js", ".jsx", ".css", ".mjs"))
+
+
+def resolve_web_app_root(path: str) -> Path | None:
+    """从路径解析 App 根（含 web_gate_cli 的前端）。"""
+    m = re.match(r"^(src/apps/[^/]+)/", path)
+    if m:
+        app = ROOT / m.group(1)
+        if (app / "scripts" / "web_gate_cli.py").is_file():
+            return app
+        return app if (app / "_web_pipeline").is_dir() or path.startswith(m.group(1) + "/_web_pipeline") else None
+    if path.startswith("_web_pipeline/"):
+        # 迁出后 CWD 即 App 根
+        if (ROOT / "scripts" / "web_gate_cli.py").is_file():
+            return ROOT
+    return None
+
+
+def load_web_plan_gate(app_root: Path):
+    """动态加载 App 内 web_plan_gate_lib。"""
+    scripts = str(app_root / "scripts")
+    if scripts not in sys.path:
+        sys.path.insert(0, scripts)
+    import web_plan_gate_lib as wpg
+
+    # 绑定到该 App（支持多 App）
+    wpg.APP_ROOT = app_root
+    wpg.PIPELINE = app_root / "_web_pipeline"
+    wpg.GATES_DIR = wpg.PIPELINE / ".gates"
+    wpg.STATE_FILE = wpg.PIPELINE / "workflow_state.md"
+    wpg.MATERIALS_GATE = wpg.GATES_DIR / "materials.ok"
+    wpg.PLAN_GATE = wpg.GATES_DIR / "plan.ok"
+    wpg.TEST_GATE = wpg.GATES_DIR / "test.ok"
+    wpg.CODE_GATE = wpg.GATES_DIR / "code.ok"
+    return wpg
 
 
 def is_pm_draft_path(path: str) -> bool:
@@ -227,9 +315,71 @@ def main() -> None:
     if is_gate_stamp_path(path):
         deny(
             "绝对门禁：_factoryos_pipeline/.gates/* 仅 ./scripts/gate 可写 — "
-            "Agent 禁止伪造 plan.ok / test.ok / code.ok",
-            "Run ./scripts/gate plan|test|start — never Write stamp files.",
+            "Agent 禁止伪造 materials.ok / plan.ok / test.ok / code.ok",
+            "Run ./scripts/gate materials|plan|test|start — never Write stamp files.",
         )
+        return
+
+    # --- WEB stamp：仅 web_gate 可写 ---
+    if is_web_gate_stamp_path(path):
+        deny(
+            "WEB绝对门禁：_web_pipeline/.gates/* 仅 ./scripts/web_gate 可写 — 禁止伪造 stamp",
+            "Run ./scripts/web_gate materials|plan|test|start — never Write WEB stamps.",
+        )
+        return
+
+    # --- 前端 App scripts（web_gate 等）---
+    if is_frontend_app_scripts_path(path):
+        print(json.dumps({"permission": "allow"}))
+        return
+
+    # --- 前端 App .cursor（WEB 工作流包）---
+    if is_frontend_app_cursor_path(path):
+        print(json.dumps({"permission": "allow"}))
+        return
+
+    # --- WEB materials 草稿 ---
+    if is_web_materials_draft_path(path):
+        print(json.dumps({"permission": "allow"}))
+        return
+
+    # --- WEB plan：须 web materials.ok ---
+    if is_web_plan_draft_path(path):
+        app = resolve_web_app_root(path)
+        if app is None:
+            deny("WEB绝对门禁：无法解析 App 根", "Cannot resolve web app root.")
+            return
+        try:
+            wpg = load_web_plan_gate(app)
+            errors = wpg.validate_materials_stamp()
+        except Exception as exc:  # noqa: BLE001
+            deny(f"WEB绝对门禁：web_plan_gate 加载失败 — {exc}", str(exc))
+            return
+        if errors:
+            deny(errors[0], errors[0])
+            return
+        print(json.dumps({"permission": "allow"}))
+        return
+
+    # --- WEB 业务 src：须 web code.ok ---
+    if is_web_app_src_path(path):
+        app = resolve_web_app_root(path)
+        if app is not None and (app / "scripts" / "web_gate_cli.py").is_file():
+            try:
+                wpg = load_web_plan_gate(app)
+                wstate = wpg.read_workflow_state()
+                try:
+                    wstep = int(wstate.get("step", "1") or "1")
+                except ValueError:
+                    wstep = 1
+                errors = wpg.validate_src_business_write(step=wstep)
+            except Exception as exc:  # noqa: BLE001
+                deny(f"WEB绝对门禁：校验异常 — {exc}", str(exc))
+                return
+            if errors:
+                deny(errors[0], errors[0])
+                return
+        print(json.dumps({"permission": "allow"}))
         return
 
     # --- workflow_state：升 phase 须 stamp 对齐 ---
@@ -254,8 +404,17 @@ def main() -> None:
         print(json.dumps({"permission": "allow"}))
         return
 
-    # --- plan 草稿：PLANNING 阶段允许 ---
+    # --- materials 草稿：材料已齐 stamp 之前允许 ---
+    if is_materials_draft_path(path):
+        print(json.dumps({"permission": "allow"}))
+        return
+
+    # --- plan 草稿：须 materials.ok ---
     if is_plan_draft_path(path):
+        errors = pg.validate_materials_stamp()
+        if errors:
+            deny(errors[0], errors[0])
+            return
         print(json.dumps({"permission": "allow"}))
         return
 

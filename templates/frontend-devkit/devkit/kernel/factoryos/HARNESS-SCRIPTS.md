@@ -17,7 +17,7 @@
 |------|------|------|
 | `contracts` | L0 | openapi refs · cmv sync |
 | `boundaries` | L1 | + import boundaries · kernel/router/integration registry · legacy paths |
-| `step` / `full` | L2 | + repo-structure · **structure commit gate** · path consistency · redundancy |
+| `step` / `full` | L2 | + repo-structure · **structure commit gate** · path consistency · redundancy · **python comments** |
 | `auto` | 推断 | git diff → 上表最高层；无 diff → `full` |
 
 L3 行为：`gate step` 内含 `--pytest -k '<AC-ID>'` + 单步 Test 落盘 + verify + 静态  
@@ -28,9 +28,9 @@ L3 终轮：`gate delivery` = workflow + contract + **integration** 全量 pytes
 | 节点 | 命令 |
 |------|------|
 | Step 0-B 契约对账后 | `./scripts/harness --tier contracts` |
-| plan 落盘（`确认规划`） | `./scripts/gate plan` |
+| plan 落盘（`确认规划`） | `./scripts/gate plan`（`check_plan_spec`：AC/HTTP + **v2 结构** · materials · UI §8） |
 | 编码中（按改动面） | `./scripts/harness --tier auto` |
-| Dev step-stop 后 | `【Test·Step N 验收】` → `test-*-stepN-regression.md` |
+| Dev step-stop 后 | step-stop 须含 **UI字段对账**（`step_chain_lib`）→ `【Test·Step N 验收】` |
 | Verify 后 | `./scripts/gate step --step N -k '<AC-ID>'` |
 | 全部 Step 完成后 | `【Test·终轮回归】` → `gate delivery` |
 | CI / PR | `./scripts/gate pr`（含 deptry）或 `./scripts/gate gate0` |

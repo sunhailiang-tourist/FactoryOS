@@ -45,7 +45,12 @@ def test_step_chain_closed_needs_all_three_artifacts(
   (plan_dir / "plan" / "plan-test.md").write_text("# plan\n", encoding="utf-8")
 
   stop = plan_dir / "step-stop" / "step-stop-1200-step1.md"
-  stop.write_text("## 结论：通过\n", encoding="utf-8")
+  stop.write_text(
+    "## 自检\n| 11 | UI字段对账 | N/A |\n\n"
+    "- **运行时证据**：N/A（单测）\n\n"
+    "## 结论：通过\n",
+    encoding="utf-8",
+  )
   reg = plan_dir / "test" / "test-1200-step1-regression.md"
   reg.write_text("## 结论：通过\n", encoding="utf-8")
   vf = plan_dir / "verify" / "verify-1200-step1.md"

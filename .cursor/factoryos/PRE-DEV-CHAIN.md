@@ -190,7 +190,6 @@ _factoryos_pipeline/
 | `src/` | [src/README.md](../../src/README.md) |
 | `_factoryos_pipeline/` | [_factoryos_pipeline/README.md](../../_factoryos_pipeline/README.md) |
 | `docs/` | [docs/README.md](../../docs/README.md) |
-| `rules/`（存档） | [rules/README.md](../../rules/README.md) |
 
 ---
 

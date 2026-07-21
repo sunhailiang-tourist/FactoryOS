@@ -1,7 +1,7 @@
-"""确认规划绝对门禁（plan.ok / test.ok / code.ok ↔ workflow_state）。
+"""确认规划绝对门禁（materials.ok / plan.ok / test.ok / code.ok ↔ workflow_state）。
 
 作用：Hook 与 gate CLI 的机械真源；不依赖 Agent 自报 phase。
-业务关联：L1「确认规划」→ gate plan ·「可以开始」→ gate start。
+业务关联：L1「材料已齐」→ gate materials ·「确认规划」→ gate plan ·「可以开始」→ gate start。
 上游：check_pipeline · gate_cli · protect-paths hook
 下游：阻断无 stamp 写码 / 伪造 workflow_state 升 phase
 """
@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PIPELINE = ROOT / "_factoryos_pipeline"
 GATES_DIR = PIPELINE / ".gates"
 STATE_FILE = PIPELINE / "workflow_state.md"
+MATERIALS_GATE = GATES_DIR / "materials.ok"
 PLAN_GATE = GATES_DIR / "plan.ok"
 TEST_GATE = GATES_DIR / "test.ok"
 CODE_GATE = GATES_DIR / "code.ok"
@@ -34,11 +35,14 @@ def read_workflow_state() -> dict[str, str]:
 def parse_state_yaml(text: str) -> dict[str, str]:
   """从 markdown 文本解析 workflow yaml 块。"""
   out: dict[str, str] = {}
-  for key in ("phase", "agent", "step", "plan", "test_plan"):
+  for key in ("phase", "agent", "step", "plan", "test_plan", "materials"):
     m = re.search(rf"^{key}:\s*(.*)$", text, re.MULTILINE)
     if not m:
       continue
     value = m.group(1).strip()
+    if key == "materials" and value.lower() in ("na", "n/a"):
+      out[key] = "na"
+      continue
     if value and value not in EMPTY_PLAN_TOKENS:
       out[key] = value
   return out
@@ -54,6 +58,10 @@ def parse_gate_stamp(path: Path) -> dict[str, str] | None:
       k, v = line.split("=", 1)
       out[k.strip()] = v.strip()
   return out or None
+
+
+def parse_materials_ok() -> dict[str, str] | None:
+  return parse_gate_stamp(MATERIALS_GATE)
 
 
 def parse_plan_ok() -> dict[str, str] | None:
@@ -90,14 +98,66 @@ def resolve_test_plan_path(state: dict[str, str]) -> Path | None:
   return path
 
 
+def resolve_materials_path(state: dict[str, str] | None = None) -> Path | None:
+  """workflow_state.materials 或 materials.ok 中的路径 → Path。"""
+  state = state or read_workflow_state()
+  raw = state.get("materials", "").strip()
+  if not raw or raw.lower() in ("na", "n/a"):
+    gate = parse_materials_ok()
+    if gate and gate.get("mode") != "na":
+      raw = gate.get("materials", "").strip()
+  if not raw or raw.lower() in ("na", "n/a"):
+    return None
+  path = Path(raw)
+  if not path.is_absolute():
+    path = ROOT / path
+  return path
+
+
 def invalidate_downstream_stamps(*, through: str = "plan") -> None:
-  """plan/test 重盖章时作废下游 stamp（防旧轮次误用）。"""
-  if through in ("plan", "test"):
+  """上游重盖章时作废下游 stamp（防旧轮次误用）。
+
+  through=materials → 废 plan/test/code
+  through=plan → 废 test/code
+  through=test → 废 code
+  """
+  if through in ("materials", "plan", "test"):
     if CODE_GATE.is_file():
       CODE_GATE.unlink()
-  if through == "plan":
+  if through in ("materials", "plan"):
     if TEST_GATE.is_file():
       TEST_GATE.unlink()
+  if through == "materials":
+    if PLAN_GATE.is_file():
+      PLAN_GATE.unlink()
+
+
+def write_materials_gate_stamp(
+  *,
+  materials_rel: str | None = None,
+  mode: str = "file",
+  reason: str = "",
+) -> None:
+  """gate materials 成功后写入 materials.ok。
+
+  mode=file：materials_rel 为 materials-*.md 相对路径
+  mode=na：Bug/联调等非新功能，reason 必填
+  """
+  from datetime import datetime, timezone
+
+  GATES_DIR.mkdir(parents=True, exist_ok=True)
+  invalidate_downstream_stamps(through="materials")
+  ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+  if mode == "na":
+    MATERIALS_GATE.write_text(
+      f"mode=na\nreason={reason or 'non-feature'}\nat={ts}\n",
+      encoding="utf-8",
+    )
+    return
+  MATERIALS_GATE.write_text(
+    f"mode=file\nmaterials={materials_rel}\nat={ts}\n",
+    encoding="utf-8",
+  )
 
 
 def write_plan_gate_stamp(plan_rel: str) -> None:
@@ -149,6 +209,64 @@ def _stamp_plan_matches_state(gate: dict[str, str], state: dict[str, str]) -> li
     errors.append(
       "绝对门禁：plan stamp 与 workflow_state.plan 不一致 — "
       f"stamp={gated!r} state.plan={state_rel!r}；须重新 ./scripts/gate plan"
+    )
+  return errors
+
+
+def validate_materials_stamp() -> list[str]:
+  """机械「材料已齐」：须 materials.ok（file 或 na）。
+
+  返回：错误列表；空 = 通过
+  """
+  errors: list[str] = []
+  gate = parse_materials_ok()
+  if gate is None:
+    errors.append(
+      "绝对门禁：缺少 _factoryos_pipeline/.gates/materials.ok — "
+      "须用户「材料已齐」后执行 ./scripts/gate materials"
+      "（新功能给 --materials；Bug/联调用 --na）"
+    )
+    return errors
+
+  mode = gate.get("mode", "file")
+  if mode == "na":
+    if not gate.get("reason"):
+      errors.append("绝对门禁：materials.ok mode=na 须含 reason")
+    return errors
+
+  raw = gate.get("materials", "").strip()
+  if not raw:
+    errors.append("绝对门禁：materials.ok 缺少 materials= 路径")
+    return errors
+  path = Path(raw)
+  if not path.is_absolute():
+    path = ROOT / path
+  if not path.is_file():
+    errors.append(f"绝对门禁：materials 文件不存在 — {raw}")
+
+  state = read_workflow_state()
+  state_mat = state.get("materials", "")
+  if state_mat and state_mat not in ("na", "n/a") and state_mat != raw:
+    errors.append(
+      "绝对门禁：materials.ok 与 workflow_state.materials 不一致 — "
+      f"stamp={raw!r} state.materials={state_mat!r}；须重新 ./scripts/gate materials"
+    )
+  return errors
+
+
+def validate_materials_for_plan(plan_path: Path | None) -> list[str]:
+  """gate plan 前置：materials.ok + 新功能不得 mode=na。"""
+  errors = validate_materials_stamp()
+  if plan_path is None or not plan_path.is_file():
+    return errors
+  text = plan_path.read_text(encoding="utf-8")
+  type_m = re.search(r"\*\*类型\*\*[：:]\s*(.+)", text)
+  type_val = type_m.group(1).strip() if type_m else ""
+  gate = parse_materials_ok() or {}
+  if "新功能" in type_val and gate.get("mode") == "na":
+    errors.append(
+      f"{plan_path}: 类型=新功能 禁止 materials.ok mode=na — "
+      "须 ./scripts/gate materials --materials <path>"
     )
   return errors
 
@@ -243,10 +361,13 @@ def validate_src_business_write(*, step: int) -> list[str]:
 
 
 def validate_workflow_state_content(text: str) -> list[str]:
-  """校验 workflow_state 编辑结果：禁止无 stamp 升到 CAN_TEST/CAN_CODE。"""
+  """校验 workflow_state 编辑结果：禁止无 stamp 升到 PLANNING/CAN_*。"""
   errors: list[str] = []
   new_state = parse_state_yaml(text)
   new_phase = new_state.get("phase", "STEP0")
+
+  if new_phase in ("PLANNING", "CAN_TEST", "CAN_CODE", "DELIVERY"):
+    errors.extend(validate_materials_stamp())
 
   if new_phase in ("CAN_TEST", "CAN_CODE", "DELIVERY"):
     errors.extend(validate_plan_stamp())
@@ -269,8 +390,9 @@ def validate_plan_confirmed(
   *,
   require_phase_min: str = "CAN_TEST",
 ) -> list[str]:
-  """绝对门禁：plan stamp + phase 下限（CLI 用；Hook 写码优先用 stamp 函数）。"""
-  errors = validate_plan_stamp()
+  """绝对门禁：materials + plan stamp + phase 下限。"""
+  errors = validate_materials_stamp()
+  errors.extend(validate_plan_stamp())
   state = read_workflow_state()
   phase = state.get("phase", "STEP0")
 
@@ -283,7 +405,8 @@ def validate_plan_confirmed(
     if PHASE_ORDER.index(phase) < PHASE_ORDER.index(require_phase_min):
       errors.append(
         f"绝对门禁：phase={phase} 未达到 {require_phase_min} — "
-        "须按关键词顺序：确认规划 → gate plan → gate test → 可以开始 → gate start"
+        "须按关键词顺序：材料已齐 → gate materials → 确认规划 → gate plan → "
+        "gate test → 可以开始 → gate start"
       )
 
   return errors

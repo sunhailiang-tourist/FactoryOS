@@ -34,7 +34,6 @@ src/           代码（os_core · apps · integration · tests）
 scripts/       gate · harness · docs_baseline
 _factoryos_pipeline/   运行时落盘（pm · plan · test · verify · summary）
 docs/          厚文档（可选外迁；变更用 docs-baseline 检测）
-rules/         参考存档（非真源 · 见 rules/README.md）
 ```
 
 **产品 Agent**：`【PM模式启动】` → [factoryos/PM-GATES.md](factoryos/PM-GATES.md)（默认只读；改 Figma 须「可以改 Figma」）。

@@ -31,11 +31,13 @@
 | [PRE-DEV-CHAIN.md](./PRE-DEV-CHAIN.md) | **开发前全链路** · 维护地图 |
 | [SH-步步流.md](./SH-步步流.md) | 工作流说明 |
 | [GATES.md](./GATES.md) | L1 关键词闸门 |
-| [STEP0.md](./STEP0.md) | Dev Step 0 三段 |
+| [STEP0.md](./STEP0.md) | Dev · 新功能材料准入 + Step 0 三段 |
 | [DEV-GATES.md](./DEV-GATES.md) | Gate 1–4 · 自检 · 停机 |
 | [TEST-GATES.md](./TEST-GATES.md) | Gate A–G · 交付 · 回归 |
 | [VERIFY-GATES.md](./VERIFY-GATES.md) | Verify 独立审阅回合 |
 | [HARNESS-SCRIPTS.md](./HARNESS-SCRIPTS.md) | gate / harness 节点映射 |
+| [HARNESS-EVAL.md](./HARNESS-EVAL.md) | **L4** 黄金题 · `gate harness-eval` |
+| [FAILURE-TAXONOMY.md](./FAILURE-TAXONOMY.md) | **L4** 失败税则 · 回灌 |
 | [ORM-MIGRATION-PRINCIPLE.md](./ORM-MIGRATION-PRINCIPLE.md) | **ORM 即设计 · Alembic 即部署**（开发快 · 迁移稳） |
 | [docs-baseline](../docs-baseline/BASELINE.md) | **docs 认知基线**（漂移检测 → 工作流同步） |
 | [ACTIVATION.md](./ACTIVATION.md) | **完全激活清单**（Hooks · uv · pre-commit） |
@@ -83,8 +85,8 @@
 |------|------|
 | [../README.md](../README.md) | `.cursor/` 三区说明 |
 | [../../src/README.md](../../src/README.md) | 代码根 |
-| [../../rules/README.md](../../rules/README.md) | 参考存档（非真源） |
+| [./STEP0.md](./STEP0.md) · [./DEV-GATES.md](./DEV-GATES.md) · [./TEST-GATES.md](./TEST-GATES.md) | Dev/Test 可执行细则（真源） |
 
-## 参考存档（非真源）
+## 历史说明
 
-`rules/`（仓库根）· `rules/coder-expert-workflow.mdc` — ai-elephant 参考，已吸收纪律层。见 [rules/README.md](../../rules/README.md)
+仓库根 `rules/`（ai-elephant 参考存档，含 `coder-expert-workflow` / `testing-expert-*`）已于 W1 删除；纪律层已吸收进本目录与 `.cursor/rules/`，**勿再引用断链路径**。

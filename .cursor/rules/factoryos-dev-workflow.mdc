@@ -5,12 +5,41 @@ alwaysApply: false
 
 # FactoryOS Dev 工作流 v2
 
-> 参考 `rules/coder-expert-workflow.mdc` **纪律层**；绑定 `contracts/` · `src/` · ADR 红线。  
-> 细则：**`.cursor/factoryos/STEP0.md`** · **`DEV-GATES.md`** · 模板 **`templates/`**
+> 真源：**`.cursor/factoryos/STEP0.md`** · **`DEV-GATES.md`** · 模板 **`templates/`**；绑定 `contracts/` · `src/` · ADR 红线。  
+> 历史：ai-elephant `coder-expert-workflow` 纪律层已吸收进上述真源；仓库根 `rules/` 已废止，勿再引用。
 
 ## 激活
 
-`【Dev模式启动】` + 本轮目标/路径/AC。信息足则直接 Step 0；不足则 ≤3 行追问（类型 + 最小输入）。
+`【Dev模式启动】` 后 **先定类型**，再分流：
+
+| 类型 | 下一步 |
+|------|--------|
+| **新功能** | **材料准入绝对门禁**（见下）→ 通过后才允许 Step 0 |
+| Bug修复 / 联调排障 | 可走快速路径；信息足则 Step 0（0-B 可简化） |
+| 重构优化 / 其他 | ≤3 行追问最小输入；无「按需求开接口」则材料门禁可 N/A |
+
+### 绝对门禁 · 新功能材料准入（先于需求分析）
+
+类型为 **新功能** 时，在进入 Step 0（0-A / 0-DB / 0-B）**之前**必须完成，缺一不可：
+
+1. **功能需求文案**：说清楚目标 + 可测验收口径（路径或摘要；可引用 `pm/` / `docs/`）
+2. **需求资料**：至少 1 项有效材料（PRD / AC / 原型 / Figma / 说明文档等路径或链接）
+3. **强制追问补充**：必须问「是否还有补充需求资料？」→ 用户答 **有（并列出）** 或 **无补充**
+4. **用户确认**：`材料已齐`（或等价明确确认）
+
+落盘：`templates/materials-intake-template.md` → `_factoryos_pipeline/<date>/plan/materials-<HHmm>-<slug>.md`。  
+用户确认后 Agent 提示执行：
+
+```bash
+# 新功能
+./scripts/gate materials --materials _factoryos_pipeline/<date>/plan/materials-<HHmm>-<slug>.md
+# Bug / 联调
+./scripts/gate materials --na --reason 'Bug修复'
+```
+
+**未齐 / 无 materials.ok → 禁止** 写 `plan-*.md`、禁止 phase≥PLANNING、禁止 `gate plan`。
+
+细则：`STEP0.md` §材料准入 · `GATES.md` 四重 stamp。
 
 ## 防误执行
 
@@ -19,19 +48,27 @@ alwaysApply: false
 ## Step 0（→ `可以继续`）
 
 三段全过：**0-A** 模块/写路径 · **0-B** contracts+AC · **0-DB** PG/Alembic 只读（有库时）。  
-输出 ≤8 行摘要 + 附录核对清单；A/B/C 缺口分级。详见 `STEP0.md`。
+输出 ≤8 行摘要 + 附录核对清单；A/B/C 缺口分级。详见 `STEP0.md`。  
+服务端开/改接口且有原型图：**图片清单 + 界面字段表**（STEP0 · UI 对账硬门禁）；未命中写 `UI对账：N/A`。
 
 ## 规划（→ `确认规划`）
 
-落盘：`_factoryos_pipeline/<date>/plan/plan-<HHmm>-<slug>.md`  
-必填：AC 对账 · 红线对账 · 接口清单 · Step 列表 · 每 Step Harness 验收盘。  
-Gate 1–4 / 合并模式 / 快速路径见 `DEV-GATES.md`。模板：`templates/plan-template.md`。
+落盘：`_factoryos_pipeline/<date>/plan/plan-<HHmm>-<slug>.md`（模板 `templates/plan-template.md`）  
+**必填（表格 · 一眼可读）**：
+
+1. §4 **Step 总览**（共几步 · 每步功能/问题/接口/函数/文件）  
+2. §6 **每 Step 详表**：新增/改函数 · 接口 · 功能与问题 · 新文件/改文件 · 落位是否合理 · 有无重复 · 怎么用 · 入参/返回结构  
+3. AC / 红线对账 · Harness 验收盘  
+4. 命中时 §8 **UI 对账表**（禁止待实现/未知）；未命中写 N/A  
+
+`确认规划` 后：**只按 plan 各 Step 分步落地**，禁止超 plan、禁止跳 Step。  
+Gate 1–4 / 合并模式 / 快速路径见 `DEV-GATES.md`。
 
 ## 每 Step N（→ `可以开始` → step-stop → Test验收 → Verify → gate step 绿 → `可以继续`）
 
 1. 确认 Test 已写/更新 **failing tests**（对应用例 AC ID）
 2. 你 `可以开始` 后 **仅本 Step** 实现
-3. 10 项自检 + 中文注释（`编码绝对门禁.mdc`）
+3. 11 项自检 + 中文注释（`编码绝对门禁.mdc`；含 UI 字段对账）
 4. `src/server/api` 薄路由；业务只在 `os_core`；唯一写 Legacy 经 `execution_service`
 5. **git diff** 复核 Step 1…N-1
 6. 停机落盘：`templates/step-stop-template.md` → `step-stop/`

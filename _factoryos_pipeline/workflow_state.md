@@ -4,15 +4,16 @@
 > 真源说明：[ACTIVATION.md](../.cursor/factoryos/ACTIVATION.md)
 
 ```yaml
-phase: STEP0
+phase: PLANNING
 agent: dev
 step: 0
-plan: null
+plan: _factoryos_pipeline/2026-07-21/plan/plan-1104-harness-l4-outer-loop.md
 test_plan: null
-updated: 2026-07-14
+materials: na
+updated: 2026-07-21
 execution_strategy: .cursor/factoryos/PLATFORM-FIRST-EXECUTION-STRATEGY.md
-current_stage: awaiting_goal
-goal: null  # 【Dev模式启动】已激活 · 待用户给出本轮目标
+current_stage: harness_l4_outer_loop
+goal: Harness L4 外环（eval/税则/传感器/证据/GC）
 blocked_until: null
 blocked_1b_plan: _factoryos_pipeline/2026-07-08/plan/plan-1524-stu-ui-studio-api-wiring.md
 last_closed: CMNT-C (plan-1554) · 1a.5 已结案 · 1b 曾封存于 plan-1524
@@ -101,6 +102,12 @@ last_closed: CMNT-C (plan-1554) · 1a.5 已结案 · 1b 曾封存于 plan-1524
 
 ## 变更日志
 
+- 2026-07-21 **L4 外环落地**：`gate harness-eval`（HE-01～10）· `FAILURE-TAXONOMY` · `post-edit-sensor` · step-stop **运行时证据** · `gate harness-gc` · plan `plan-1104-harness-l4-outer-loop`
+- 2026-07-21 **四重 stamp 垂直链落地**：`materials.ok → plan.ok → test.ok → code.ok` · `gate materials` · Hook 写 plan 须 materials.ok · PLANNING 须 materials.ok
+- 2026-07-21 **harness 同步**：`check_plan_spec` v2（Step总览/详表·materials·UI§8）· `step_chain_lib` 查 step-stop UI项 · 单测 `scripts/test_check_plan_spec_v2.py`
+- 2026-07-21 **UI/原型字段对账硬门禁落地** · server 开/改接口+有图强制 · 自检 11 项 · plan §8 · Test 核对
+- 2026-07-21 **新功能材料准入绝对门禁**落地 · 须文案+资料+追问补充→`材料已齐` 才进 Step0
+- 2026-07-21 【Dev模式启动】· `phase: STEP0` · 上轮 CMNT-C/1a.5 已结 · 1b 封存 plan-1524 · 本轮目标未定 · Step 0-0 等用户补齐
 - 2026-07-14 【Dev模式启动】· `phase: STEP0` · 上轮 CMNT-C/1a.5 已结 · 本轮目标未定 · 等用户补齐后开 Step 0
 
 - 2026-07-08 用户决策 · **先 CMNT-C 注释闭环，暂停 1b 联调** · plan `plan-1554` · `blocked_until: CMNT-C08` · plan-1524 封存

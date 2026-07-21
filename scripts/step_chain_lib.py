@@ -99,7 +99,7 @@ def check_conclusion(path: Path, *, require_pass: bool) -> list[str]:
 
 
 def validate_step_dev_done(step: int) -> list[str]:
-  """Dev Step N 完成：须有 step-stop。"""
+  """Dev Step N 完成：须有 step-stop，且含 UI 对账 + 运行时证据（或 N/A）。"""
   errors: list[str] = []
   plan_dir = plan_pipeline_dir()
   if plan_dir is None:
@@ -110,7 +110,44 @@ def validate_step_dev_done(step: int) -> list[str]:
       f"联动门禁 Step {step}：缺少 Dev step-stop "
       f"({plan_dir.name}/step-stop/step-stop-*-step{step}.md)"
     )
+    return errors
+  errors.extend(check_step_stop_ui_gate(stop))
+  errors.extend(check_step_stop_runtime_evidence(stop))
   return errors
+
+
+def check_step_stop_ui_gate(path: Path) -> list[str]:
+  """step-stop 须含第 11 项 UI 字段对账（命中明细或 N/A）。"""
+  text = path.read_text(encoding="utf-8")
+  if "UI字段对账" not in text and "UI 字段对账" not in text:
+    return [
+      f"{path.name}: 缺少「UI字段对账」自检项（第 11 项或 §4b；未命中须填 N/A）"
+    ]
+  return []
+
+
+def check_step_stop_runtime_evidence(path: Path) -> list[str]:
+  """step-stop 须含「运行时证据」合同（路径/摘要或 N/A）。
+
+  功能：L4 P1 — 禁止仅靠「我测过了」；须可复检痕迹。
+  业务含义：健康检查 URL、日志摘录、截图路径、或明确 N/A+理由。
+  """
+  text = path.read_text(encoding="utf-8")
+  if "运行时证据" not in text:
+    return [
+      f"{path.name}: 缺少「运行时证据」节（须填健康检查/日志/截图路径，或 `N/A`+理由）"
+      " — 税则 FT-RUNTIME-EVIDENCE"
+    ]
+  if re.search(r"运行时证据\s*[：:]\s*N/?A", text, re.IGNORECASE):
+    return []
+  if re.search(r"运行时证据[\s\S]{0,400}N/?A", text, re.IGNORECASE):
+    return []
+  if re.search(r"https?://|\.png|\.jpg|/logs/|health|curl |日志", text, re.IGNORECASE):
+    return []
+  return [
+    f"{path.name}: 「运行时证据」须含 N/A+理由，或 URL/日志/截图等可复检痕迹"
+    " — 税则 FT-RUNTIME-EVIDENCE"
+  ]
 
 
 def validate_step_test_done(step: int, *, require_pass: bool = True) -> list[str]:

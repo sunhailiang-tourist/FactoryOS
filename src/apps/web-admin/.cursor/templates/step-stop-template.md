@@ -23,11 +23,17 @@
 | 9 | lint/tsc | |
 | 10 | 无重复逻辑 | |
 
+## 运行时证据（必填 · 或 N/A+理由）
+
+- **运行时证据**：`<pnpm vitest / playwright / activate 摘要 / 截图路径>` 或 `N/A（纯契约/文档）`
+- 税则：`WFT-RUNTIME-EVIDENCE`
+
 ## 命令结果
 
 ```bash
 python scripts/check_boundary_lock.py
 python scripts/check_harness.py
+./scripts/web_gate step --step N
 pnpm vitest run ...
 ```
 
@@ -37,4 +43,4 @@ pnpm vitest run ...
 
 ## 下一步
 
-→ `【WebTest·Step N 验收】` 新会话
+→ `【WebTest·Step N 验收】` 新会话 → `【WebVerify回合】Step N`

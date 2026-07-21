@@ -5,8 +5,8 @@ alwaysApply: false
 
 # FactoryOS Test 工作流 v2.1
 
-> 参考 `rules/testing-expert-*.mdc` **纪律层**；绑定 `contracts/acceptance/` · **pytest 为主**。  
-> 细则：**`.cursor/factoryos/TEST-GATES.md`** · 模板 **`templates/`**
+> 真源：**`.cursor/factoryos/TEST-GATES.md`** · 模板 **`templates/`**；绑定 `contracts/acceptance/` · **pytest 为主**。  
+> 历史：ai-elephant `testing-expert-*` 纪律层已吸收进上述真源；仓库根 `rules/` 已废止，勿再引用。
 
 ## 激活（三档 · 不可混用省略）
 

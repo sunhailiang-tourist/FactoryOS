@@ -2,8 +2,9 @@
 
 | 关键词 | 阶段 | 允许行为 |
 |--------|------|----------|
+| `材料已齐` | 材料准入 | **`./scripts/gate materials`**（写 `materials.ok`）→ 允许 Step 0 / 写 plan |
 | `可以继续` | Step0 / Step 验收 | 进入规划或下一 Step |
-| `确认规划` | 规划关 | plan 落盘 + **`./scripts/gate plan` 绿（plan.ok）** |
+| `确认规划` | 规划关 | plan 落盘 + **`./scripts/gate plan` 绿（plan.ok）** · **须先 materials.ok** |
 | `可以开始` | 编码关 | **`./scripts/gate start --step N`（code.ok）** + 仅当前 Step 写实现 |
 | `风险接受并继续` | 存量风险 / Test·Verify 需改进 | 评估为需改进且你书面接受后 |
 | `测试不通过` | Step 失败 | Dev 回当前 Step 修复，禁止下一步 |
@@ -11,13 +12,24 @@
 
 ## 绝对门禁（机械 · 不可跳过 · 不认 Agent 自改 phase）
 
-三重 stamp（**仅 `./scripts/gate` 可写** · Hook 拦截 Agent 伪造）：
+四重 stamp（**仅 `./scripts/gate` 可写** · Hook 拦截 Agent 伪造）· **垂直不可跳**：
+
+```text
+材料已齐 → gate materials → materials.ok
+  → 确认规划 → gate plan → plan.ok
+  → gate test → test.ok
+  → 可以开始 → gate start → code.ok
+```
 
 | stamp | 写入命令 | 解锁 |
 |-------|----------|------|
-| `plan.ok` | `./scripts/gate plan` | 用户 **`确认规划`** 后 · 写 `src/tests/**` · pipeline 落盘 |
+| `materials.ok` | `./scripts/gate materials` | 用户 **`材料已齐`** · 写 `plan-*.md` · phase≥PLANNING |
+| `plan.ok` | `./scripts/gate plan` | 用户 **`确认规划`** · 写 `src/tests/**` · pipeline 落盘 |
 | `test.ok` | `./scripts/gate test` | Test test-plan 就绪后 |
-| `code.ok` | `./scripts/gate start --step N` | 用户 **`可以开始`** 后 · 写业务码/迁移 |
+| `code.ok` | `./scripts/gate start --step N` | 用户 **`可以开始`** · 写业务码/迁移 |
+
+`gate materials`：新功能 `--materials <path>`；Bug/联调 `--na --reason '…'`。  
+新功能 plan 禁止 `materials.ok mode=na`。
 
 写测/写码/`gate step` 须：**plan 文件存在** + **stamp 与 workflow_state 一致**。  
 `workflow_state` 升到 `CAN_TEST`/`CAN_CODE` 时 Hook **同样校验 stamp**，禁止 Agent 自报 phase 绕门。
@@ -90,6 +102,7 @@ Dev step-stop-*-stepN.md
 
 ```text
 _factoryos_pipeline/<YYYY-MM-DD>/
+  pm/pm-<HHmm>-*.md                             # PM Agent（确认规划前 · 无需 plan.ok）
   plan/plan-<HHmm>-<slug>.md
   test/test-<HHmm>-<slug>.md                    # 编码前 test-plan
   test/test-<HHmm>-stepN-regression.md          # 每 Step Test 硬性验收（强制）
@@ -99,7 +112,9 @@ _factoryos_pipeline/<YYYY-MM-DD>/
   summary/change-summary-<HHmm>.md
 ```
 
-模板：`.cursor/factoryos/templates/test-step-regression-template.md` · `test-final-regression-template.md`
+模板：`.cursor/factoryos/templates/pm-*-template.md` · `test-step-regression-template.md` · `test-final-regression-template.md`
+
+**PM 口令**（产品轨 · 不替代 stamp）：`【PM模式启动】` → 见 [PM-GATES.md](./PM-GATES.md)。
 
 ## 违规回滚
 

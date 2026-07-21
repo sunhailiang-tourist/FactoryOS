@@ -2,7 +2,8 @@
 """SH-步步流统一 Gate CLI — T4.5 Spec×Harness×Verify×静态质量。
 
 Usage:
-  python scripts/gate_cli.py plan [--plan P]     # 确认规划 + 写 plan.ok 闸门
+  python scripts/gate_cli.py materials [--materials P | --na --reason R]
+  python scripts/gate_cli.py plan [--plan P]     # 确认规划 + 写 plan.ok（须先 materials.ok）
   python scripts/gate_cli.py test                # test-plan + 写 test.ok
   python scripts/gate_cli.py start --step N      # 可以开始 + 写 code.ok
   python scripts/gate_cli.py step [-k AC] [--step N]  # 停机：harness+pytest+静态+verify
@@ -27,6 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = Path(__file__).resolve().parent
 PIPELINE = ROOT / "_factoryos_pipeline"
 PLAN_GATE = PIPELINE / ".gates" / "plan.ok"
+MATERIALS_GATE = PIPELINE / ".gates" / "materials.ok"
 
 
 def run(cmd: list[str]) -> int:
@@ -94,6 +96,29 @@ def pytest_available() -> bool:
         capture_output=True,
     )
     return r.returncode == 0
+
+
+def write_materials_gate(
+    *,
+    materials: Path | None,
+    na: bool,
+    reason: str,
+) -> None:
+    """写入 materials.ok。"""
+    sys.path.insert(0, str(SCRIPTS))
+    import plan_gate_lib
+
+    if na:
+        plan_gate_lib.write_materials_gate_stamp(mode="na", reason=reason)
+        print(f"Wrote {MATERIALS_GATE.relative_to(ROOT)} (mode=na)")
+        return
+    assert materials is not None
+    try:
+        rel = materials.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        rel = str(materials)
+    plan_gate_lib.write_materials_gate_stamp(materials_rel=rel, mode="file")
+    print(f"Wrote {MATERIALS_GATE.relative_to(ROOT)} (materials={rel})")
 
 
 def write_plan_gate(plan: Path | None) -> None:
@@ -190,6 +215,62 @@ def run_contract_workflow_pytest(*, bucket: str, stem: str, exclude_pending: boo
     return run_logged(bucket=bucket, stem=stem, cmd=cmd)
 
 
+def gate_materials(
+    materials: Path | None,
+    *,
+    na: bool,
+    reason: str,
+) -> int:
+    """用户「材料已齐」后的机械凭证：写 materials.ok。"""
+    sys.path.insert(0, str(SCRIPTS))
+
+    if na:
+        if not reason.strip():
+            print(
+                "Gate materials FAILED: --na 须同时给 --reason（如 Bug修复/联调）",
+                file=sys.stderr,
+            )
+            return 1
+        write_materials_gate(materials=None, na=True, reason=reason.strip())
+        print(
+            "\nGate materials OK (materials.ok mode=na)\n"
+            "下一步：可进入 Step 0 / 规划；确认规划前更新 workflow_state.materials=na"
+        )
+        return 0
+
+    if materials is None:
+        print(
+            "Gate materials FAILED: 须 --materials <path> 或 --na --reason …",
+            file=sys.stderr,
+        )
+        return 1
+    path = materials if materials.is_absolute() else ROOT / materials
+    if not path.is_file():
+        print(f"Gate materials FAILED: 文件不存在 — {path}", file=sys.stderr)
+        return 1
+    text = path.read_text(encoding="utf-8")
+    if "功能需求文案" not in text and "一句话目标" not in text:
+        print(
+            "Gate materials FAILED: materials 文件须含「功能需求文案」或「一句话目标」"
+            "（见 materials-intake-template）",
+            file=sys.stderr,
+        )
+        return 1
+    if "需求资料" not in text and "资料类型" not in text:
+        print(
+            "Gate materials FAILED: materials 文件须含「需求资料」表"
+            "（见 materials-intake-template）",
+            file=sys.stderr,
+        )
+        return 1
+    write_materials_gate(materials=path, na=False, reason="")
+    print(
+        "\nGate materials OK (materials.ok stamped)\n"
+        "下一步：更新 workflow_state.materials=<相对路径> → 进入 Step 0 需求分析"
+    )
+    return 0
+
+
 def gate_plan(plan: Path | None) -> int:
     sys.path.insert(0, str(SCRIPTS))
     import plan_gate_lib
@@ -207,6 +288,12 @@ def gate_plan(plan: Path | None) -> int:
             "绝对门禁：workflow_state.plan 未填写或文件不存在 — 禁止 gate plan",
             file=sys.stderr,
         )
+        return 1
+    mat_errors = plan_gate_lib.validate_materials_for_plan(plan_path)
+    if mat_errors:
+        print("Gate plan FAILED — 材料准入绝对门禁:", file=sys.stderr)
+        for err in mat_errors:
+            print(f"  {err}", file=sys.stderr)
         return 1
     if run_logged(
         bucket="dev",
@@ -464,11 +551,33 @@ def gate_analyze(plan: Path | None) -> int:
     return run_logged(bucket="dev", stem="gate-analyze_check-plan-spec", cmd=cmd)
 
 
+def gate_harness_eval(cases: list[str] | None = None) -> int:
+    """L4 P0：冻结黄金题，改门禁后回归。"""
+    cmd = [sys.executable, str(SCRIPTS / "check_harness_eval.py")]
+    if cases:
+        for c in cases:
+            cmd.extend(["--case", c])
+    return run_logged(bucket="dev", stem="gate-harness-eval", cmd=cmd)
+
+
+def gate_harness_gc(*, strict: bool = False) -> int:
+    """L4 P2：熵清理扫描。"""
+    cmd = [sys.executable, str(SCRIPTS / "harness_gc.py")]
+    if strict:
+        cmd.append("--strict")
+    return run_logged(bucket="dev", stem="gate-harness-gc", cmd=cmd)
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description="FactoryOS Gate CLI (T4.5)")
     sub = p.add_subparsers(dest="gate", required=True)
 
-    sp = sub.add_parser("plan", help="确认规划 + analyze + plan.ok")
+    sm = sub.add_parser("materials", help="材料已齐 + materials.ok")
+    sm.add_argument("--materials", type=Path, help="materials-*.md（新功能）")
+    sm.add_argument("--na", action="store_true", help="非新功能跳过材料文件")
+    sm.add_argument("--reason", default="", help="--na 时必填理由")
+
+    sp = sub.add_parser("plan", help="确认规划 + analyze + plan.ok（须先 materials.ok）")
     sp.add_argument("--plan", type=Path)
 
     sub.add_parser("test", help="test-plan 节点 + test.ok")
@@ -494,8 +603,16 @@ def main() -> int:
     sa = sub.add_parser("analyze", help="plan↔contracts")
     sa.add_argument("--plan", type=Path)
 
+    se = sub.add_parser("harness-eval", help="L4：harness 黄金题回归（10 题）")
+    se.add_argument("--case", action="append", dest="cases", help="仅跑指定 HE-ID")
+
+    sg = sub.add_parser("harness-gc", help="L4：harness 熵清理扫描")
+    sg.add_argument("--strict", action="store_true", help="有 critical 则失败")
+
     args = p.parse_args()
 
+    if args.gate == "materials":
+        return gate_materials(args.materials, na=args.na, reason=args.reason)
     if args.gate == "plan":
         return gate_plan(args.plan)
     if args.gate == "test":
@@ -516,6 +633,10 @@ def main() -> int:
         return gate_docs_sync()
     if args.gate == "analyze":
         return 0 if gate_analyze(args.plan) == 0 else 1
+    if args.gate == "harness-eval":
+        return gate_harness_eval(getattr(args, "cases", None))
+    if args.gate == "harness-gc":
+        return gate_harness_gc(strict=args.strict)
     return 1
 
 

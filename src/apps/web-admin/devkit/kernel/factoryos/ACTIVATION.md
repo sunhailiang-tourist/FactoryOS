@@ -19,10 +19,10 @@ curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env
 | # | 步骤 | `activate_dev_env.sh` 内 | 你额外做 |
 |---|------|--------------------------|----------|
 | 1 | uv 引导工具 | 检查 `uv` 在 PATH | 无则先装 uv（上一行） |
-| 2 | 依赖封版 | `uv sync --frozen --extra dev` | — |
+| 2 | 依赖封版 | `uv sync --frozen --extra dev --group dev --group comment-gate` | — |
 | 3 | docs 基线 | `docs_baseline refresh` | — |
 | 4 | 工作流验收盘 | `gate pr`（harness 11 项 · 含结构快照） | 须绿 |
-| 5 | git 钩子 | `pre-commit`（**结构快照 commit 拦截** · lock · harness）+ `pre-push`（pytest） | — |
+| 5 | git 钩子 | `pre-commit`（**结构快照** · **CMNT-C 注释 staged 交互** · lock · harness）+ `pre-push`（注释全量 · pytest） | — |
 | 5b | 结构门禁自检 | `check_structure_change.py`（激活脚本末尾自动跑） | 须 OK |
 | 6 | Cursor Hooks | — | 仓库根打开 · Settings → `protect-paths` · **重启** |
 | 7 | 可选 rg | — | `brew install ripgrep`（本地复现 CI 密钥 grep） |
@@ -61,6 +61,7 @@ Agent **收到用户关键词后必须先改** `_factoryos_pipeline/workflow_sta
 
 | 用户关键词 | 更新 state | 建议 Gate |
 |------------|------------|-----------|
+| `材料已齐`（新功能材料准入后） | 保持 `STEP0` · 记 materials 路径 | —（允许进入 Step 0 分析） |
 | `可以继续`（Step0 后） | `phase: PLANNING` | — |
 | `确认规划` | `phase: CAN_TEST` + 填 `plan:` 路径 | **`./scripts/gate plan`（写 plan.ok · 绝对门禁）** |
 | Test 落 test-plan 后 | `agent: test` · 填 `test_plan:` | `./scripts/gate test`（写 test.ok） |
@@ -94,6 +95,16 @@ Agent **收到用户关键词后必须先改** `_factoryos_pipeline/workflow_sta
 | **L3** | harness + pytest + **ruff/pyright** + CI `gate pr` | ✅ |
 | **Verify** | 新会话只读审阅 + `gate verify` | ✅ |
 | **PR** | body 追溯 + diff 策略（CI `pr-policy`） | ✅ |
+
+---
+
+## 三b、产品 Agent（可选 · 在 Dev 之前）
+
+| 口令 | 落盘 | 细则 |
+|------|------|------|
+| `【PM模式启动】` + 目标 | `_factoryos_pipeline/<date>/pm/` | [PM-GATES.md](./PM-GATES.md) |
+
+默认只读；改 Figma 须当轮「可以改 Figma」。不写 `.gates/*`，不替代 `确认规划`。
 
 ---
 

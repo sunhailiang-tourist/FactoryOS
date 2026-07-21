@@ -10,7 +10,7 @@
     ],
     "postToolUse": [
       {
-        "command": "python3 .cursor/hooks/post-edit-harness-hint.py",
+        "command": "python3 .cursor/hooks/post-edit-sensor.py",
         "matcher": "Write|StrReplace"
       }
     ]

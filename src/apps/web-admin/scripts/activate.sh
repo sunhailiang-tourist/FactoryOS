@@ -90,19 +90,19 @@ cat <<EOF
 $CMNT_NOTE
   开发者手册：$REPO_ROOT/contracts/README.md#前端工程全流程开发者手册
   AI 口令：【WebDev模式启动】· 【WebTest模式启动】· 【WebVerify回合】Step N
-  落盘：_web_pipeline/（web-admin 独立 · 可迁出 .cursor/）
+  落盘：_web_pipeline/ + .gates stamp（./scripts/web_gate）
+  L4：./scripts/web_gate harness-eval · harness-gc
   绝对门禁：WEB-00 独立边界 · WEB-01 架构锁
-  FactoryOS gate：仅 umbrella 调度；web-admin 验收盘以本目录 activate 为准
+  FactoryOS gate：仅 umbrella；本 App 用 web_gate + activate
 
 ────────────────────────────────────────────────────────────
   下一步（开发）
-  1. pnpm dev                    # 本地预览（VITE_MSW=1 无后端）
-  2. 读 ARCHITECTURE.md → ENGINEERING.md
-  3. 新业务：pnpm create:module  # 含 i18n/rbac/permissions + contracts 登记
-  4. 提交前：pnpm check          # 与 activate 同链
-  5. git commit：CMNT-C 自动校验/交互补注释骨架（standalone 已装 hook）
-  AI 工作流：.cursor/INDEX.md（【WebDev模式启动】· 独立步步流）
-  红灯：contracts/README.md § 红灯怎么办
+  1. pnpm dev
+  2. 新功能：材料已齐 → ./scripts/web_gate materials → Step0 → web_gate plan
+  3. 每 Step：web_gate start → 实现 → Test/Verify → web_gate step
+  4. 改门禁后：./scripts/web_gate harness-eval
+  5. 提交前：pnpm check / ./scripts/activate.sh
+  AI 工作流：.cursor/INDEX.md
 ────────────────────────────────────────────────────────────
 
 EOF

@@ -17,9 +17,11 @@ alwaysApply: true
 
 ## 关键词（缺一不可 · **确认规划不可跳过**）
 
-`可以继续` → **`确认规划` + `./scripts/gate plan`（plan.ok）** → Test + **`gate test`（test.ok）** → **`可以开始` + `./scripts/gate start --step N`（code.ok）** → …
+`【Dev模式启动】`（**新功能**须先 `材料已齐`）→ Step0 → `可以继续` → **`确认规划` + `./scripts/gate plan`（plan.ok）** → Test + **`gate test`（test.ok）** → **`可以开始` + `./scripts/gate start --step N`（code.ok）** → …
 
 **绝对门禁（stamp · 不认 Agent 自改 phase）**：无 plan.ok → 禁止写 `src/**`；无 test.ok → 禁止 `gate start`；无 code.ok → 禁止写业务码。`.gates/*` 仅 gate CLI 可写。
+
+**新功能材料准入（Agent 绝对门禁 · 先于 Step0）**：须功能需求文案 + 需求资料 + 追问补充（有/无）+ 用户 `材料已齐`；未齐禁止进入需求分析（STEP0）。详见 `STEP0.md` §材料准入。
 
 **联动门禁**：Step N 须 Dev step-stop → Test 单步验收 → Verify 通过 → `gate step` 绿，方可 `可以继续` / 开 Step N+1（`step_chain_lib` · 按 plan 日期目录隔离）。
 
@@ -30,17 +32,18 @@ alwaysApply: true
 `_factoryos_pipeline/<YYYY-MM-DD>/{plan,test,step-stop,verify,summary}/`  
 每 Step 强制：`test-*-stepN-regression.md` · commit 前强制：`test-*-final-regression.md`
 
-## 三 Agent
+## 四 Agent
 
+- **PM**：`【PM模式启动】`（Dev / `确认规划` 前）→ `PM-GATES.md` · 默认只读 · 落盘 `pm/`
 - **Dev**：`【Dev模式启动】` → `STEP0.md` `DEV-GATES.md`
 - **Test**：`【Test模式启动】` · `【Test·Step N 验收】` · `【Test·终轮回归】` → `TEST-GATES.md`
 - **Verify**：`【Verify回合】Step N`（Test 之后 · **新对话**）→ `VERIFY-GATES.md`
 
-Test 只写 `src/tests/**`；禁止改业务实现。
+PM 不写业务码、不碰 stamp；改 Figma 须「可以改 Figma」。Test 只写 `src/tests/**`；禁止改业务实现。
 
 ## 单轮节拍（次序强制 · 节奏可快）
 
-plan → test-plan → **每 Step**：可以开始→实现→step-stop→**Test·Step N**→Verify→gate step绿→可以继续 → summary→**Test·终轮**→gate delivery绿→**可以提交**
+**新功能**：材料准入→`材料已齐` → Step0 → `可以继续` → plan → `确认规划` → test-plan → **每 Step**：可以开始→实现→step-stop→**Test·Step N**→Verify→gate step绿→可以继续 → summary→**Test·终轮**→gate delivery绿→**可以提交**
 
 ## Step 验收盘
 
@@ -51,4 +54,4 @@ plan → test-plan → **每 Step**：可以开始→实现→step-stop→**Test
 
 ## 禁止
 
-跳 Step · **跳过确认规划** · Agent 自写 `.gates/*` 或伪造 phase · 无 stamp 写码/测 · 乱序 · Test 偷改业务
+跳 Step · **跳过确认规划** · **新功能跳过材料准入** · Agent 自写 `.gates/*` 或伪造 phase · 无 stamp 写码/测 · 乱序 · Test 偷改业务

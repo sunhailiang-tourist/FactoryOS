@@ -61,8 +61,9 @@ Agent **收到用户关键词后必须先改** `_factoryos_pipeline/workflow_sta
 
 | 用户关键词 | 更新 state | 建议 Gate |
 |------------|------------|-----------|
-| `可以继续`（Step0 后） | `phase: PLANNING` | — |
-| `确认规划` | `phase: CAN_TEST` + 填 `plan:` 路径 | **`./scripts/gate plan`（写 plan.ok · 绝对门禁）** |
+| `材料已齐` | 填 `materials:` 路径或 `na` · 保持 STEP0 | **`./scripts/gate materials`**（写 materials.ok） |
+| `可以继续`（Step0 后） | `phase: PLANNING`（**须已有 materials.ok**） | — |
+| `确认规划` | `phase: CAN_TEST` + 填 `plan:` 路径 | **`./scripts/gate plan`（写 plan.ok · 须 materials.ok）** |
 | Test 落 test-plan 后 | `agent: test` · 填 `test_plan:` | `./scripts/gate test`（写 test.ok） |
 | `可以开始` Step N | `phase: CAN_CODE` · `step: N` · `agent: dev` | **`./scripts/gate start --step N`（写 code.ok）** |
 | Step 停机前 | Verify 落盘 + | `./scripts/gate step --step N -k 'G-01'` |
@@ -72,7 +73,9 @@ Agent **收到用户关键词后必须先改** `_factoryos_pipeline/workflow_sta
 ### 统一命令速查
 
 ```bash
-./scripts/gate plan                    # 确认规划（写 plan.ok）
+./scripts/gate materials --materials … # 材料已齐（写 materials.ok）
+./scripts/gate materials --na --reason 'Bug修复'
+./scripts/gate plan                    # 确认规划（写 plan.ok · 须 materials.ok）
 ./scripts/gate test                    # test-plan 检查（写 test.ok）
 ./scripts/gate start --step 1          # 可以开始 Step N（写 code.ok）
 ./scripts/gate verify --step 1         # Verify 回合

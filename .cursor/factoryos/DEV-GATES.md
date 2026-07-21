@@ -6,8 +6,9 @@
 
 | 词 | 解锁 |
 |----|------|
+| `材料已齐` | **`./scripts/gate materials`**（materials.ok）→ Step 0 / 写 plan |
 | `可以继续` | Step0 通过；或 Step N 验收后下一 Step |
-| `确认规划` | plan 合法落盘 + **`./scripts/gate plan` 绿（plan.ok · 绝对门禁）** |
+| `确认规划` | plan 合法落盘 + **`./scripts/gate plan` 绿（plan.ok）** · 须先 materials.ok |
 | `可以开始` | **`./scripts/gate start --step N`（code.ok）** + 仅当前 Step 编码 |
 | `测试不通过` | 回当前 Step 修复 |
 
@@ -33,24 +34,37 @@
 
 ---
 
-## Gate 3 · Step 列表（每 Step 必填）
+## Gate 3 · Step 列表（每 Step 必填 · 与 plan-template §4/§6 一致）
+
+plan 落盘必须让开发者**一眼**看清：共几步、每步做什么、落哪、是否合理、怎么用、入参/出参。  
+对话中的 Gate 3 摘要可短，**落盘 plan 不得省略**下列列。
 
 ```text
-Step N — <名>（流程节点：xxx）
-  AC ID：G-01, E-03, …
-  接口：METHOD /v1/...（新增/修改）
-  模块路径：src/server/os_core/... 或 src/server/api/...
-  Harness 验收盘：`./scripts/gate step --step N -k '<AC-ID>'`（停机；编码中按改动面见 HARNESS-SCRIPTS.md）
-  风险：幂等/越权/shadow/…
-  验收标准：（可测一句话）
+§4 Step 总览表：Step | 名称 | 功能 | 问题 | 接口 | 新增函数 | 新增文件 | 改动文件 | Harness
+
+每 Step（§6）必须含表：
+  6.1 摘要（功能 / 解决问题 / AC / 验收 / 风险）
+  6.2 接口（方法·路径·新增或改）
+  6.3 函数（符号·路径·新增或改·职责·上下游）
+  6.4 文件落位（路径·为何在此·是否合理·有无重复可复用）
+  6.5 怎么用（HTTP / 代码入口）
+  6.6 入参（JSON 骨架 + 字段表）
+  6.7 返回（JSON 骨架 + 字段表）
+  6.8 gate step 命令
 ```
+
+**实现纪律**：`可以开始` Step N 后**仅**实现 plan §6 Step N；禁止提前做 N+1；停机对照 §6 自检。  
+**UI对账**：命中则本 Step 对应 plan §8.2 行须闭环 / 未命中 N/A。
+
+**机械校验（`./scripts/gate plan` → `check_plan_spec.py`）**：缺 Step 总览/详表关键字、新功能无 materials、UI 命中仍含待实现 → **gate plan 失败**。  
+紧急旧 plan 可在文首加 `plan_format: legacy` 或 `--legacy`（仅跳过结构，仍查 AC/HTTP）。
 
 ---
 
 ## Gate 4 · 开始本 Step 前
 
 1. plan 已落盘
-2. 输出 `确认项（<=3）`：无则写「无（口径已闭环）」
+2. 输出 `确认项（<=3）`：无则写「无（口径已闭环）」；命中 UI 门禁时须确认 plan §8.1/§8.2 已无「待实现/未知」
 3. 问：「是否 `可以开始` Step N？」
 
 ---
@@ -61,7 +75,7 @@ Step N — <名>（流程节点：xxx）
 
 ---
 
-## 资深实现质量自检（10 项 · 停机逐项 Pass/Fail）
+## 资深实现质量自检（11 项 · 停机逐项 Pass/Fail）
 
 1. **分层**：api 薄；业务 os_core；写 Legacy 仅 execution_service
 2. **响应契约**：对齐 OpenAPI / Pydantic；错误码一致
@@ -73,12 +87,15 @@ Step N — <名>（流程节点：xxx）
 8. **幂等/补偿**：idempotency_key；L2 有 Compensator（R-05）
 9. **静态检查**：lint/type 无新增错误
 10. **注释**：字段四要素 + 函数上下游（编码绝对门禁）
+11. **UI字段对账**：未命中 → N/A；命中 → plan §8.2 本 Step 行全为已实现/不需要，且 step-stop §4b Pass
+
+另：**运行时证据**（step-stop §4c）：健康检查/日志/截图路径，或 `N/A`+理由 — `step_chain_lib` 机械检查 · 税则 `FT-RUNTIME-EVIDENCE`
 
 未全 Pass → 禁止停机等用户测试。
 
 ---
 
-## Harness 分层（L0→L3 · 停机前仍四门全绿）
+## Harness 分层（L0→L4 · 停机前仍四门全绿）
 
 | 层级 | 何时 | 脚本 |
 |------|------|------|
@@ -86,14 +103,15 @@ Step N — <名>（流程节点：xxx）
 | L1 边界 | 动 `src/server/os_core` · `src/integration` | `./scripts/harness --tier boundaries` |
 | L2 冗余 | 动 `src/server/os_core` · `src/server/api` 业务 `.py` | `./scripts/harness --tier step` |
 | L3 行为 | 每 Step 停机 | `./scripts/gate step --step N -k '<AC-ID>'`（含 verify + static） |
+| L4 外环 | 改门禁/规则后 · 周更 | `./scripts/gate harness-eval` · `gate harness-gc` |
 
-详表：[HARNESS-SCRIPTS.md](./HARNESS-SCRIPTS.md) · 脚本目录：[scripts/README.md](../../scripts/README.md)
+详表：[HARNESS-SCRIPTS.md](./HARNESS-SCRIPTS.md) · Eval：[HARNESS-EVAL.md](./HARNESS-EVAL.md) · 脚本目录：[scripts/README.md](../../scripts/README.md)
 
 ---
 
 ## Step 停机输出（必用 `templates/step-stop-template.md`）
 
-Step ID · 改动文件 · 10 项自检 · 等你进入 **Test 单步验收**
+Step ID · 改动文件 · 11 项自检（含 UI 对账）· **运行时证据** · 等你进入 **Test 单步验收**
 
 **停机全链**（次序强制）：
 
@@ -117,4 +135,5 @@ Verify 细则：[VERIFY-GATES.md](./VERIFY-GATES.md) · Test 细则：[TEST-GATE
 
 ## 注释与 pre-dev 骨架
 
-plan 结构见 `templates/plan-template.md`。字段注释四要素：语义 / 用法 / 业务说明 / 上下游。
+plan 结构见 `templates/plan-template.md`（**§4 总览 + §6 每 Step 详表为硬要求**）。  
+字段注释四要素：语义 / 用法 / 业务说明 / 上下游。

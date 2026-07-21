@@ -3,7 +3,7 @@
 # 格式参照：contracts/README.md · .cursor/rules/项目结构变更门禁.mdc
 
 version: 1
-updated: "2026-07-07"
+updated: "2026-07-21"
 decision_ref: D15
 
 lock_policy: |
@@ -27,6 +27,7 @@ strict_paths:
   - src/apps/web-admin/.cursor
   - src/apps/web-admin/e2e
   - src/apps/web-admin/.storybook
+  - src/apps/web-admin/_web_pipeline
   - src/apps/web-admin/src
   - src/apps/web-admin/src/mocks
   - src/apps/web-admin/src/test
@@ -78,6 +79,7 @@ required_paths:
   - src/apps/web-admin/.cursor
   - src/apps/web-admin/e2e
   - src/apps/web-admin/.storybook
+  - src/apps/web-admin/_web_pipeline
   - src/apps/web-admin/src
   - src/apps/web-admin/src/api
   - src/apps/web-admin/src/components

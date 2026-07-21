@@ -27,13 +27,17 @@
 |------|------|
 | **`activate_dev_env.sh`** | **开发环境一键激活**（README 唯一入口 · frozen sync · gate pr · pre-commit · 结构快照门禁验证） |
 | **`gate`** | Bash 入口 → `gate_cli.py` |
-| **`gate_cli.py`** | **Spec×Harness Gate**：`plan` · `test` · `step` · `delivery` · `verify` · `pr` · `gate0` · `analyze` · `docs-sync` |
+| **`gate_cli.py`** | **Spec×Harness Gate**：`materials` · `plan` · `test` · `step` · `delivery` · `verify` · `pr` · `harness-eval` · `harness-gc` · `analyze` · `docs-sync` |
 | **`pipeline_artifacts.py`** | Gate 强制输出：`_factoryos_pipeline/<date>/{dev,test,verify}/HH-MM_*.md` |
 | **`check_deptry.py`** | import ↔ `pyproject.toml` 声明（`gate pr` · DEP001） |
 | **`check_uv_lock.sh`** | `uv lock --check`（pre-commit · pyproject 变更时） |
 | **`venv_exec.sh`** | pre-commit 统一走 `.venv/bin/python` |
-| **`check_plan_spec.py`** | plan ↔ contracts AC/路径一致性（确认规划门） |
-| **`plan_gate_lib.py`** | **stamp 绝对门禁**：`plan.ok` / `test.ok` / `code.ok` ↔ `workflow_state`（Hook · gate CLI） |
+| **`check_plan_spec.py`** | plan ↔ contracts AC/路径 + **v2 结构门禁**（Step 总览/详表 · 新功能 materials · UI §8） |
+| **`plan_gate_lib.py`** | **四重 stamp**：`materials.ok` / `plan.ok` / `test.ok` / `code.ok` ↔ `workflow_state` |
+| **`harness_eval_lib.py`** / **`check_harness_eval.py`** | **L4** 冻结 10 题黄金回归（`gate harness-eval`） |
+| **`failure_taxonomy_lib.py`** | **L4** 失败税则 FT-* · 回灌草稿 |
+| **`sensor_scoped_check.py`** | **L4** 编辑后 py_compile/ruff 传感器 |
+| **`harness_gc.py`** | **L4** 熵清理扫描（`gate harness-gc`） |
 | **`check_pipeline.py`** | 落盘工件 + `workflow_state` 阶段检查（含 step 单步 Test · delivery 终轮） |
 | **`check_test_regression.py`** | 单步/终轮 Test 落盘与结论门禁 |
 
